@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { Check } from "lucide-react";
 import { useMemo, useState } from "react";
 import {
   calculate,
@@ -70,7 +71,7 @@ function Index() {
             </div>
             <DepthInput label={type === "single" ? "Dörrdjup" : "Dörrdjup utsida"} value={outside} onChange={setOutside} />
             {type === "double" && <DepthInput label="Dörrdjup insida" value={inside} onChange={setInside} />}
-            <p className="text-xs text-muted-foreground">Avstånd från låshusets referenspunkt till dörrbladets yta.</p>
+            <p className="text-xs text-foreground">Avstånd från låshusets referenspunkt till dörrbladets yta.</p>
           </Panel>
 
           <Panel title="Förlängare i lager">
@@ -93,7 +94,7 @@ function Index() {
 function Panel({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <div className="space-y-3 rounded-xl border bg-card p-4 shadow-card">
-      <h2 className="text-sm font-bold uppercase tracking-wide text-muted-foreground">{title}</h2>
+      <h2 className="text-sm font-bold uppercase tracking-wide text-foreground">{title}</h2>
       {children}
     </div>
   );
@@ -125,9 +126,14 @@ function ChipGroup({ values, selected, onToggle }: { values: number[]; selected:
         return (
           <label
             key={v}
-            className={`flex cursor-pointer items-center gap-2 rounded-lg border px-3 py-2 font-mono text-sm font-bold transition ${on ? "border-primary bg-primary text-primary-foreground" : "bg-card text-muted-foreground line-through"}`}
+            className={`flex cursor-pointer items-center gap-2 rounded-lg border px-3 py-2 font-mono text-sm font-bold text-foreground transition has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-ring ${on ? "border-success bg-success-soft" : "border-input bg-card line-through"}`}
           >
-            <input type="checkbox" checked={on} onChange={() => onToggle(v)} className="accent-accent" />
+            <input type="checkbox" checked={on} onChange={() => onToggle(v)} className="sr-only" />
+            {on ? (
+              <Check className="h-4 w-4 shrink-0 text-success" strokeWidth={3} aria-hidden />
+            ) : (
+              <span className="h-4 w-4 shrink-0 rounded border-2 border-foreground/30" aria-hidden />
+            )}
             {formatMm(v)}
           </label>
         );
