@@ -17,9 +17,9 @@ import {
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Cylinderkalkylatorn – förlängare och ringar för låssmeder" },
+      { title: "Cylinderkalkylator – förlängare och ringar för låssmeder" },
       { name: "description", content: "Räkna fram rätt kombination av cylinderförlängare och cylinderringar, för enkel- och dubbelcylinder." },
-      { property: "og:title", content: "Cylinderkalkylatorn" },
+      { property: "og:title", content: "Cylinderkalkylator" },
       { property: "og:description", content: "Exakt beräkning av cylinderförlängare och ringar för låssmeder." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
@@ -48,7 +48,7 @@ function Index() {
       <header className="bg-primary text-primary-foreground">
         <div className="mx-auto max-w-5xl px-4 py-6 sm:py-8">
           <p className="font-mono text-xs uppercase tracking-widest text-accent">Låssmedsverktyg</p>
-          <h1 className="mt-1 text-3xl font-extrabold tracking-tight sm:text-4xl">Cylinderkalkylatorn</h1>
+          <h1 className="mt-1 text-3xl font-extrabold tracking-tight sm:text-4xl">Cylinderkalkylator</h1>
           <p className="mt-2 max-w-xl text-sm opacity-80">
             Standardcylinder {STANDARD_CYLINDER_MM} mm. Godkänd avvikelse −1 till +2 mm.
           </p>
