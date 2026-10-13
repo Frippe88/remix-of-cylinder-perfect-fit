@@ -120,7 +120,7 @@ function Index() {
               ))}
             </div>
             <p className="text-xs text-muted-foreground">
-              Enkelcylinder = nyckel bara på utsidan. Dubbelcylinder = nyckel på både utsida och insida.
+              Enkelcylinder = cylinder bara på ena sidan, utsidan eller insidan. Dubbelcylinder = cylinder på både utsida och insida.
             </p>
             <DepthInput label={type === "single" ? "Dörrdjup" : "Dörrdjup utsida"} value={outside} onChange={setOutside} />
             {type === "double" && <DepthInput label="Dörrdjup insida" value={inside} onChange={setInside} />}
