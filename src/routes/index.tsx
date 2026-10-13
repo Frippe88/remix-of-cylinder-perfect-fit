@@ -119,9 +119,12 @@ function Index() {
                 </button>
               ))}
             </div>
-            <p className="text-xs text-muted-foreground">
-              Enkelcylinder = cylinder bara på ena sidan, utsidan eller insidan. Dubbelcylinder = cylinder på både utsida och insida.
-            </p>
+            <div className="grid grid-cols-[auto_1fr] items-baseline gap-x-3 gap-y-1 text-xs">
+              <span className="font-semibold text-foreground">Enkelcylinder</span>
+              <span className="text-muted-foreground">Cylinder på utsida eller insida</span>
+              <span className="font-semibold text-foreground">Dubbelcylinder</span>
+              <span className="text-muted-foreground">Cylinder på både utsida och insida</span>
+            </div>
             <DepthInput label={type === "single" ? "Dörrdjup" : "Dörrdjup utsida"} value={outside} onChange={setOutside} />
             {type === "double" && <DepthInput label="Dörrdjup insida" value={inside} onChange={setInside} />}
             <p className="text-xs text-foreground">Avstånd från låshusets referenspunkt till dörrbladets yta.</p>
