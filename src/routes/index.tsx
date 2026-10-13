@@ -46,7 +46,7 @@ const CYLINDER_OPTIONS = [
     id: "iloq" as const,
     name: "iLOQ-cylinder",
     mm: ILOQ_CYLINDER_MM,
-    hint: "Elektronisk cylinder utan vanligt nyckelhål. Öppnas med kod, bricka eller en nyckel utan tänder.",
+    hint: "Elektronisk cylinder utan vanligt nyckelhål.",
   },
 ];
 
