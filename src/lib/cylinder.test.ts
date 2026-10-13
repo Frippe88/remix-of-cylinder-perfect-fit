@@ -23,13 +23,13 @@ describe("toleranser", () => {
   it("gränsvärden −1 och +2 accepteras, −1,5 och +2,5 inte", () => {
     const r = calculate({ depth: 26, extenders: [], rings: [6] }); // 31-26-6 = -1
     expect(r.map((c) => c.deviation)).toEqual([-1]);
-    expect(calculate({ depth: 23, extenders: [], rings: [6] })[0].deviation).toBe(2);
+    expect(calculate({ depth: 23, extenders: [], rings: [6] })[0]!.deviation).toBe(2);
     expect(calculate({ depth: 26.5, extenders: [], rings: [6] })).toEqual([]);
     expect(calculate({ depth: 22.5, extenders: [], rings: [6] })).toEqual([]);
   });
   it("exakt 0 sorteras först", () => {
     const r = calculate({ depth: 20, ...all });
-    expect(r[0].deviation).toBe(0);
+    expect(r[0]!.deviation).toBe(0);
   });
   it("är deterministisk", () => {
     expect(calculate({ depth: 33, ...all })).toEqual(calculate({ depth: 33, ...all }));
@@ -78,6 +78,6 @@ describe("alternativa kombinationer", () => {
     const fewer = filterByMode(list, "fewer");
     const minExact = Math.min(...filterByMode(list, "exact").map((c) => c.extenderCount));
     expect(fewer.length).toBeGreaterThan(0);
-    expect(fewer[0].extenderCount).toBeLessThanOrEqual(minExact);
+    expect(fewer[0]!.extenderCount).toBeLessThanOrEqual(minExact);
   });
 });
