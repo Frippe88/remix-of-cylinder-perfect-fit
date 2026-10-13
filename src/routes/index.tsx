@@ -12,6 +12,9 @@ import {
   ILOQ_RING_HEIGHTS,
   STANDARD_CYLINDER_MM,
   ILOQ_CYLINDER_MM,
+  ROUND_CYLINDER_MM,
+  ROUND_EXTENDER_SIZES,
+  ROUND_RING_HEIGHTS,
   type Combination,
   type ViewMode,
 } from "@/lib/cylinder";
@@ -43,6 +46,12 @@ const CYLINDER_OPTIONS = [
     hint: "Vanlig nyckelcylinder med oval profil, kallas också euro- eller systemcylinder. Öppnas med en nyckel med tandat blad.",
   },
   {
+    id: "round" as const,
+    name: "Rund cylinder",
+    mm: ROUND_CYLINDER_MM,
+    hint: "Cylinder med rund profil. Använder egna ringar (8 och 13 mm) och 10 mm förlängare.",
+  },
+  {
     id: "iloq" as const,
     name: "iLOQ-cylinder",
     mm: ILOQ_CYLINDER_MM,
@@ -50,26 +59,34 @@ const CYLINDER_OPTIONS = [
   },
 ];
 
-
+type Cyl = "standard" | "round" | "iloq";
 
 function Index() {
   const [type, setType] = useState<"single" | "double">("single");
-  const [cyl, setCyl] = useState<"standard" | "iloq">("standard");
+  const [cyl, setCyl] = useState<Cyl>("standard");
   const [outside, setOutside] = useState("");
   const [inside, setInside] = useState("");
-  const [ext, setExt] = useState<number[]>([...EXTENDER_SIZES]);
+  const [stdExt, setStdExt] = useState<number[]>([...EXTENDER_SIZES]);
   const [rings, setRings] = useState<number[]>([...RING_HEIGHTS]);
+  const [roundExt, setRoundExt] = useState<number[]>([...ROUND_EXTENDER_SIZES]);
+  const [roundRings, setRoundRings] = useState<number[]>([...ROUND_RING_HEIGHTS]);
 
-  const baseMm = cyl === "iloq" ? ILOQ_CYLINDER_MM : STANDARD_CYLINDER_MM;
-  const ringValues = cyl === "iloq" ? [...RING_HEIGHTS, ...ILOQ_RING_HEIGHTS] : [...RING_HEIGHTS];
+  const isRound = cyl === "round";
+  const baseMm = cyl === "iloq" ? ILOQ_CYLINDER_MM : isRound ? ROUND_CYLINDER_MM : STANDARD_CYLINDER_MM;
+  const ringValues = isRound ? [...ROUND_RING_HEIGHTS] : cyl === "iloq" ? [...RING_HEIGHTS, ...ILOQ_RING_HEIGHTS] : [...RING_HEIGHTS];
+  const extValues = isRound ? [...ROUND_EXTENDER_SIZES] : [...EXTENDER_SIZES];
+  const ext = isRound ? roundExt : stdExt;
+  const setExt = isRound ? setRoundExt : setStdExt;
+  const activeRings = isRound ? roundRings : rings;
+  const setActiveRings = isRound ? setRoundRings : setRings;
 
   const toggle = (list: number[], set: (v: number[]) => void, v: number) =>
     set(list.includes(v) ? list.filter((x) => x !== v) : [...list, v]);
 
-  const switchCyl = (c: "standard" | "iloq") => {
+  const switchCyl = (c: Cyl) => {
     setCyl(c);
     if (c === "standard") setRings((r) => r.filter((v) => !(ILOQ_RING_HEIGHTS as readonly number[]).includes(v)));
-    else setRings((r) => [...new Set([...r, ...ILOQ_RING_HEIGHTS])]);
+    else if (c === "iloq") setRings((r) => [...new Set([...r, ...ILOQ_RING_HEIGHTS])]);
   };
 
   return (
@@ -128,16 +145,16 @@ function Index() {
           </Panel>
 
           <Panel title="Förlängare i lager">
-            <ChipGroup values={[...EXTENDER_SIZES]} selected={ext} onToggle={(v) => toggle(ext, setExt, v)} />
+            <ChipGroup values={extValues} selected={ext} onToggle={(v) => toggle(ext, setExt, v)} />
           </Panel>
           <Panel title="Ringhöjder i lager">
-            <ChipGroup values={ringValues} selected={rings} onToggle={(v) => toggle(rings, setRings, v)} />
+            <ChipGroup values={ringValues} selected={activeRings} onToggle={(v) => toggle(activeRings, setActiveRings, v)} />
           </Panel>
         </section>
 
         <section className="space-y-8">
-          <Side title={type === "single" ? null : "Utsida"} depth={parse(outside)} ext={ext} rings={rings} baseMm={baseMm} />
-          {type === "double" && <Side title="Insida" depth={parse(inside)} ext={ext} rings={rings} baseMm={baseMm} />}
+          <Side title={type === "single" ? null : "Utsida"} depth={parse(outside)} ext={ext} rings={activeRings} baseMm={baseMm} />
+          {type === "double" && <Side title="Insida" depth={parse(inside)} ext={ext} rings={activeRings} baseMm={baseMm} />}
         </section>
       </main>
     </div>
