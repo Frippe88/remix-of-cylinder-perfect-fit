@@ -88,7 +88,7 @@ function Index() {
         <section className="space-y-5">
           <Panel title="Mätning">
             <p className="text-xs text-muted-foreground">
-              Välj den cylinder du faktiskt ska sätta in. Har den ett vanligt nyckelhål är det nästan alltid den ovala.
+              Välj den cylinder du ska sätta in. iLOQ gäller bara om cylindern eller låset är märkt iLOQ – annars är det den ovala.
             </p>
             <div className="space-y-2">
               {CYLINDER_OPTIONS.map((o) => (
