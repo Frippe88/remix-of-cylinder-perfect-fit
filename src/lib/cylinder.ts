@@ -1,4 +1,4 @@
-// Ren, deterministisk beräkningslogik för Cylinderkalkylatorn.
+// Ren, deterministisk beräkningslogik för Cylinderkalkylator.
 export const STANDARD_CYLINDER_MM = 31;
 export const EXTENDER_SIZES = [8, 10, 12.5] as const;
 export const RING_HEIGHTS = [6, 8, 11, 13, 16, 18, 21] as const;
