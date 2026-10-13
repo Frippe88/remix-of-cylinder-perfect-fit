@@ -70,14 +70,24 @@ function Index() {
       <main className="mx-auto grid max-w-5xl gap-6 px-4 py-6 lg:grid-cols-[340px_1fr]">
         <section className="space-y-5">
           <Panel title="Mätning">
-            <div className="grid grid-cols-2 gap-1 rounded-lg bg-muted p-1">
-              {(["standard", "iloq"] as const).map((c) => (
+            <p className="text-xs text-muted-foreground">
+              Välj den cylinder du faktiskt ska sätta in. Har den ett vanligt nyckelhål är det nästan alltid den ovala.
+            </p>
+            <div className="space-y-2">
+              {CYLINDER_OPTIONS.map((o) => (
                 <button
-                  key={c}
-                  onClick={() => switchCyl(c)}
-                  className={`rounded-md py-2 text-sm font-semibold transition ${cyl === c ? "bg-card shadow-card" : "text-muted-foreground"}`}
+                  key={o.id}
+                  onClick={() => switchCyl(o.id)}
+                  aria-pressed={cyl === o.id}
+                  className={`w-full rounded-lg border p-3 text-left transition ${cyl === o.id ? "border-primary bg-primary/5 shadow-card" : "border-input bg-card hover:bg-muted"}`}
                 >
-                  {c === "standard" ? `Standard ${STANDARD_CYLINDER_MM} mm` : `iLOQ ${ILOQ_CYLINDER_MM} mm`}
+                  <span className="flex items-center justify-between gap-3">
+                    <span className="text-sm font-bold">{o.name}</span>
+                    <span className={`shrink-0 rounded-md px-2 py-0.5 font-mono text-xs font-bold ${cyl === o.id ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground"}`}>
+                      {o.mm} mm
+                    </span>
+                  </span>
+                  <span className="mt-1 block text-xs leading-snug text-muted-foreground">{o.hint}</span>
                 </button>
               ))}
             </div>
