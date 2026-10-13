@@ -113,3 +113,14 @@ describe("alternativa kombinationer", () => {
     expect(fewer[0]!.extenderCount).toBeLessThanOrEqual(minExact);
   });
 });
+
+describe("rund cylinder", () => {
+  it("använder 30 mm, ringar 8/13 och 10 mm förlängare", () => {
+    // 30 + 10 - 27 - 13 = 0
+    expect(calculate({ depth: 27, extenders: [10], rings: [8, 13], baseMm: 30 })[0]!.deviation).toBe(0);
+    for (const c of calculate({ depth: 33.5, extenders: [10], rings: [8, 13], baseMm: 30 })) {
+      expect([8, 13]).toContain(c.ring);
+      expect(c.extenders.every((e) => e === 10)).toBe(true);
+    }
+  });
+});

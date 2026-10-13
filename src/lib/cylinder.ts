@@ -4,6 +4,9 @@ export const ILOQ_CYLINDER_MM = 40;
 export const EXTENDER_SIZES = [8, 10, 12.5] as const;
 export const RING_HEIGHTS = [6, 8, 11, 13, 16, 18, 21] as const;
 export const ILOQ_RING_HEIGHTS = [27, 30, 33] as const;
+export const ROUND_CYLINDER_MM = 30;
+export const ROUND_EXTENDER_SIZES = [10] as const;
+export const ROUND_RING_HEIGHTS = [8, 13] as const; // endast för runda cylindrar
 export const TOLERANCE_MIN = -1;
 export const TOLERANCE_MAX = 2;
 
