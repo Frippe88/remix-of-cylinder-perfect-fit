@@ -65,6 +65,38 @@ describe("dubbelcylinder", () => {
   });
 });
 
+describe("iLOQ-cylinder", () => {
+  const iloq = { extenders: [...EXTENDER_SIZES], rings: [...RING_HEIGHTS, ...ILOQ_RING_HEIGHTS], baseMm: ILOQ_CYLINDER_MM };
+  it("använder 40 mm som cylinderlängd", () => {
+    // djup 29, ring 11, inga förlängare: 40-29-11 = 0
+    const r = calculate({ depth: 29, extenders: [], rings: [11], baseMm: ILOQ_CYLINDER_MM });
+    expect(r[0]!.deviation).toBe(0);
+    expect(deviationOf(29, 0, 11, ILOQ_CYLINDER_MM)).toBe(0);
+  });
+  it("stödjer ringhöjderna 27, 30 och 33 mm", () => {
+    // djup 40: ring 27 + 12,5+8 = 40+20,5-40-27 = -6,5... kontrollera istället exakta träffar per ring
+    for (const ring of ILOQ_RING_HEIGHTS) {
+      // 40 + 0 - djup - ring = 0 => djup = 40 - ring
+      const r = calculate({ depth: ILOQ_CYLINDER_MM - ring, extenders: [], rings: [ring], baseMm: ILOQ_CYLINDER_MM });
+      expect(r[0]!.deviation).toBe(0);
+    }
+  });
+  it("alla iLOQ-resultat ligger inom tolerans", () => {
+    for (let d = 0; d <= 80; d += 0.5) {
+      for (const c of calculate({ depth: d, ...iloq })) {
+        expect(c.deviation).toBeGreaterThanOrEqual(-1);
+        expect(c.deviation).toBeLessThanOrEqual(2);
+        expect(c.deviation).toBe(deviationOf(d, c.totalExtension, c.ring, ILOQ_CYLINDER_MM));
+      }
+    }
+  });
+  it("samma djup ger olika resultat för standard och iLOQ", () => {
+    const std = calculate({ depth: 35, ...all });
+    const iq = calculate({ depth: 35, ...iloq });
+    expect(std).not.toEqual(iq);
+  });
+});
+
 describe("alternativa kombinationer", () => {
   it("visar flera kombinationer med samma passform", () => {
     // djup 36: 8+10 med ring 13 = 0, och 10+12,5... kontrollera flera exakta
