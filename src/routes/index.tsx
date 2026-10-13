@@ -120,7 +120,7 @@ function Index() {
               ))}
             </div>
             <p className="text-xs text-muted-foreground">
-              Enkelcylinder = cylinder bara på ena sidan, utsidan eller insidan. Dubbelcylinder = cylinder på både utsida och insida.
+              {type === "single" ? "Cylinder på utsida eller insida." : "Cylinder på både utsida och insida."}
             </p>
             <DepthInput label={type === "single" ? "Dörrdjup" : "Dörrdjup utsida"} value={outside} onChange={setOutside} />
             {type === "double" && <DepthInput label="Dörrdjup insida" value={inside} onChange={setInside} />}
