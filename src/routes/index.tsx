@@ -161,7 +161,7 @@ function Side({ title, depth, ext, rings }: { title: string | null; depth: numbe
         <>
           <div>
             <p className="mb-2 font-mono text-xs uppercase tracking-widest text-muted-foreground">Bästa rekommendation</p>
-            <ResultCard c={results[0]} best />
+            <ResultCard c={results[0]!} best />
           </div>
           <div className="flex gap-1 overflow-x-auto rounded-lg bg-muted p-1">
             {MODES.map((m) => (

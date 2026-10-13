@@ -54,9 +54,10 @@ export function calculate({ depth, extenders, rings }: CalcInput): Combination[]
       sets.push([...cur]);
       return;
     }
-    for (let n = 0; n * sizes[i] <= remaining; n++) {
-      for (let k = 0; k < n; k++) cur.push(sizes[i]);
-      walk(i + 1, remaining - n * sizes[i], cur);
+    for (let n = 0; n * sizes[i]! <= remaining; n++) {
+      const s = sizes[i]!;
+      for (let k = 0; k < n; k++) cur.push(s);
+      walk(i + 1, remaining - n * s, cur);
       for (let k = 0; k < n; k++) cur.pop();
     }
   };
