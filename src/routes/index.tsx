@@ -62,7 +62,7 @@ function Index() {
           <p className="font-mono text-xs uppercase tracking-widest text-accent">Låssmedsverktyg</p>
           <h1 className="mt-1 text-3xl font-extrabold tracking-tight sm:text-4xl">Cylinderkalkylator</h1>
           <p className="mt-2 max-w-xl text-sm opacity-80">
-            {cyl === "iloq" ? `iLOQ-cylinder ${ILOQ_CYLINDER_MM} mm` : `Standardcylinder ${STANDARD_CYLINDER_MM} mm`}. Godkänd avvikelse −1 till +2 mm.
+            Godkänd avvikelse −1 till +2 mm.
           </p>
         </div>
       </header>
