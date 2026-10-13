@@ -9,7 +9,9 @@ import {
   formatSigned,
   EXTENDER_SIZES,
   RING_HEIGHTS,
+  ILOQ_RING_HEIGHTS,
   STANDARD_CYLINDER_MM,
+  ILOQ_CYLINDER_MM,
   type Combination,
   type ViewMode,
 } from "@/lib/cylinder";
@@ -35,13 +37,23 @@ const parse = (v: string) => {
 
 function Index() {
   const [type, setType] = useState<"single" | "double">("single");
+  const [cyl, setCyl] = useState<"standard" | "iloq">("standard");
   const [outside, setOutside] = useState("");
   const [inside, setInside] = useState("");
   const [ext, setExt] = useState<number[]>([...EXTENDER_SIZES]);
   const [rings, setRings] = useState<number[]>([...RING_HEIGHTS]);
 
+  const baseMm = cyl === "iloq" ? ILOQ_CYLINDER_MM : STANDARD_CYLINDER_MM;
+  const ringValues = cyl === "iloq" ? [...RING_HEIGHTS, ...ILOQ_RING_HEIGHTS] : [...RING_HEIGHTS];
+
   const toggle = (list: number[], set: (v: number[]) => void, v: number) =>
     set(list.includes(v) ? list.filter((x) => x !== v) : [...list, v]);
+
+  const switchCyl = (c: "standard" | "iloq") => {
+    setCyl(c);
+    if (c === "standard") setRings((r) => r.filter((v) => !(ILOQ_RING_HEIGHTS as readonly number[]).includes(v)));
+    else setRings((r) => [...new Set([...r, ...ILOQ_RING_HEIGHTS])]);
+  };
 
   return (
     <div className="min-h-screen">
@@ -50,7 +62,7 @@ function Index() {
           <p className="font-mono text-xs uppercase tracking-widest text-accent">Låssmedsverktyg</p>
           <h1 className="mt-1 text-3xl font-extrabold tracking-tight sm:text-4xl">Cylinderkalkylator</h1>
           <p className="mt-2 max-w-xl text-sm opacity-80">
-            Standardcylinder {STANDARD_CYLINDER_MM} mm. Godkänd avvikelse −1 till +2 mm.
+            {cyl === "iloq" ? `iLOQ-cylinder ${ILOQ_CYLINDER_MM} mm` : `Standardcylinder ${STANDARD_CYLINDER_MM} mm`}. Godkänd avvikelse −1 till +2 mm.
           </p>
         </div>
       </header>
@@ -58,6 +70,17 @@ function Index() {
       <main className="mx-auto grid max-w-5xl gap-6 px-4 py-6 lg:grid-cols-[340px_1fr]">
         <section className="space-y-5">
           <Panel title="Mätning">
+            <div className="grid grid-cols-2 gap-1 rounded-lg bg-muted p-1">
+              {(["standard", "iloq"] as const).map((c) => (
+                <button
+                  key={c}
+                  onClick={() => switchCyl(c)}
+                  className={`rounded-md py-2 text-sm font-semibold transition ${cyl === c ? "bg-card shadow-card" : "text-muted-foreground"}`}
+                >
+                  {c === "standard" ? `Standard ${STANDARD_CYLINDER_MM} mm` : `iLOQ ${ILOQ_CYLINDER_MM} mm`}
+                </button>
+              ))}
+            </div>
             <div className="grid grid-cols-2 gap-1 rounded-lg bg-muted p-1">
               {(["single", "double"] as const).map((t) => (
                 <button
@@ -78,13 +101,13 @@ function Index() {
             <ChipGroup values={[...EXTENDER_SIZES]} selected={ext} onToggle={(v) => toggle(ext, setExt, v)} />
           </Panel>
           <Panel title="Ringhöjder i lager">
-            <ChipGroup values={[...RING_HEIGHTS]} selected={rings} onToggle={(v) => toggle(rings, setRings, v)} />
+            <ChipGroup values={ringValues} selected={rings} onToggle={(v) => toggle(rings, setRings, v)} />
           </Panel>
         </section>
 
         <section className="space-y-8">
-          <Side title={type === "single" ? null : "Utsida"} depth={parse(outside)} ext={ext} rings={rings} />
-          {type === "double" && <Side title="Insida" depth={parse(inside)} ext={ext} rings={rings} />}
+          <Side title={type === "single" ? null : "Utsida"} depth={parse(outside)} ext={ext} rings={rings} baseMm={baseMm} />
+          {type === "double" && <Side title="Insida" depth={parse(inside)} ext={ext} rings={rings} baseMm={baseMm} />}
         </section>
       </main>
     </div>
@@ -148,9 +171,9 @@ const MODES: { id: ViewMode; label: string }[] = [
   { id: "fewer", label: "Färre förlängare" },
 ];
 
-function Side({ title, depth, ext, rings }: { title: string | null; depth: number | null; ext: number[]; rings: number[] }) {
+function Side({ title, depth, ext, rings, baseMm }: { title: string | null; depth: number | null; ext: number[]; rings: number[]; baseMm: number }) {
   const [mode, setMode] = useState<ViewMode>("all");
-  const results = useMemo(() => (depth === null ? [] : calculate({ depth, extenders: ext, rings })), [depth, ext, rings]);
+  const results = useMemo(() => (depth === null ? [] : calculate({ depth, extenders: ext, rings, baseMm })), [depth, ext, rings, baseMm]);
   const shown = filterByMode(results, mode);
 
   return (
