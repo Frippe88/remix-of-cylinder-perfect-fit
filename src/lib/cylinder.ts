@@ -1,7 +1,9 @@
 // Ren, deterministisk beräkningslogik för Cylinderkalkylator.
 export const STANDARD_CYLINDER_MM = 31;
+export const ILOQ_CYLINDER_MM = 40;
 export const EXTENDER_SIZES = [8, 10, 12.5] as const;
 export const RING_HEIGHTS = [6, 8, 11, 13, 16, 18, 21] as const;
+export const ILOQ_RING_HEIGHTS = [27, 30, 33] as const;
 export const TOLERANCE_MIN = -1;
 export const TOLERANCE_MAX = 2;
 
@@ -17,14 +19,15 @@ export interface CalcInput {
   depth: number;
   extenders: number[];
   rings: number[];
+  baseMm?: number; // cylinderlängd, standard 31 mm (iLOQ 40 mm)
 }
 
 // Arbeta i tiondels millimeter för att undvika flyttalsfel.
 const toT = (mm: number) => Math.round(mm * 10);
 const fromT = (t: number) => t / 10;
 
-export function deviationOf(depth: number, totalExtension: number, ring: number): number {
-  return fromT(toT(STANDARD_CYLINDER_MM) + toT(totalExtension) - toT(depth) - toT(ring));
+export function deviationOf(depth: number, totalExtension: number, ring: number, baseMm = STANDARD_CYLINDER_MM): number {
+  return fromT(toT(baseMm) + toT(totalExtension) - toT(depth) - toT(ring));
 }
 
 export function compareCombinations(a: Combination, b: Combination): number {
@@ -38,12 +41,12 @@ export function compareCombinations(a: Combination, b: Combination): number {
   return a.extenders.join(",").localeCompare(b.extenders.join(","));
 }
 
-export function calculate({ depth, extenders, rings }: CalcInput): Combination[] {
+export function calculate({ depth, extenders, rings, baseMm = STANDARD_CYLINDER_MM }: CalcInput): Combination[] {
   if (!Number.isFinite(depth) || depth < 0) return [];
   const sizes = [...new Set(extenders.map(toT))].filter((s) => s > 0).sort((a, b) => b - a);
   const ringT = [...new Set(rings.map(toT))].filter((r) => r > 0);
   if (ringT.length === 0) return [];
-  const base = toT(STANDARD_CYLINDER_MM) - toT(depth);
+  const base = toT(baseMm) - toT(depth);
   const maxExt = Math.max(...ringT) + toT(TOLERANCE_MAX) - base;
   if (maxExt < 0) return [];
 
