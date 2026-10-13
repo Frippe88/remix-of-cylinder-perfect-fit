@@ -35,6 +35,23 @@ const parse = (v: string) => {
   return Number.isFinite(n) && n >= 0 ? n : null;
 };
 
+const CYLINDER_OPTIONS = [
+  {
+    id: "standard" as const,
+    name: "Oval cylinder",
+    mm: STANDARD_CYLINDER_MM,
+    hint: "Vanlig nyckelcylinder med oval profil, kallas också euro- eller systemcylinder. Öppnas med en nyckel med tandat blad.",
+  },
+  {
+    id: "iloq" as const,
+    name: "iLOQ-cylinder",
+    mm: ILOQ_CYLINDER_MM,
+    hint: "Elektronisk cylinder utan vanligt nyckelhål. Öppnas med kod, bricka eller en nyckel utan tänder.",
+  },
+];
+
+
+
 function Index() {
   const [type, setType] = useState<"single" | "double">("single");
   const [cyl, setCyl] = useState<"standard" | "iloq">("standard");
