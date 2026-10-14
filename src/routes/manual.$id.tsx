@@ -31,6 +31,25 @@ export const Route = createFileRoute("/manual/$id")({
   component: ManualPage,
 });
 
+// Laddar ner via samma anrop som visaren använder (fungerar även i förhandsvisning/webbvy där en ny flik saknar åtkomst).
+async function downloadPdf(url: string, filename: string) {
+  try {
+    const res = await fetch(url);
+    if (!res.ok) throw new Error(String(res.status));
+    const blob = new Blob([await res.arrayBuffer()], { type: "application/pdf" });
+    const href = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = href;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(() => URL.revokeObjectURL(href), 60_000);
+  } catch {
+    window.location.href = `${url}?download=1`;
+  }
+}
+
 function ManualPage() {
   const { lock } = Route.useLoaderData();
   const pdfUrl = `/api/public/manual/${lock.id}`;
@@ -93,7 +112,14 @@ function ManualPage() {
             <ArrowLeft className="h-4 w-4" /> Låshus
           </Link>
           <p className="truncate text-sm font-bold">Manual {lock.model}</p>
-          <a href={`${pdfUrl}?download=1`} download={`${lock.model}-manual.pdf`} target="_blank" rel="noopener" className="flex items-center gap-1 text-sm font-semibold text-primary">
+          <a
+            href={`${pdfUrl}?download=1`}
+            onClick={(e) => {
+              e.preventDefault();
+              void downloadPdf(pdfUrl, `${lock.model.replace(/[^\w-]+/g, "-")}-manual.pdf`);
+            }}
+            className="flex items-center gap-1 text-sm font-semibold text-primary"
+          >
             <Download className="h-4 w-4" /> Ladda ner
           </a>
         </div>
