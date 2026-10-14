@@ -153,8 +153,8 @@ function Index() {
         </section>
 
         <section className="space-y-8">
-          <Side title={type === "single" ? null : "Utsida"} depth={parse(outside)} ext={ext} rings={activeRings} baseMm={baseMm} />
-          {type === "double" && <Side title="Insida" depth={parse(inside)} ext={ext} rings={activeRings} baseMm={baseMm} />}
+          <Side title={type === "single" ? null : "Utsida"} depth={parse(outside)} ext={ext} rings={activeRings} baseMm={baseMm} relaxed={isRound} />
+          {type === "double" && <Side title="Insida" depth={parse(inside)} ext={ext} rings={activeRings} baseMm={baseMm} relaxed={isRound} />}
         </section>
       </main>
     </div>
@@ -218,9 +218,9 @@ const MODES: { id: ViewMode; label: string }[] = [
   { id: "fewer", label: "Färre förlängare" },
 ];
 
-function Side({ title, depth, ext, rings, baseMm }: { title: string | null; depth: number | null; ext: number[]; rings: number[]; baseMm: number }) {
+function Side({ title, depth, ext, rings, baseMm, relaxed = false }: { title: string | null; depth: number | null; ext: number[]; rings: number[]; baseMm: number; relaxed?: boolean }) {
   const [mode, setMode] = useState<ViewMode>("all");
-  const results = useMemo(() => (depth === null ? [] : calculate({ depth, extenders: ext, rings, baseMm })), [depth, ext, rings, baseMm]);
+  const results = useMemo(() => (depth === null ? [] : calculate({ depth, extenders: ext, rings, baseMm, relaxed })), [depth, ext, rings, baseMm, relaxed]);
   const shown = filterByMode(results, mode);
 
   return (
