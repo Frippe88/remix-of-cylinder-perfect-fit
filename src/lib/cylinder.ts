@@ -23,6 +23,7 @@ export interface CalcInput {
   extenders: number[];
   rings: number[];
   baseMm?: number; // cylinderlängd, standard 31 mm (iLOQ 40 mm)
+  relaxed?: boolean; // true = ge alltid bästa resultat även utanför toleransen (rund cylinder)
 }
 
 // Arbeta i tiondels millimeter för att undvika flyttalsfel.
