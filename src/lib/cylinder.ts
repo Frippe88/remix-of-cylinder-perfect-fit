@@ -45,13 +45,27 @@ export function compareCombinations(a: Combination, b: Combination): number {
   return a.extenders.join(",").localeCompare(b.extenders.join(","));
 }
 
-export function calculate({ depth, extenders, rings, baseMm = STANDARD_CYLINDER_MM }: CalcInput): Combination[] {
+export function calculate(input: CalcInput): Combination[] {
+  const { depth, extenders, rings, baseMm = STANDARD_CYLINDER_MM, relaxed = false } = input;
   if (!Number.isFinite(depth) || depth < 0) return [];
   const sizes = [...new Set(extenders.map(toT))].filter((s) => s > 0).sort((a, b) => b - a);
   const ringT = [...new Set(rings.map(toT))].filter((r) => r > 0);
   if (ringT.length === 0) return [];
   const base = toT(baseMm) - toT(depth);
-  const maxExt = Math.max(...ringT) + toT(TOLERANCE_MAX) - base;
+
+  // relaxed: hitta alltid bästa möjliga, även om avvikelsen överstiger TOLERANCE_MAX.
+  // Öka taket stegvis tills minst en kombination hittas (nedre gräns −1 gäller fortfarande).
+  let cap = toT(TOLERANCE_MAX);
+  for (;;) {
+    const out = calculateWithCap(sizes, ringT, base, cap);
+    if (out.length > 0 || !relaxed) return out;
+    if (cap > toT(200)) return out; // säkerhetsgräns
+    cap += toT(2);
+  }
+}
+
+function calculateWithCap(sizes: number[], ringT: number[], base: number, cap: number): Combination[] {
+  const maxExt = Math.max(...ringT) + cap - base;
   if (maxExt < 0) return [];
 
   // Alla multimängder av förlängare med total längd <= maxExt.
