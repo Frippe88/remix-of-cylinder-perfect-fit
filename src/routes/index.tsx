@@ -1,12 +1,9 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Check } from "lucide-react";
-import { useMemo, useState } from "react";
+import { useState } from "react";
+import { CylinderResults } from "@/components/cylinder-results";
 import {
-  calculate,
-  filterByMode,
-  describeDeviation,
   formatMm,
-  formatSigned,
   EXTENDER_SIZES,
   RING_HEIGHTS,
   ILOQ_RING_HEIGHTS,
@@ -15,8 +12,6 @@ import {
   ROUND_CYLINDER_MM,
   ROUND_EXTENDER_SIZES,
   ROUND_RING_HEIGHTS,
-  type Combination,
-  type ViewMode,
 } from "@/lib/cylinder";
 
 export const Route = createFileRoute("/")({
@@ -152,9 +147,9 @@ function Index() {
           </Panel>
         </section>
 
-        <section className="space-y-8">
-          <Side title={type === "single" ? null : "Utsida"} depth={parse(outside)} ext={ext} rings={activeRings} baseMm={baseMm} relaxed={isRound} />
-          {type === "double" && <Side title="Insida" depth={parse(inside)} ext={ext} rings={activeRings} baseMm={baseMm} relaxed={isRound} />}
+        <section className="min-w-0 space-y-7">
+          <CylinderResults title={type === "single" ? null : "Utsida"} depth={parse(outside)} ext={ext} rings={activeRings} baseMm={baseMm} relaxed={isRound} />
+          {type === "double" && <CylinderResults title="Insida" depth={parse(inside)} ext={ext} rings={activeRings} baseMm={baseMm} relaxed={isRound} />}
         </section>
       </main>
     </div>
@@ -212,84 +207,3 @@ function ChipGroup({ values, selected, onToggle }: { values: number[]; selected:
   );
 }
 
-const MODES: { id: ViewMode; label: string }[] = [
-  { id: "exact", label: "Exakt 0 mm" },
-  { id: "all", label: "Alla godkända" },
-  { id: "fewer", label: "Färre förlängare" },
-];
-
-function Side({ title, depth, ext, rings, baseMm, relaxed = false }: { title: string | null; depth: number | null; ext: number[]; rings: number[]; baseMm: number; relaxed?: boolean }) {
-  const [mode, setMode] = useState<ViewMode>("all");
-  const results = useMemo(() => (depth === null ? [] : calculate({ depth, extenders: ext, rings, baseMm, relaxed })), [depth, ext, rings, baseMm, relaxed]);
-  const shown = filterByMode(results, mode);
-
-  return (
-    <div className="space-y-4">
-      {title && <h2 className="text-xl font-extrabold">{title}</h2>}
-      {depth === null ? (
-        <div className="rounded-xl border border-dashed p-6 text-center text-sm text-muted-foreground">Ange dörrdjup för att se resultat.</div>
-      ) : results.length === 0 ? (
-        <div className="rounded-xl border border-destructive/40 bg-card p-5">
-          <p className="font-bold text-destructive">Ingen godkänd lösning hittades för {formatMm(depth)}.</p>
-          <p className="mt-1 text-sm text-muted-foreground">Kontrollera vilka förlängare och ringar som är markerade som i lager, och mät dörrdjupet igen.</p>
-        </div>
-      ) : (
-        <>
-          <div>
-            <p className="mb-2 font-mono text-xs uppercase tracking-widest text-muted-foreground">Bästa rekommendation</p>
-            <ResultCard c={results[0]!} best />
-          </div>
-          <div className="flex gap-1 overflow-x-auto rounded-lg bg-muted p-1">
-            {MODES.map((m) => (
-              <button
-                key={m.id}
-                onClick={() => setMode(m.id)}
-                className={`flex-1 whitespace-nowrap rounded-md px-3 py-2 text-sm font-semibold ${mode === m.id ? "bg-card shadow-card" : "text-muted-foreground"}`}
-              >
-                {m.label} <span className="font-mono text-xs opacity-60">{filterByMode(results, m.id).length}</span>
-              </button>
-            ))}
-          </div>
-          {shown.length === 0 ? (
-            <p className="rounded-xl border bg-card p-4 text-sm text-muted-foreground">Inga kombinationer i den här vyn. Prova "Alla godkända".</p>
-          ) : (
-            <div className="grid gap-3 sm:grid-cols-2">
-              {shown.map((c, i) => <ResultCard key={i} c={c} />)}
-            </div>
-          )}
-        </>
-      )}
-    </div>
-  );
-}
-
-function ResultCard({ c, best }: { c: Combination; best?: boolean }) {
-  const exact = c.deviation === 0;
-  return (
-    <div className={`rounded-xl border bg-card p-4 shadow-card ${best ? "border-2 border-accent" : ""}`}>
-      <div className="flex items-start justify-between gap-3">
-        <div>
-          <p className="text-xs text-muted-foreground">Ring</p>
-          <p className="font-mono text-2xl font-bold">{formatMm(c.ring)}</p>
-        </div>
-        <div className={`rounded-lg px-3 py-1.5 text-right ${exact ? "bg-success-soft text-success" : "bg-warning-soft text-warning"}`}>
-          <p className="font-mono text-lg font-bold">{formatSigned(c.deviation)}</p>
-          <p className="text-[11px] font-semibold">{describeDeviation(c.deviation)}</p>
-        </div>
-      </div>
-      <div className="mt-3 border-t pt-3">
-        <p className="text-xs text-muted-foreground">Förlängare ({c.extenderCount} st)</p>
-        <div className="mt-1 flex flex-wrap gap-1.5">
-          {c.extenders.length === 0 ? (
-            <span className="text-sm font-semibold">Inga förlängare</span>
-          ) : (
-            c.extenders.map((e, i) => (
-              <span key={i} className="rounded-md bg-secondary px-2 py-1 font-mono text-sm font-bold">{formatMm(e)}</span>
-            ))
-          )}
-        </div>
-        <p className="mt-2 text-sm">Sammanlagd förlängning: <span className="font-mono font-bold">{formatMm(c.totalExtension)}</span></p>
-      </div>
-    </div>
-  );
-}
