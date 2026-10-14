@@ -123,4 +123,15 @@ describe("rund cylinder", () => {
       expect(c.extenders.every((e) => e === 10)).toBe(true);
     }
   });
+  it("ger alltid bästa resultat även utanför toleransen (relaxed)", () => {
+    // djup 12: 30-12-13 = +5, utan relaxed inget resultat
+    expect(calculate({ depth: 12, extenders: [10], rings: [8, 13], baseMm: 30 })).toEqual([]);
+    const r = calculate({ depth: 12, extenders: [10], rings: [8, 13], baseMm: 30, relaxed: true });
+    expect(r.length).toBeGreaterThan(0);
+    expect(r[0]!.deviation).toBe(5); // bästa möjliga: ring 13, inga förlängare
+    // mycket djupt: många förlängare men alltid ett svar
+    const deep = calculate({ depth: 60, extenders: [10], rings: [8, 13], baseMm: 30, relaxed: true });
+    expect(deep.length).toBeGreaterThan(0);
+    expect(deep[0]!.deviation).toBeLessThanOrEqual(2); // 30+40-60-13 = -3... bästa blir 30+40-60-8=+2
+  });
 });
