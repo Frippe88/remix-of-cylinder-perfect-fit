@@ -7,6 +7,7 @@ import {
   LOCK_CASES,
   filterLocks,
   manualSearchUrl,
+  hasDirectManual,
   type LockBrand,
   type LockCategory,
 } from "@/lib/lock-cases";
@@ -94,7 +95,7 @@ function LockCasesPage() {
                     </p>
                     <p className="mt-1 text-lg font-bold">{l.brand === "ASSA" ? `ASSA ${l.model}` : l.model}</p>
                     <p className="mt-1 text-sm text-muted-foreground">{l.note}</p>
-                    <p className="mt-3 text-sm font-semibold text-primary">Hitta manual hos tillverkaren</p>
+                    <p className="mt-3 text-sm font-semibold text-primary">{hasDirectManual(l) ? "Öppna manual (PDF)" : "Hitta manual hos tillverkaren"}</p>
                   </div>
                   <ExternalLink className="mt-1 h-4 w-4 shrink-0 text-muted-foreground" />
                 </a>
