@@ -50,7 +50,7 @@ function ManualPage() {
         const pdfjs = await import("pdfjs-dist");
         const worker = await import("pdfjs-dist/build/pdf.worker.min.mjs?url");
         pdfjs.GlobalWorkerOptions.workerSrc = worker.default;
-        const doc = await pdfjs.getDocument(pdfUrl).promise;
+        const doc = await pdfjs.getDocument({ url: pdfUrl }).promise;
         if (cancelled) return;
         setPages(doc.numPages);
         const width = container.clientWidth;
