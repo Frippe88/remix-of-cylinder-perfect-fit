@@ -16,7 +16,13 @@ const PAGE_SIZE = 4;
 export function CylinderResults({ title, depth, ext, rings, baseMm, relaxed = false }: {
   title: string | null; depth: number | null; ext: number[]; rings: number[]; baseMm: number; relaxed?: boolean;
 }) {
-  const results = useMemo(() => depth === null ? [] : calculate({ depth, extenders: ext, rings, baseMm, relaxed }), [depth, ext, rings, baseMm, relaxed]);
+  const results = useMemo(() => {
+    if (depth === null) return [];
+    const strict = calculate({ depth, extenders: ext, rings, baseMm, relaxed });
+    // Fallback: om inget ligger inom toleransen, visa ändå bästa möjliga (med varning).
+    if (strict.length === 0 && !relaxed) return calculate({ depth, extenders: ext, rings, baseMm, relaxed: true });
+    return strict;
+  }, [depth, ext, rings, baseMm, relaxed]);
   const best = results[0];
   return (
     <section aria-label={title ? `Resultat ${title.toLowerCase()}` : "Resultat"} className="space-y-3">
