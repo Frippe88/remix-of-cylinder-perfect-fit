@@ -100,7 +100,7 @@ function ResultCard({ c, best = false, side = null }: { c: Combination; best?: b
   return (
     <article aria-label={best ? "Bästa rekommendation" : "Alternativ"} className={`rounded-lg border bg-card p-4 ${best ? "border-primary/30 shadow-card" : "border-border"}`}>
       <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
-        <p className="flex flex-wrap items-center gap-1.5 text-xs font-semibold text-muted-foreground"><SideBadge side={side} />{best ? <><Check className="size-3.5 text-success" aria-hidden />Bästa passform</> : "Alternativ"}</p>
+        <p className="flex flex-wrap items-center gap-1.5 text-xs font-semibold text-muted-foreground">{side ? <SideBadge side={side} /> : !best && <span>Alternativ</span>}{best && <><Check className="size-3.5 text-success" aria-hidden />Bästa passform</>}</p>
         <span className={`rounded-md px-2 py-1 font-mono text-sm font-bold ${outsideTolerance ? "bg-warning-soft text-warning" : exact ? "bg-success-soft text-success" : "bg-muted text-foreground"}`}>{formatSigned(c.deviation)}</span>
       </div>
       <dl className="grid grid-cols-[minmax(70px,0.65fr)_minmax(0,1.6fr)] gap-4">
