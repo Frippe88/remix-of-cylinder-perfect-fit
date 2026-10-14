@@ -67,7 +67,7 @@ export function CylinderResults({ title, depth, ext, rings, baseMm, relaxed = fa
   );
 }
 
-type CardSel = { chosen?: Combination; onSelect?: (c: Combination) => void };
+type CardSel = { chosen?: Combination | null | undefined; onSelect?: ((c: Combination) => void) | undefined };
 const same = (a?: Combination | null, b?: Combination | null) =>
   !!a && !!b && a.ring === b.ring && a.extenders.join(",") === b.extenders.join(",");
 
