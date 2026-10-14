@@ -47,8 +47,8 @@ function ManualPage() {
 
     (async () => {
       try {
-        const pdfjs = await import("pdfjs-dist");
-        const worker = await import("pdfjs-dist/build/pdf.worker.min.mjs?url");
+        const pdfjs = await import("pdfjs-dist/legacy/build/pdf.mjs");
+        const worker = await import("pdfjs-dist/legacy/build/pdf.worker.min.mjs?url");
         pdfjs.GlobalWorkerOptions.workerSrc = worker.default;
         const doc = await pdfjs.getDocument({ url: new URL(pdfUrl, window.location.href).href }).promise;
         if (cancelled) return;
