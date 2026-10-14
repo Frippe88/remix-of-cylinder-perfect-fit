@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { ExternalLink, Search } from "lucide-react";
 import { AppTabs } from "@/components/app-tabs";
@@ -83,12 +83,8 @@ function LockCasesPage() {
           <ul className="grid gap-3 sm:grid-cols-2">
             {list.map((l) => (
               <li key={l.id}>
-                <a
-                  href={manualSearchUrl(l)}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex h-full items-start justify-between gap-3 rounded-xl border border-border bg-card p-4 transition-colors hover:border-primary"
-                >
+                {hasDirectManual(l) ? (
+                  <Link to="/manual/$id" params={{ id: l.id }} className="flex h-full items-start justify-between gap-3 rounded-xl border border-border bg-card p-4 transition-colors hover:border-primary">
                   <div>
                     <p className="font-mono text-xs uppercase tracking-wider text-muted-foreground">
                       {l.brand} · {CATEGORY_LABEL[l.category]}
@@ -98,7 +94,20 @@ function LockCasesPage() {
                     <p className="mt-3 text-sm font-semibold text-primary">{hasDirectManual(l) ? "Öppna manual (PDF)" : "Hitta manual hos tillverkaren"}</p>
                   </div>
                   <ExternalLink className="mt-1 h-4 w-4 shrink-0 text-muted-foreground" />
-                </a>
+                  </Link>
+                ) : (
+                  <a href={manualSearchUrl(l)} target="_blank" rel="noopener noreferrer" className="flex h-full items-start justify-between gap-3 rounded-xl border border-border bg-card p-4 transition-colors hover:border-primary">
+                  <div>
+                    <p className="font-mono text-xs uppercase tracking-wider text-muted-foreground">
+                      {l.brand} · {CATEGORY_LABEL[l.category]}
+                    </p>
+                    <p className="mt-1 text-lg font-bold">{l.brand === "ASSA" ? `ASSA ${l.model}` : l.model}</p>
+                    <p className="mt-1 text-sm text-muted-foreground">{l.note}</p>
+                    <p className="mt-3 text-sm font-semibold text-primary">{hasDirectManual(l) ? "Öppna manual (PDF)" : "Hitta manual hos tillverkaren"}</p>
+                  </div>
+                  <ExternalLink className="mt-1 h-4 w-4 shrink-0 text-muted-foreground" />
+                  </a>
+                )}
               </li>
             ))}
           </ul>
