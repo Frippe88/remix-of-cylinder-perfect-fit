@@ -11,3 +11,4 @@
 
 - All cylinder math lives in src/lib/cylinder.ts (pure, tested); UI only calls it. Why: deterministic, extendable, testable.
 - Results presentation lives in src/components/cylinder-results.tsx, with progressive disclosure per side; keep every computed combination accessible without duplicating the recommendation in the alternatives. Why: double-cylinder results must remain scannable without changing the calculation rules.
+- Manufacturer manual PDFs are served through /api/public/manual/$id using a fixed per-lock allowlist in src/lib/lock-cases.ts. Why: STEP's CSP headers blank the PDF in some browsers, and the allowlist stops arbitrary URL proxying.

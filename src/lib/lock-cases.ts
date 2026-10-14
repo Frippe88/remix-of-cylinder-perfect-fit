@@ -70,14 +70,18 @@ const MANUAL_PDF: Record<string, string> = {
   "STEP 352": "https://api.steplock.com/medias/STEP-motorla-s-300-serien-OSDP-quickguide-2025-utg.7-SV.pdf?context=bWFzdGVyfHByb2R1Y3RNYW51YWxzfDI4OTgxNTh8YXBwbGljYXRpb24vcGRmfGFHUXlMMmhqTUM4NE9UQXlOalUwTURrNU5EZzJMMU5VUlZBZ2JXOTBiM0pzWWN5S2N5QXpNREF0YzJWeWFXVnVYMDlUUkZCZmNYVnBZMnRuZFdsa1pWOHlNREkxWDNWMFp5NDNYMU5XTG5Ca1pnfDZiOTcwZDcyODkzZjFkMzAyMGM2MzM5OWI4MjczZTVhMjMwZWU1ODEyM2Q1NzJlYzkwY2E2Yjg0ODU5YTBmZTM",
 };
 
+export function directManualPdf(lock: LockCase): string | undefined {
+  return MANUAL_PDF[lock.model.replace(/ med mikrobrytare$/, "")];
+}
+
 export function hasDirectManual(lock: LockCase): boolean {
   return lock.model.replace(/ med mikrobrytare$/, "") in MANUAL_PDF;
 }
 
 /** Direkt till manualen om verifierad länk finns, annars tillverkarens produktsida/sök. */
 export function manualSearchUrl(lock: LockCase): string {
-  const pdf = MANUAL_PDF[lock.model.replace(/ med mikrobrytare$/, "")];
-  if (pdf) return pdf;
+  // PDF:er går via appens egen route (STEP:s server skickar en CSP som ger vit sida i vissa webbläsare).
+  if (directManualPdf(lock)) return `/api/public/manual/${lock.id}`;
   return MANUFACTURER_SEARCH[lock.brand](lock);
 }
 
