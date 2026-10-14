@@ -67,7 +67,7 @@ function ManualPage() {
           canvas.className = "rounded-lg border border-border bg-card shadow-sm";
           canvas.setAttribute("aria-label", `Sida ${i} av ${doc.numPages}`);
           container.appendChild(canvas);
-          await page.render({ canvas, canvasContext: canvas.getContext("2d")!, viewport }).promise;
+          await page.render({ canvasContext: canvas.getContext("2d")!, viewport }).promise;
           if (i === 1 && !cancelled) setStatus("klar");
         }
       } catch (e) {
