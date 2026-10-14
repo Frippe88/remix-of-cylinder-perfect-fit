@@ -57,7 +57,7 @@ export function PickListButton({ sides, ext, rings, baseMm, relaxed }: {
         {copied ? <Check aria-hidden /> : <ClipboardCopy aria-hidden />}
         {copied ? "Kopierad!" : "Kopiera plocklista"}
       </Button>
-      <p className="text-xs text-muted-foreground">Tryck ”Välj” på ett annat alternativ för att byta.</p>
+      <p className="text-xs text-muted-foreground">Tryck ”Välj för plocklista” på ett annat alternativ för att byta.</p>
     </div>
   );
 }
