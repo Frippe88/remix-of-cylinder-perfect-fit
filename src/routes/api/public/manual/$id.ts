@@ -5,7 +5,8 @@ import { LOCK_CASES, directManualPdf } from "@/lib/lock-cases";
 export const Route = createFileRoute("/api/public/manual/$id")({
   server: {
     handlers: {
-      GET: async ({ params }) => {
+      GET: async ({ params, request }) => {
+        const download = new URL(request.url).searchParams.has("download");
         const lock = LOCK_CASES.find((l) => l.id === params.id);
         const url = lock && directManualPdf(lock);
         if (!lock || !url) return new Response("Manual saknas", { status: 404 });
@@ -15,7 +16,7 @@ export const Route = createFileRoute("/api/public/manual/$id")({
         return new Response(upstream.body, {
           headers: {
             "Content-Type": "application/pdf",
-            "Content-Disposition": `inline; filename="${name}"`,
+            "Content-Disposition": `${download ? "attachment" : "inline"}; filename="${name}"`,
             "Cache-Control": "public, max-age=86400",
           },
         });
