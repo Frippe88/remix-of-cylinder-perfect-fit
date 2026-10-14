@@ -54,12 +54,16 @@ function ManualPage() {
         if (cancelled) return;
         setPages(doc.numPages);
         const width = container.clientWidth;
-        const dpr = Math.min(window.devicePixelRatio || 1, 2);
+        // Rendera skarpare än skärmen så text håller vid inzoomning, men begränsa minnet på mobil.
+        const dpr = Math.min((window.devicePixelRatio || 1) * 2, 4);
         for (let i = 1; i <= doc.numPages; i++) {
           const page = await doc.getPage(i);
           if (cancelled) return;
           const base = page.getViewport({ scale: 1 });
-          const viewport = page.getViewport({ scale: (width / base.width) * dpr });
+          let scale = (width / base.width) * dpr;
+          const maxPixels = 16_000_000;
+          if (base.width * base.height * scale * scale > maxPixels) scale = Math.sqrt(maxPixels / (base.width * base.height));
+          const viewport = page.getViewport({ scale });
           const canvas = document.createElement("canvas");
           canvas.width = viewport.width;
           canvas.height = viewport.height;
@@ -89,7 +93,7 @@ function ManualPage() {
             <ArrowLeft className="h-4 w-4" /> Låshus
           </Link>
           <p className="truncate text-sm font-bold">Manual {lock.model}</p>
-          <a href={pdfUrl} download className="flex items-center gap-1 text-sm font-semibold text-primary">
+          <a href={`${pdfUrl}?download=1`} download={`${lock.model}-manual.pdf`} target="_blank" rel="noopener" className="flex items-center gap-1 text-sm font-semibold text-primary">
             <Download className="h-4 w-4" /> Ladda ner
           </a>
         </div>
@@ -104,7 +108,7 @@ function ManualPage() {
         )}
         <div ref={containerRef} className="space-y-3" />
         {status === "klar" && pages > 0 && (
-          <p className="text-center text-xs text-muted-foreground">{pages} sidor · Källa: STEP (steplock.com)</p>
+          <p className="text-center text-xs text-muted-foreground">{pages} sidor · Källa: {lock.brand === "STEP" ? "STEP (steplock.com)" : "ASSA ABLOY (assaabloy.com)"}</p>
         )}
       </main>
     </div>
