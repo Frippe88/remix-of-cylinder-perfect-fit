@@ -16,9 +16,9 @@ export const CATEGORY_LABEL: Record<LockCategory, string> = {
   motor: "Motorlås",
 };
 
-const MANUFACTURER_SITE: Record<LockBrand, string> = {
-  ASSA: "assaabloy.com",
-  STEP: "steplock.se",
+const MANUFACTURER_SEARCH: Record<LockBrand, (q: string) => string> = {
+  ASSA: (q) => `https://www.assaabloy.com/se/sv/search?q=${encodeURIComponent(q)}`,
+  STEP: (q) => `https://steplock.com/SE/sv/?s=${encodeURIComponent(q)}`,
 };
 
 export const LOCK_CASES: LockCase[] = [
@@ -51,11 +51,10 @@ export const LOCK_CASES: LockCase[] = [
   { id: "step-352", brand: "STEP", model: "STEP 352", category: "motor", note: "Motorlås." },
 ];
 
-/** Söklänk till tillverkarens egna sidor – vi länkar aldrig till gissade PDF-adresser. */
+/** Söklänk till tillverkarens egen söksida – vi länkar aldrig till gissade PDF-adresser. */
 export function manualSearchUrl(lock: LockCase): string {
   const name = lock.brand === "ASSA" ? `ASSA ${lock.model}` : lock.model;
-  const q = `${name} monteringsanvisning site:${MANUFACTURER_SITE[lock.brand]}`;
-  return `https://www.google.com/search?q=${encodeURIComponent(q)}`;
+  return MANUFACTURER_SEARCH[lock.brand](`${name} monteringsanvisning`);
 }
 
 export function filterLocks(
