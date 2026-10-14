@@ -57,8 +57,27 @@ export const LOCK_CASES: LockCase[] = [
   { id: "step-352", brand: "STEP", model: "STEP 352", category: "motor", note: "Motorlås." },
 ];
 
-/** Länk till tillverkarens egen produktsida/sök – vi länkar aldrig till gissade PDF-adresser. */
+/** Verifierade direktlänkar till tillverkarens manual-PDF (hämtade från steplock.com produktsidor). */
+const MANUAL_PDF: Record<string, string> = {
+  "STEP 18": "https://api.steplock.com/medias/Manual-STEP-18-Omva-nd-SV.pdf?context=bWFzdGVyfHByb2R1Y3RNYW51YWxzfDk0MDcxMHxhcHBsaWNhdGlvbi9wZGZ8YUdJMkwyZzFPQzg0TnprMk5UWTNNalF3TnpNMEwwMWhiblZoYkY5VFZFVlFYekU0WDA5dGRtSE1pRzVrWDFOV0xuQmtaZ3w1MTMwM2NlZmFmYjg5YzI3YmIyM2I0MDQzZjEwOWVhYTYwZjNkYTA4MjU1MDVkMDc3NDUzMzFkODlkNzI5YWRh",
+  "STEP 90": "https://api.steplock.com/medias/Manual-STEP-90.pdf?context=bWFzdGVyfHByb2R1Y3RNYW51YWxzfDYxOTgyMHxhcHBsaWNhdGlvbi9wZGZ8YURNNEwyZzNZaTg0TnprMk5UWTVNamN5TXpVd0wwMWhiblZoYkY5VFZFVlFYemt3TG5Ca1pnfDg0Nzc5ODZiMWQ3ZGZmYmIzM2IxYjMxNzBkMjFhMTM5MzllNDJjN2RlNjZkNWRjY2UwNWVkY2IwMjNlY2MwZjk",
+  "STEP 92": "https://api.steplock.com/medias/Manual-STEP-92.pdf?context=bWFzdGVyfHByb2R1Y3RNYW51YWxzfDM4NTMxMnxhcHBsaWNhdGlvbi9wZGZ8YURNMUwyZzNaUzg0TnprMk5UWTVNek0zT0RnMkwwMWhiblZoYkY5VFZFVlFYemt5TG5Ca1pnfDVmZDQyMWE1YTUxNWE5ZTgyNmI3NDRmOTJiNDFmMzBlMDQxZjk1NzhkZTI0OGMwNTE0ODYyOTU5MmJhMDIyZWY",
+  "STEP 110": "https://api.steplock.com/medias/Manual-STEP-110-120.pdf?context=bWFzdGVyfHByb2R1Y3RNYW51YWxzfDI0MDUzMzd8YXBwbGljYXRpb24vcGRmfGFHUXhMMmhpTnk4NE56azJOVFkyTlRnMU16YzBMMDFoYm5WaGJGOVRWRVZRWHpFeE1GOHhNakF1Y0dSbXw2ZjFlNjFkY2Y4NmYzMTA5ODY1MjA3YjEyNzE1ZTE1MWMxZjI3ZWU3OTUyMDliOTkxMDA4YzFmNTczNDZiMTUz",
+  "STEP 120": "https://api.steplock.com/medias/Manual-STEP-110-120.pdf?context=bWFzdGVyfHByb2R1Y3RNYW51YWxzfDI0MDUzMzd8YXBwbGljYXRpb24vcGRmfGFHUXhMMmhpTnk4NE56azJOVFkyTlRnMU16YzBMMDFoYm5WaGJGOVRWRVZRWHpFeE1GOHhNakF1Y0dSbXw2ZjFlNjFkY2Y4NmYzMTA5ODY1MjA3YjEyNzE1ZTE1MWMxZjI3ZWU3OTUyMDliOTkxMDA4YzFmNTczNDZiMTUz",
+  "STEP 130": "https://api.steplock.com/medias/Installationsanvisning-STEP-130-utga-va-11-webb.pdf?context=bWFzdGVyfHByb2R1Y3RNYW51YWxzfDIyMjYxODZ8YXBwbGljYXRpb24vcGRmfGFHTTRMMmd6WVM4NE9UQTVOVGM0TURjMk1Ua3dMMGx1YzNSaGJHeGhkR2x2Ym5OaGJuWnBjMjVwYm1jZ1UxUkZVQ0F4TXpCZmRYUm5ZY3lLZG1FZ01URmZkMlZpWWk1d1pHWXxiYzI5MWJiNzNlNzFkN2U3YmRlY2I3YWFkODcwZWEzZWZlYzQyNGQ1N2QxNGJiOGNkMWYzZmMwYjk2OWRmNzUw",
+  "STEP 350": "https://api.steplock.com/medias/STEP-motorla-s-300-serien-OSDP-quickguide-2025-utg.7-SV.pdf?context=bWFzdGVyfHByb2R1Y3RNYW51YWxzfDI4OTgxNTh8YXBwbGljYXRpb24vcGRmfGFHUXlMMmhqTUM4NE9UQXlOalUwTURrNU5EZzJMMU5VUlZBZ2JXOTBiM0pzWWN5S2N5QXpNREF0YzJWeWFXVnVYMDlUUkZCZmNYVnBZMnRuZFdsa1pWOHlNREkxWDNWMFp5NDNYMU5XTG5Ca1pnfDZiOTcwZDcyODkzZjFkMzAyMGM2MzM5OWI4MjczZTVhMjMwZWU1ODEyM2Q1NzJlYzkwY2E2Yjg0ODU5YTBmZTM",
+  "STEP 351": "https://api.steplock.com/medias/STEP-motorla-s-300-serien-ST500C-OSDP-manual-2026-utg.8-SV.pdf?context=bWFzdGVyfHByb2R1Y3RNYW51YWxzfDUzNzk2NzR8YXBwbGljYXRpb24vcGRmfGFHVXhMMmhrTXk4NE9UQXlOemcyTURnNE9Ua3dMMU5VUlZBZ2JXOTBiM0pzWWN5S2N5QXpNREF0YzJWeWFXVnVYMU5VTlRBd1ExOVBVMFJRWDIxaGJuVmhiRjh5TURJMlgzVjBaeTQ0WDFOV0xuQmtaZ3wyZTJkMTI5NWRiZWE3ZmI5MGFjMzliYmNmNTJiN2M0Y2ZhZGMxYTcxYjA5NTVkNTdjMTZiNWE5OGI4OTI5YzNl",
+  "STEP 352": "https://api.steplock.com/medias/STEP-motorla-s-300-serien-OSDP-quickguide-2025-utg.7-SV.pdf?context=bWFzdGVyfHByb2R1Y3RNYW51YWxzfDI4OTgxNTh8YXBwbGljYXRpb24vcGRmfGFHUXlMMmhqTUM4NE9UQXlOalUwTURrNU5EZzJMMU5VUlZBZ2JXOTBiM0pzWWN5S2N5QXpNREF0YzJWeWFXVnVYMDlUUkZCZmNYVnBZMnRuZFdsa1pWOHlNREkxWDNWMFp5NDNYMU5XTG5Ca1pnfDZiOTcwZDcyODkzZjFkMzAyMGM2MzM5OWI4MjczZTVhMjMwZWU1ODEyM2Q1NzJlYzkwY2E2Yjg0ODU5YTBmZTM",
+};
+
+export function hasDirectManual(lock: LockCase): boolean {
+  return lock.model.replace(/ med mikrobrytare$/, "") in MANUAL_PDF;
+}
+
+/** Direkt till manualen om verifierad länk finns, annars tillverkarens produktsida/sök. */
 export function manualSearchUrl(lock: LockCase): string {
+  const pdf = MANUAL_PDF[lock.model.replace(/ med mikrobrytare$/, "")];
+  if (pdf) return pdf;
   return MANUFACTURER_SEARCH[lock.brand](lock);
 }
 
