@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { Check } from "lucide-react";
 import { useState } from "react";
 import { CylinderResults } from "@/components/cylinder-results";
+import { PickListButton } from "@/components/pick-list-button";
 import { AppTabs } from "@/components/app-tabs";
 import {
   formatMm,
@@ -150,6 +151,11 @@ function Index() {
         </section>
 
         <section className="min-w-0 space-y-7">
+          <PickListButton
+            sides={type === "single" ? [{ label: null, depth: parse(outside) }] : [{ label: "Utsida", depth: parse(outside) }, { label: "Insida", depth: parse(inside) }]}
+            ext={ext} rings={activeRings} baseMm={baseMm} relaxed={isRound}
+            cylinderName={CYLINDER_OPTIONS.find((o) => o.id === cyl)!.name}
+          />
           <CylinderResults title={type === "single" ? null : "Utsida"} depth={parse(outside)} ext={ext} rings={activeRings} baseMm={baseMm} relaxed={isRound} />
           {type === "double" && <CylinderResults title="Insida" depth={parse(inside)} ext={ext} rings={activeRings} baseMm={baseMm} relaxed={isRound} />}
         </section>
