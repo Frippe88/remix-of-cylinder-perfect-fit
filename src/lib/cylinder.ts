@@ -89,7 +89,7 @@ function calculateWithCap(sizes: number[], ringT: number[], base: number, cap: n
     const total = set.reduce((s, x) => s + x, 0);
     for (const r of ringT) {
       const dev = base + total - r;
-      if (dev >= toT(TOLERANCE_MIN) && dev <= toT(TOLERANCE_MAX)) {
+      if (dev >= toT(TOLERANCE_MIN) && dev <= cap) {
         out.push({
           ring: fromT(r),
           extenders: set.map(fromT),
