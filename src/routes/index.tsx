@@ -14,6 +14,7 @@ import {
   ROUND_CYLINDER_MM,
   ROUND_EXTENDER_SIZES,
   ROUND_RING_HEIGHTS,
+  type Combination,
 } from "@/lib/cylinder";
 
 export const Route = createFileRoute("/")({
@@ -76,6 +77,12 @@ function Index() {
   const setExt = isRound ? setRoundExt : setStdExt;
   const activeRings = isRound ? roundRings : rings;
   const setActiveRings = isRound ? setRoundRings : setRings;
+
+  // Valda alternativ för plocklistan; nollställs automatiskt när indata ändras.
+  const selKey = [cyl, type, outside, inside, ext.join(","), activeRings.join(",")].join("|");
+  const [sel, setSel] = useState<{ key: string; out: Combination | null; in: Combination | null }>({ key: "", out: null, in: null });
+  const selOut = sel.key === selKey ? sel.out : null;
+  const selIn = sel.key === selKey ? sel.in : null;
 
   const toggle = (list: number[], set: (v: number[]) => void, v: number) =>
     set(list.includes(v) ? list.filter((x) => x !== v) : [...list, v]);
@@ -152,12 +159,11 @@ function Index() {
 
         <section className="min-w-0 space-y-7">
           <PickListButton
-            sides={type === "single" ? [{ label: null, depth: parse(outside) }] : [{ label: "Utsida", depth: parse(outside) }, { label: "Insida", depth: parse(inside) }]}
+            sides={type === "single" ? [{ label: null, depth: parse(outside), selected: selOut }] : [{ label: "Utsida", depth: parse(outside), selected: selOut }, { label: "Insida", depth: parse(inside), selected: selIn }]}
             ext={ext} rings={activeRings} baseMm={baseMm} relaxed={isRound}
-            cylinderName={CYLINDER_OPTIONS.find((o) => o.id === cyl)!.name}
           />
-          <CylinderResults title={type === "single" ? null : "Utsida"} depth={parse(outside)} ext={ext} rings={activeRings} baseMm={baseMm} relaxed={isRound} />
-          {type === "double" && <CylinderResults title="Insida" depth={parse(inside)} ext={ext} rings={activeRings} baseMm={baseMm} relaxed={isRound} />}
+          <CylinderResults title={type === "single" ? null : "Utsida"} depth={parse(outside)} ext={ext} rings={activeRings} baseMm={baseMm} relaxed={isRound} selected={selOut} onSelect={(c) => setSel({ key: selKey, out: c, in: selIn })} />
+          {type === "double" && <CylinderResults title="Insida" depth={parse(inside)} ext={ext} rings={activeRings} baseMm={baseMm} relaxed={isRound} selected={selIn} onSelect={(c) => setSel({ key: selKey, out: selOut, in: c })} />}
         </section>
       </main>
     </div>

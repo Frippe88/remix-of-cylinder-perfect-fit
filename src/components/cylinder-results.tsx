@@ -24,9 +24,11 @@ function SideBadge({ side }: { side: string | null }) {
   );
 }
 
-export function CylinderResults({ title, depth, ext, rings, baseMm, relaxed = false }: {
+type Sel = { selected?: Combination | null; onSelect?: (c: Combination) => void };
+
+export function CylinderResults({ title, depth, ext, rings, baseMm, relaxed = false, selected = null, onSelect }: {
   title: string | null; depth: number | null; ext: number[]; rings: number[]; baseMm: number; relaxed?: boolean;
-}) {
+} & Sel) {
   const results = useMemo(() => {
     if (depth === null) return [];
     const strict = calculate({ depth, extenders: ext, rings, baseMm, relaxed });
@@ -35,6 +37,8 @@ export function CylinderResults({ title, depth, ext, rings, baseMm, relaxed = fa
     return strict;
   }, [depth, ext, rings, baseMm, relaxed]);
   const best = results[0];
+  const chosen = selected ?? best;
+  const sel = { chosen, onSelect };
   return (
     <section aria-label={title ? `Resultat ${title.toLowerCase()}` : "Resultat"} className="space-y-3">
       <div className={`sticky top-0 z-10 -mx-1 flex items-center justify-between gap-3 border-b bg-background/95 px-1 pb-3 backdrop-blur ${title === "Insida" ? "border-side-inside" : "border-side-outside"}`}>
@@ -55,15 +59,19 @@ export function CylinderResults({ title, depth, ext, rings, baseMm, relaxed = fa
         </div>
       ) : (
         <>
-          <ResultCard c={best} best side={title} />
-          <Alternatives key={`${depth}:${baseMm}:${ext.join(",")}:${rings.join(",")}`} results={results} best={best} relaxed={relaxed} side={title} />
+          <ResultCard c={best} best side={title} {...sel} />
+          <Alternatives key={`${depth}:${baseMm}:${ext.join(",")}:${rings.join(",")}`} results={results} best={best} relaxed={relaxed} side={title} {...sel} />
         </>
       )}
     </section>
   );
 }
 
-function Alternatives({ results, best, relaxed, side }: { results: Combination[]; best: Combination; relaxed: boolean; side: string | null }) {
+type CardSel = { chosen?: Combination | null | undefined; onSelect?: ((c: Combination) => void) | undefined };
+const same = (a?: Combination | null, b?: Combination | null) =>
+  !!a && !!b && a.ring === b.ring && a.extenders.join(",") === b.extenders.join(",");
+
+function Alternatives({ results, best, relaxed, side, chosen, onSelect }: { results: Combination[]; best: Combination; relaxed: boolean; side: string | null } & CardSel) {
   const [open, setOpen] = useState(false);
   const [mode, setMode] = useState<ViewMode>("all");
   const [visible, setVisible] = useState(PAGE_SIZE);
@@ -83,7 +91,7 @@ function Alternatives({ results, best, relaxed, side }: { results: Combination[]
         </div>
         <p className="text-xs text-muted-foreground">{mode === "all" ? (relaxed ? "Bäst passform först." : "Inom −1 till +2 mm. Bäst passform först.") : mode === "exact" ? "Alternativ i liv med ringen." : "Alternativ med färre förlängare."}</p>
         {shown.length === 0 ? <p className="py-3 text-sm text-muted-foreground">Inga fler alternativ i den här vyn.</p> : <>
-          <div className="space-y-2">{shown.slice(0, visible).map((c, i) => <ResultCard key={i} c={c} side={side} />)}</div>
+          <div className="space-y-2">{shown.slice(0, visible).map((c, i) => <ResultCard key={i} c={c} side={side} chosen={chosen} onSelect={onSelect} />)}</div>
           <div className="flex flex-wrap items-center justify-between gap-2">
             <p className="text-xs text-muted-foreground">Visar {Math.min(visible, shown.length)} av {shown.length} alternativ{forSide}</p>
             {visible < shown.length && <Button variant="outline" size="sm" onClick={() => setVisible(visible + PAGE_SIZE)}><Plus aria-hidden />Visa fler</Button>}
@@ -94,11 +102,12 @@ function Alternatives({ results, best, relaxed, side }: { results: Combination[]
   );
 }
 
-function ResultCard({ c, best = false, side = null }: { c: Combination; best?: boolean; side?: string | null }) {
+function ResultCard({ c, best = false, side = null, chosen, onSelect }: { c: Combination; best?: boolean; side?: string | null } & CardSel) {
   const exact = c.deviation === 0;
   const outsideTolerance = c.deviation < TOLERANCE_MIN || c.deviation > TOLERANCE_MAX;
+  const isChosen = same(c, chosen);
   return (
-    <article aria-label={best ? "Bästa rekommendation" : "Alternativ"} className={`rounded-lg border bg-card p-4 ${best ? "border-primary/30 shadow-card" : "border-border"}`}>
+    <article aria-label={best ? "Bästa rekommendation" : "Alternativ"} className={`rounded-lg border bg-card p-4 ${isChosen && onSelect ? "border-success ring-2 ring-success/30" : best ? "border-primary/30 shadow-card" : "border-border"}`}>
       <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
         <p className="flex flex-wrap items-center gap-1.5 text-xs font-semibold text-muted-foreground">{side ? <SideBadge side={side} /> : !best && <span>Alternativ</span>}{best && <><Check className="size-3.5 text-success" aria-hidden />Bästa passform</>}</p>
         <span className={`rounded-md px-2 py-1 font-mono text-sm font-bold ${outsideTolerance ? "bg-warning-soft text-warning" : exact ? "bg-success-soft text-success" : "bg-muted text-foreground"}`}>{formatSigned(c.deviation)}</span>
@@ -110,6 +119,11 @@ function ResultCard({ c, best = false, side = null }: { c: Combination; best?: b
       <p className={`mt-3 flex items-start gap-1.5 border-t pt-2 text-xs font-medium ${outsideTolerance ? "text-warning" : exact ? "text-success" : "text-muted-foreground"}`}>
         {outsideTolerance && <AlertTriangle className="size-3.5 shrink-0" aria-hidden />}<span>{describeDeviation(c.deviation)}{outsideTolerance && <span className="mt-0.5 block">Utanför toleransen −1 till +2 mm.</span>}</span>
       </p>
+      {onSelect && (
+        <Button variant={isChosen ? "outline" : "secondary"} size="sm" aria-pressed={isChosen} onClick={() => onSelect(c)} className={`mt-3 w-full ${isChosen ? "border-success text-success" : ""}`}>
+          {isChosen ? <><Check aria-hidden />Vald för plocklista</> : "Välj för plocklista"}
+        </Button>
+      )}
     </article>
   );
 }
