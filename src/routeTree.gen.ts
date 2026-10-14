@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as LashusRouteImport } from './routes/lashus'
+import { Route as ManualIdRouteImport } from './routes/manual.$id'
 import { Route as ApiPublicManualIdRouteImport } from './routes/api/public/manual/$id'
 
 const IndexRoute = IndexRouteImport.update({
@@ -23,6 +24,11 @@ const LashusRoute = LashusRouteImport.update({
   path: '/lashus',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ManualIdRoute = ManualIdRouteImport.update({
+  id: '/manual/$id',
+  path: '/manual/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiPublicManualIdRoute = ApiPublicManualIdRouteImport.update({
   id: '/api/public/manual/$id',
   path: '/api/public/manual/$id',
@@ -32,30 +38,34 @@ const ApiPublicManualIdRoute = ApiPublicManualIdRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/lashus': typeof LashusRoute
+  '/manual/$id': typeof ManualIdRoute
   '/api/public/manual/$id': typeof ApiPublicManualIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/lashus': typeof LashusRoute
+  '/manual/$id': typeof ManualIdRoute
   '/api/public/manual/$id': typeof ApiPublicManualIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/lashus': typeof LashusRoute
+  '/manual/$id': typeof ManualIdRoute
   '/api/public/manual/$id': typeof ApiPublicManualIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/lashus' | '/api/public/manual/$id'
+  fullPaths: '/' | '/lashus' | '/manual/$id' | '/api/public/manual/$id'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/lashus' | '/api/public/manual/$id'
-  id: '__root__' | '/' | '/lashus' | '/api/public/manual/$id'
+  to: '/' | '/lashus' | '/manual/$id' | '/api/public/manual/$id'
+  id: '__root__' | '/' | '/lashus' | '/manual/$id' | '/api/public/manual/$id'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   LashusRoute: typeof LashusRoute
+  ManualIdRoute: typeof ManualIdRoute
   ApiPublicManualIdRoute: typeof ApiPublicManualIdRoute
 }
 
@@ -75,6 +85,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LashusRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/manual/$id': {
+      id: '/manual/$id'
+      path: '/manual/$id'
+      fullPath: '/manual/$id'
+      preLoaderRoute: typeof ManualIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/manual/$id': {
       id: '/api/public/manual/$id'
       path: '/api/public/manual/$id'
@@ -88,6 +105,7 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   LashusRoute: LashusRoute,
+  ManualIdRoute: ManualIdRoute,
   ApiPublicManualIdRoute: ApiPublicManualIdRoute,
 }
 export const routeTree = rootRouteImport
