@@ -9,7 +9,7 @@ import {
 const MODES: { id: ViewMode; label: string }[] = [
   { id: "all", label: "Alla" },
   { id: "exact", label: "Exakt 0 mm" },
-  { id: "fewer", label: "Färre delar" },
+  { id: "fewer", label: "Färre förlängare" },
 ];
 const PAGE_SIZE = 4;
 
