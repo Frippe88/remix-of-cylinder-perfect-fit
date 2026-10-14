@@ -8,7 +8,7 @@ describe("stolpväljare", () => {
   it("vinklat slutbleck 1887-2* → STEP 92 ST9509", () => {
     const r = findByExisting("mek|1887-2*", "step92");
     expect(r.map((x) => x.target)).toEqual(["ST9509"]);
-    expect(r[0].angled).toBe(true);
+    expect(r[0]?.angled).toBe(true);
   });
   it("Solid 730 → STEP 60 ST6504H/V och tomt när modellen saknas", () => {
     expect(findByExisting("solidStd|730", "step60").map((r) => r.target)).toEqual(["ST6504H/V"]);

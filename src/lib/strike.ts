@@ -29,7 +29,7 @@ const clean = (s: string) => s.replace(/\*/g, "").trim();
 /** "ST4041/4066" → ["ST4041","ST4066"], "730T/732T" → ["730T","732T"]. */
 export function splitCell(cell: string): string[] {
   const parts = clean(cell).split("/");
-  const first = parts[0];
+  const first = parts[0] ?? "";
   const prefix = first.match(/^[A-Z]+/)?.[0] ?? "";
   return parts.map((p) => (prefix && /^\d/.test(p) ? prefix + p : p));
 }
@@ -48,7 +48,7 @@ export function existingOptions(): ExistingOption[] {
   WOOD_STEEL_ROWS.forEach((row) =>
     row.forEach((cell, ci) => {
       if (!cell) return;
-      const column = WOOD_COLUMNS[ci].id;
+      const column = WOOD_COLUMNS[ci]!.id;
       const value = `${column}|${cell}`;
       if (seen.has(value)) return;
       seen.add(value);
@@ -81,7 +81,7 @@ export function findByExisting(existingValue: string, target: WoodColumnId): Woo
       target: clean(t),
       angled: t.includes("*") || (row[8]?.includes("*") ?? false),
       equivalents: row
-        .map((c, i) => (c && i !== ti && i !== ci ? { column: WOOD_COLUMNS[i].id, article: clean(c) } : null))
+        .map((c, i) => (c && i !== ti && i !== ci ? { column: WOOD_COLUMNS[i]!.id, article: clean(c) } : null))
         .filter((x): x is { column: WoodColumnId; article: string } => x !== null),
     });
   }
@@ -93,7 +93,10 @@ export const PROFILES = PROFILE_ROWS.map((r) => r[0]);
 export function findByProfile(profile: string): { column: string; article: string }[] {
   const row = PROFILE_ROWS.find((r) => r[0] === profile);
   if (!row) return [];
-  return PROFILE_COLUMNS.map((c, i) => ({ column: c.label, article: row[i + 1] })).filter(
-    (x): x is { column: string; article: string } => !!x.article,
-  );
+  const out: { column: string; article: string }[] = [];
+  PROFILE_COLUMNS.forEach((c, i) => {
+    const a = row[i + 1];
+    if (a) out.push({ column: c.label, article: a });
+  });
+  return out;
 }
