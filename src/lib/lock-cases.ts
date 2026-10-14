@@ -59,6 +59,12 @@ export const LOCK_CASES: LockCase[] = [
 
 /** Verifierade direktlänkar till tillverkarens manual-PDF (hämtade från steplock.com produktsidor). */
 const MANUAL_PDF: Record<string, string> = {
+  // ASSA ABLOY officiella PDF:er (assaabloy.com nedladdningscenter)
+  "Connect 310": "https://www.assaabloy.com/se/sv/documents/support-service/nedladdningscenter/product-information/installationsanvisningar/lashus-slutbleck/M2586.1502%20Monteringsanvisning%20Connect%20hakr.%20sv-eng%20MK21-05-07.pdf",
+  "Connect 410": "https://www.assaabloy.com/se/sv/documents/support-service/nedladdningscenter/product-information/installationsanvisningar/lashus-slutbleck/M2586.1502%20Monteringsanvisning%20Connect%20hakr.%20sv-eng%20MK21-05-07.pdf",
+  "2002": "https://www.assaabloy.com/se/sv/documents/support-service/nedladdningscenter/product-information/installationsanvisningar/lashus-slutbleck/M2586.1502%20Monteringsanvisning%20Connect%20hakr.%20sv-eng%20MK21-05-07.pdf",
+  "Connect 560": "https://www.assaabloy.com/se/sv/documents/support-service/nedladdningscenter/product-information/installationsanvisningar/lashus-slutbleck/Monteringsanvisning%20modullas.pdf",
+  "Connect 565": "https://www.assaabloy.com/se/sv/documents/support-service/nedladdningscenter/product-information/installationsanvisningar/lashus-slutbleck/Monteringsanvisning%20modullas.pdf",
   "STEP 18": "https://api.steplock.com/medias/Manual-STEP-18-Omva-nd-SV.pdf?context=bWFzdGVyfHByb2R1Y3RNYW51YWxzfDk0MDcxMHxhcHBsaWNhdGlvbi9wZGZ8YUdJMkwyZzFPQzg0TnprMk5UWTNNalF3TnpNMEwwMWhiblZoYkY5VFZFVlFYekU0WDA5dGRtSE1pRzVrWDFOV0xuQmtaZ3w1MTMwM2NlZmFmYjg5YzI3YmIyM2I0MDQzZjEwOWVhYTYwZjNkYTA4MjU1MDVkMDc3NDUzMzFkODlkNzI5YWRh",
   "STEP 90": "https://api.steplock.com/medias/Manual-STEP-90.pdf?context=bWFzdGVyfHByb2R1Y3RNYW51YWxzfDYxOTgyMHxhcHBsaWNhdGlvbi9wZGZ8YURNNEwyZzNZaTg0TnprMk5UWTVNamN5TXpVd0wwMWhiblZoYkY5VFZFVlFYemt3TG5Ca1pnfDg0Nzc5ODZiMWQ3ZGZmYmIzM2IxYjMxNzBkMjFhMTM5MzllNDJjN2RlNjZkNWRjY2UwNWVkY2IwMjNlY2MwZjk",
   "STEP 92": "https://api.steplock.com/medias/Manual-STEP-92.pdf?context=bWFzdGVyfHByb2R1Y3RNYW51YWxzfDM4NTMxMnxhcHBsaWNhdGlvbi9wZGZ8YURNMUwyZzNaUzg0TnprMk5UWTVNek0zT0RnMkwwMWhiblZoYkY5VFZFVlFYemt5TG5Ca1pnfDVmZDQyMWE1YTUxNWE5ZTgyNmI3NDRmOTJiNDFmMzBlMDQxZjk1NzhkZTI0OGMwNTE0ODYyOTU5MmJhMDIyZWY",
@@ -70,12 +76,19 @@ const MANUAL_PDF: Record<string, string> = {
   "STEP 352": "https://api.steplock.com/medias/STEP-motorla-s-300-serien-OSDP-quickguide-2025-utg.7-SV.pdf?context=bWFzdGVyfHByb2R1Y3RNYW51YWxzfDI4OTgxNTh8YXBwbGljYXRpb24vcGRmfGFHUXlMMmhqTUM4NE9UQXlOalUwTURrNU5EZzJMMU5VUlZBZ2JXOTBiM0pzWWN5S2N5QXpNREF0YzJWeWFXVnVYMDlUUkZCZmNYVnBZMnRuZFdsa1pWOHlNREkxWDNWMFp5NDNYMU5XTG5Ca1pnfDZiOTcwZDcyODkzZjFkMzAyMGM2MzM5OWI4MjczZTVhMjMwZWU1ODEyM2Q1NzJlYzkwY2E2Yjg0ODU5YTBmZTM",
 };
 
+/** Per-id-överstyrning, t.ex. mikrobrytarvarianter som har eget kopplingsschema. */
+const MANUAL_PDF_BY_ID: Record<string, string> = {
+  "assa-310m": "https://www.assaabloy.com/se/sv/documents/support-service/nedladdningscenter/product-information/mikrobrytare-lashus/Tabell%20funktionsbeskrivning%20mikrobrytare.pdf",
+  "assa-560m": "https://www.assaabloy.com/se/sv/documents/support-service/nedladdningscenter/product-information/mikrobrytare-lashus/Tabell%20funktionsbeskrivning%20mikrobrytare.pdf",
+};
+
 export function directManualPdf(lock: LockCase): string | undefined {
+  if (MANUAL_PDF_BY_ID[lock.id]) return MANUAL_PDF_BY_ID[lock.id];
   return MANUAL_PDF[lock.model.replace(/ med mikrobrytare$/, "")];
 }
 
 export function hasDirectManual(lock: LockCase): boolean {
-  return lock.model.replace(/ med mikrobrytare$/, "") in MANUAL_PDF;
+  return directManualPdf(lock) !== undefined;
 }
 
 /** Direkt till manualen om verifierad länk finns, annars tillverkarens produktsida/sök. */
