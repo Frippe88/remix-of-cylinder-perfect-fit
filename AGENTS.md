@@ -10,3 +10,4 @@
 <!-- LOVABLE:END -->
 
 - All cylinder math lives in src/lib/cylinder.ts (pure, tested); UI only calls it. Why: deterministic, extendable, testable.
+- Results presentation lives in src/components/cylinder-results.tsx, with progressive disclosure per side; keep every computed combination accessible without duplicating the recommendation in the alternatives. Why: double-cylinder results must remain scannable without changing the calculation rules.
