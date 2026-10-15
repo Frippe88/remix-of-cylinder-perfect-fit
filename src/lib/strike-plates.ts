@@ -49,7 +49,7 @@ export type StrikeKind = "alla" | "el" | "mekanisk";
 export interface StrikeQuery {
   heightMm: number;
   widthMm: number;
-  ploMm?: number; // önskat plösmått, valfritt
+  ploMm?: number | undefined; // önskat plösmått, valfritt
   kind?: StrikeKind;
 }
 

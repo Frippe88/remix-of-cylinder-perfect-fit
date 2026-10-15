@@ -12,7 +12,7 @@ describe("matchStrikePlates", () => {
   });
   it("önskat plösmått sorteras först", () => {
     const r = matchStrikePlates({ heightMm: 250, widthMm: 40, ploMm: 26 });
-    expect(r[0].article).toBe("ST4001-26");
+    expect(r[0]?.article).toBe("ST4001-26");
   });
   it("filtrerar mekaniska", () => {
     const r = matchStrikePlates({ heightMm: 200, widthMm: 40, kind: "mekanisk" });
