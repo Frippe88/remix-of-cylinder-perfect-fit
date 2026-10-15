@@ -39,6 +39,9 @@ export const STRIKE_PLATES: StrikePlate[] = [
   // Mekaniska slutbleck (utan elslutbleck) – ASSA 1487-serien, 200×40
   { article: "1487-1", heightMm: 200, widthMm: 40, ploMm: 13, shape: "plan", fits: "Mekaniskt slutbleck (ASSA)", electric: false },
   { article: "1487-2", heightMm: 200, widthMm: 40, ploMm: 16, shape: "plan", fits: "Mekaniskt slutbleck (ASSA)", electric: false },
+  { article: "1487-3", heightMm: 200, widthMm: 40, ploMm: 20, shape: "plan", fits: "Mekaniskt slutbleck (ASSA)", electric: false },
+  { article: "1487-4", heightMm: 200, widthMm: 40, ploMm: 21, shape: "plan", fits: "Mekaniskt slutbleck (ASSA)", electric: false },
+];
 
 
 export type StrikeKind = "alla" | "el" | "mekanisk";

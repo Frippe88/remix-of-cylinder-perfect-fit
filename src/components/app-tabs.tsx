@@ -21,6 +21,13 @@ export function AppTabs() {
       >
         Låshusmanualer
       </Link>
+      <Link
+        to="/stolpvaljare"
+        className={tabClass}
+        activeProps={{ className: "!bg-primary-foreground !text-primary" }}
+      >
+        Stolpväljare
+      </Link>
     </nav>
   );
 }
