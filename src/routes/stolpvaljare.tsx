@@ -106,17 +106,20 @@ function StrikePage() {
           ))}
         </div>
 
-        {!ready ? (
-          <p className="rounded-xl border border-dashed border-border p-6 text-center text-muted-foreground">
-            Fyll i urtagets höjd och bredd för att se passande stolpar.
+        {!ready && (
+          <p className="rounded-xl border border-dashed border-border p-4 text-center text-sm text-muted-foreground">
+            Fyll i urtagets mått för att filtrera listan – just nu visas alla stolpar i katalogen.
           </p>
-        ) : results.length === 0 ? (
+        )}
+        {ready && results.length === 0 ? (
           <p className="rounded-xl border border-warning bg-warning-soft p-4 text-sm">
             Ingen stolpe i katalogen ryms i det urtaget. Kontrollera måtten eller välj en annan typ.
           </p>
         ) : (
           <>
-            <p className="text-sm text-muted-foreground">{results.length} passande stolpar – bäst först</p>
+            <p className="text-sm text-muted-foreground">
+              {ready ? `${results.length} passande stolpar – bäst först` : `Alla stolpar i katalogen (${shown.length} st)`}
+            </p>
             <ul className="grid gap-3 sm:grid-cols-2">
               {results.map((s, i) => {
                 const exactPlo = s.ploDiffMm === 0;
