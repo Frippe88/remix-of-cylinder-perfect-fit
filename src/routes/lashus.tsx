@@ -45,7 +45,7 @@ function LockCasesPage() {
         <div className="mx-auto max-w-5xl px-4 py-6 sm:py-8">
           <p className="font-mono text-xs uppercase tracking-widest text-accent">Låssmedsverktyg</p>
           <h1 className="mt-1 text-3xl font-extrabold tracking-tight sm:text-4xl">Låshusmanualer</h1>
-          <p className="mt-2 max-w-xl text-sm opacity-80">ASSA och STEP – klicka på ett låshus för att förstora bilden, eller på ”Öppna manual” för att komma in i manualen.</p>
+          <p className="mt-2 max-w-xl text-sm opacity-80">ASSA och STEP – använd knapparna på varje låshus för att öppna manual eller förstora bilden.</p>
           <AppTabs />
         </div>
       </header>
@@ -87,25 +87,7 @@ function LockCasesPage() {
               const zoomable = Boolean(LOCK_IMAGES[l.id]);
               return (
                 <li key={l.id}>
-                  <div
-                    className={`flex h-full items-start gap-3 rounded-xl border border-border bg-card p-4 transition-colors ${
-                      zoomable ? "cursor-zoom-in hover:border-primary" : ""
-                    }`}
-                    onClick={zoomable ? () => setZoomId(l.id) : undefined}
-                    onKeyDown={
-                      zoomable
-                        ? (e) => {
-                            if (e.key === "Enter" || e.key === " ") {
-                              e.preventDefault();
-                              setZoomId(l.id);
-                            }
-                          }
-                        : undefined
-                    }
-                    role={zoomable ? "button" : undefined}
-                    tabIndex={zoomable ? 0 : undefined}
-                    aria-label={zoomable ? `Förstora bilden på ${l.brand === "ASSA" ? `ASSA ${l.model}` : l.model}` : undefined}
-                  >
+                  <div className="flex h-full items-start gap-3 rounded-xl border border-border bg-card p-4">
                     <LockThumb id={l.id} />
                     <div className="min-w-0 flex-1">
                       <p className="font-mono text-xs uppercase tracking-wider text-muted-foreground">
@@ -113,12 +95,11 @@ function LockCasesPage() {
                       </p>
                       <p className="mt-1 text-lg font-bold">{l.brand === "ASSA" ? `ASSA ${l.model}` : l.model}</p>
                       <p className="mt-1 text-sm text-muted-foreground">{l.note}</p>
-                      <div className="mt-3">
+                      <div className="mt-3 flex flex-wrap items-center gap-2">
                         {hasDirectManual(l) ? (
                           <Link
                             to="/manual/$id"
                             params={{ id: l.id }}
-                            onClick={(e) => e.stopPropagation()}
                             className="inline-flex items-center gap-1.5 rounded-lg bg-primary px-3 py-2 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90"
                           >
                             Öppna manual (PDF)
@@ -128,15 +109,24 @@ function LockCasesPage() {
                             href={manualSearchUrl(l)}
                             target="_blank"
                             rel="noopener noreferrer"
-                            onClick={(e) => e.stopPropagation()}
                             className="inline-flex items-center gap-1.5 rounded-lg border border-primary bg-card px-3 py-2 text-sm font-semibold text-primary transition-colors hover:bg-muted"
                           >
                             Hitta manual hos tillverkaren
                           </a>
                         )}
+                        {zoomable && (
+                          <button
+                            type="button"
+                            onClick={() => setZoomId(l.id)}
+                            aria-label={`Förstora bilden på ${l.brand === "ASSA" ? `ASSA ${l.model}` : l.model}`}
+                            className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-background px-3 py-2 text-sm font-semibold text-foreground transition-colors hover:bg-muted"
+                          >
+                            <Maximize2 className="h-4 w-4" />
+                            Förstora bild
+                          </button>
+                        )}
                       </div>
                     </div>
-                    {zoomable && <Maximize2 className="mt-1 h-4 w-4 shrink-0 text-muted-foreground" />}
                   </div>
                 </li>
               );
