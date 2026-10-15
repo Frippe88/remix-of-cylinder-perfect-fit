@@ -201,10 +201,10 @@ function StrikePage() {
                 const exactPlo = s.ploDiffMm === 0;
                 const img = strikeImage(s.article);
                 return (
-                  <li key={s.article} className={`rounded-xl border bg-card p-4 ${ready && i === 0 ? "border-primary ring-1 ring-primary" : "border-border"}`}>
+                  <li key={s.article} id={`stolpe-${s.article}`} className={`rounded-xl border bg-card p-4 ${selected === s.article || (ready && i === 0) ? "border-primary ring-1 ring-primary" : "border-border"}`}>
                     <button
                       type="button"
-                      onClick={() => setOpen(s.article)}
+                      onClick={() => { setSelected(s.article); setOpen(s.article); }}
                       className="flex w-full items-start gap-3 text-left"
                       aria-label={`Visa bild på ${s.article}`}
                     >
@@ -212,7 +212,11 @@ function StrikePage() {
                         <img src={img} alt={s.article} loading="lazy" className="h-20 w-20 shrink-0 rounded-md border border-border bg-card object-contain" />
                       )}
                       <div className="min-w-0 flex-1">
-                        {ready && i === 0 && <p className="text-xs font-bold uppercase tracking-wide text-primary">Bäst passform</p>}
+                        {selected === s.article ? (
+                          <p className="text-xs font-bold uppercase tracking-wide text-primary">Vald stolpe</p>
+                        ) : ready && i === 0 ? (
+                          <p className="text-xs font-bold uppercase tracking-wide text-primary">Bäst passform</p>
+                        ) : null}
                         <p className="text-lg font-extrabold">{s.article}</p>
                         <p className="text-sm text-muted-foreground">{s.fits}</p>
                         <p className="mt-1 text-xs font-semibold text-primary">Tryck för stor bild</p>
