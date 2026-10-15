@@ -1,4 +1,4 @@
-export type LockBrand = "ASSA" | "STEP";
+export type LockBrand = "ASSA" | "STEP" | "SAFETRON";
 export type LockCategory = "mekaniskt" | "mikro" | "eltryck" | "motor";
 
 export interface LockCase {
@@ -25,6 +25,8 @@ const MANUFACTURER_SEARCH: Record<LockBrand, (lock: LockCase) => string> = {
     const slug = encodeURIComponent(base);
     return `https://steplock.com/SE/sv/product/${slug}/${slug}`;
   },
+  SAFETRON: (lock) =>
+    `https://www.safetron.com/?s=${encodeURIComponent(lock.model)}`,
 };
 
 export const LOCK_CASES: LockCase[] = [
@@ -52,6 +54,8 @@ export const LOCK_CASES: LockCase[] = [
   { id: "step-350", brand: "STEP", model: "STEP 350", category: "motor", note: "Motorlås." },
   { id: "step-351", brand: "STEP", model: "STEP 351", category: "motor", note: "Motorlås." },
   { id: "step-352", brand: "STEP", model: "STEP 352", category: "motor", note: "Motorlås." },
+  { id: "safetron-sl620", brand: "SAFETRON", model: "SL620", category: "eltryck", note: "Eltryckeslås i 600-serien." },
+  { id: "safetron-sl630", brand: "SAFETRON", model: "SL630", category: "eltryck", note: "Eltryckeslås i 600-serien." },
 ];
 
 /** Verifierade direktlänkar till tillverkarens manual-PDF (hämtade från steplock.com produktsidor). */
@@ -77,6 +81,9 @@ const MANUAL_PDF: Record<string, string> = {
   "STEP 350": "https://api.steplock.com/medias/STEP-motorla-s-300-serien-OSDP-quickguide-2025-utg.7-SV.pdf?context=bWFzdGVyfHByb2R1Y3RNYW51YWxzfDI4OTgxNTh8YXBwbGljYXRpb24vcGRmfGFHUXlMMmhqTUM4NE9UQXlOalUwTURrNU5EZzJMMU5VUlZBZ2JXOTBiM0pzWWN5S2N5QXpNREF0YzJWeWFXVnVYMDlUUkZCZmNYVnBZMnRuZFdsa1pWOHlNREkxWDNWMFp5NDNYMU5XTG5Ca1pnfDZiOTcwZDcyODkzZjFkMzAyMGM2MzM5OWI4MjczZTVhMjMwZWU1ODEyM2Q1NzJlYzkwY2E2Yjg0ODU5YTBmZTM",
   "STEP 351": "https://api.steplock.com/medias/STEP-motorla-s-300-serien-ST500C-OSDP-manual-2026-utg.8-SV.pdf?context=bWFzdGVyfHByb2R1Y3RNYW51YWxzfDUzNzk2NzR8YXBwbGljYXRpb24vcGRmfGFHVXhMMmhrTXk4NE9UQXlOemcyTURnNE9Ua3dMMU5VUlZBZ2JXOTBiM0pzWWN5S2N5QXpNREF0YzJWeWFXVnVYMU5VTlRBd1ExOVBVMFJRWDIxaGJuVmhiRjh5TURJMlgzVjBaeTQ0WDFOV0xuQmtaZ3wyZTJkMTI5NWRiZWE3ZmI5MGFjMzliYmNmNTJiN2M0Y2ZhZGMxYTcxYjA5NTVkNTdjMTZiNWE5OGI4OTI5YzNl",
   "STEP 352": "https://api.steplock.com/medias/STEP-motorla-s-300-serien-OSDP-quickguide-2025-utg.7-SV.pdf?context=bWFzdGVyfHByb2R1Y3RNYW51YWxzfDI4OTgxNTh8YXBwbGljYXRpb24vcGRmfGFHUXlMMmhqTUM4NE9UQXlOalUwTURrNU5EZzJMMU5VUlZBZ2JXOTBiM0pzWWN5S2N5QXpNREF0YzJWeWFXVnVYMDlUUkZCZmNYVnBZMnRuZFdsa1pWOHlNREkxWDNWMFp5NDNYMU5XTG5Ca1pnfDZiOTcwZDcyODkzZjFkMzAyMGM2MzM5OWI4MjczZTVhMjMwZWU1ODEyM2Q1NzJlYzkwY2E2Yjg0ODU5YTBmZTM",
+  // SAFETRON officiella installationsanvisningar (safetron.com filarkiv)
+  "SL620": "https://www.safetron.com/pdf/manual/manual-eltryckeslas-sl620.pdf",
+  "SL630": "https://www.safetron.com/pdf/manual/manual-eltryckeslas-sl630.pdf",
 };
 
 /** Per-id-överstyrning, t.ex. mikrobrytarvarianter som har eget kopplingsschema. */

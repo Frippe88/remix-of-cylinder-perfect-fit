@@ -60,7 +60,7 @@ function LockCasesPage() {
         </label>
 
         <div className="flex flex-wrap gap-2">
-          {(["alla", "ASSA", "STEP"] as const).map((b) => (
+          {(["alla", "ASSA", "STEP", "SAFETRON"] as const).map((b) => (
             <button key={b} className={chip(brand === b)} onClick={() => setBrand(b)}>
               {b === "alla" ? "Alla fabrikat" : b}
             </button>
