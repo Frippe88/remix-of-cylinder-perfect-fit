@@ -1,4 +1,4 @@
-// Genererad: officiella produktbilder per stolpe (STEP via steplock.com, ASSA via återförsäljare; 1487-3 visar 1487-2:s bild – samma utförande).
+// Genererad: officiella produktbilder per stolpe (STEP via steplock.com, ASSA 1487 via återförsäljare, ASSA 900-serien via ASSA ABLOY:s officiella produktbilder; 1487-3 visar 1487-2:s bild – samma utförande).
 export const STRIKE_IMAGES: Record<string, string> = {
   "1487-1": "/__l5e/assets-v1/31f338b1-4581-4090-993f-f5240cf31a71/1487-1.jpg",
   "1487-2": "/__l5e/assets-v1/358f8d24-9c41-4bf0-88c6-450faea8fa18/1487-2.jpg",
@@ -24,7 +24,27 @@ export const STRIKE_IMAGES: Record<string, string> = {
   "ST4009-13": "/__l5e/assets-v1/78a6d7d4-1001-4add-8bf8-576bb286cb7d/ST4009-13.png",
   "ST4009-16": "/__l5e/assets-v1/25a88e48-4858-4372-a597-f3ddbddfef38/ST4009-16.png",
   "ST4009-20": "/__l5e/assets-v1/8ed58c71-24b3-4389-a910-86eeb7786b46/ST4009-20.png",
-  "ST4009-21": "/__l5e/assets-v1/d4732589-f9a7-4b80-b205-af21338fbaa9/ST4009-21.png"
+  "ST4009-21": "/__l5e/assets-v1/d4732589-f9a7-4b80-b205-af21338fbaa9/ST4009-21.png",
+  "930": "/__l5e/assets-v1/405da5f5-8759-414f-9176-73d495c56e21/930.jpg",
+  "942": "/__l5e/assets-v1/78868e98-ee0d-4c28-8814-aaa041d4e6e3/942.jpg",
+  "940": "/__l5e/assets-v1/ea28801f-27cb-4694-88b4-cd951f717f26/940.jpg",
+  "933-17": "/__l5e/assets-v1/8e1ebf16-48e8-4c53-8abd-5cfd9cad18e6/933-17.jpg",
+  "966": "/__l5e/assets-v1/1a917689-5e40-4e37-81b1-9d7302c87d70/966.jpg",
+  "9487-10": "/__l5e/assets-v1/60063720-1e64-42d5-82af-d6db6f12ec4c/9487-10.jpg",
+  "931-17": "/__l5e/assets-v1/a9e3b026-7422-47ac-a992-88d167947264/931-17.jpg",
+  "957": "/__l5e/assets-v1/364cd6e9-4c22-4120-90ca-f1df00eee419/957.jpg",
+  "956": "/__l5e/assets-v1/8d0b7d04-a5cc-4f26-9cf7-0f18f44774da/956.jpg",
+  "959": "/__l5e/assets-v1/0ea7cada-6f17-4436-89ad-b894d0dbbac0/959.jpg",
+  "932T": "/__l5e/assets-v1/4ec85d00-614d-428d-ad0e-0673e3254fb1/932T.jpg",
+  "931-20": "/__l5e/assets-v1/9cdd2ead-15d0-46d0-b63d-1c7285c645c6/931-20.jpg",
+  "931-26": "/__l5e/assets-v1/520b9127-d14b-442a-8195-681d4aa113d9/931-26.jpg",
+  "933-26": "/__l5e/assets-v1/226448e3-cf59-4f71-a99b-e0194b20a6de/933-26.jpg",
+  "933-20": "/__l5e/assets-v1/bf1eb71d-cb42-4a60-8b26-0d90ccb77d01/933-20.jpg",
+  "930-9,5": "/__l5e/assets-v1/43c925a3-808d-4567-a697-639541a0facb/930-9_5.jpg",
+  "930-13": "/__l5e/assets-v1/a2fb93ca-7880-450c-9921-9a4ef8f241a5/930-13.jpg",
+  "9487-2": "/__l5e/assets-v1/fcbf6783-c135-4453-aec8-78d8ecc11e50/9487-2.jpg",
+  "9487-3": "/__l5e/assets-v1/2f05b968-80eb-4af5-b237-d20d89f36016/9487-3.jpg",
+  "9487-4": "/__l5e/assets-v1/c704b271-d69c-494a-9e79-9bf56d5a924d/9487-4.jpg"
 };
 
 export const strikeImage = (article: string): string | undefined => STRIKE_IMAGES[article];
