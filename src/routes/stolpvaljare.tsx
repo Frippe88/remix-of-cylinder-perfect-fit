@@ -49,11 +49,12 @@ function StrikePage() {
   const [w, setW] = useState("");
   const [p, setP] = useState("");
   const [kind, setKind] = useState<StrikeKind>("alla");
+  const [brand, setBrand] = useState<StrikeBrand>("alla");
   const [open, setOpen] = useState<string | null>(null);
   const openPlate = STRIKE_PLATES.find((x) => x.article === open);
   const results = useMemo(
-    () => matchStrikePlates({ heightMm: num(h), widthMm: num(w), ploMm: p ? num(p) : undefined, kind }),
-    [h, w, p, kind],
+    () => matchStrikePlates({ heightMm: num(h), widthMm: num(w), ploMm: p ? num(p) : undefined, kind, brand }),
+    [h, w, p, kind, brand],
   );
   const ready = num(h) > 0 && num(w) > 0;
 
@@ -82,6 +83,15 @@ function StrikePage() {
             ["mekanisk", "Mekaniska"],
           ] as const).map(([k, l]) => (
             <button key={k} className={chip(kind === k)} onClick={() => setKind(k)}>{l}</button>
+          ))}
+        </div>
+        <div className="flex flex-wrap gap-2">
+          {([
+            ["alla", "Alla fabrikat"],
+            ["STEP", "STEP"],
+            ["ASSA", "ASSA ABLOY"],
+          ] as const).map(([k, l]) => (
+            <button key={k} className={chip(brand === k)} onClick={() => setBrand(k)}>{l}</button>
           ))}
         </div>
 

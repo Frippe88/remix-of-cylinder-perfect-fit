@@ -6,3 +6,5 @@
 
 # Stolpväljare
 - [x] To bort fliken, sidan och alla stödfiler helt (återkommer kanske senare).
+- [x] Lägg in ASSA-stolpar för elslutbleck (700- och 900-serien) och fabrikatsfilter.
+- [ ] Bilder på ASSA elslutbleckstolpar (saknar verifierade foton).
