@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useMemo, useState } from "react";
-import { ExternalLink, Search } from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
+import { ExternalLink, Maximize2, Search, X } from "lucide-react";
 import { AppTabs } from "@/components/app-tabs";
 import {
   CATEGORY_LABEL,
@@ -36,6 +36,7 @@ function LockCasesPage() {
   const [query, setQuery] = useState("");
   const [brand, setBrand] = useState<LockBrand | "alla">("alla");
   const [category, setCategory] = useState<LockCategory | "alla">("alla");
+  const [zoomId, setZoomId] = useState<string | null>(null);
   const list = useMemo(() => filterLocks(LOCK_CASES, query, brand, category), [query, brand, category]);
 
   return (
@@ -44,7 +45,7 @@ function LockCasesPage() {
         <div className="mx-auto max-w-5xl px-4 py-6 sm:py-8">
           <p className="font-mono text-xs uppercase tracking-widest text-accent">Låssmedsverktyg</p>
           <h1 className="mt-1 text-3xl font-extrabold tracking-tight sm:text-4xl">Låshusmanualer</h1>
-          <p className="mt-2 max-w-xl text-sm opacity-80">ASSA och STEP – klicka på ett låshus för att hitta manualen.</p>
+          <p className="mt-2 max-w-xl text-sm opacity-80">ASSA och STEP – klicka på ett låshus för att förstora bilden, eller på ”Öppna manual” för att komma in i manualen.</p>
           <AppTabs />
         </div>
       </header>
@@ -82,37 +83,64 @@ function LockCasesPage() {
           <p className="rounded-lg border border-border bg-card p-6 text-center">Inget låshus matchar sökningen.</p>
         ) : (
           <ul className="grid gap-3 sm:grid-cols-2">
-            {list.map((l) => (
-              <li key={l.id}>
-                {hasDirectManual(l) ? (
-                  <Link to="/manual/$id" params={{ id: l.id }} className="flex h-full items-start gap-3 rounded-xl border border-border bg-card p-4 transition-colors hover:border-primary">
-                  <LockThumb id={l.id} />
-                  <div className="min-w-0 flex-1">
-                    <p className="font-mono text-xs uppercase tracking-wider text-muted-foreground">
-                      {l.brand} · {CATEGORY_LABEL[l.category]}
-                    </p>
-                    <p className="mt-1 text-lg font-bold">{l.brand === "ASSA" ? `ASSA ${l.model}` : l.model}</p>
-                    <p className="mt-1 text-sm text-muted-foreground">{l.note}</p>
-                    <p className="mt-3 text-sm font-semibold text-primary">{hasDirectManual(l) ? "Öppna manual (PDF)" : "Hitta manual hos tillverkaren"}</p>
+            {list.map((l) => {
+              const zoomable = Boolean(LOCK_IMAGES[l.id]);
+              return (
+                <li key={l.id}>
+                  <div
+                    className={`flex h-full items-start gap-3 rounded-xl border border-border bg-card p-4 transition-colors ${
+                      zoomable ? "cursor-zoom-in hover:border-primary" : ""
+                    }`}
+                    onClick={zoomable ? () => setZoomId(l.id) : undefined}
+                    onKeyDown={
+                      zoomable
+                        ? (e) => {
+                            if (e.key === "Enter" || e.key === " ") {
+                              e.preventDefault();
+                              setZoomId(l.id);
+                            }
+                          }
+                        : undefined
+                    }
+                    role={zoomable ? "button" : undefined}
+                    tabIndex={zoomable ? 0 : undefined}
+                    aria-label={zoomable ? `Förstora bilden på ${l.brand === "ASSA" ? `ASSA ${l.model}` : l.model}` : undefined}
+                  >
+                    <LockThumb id={l.id} />
+                    <div className="min-w-0 flex-1">
+                      <p className="font-mono text-xs uppercase tracking-wider text-muted-foreground">
+                        {l.brand} · {CATEGORY_LABEL[l.category]}
+                      </p>
+                      <p className="mt-1 text-lg font-bold">{l.brand === "ASSA" ? `ASSA ${l.model}` : l.model}</p>
+                      <p className="mt-1 text-sm text-muted-foreground">{l.note}</p>
+                      <div className="mt-3">
+                        {hasDirectManual(l) ? (
+                          <Link
+                            to="/manual/$id"
+                            params={{ id: l.id }}
+                            onClick={(e) => e.stopPropagation()}
+                            className="inline-flex items-center gap-1.5 rounded-lg bg-primary px-3 py-2 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90"
+                          >
+                            Öppna manual (PDF)
+                          </Link>
+                        ) : (
+                          <a
+                            href={manualSearchUrl(l)}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            onClick={(e) => e.stopPropagation()}
+                            className="inline-flex items-center gap-1.5 rounded-lg border border-primary bg-card px-3 py-2 text-sm font-semibold text-primary transition-colors hover:bg-muted"
+                          >
+                            Hitta manual hos tillverkaren
+                          </a>
+                        )}
+                      </div>
+                    </div>
+                    {zoomable && <Maximize2 className="mt-1 h-4 w-4 shrink-0 text-muted-foreground" />}
                   </div>
-                  <ExternalLink className="mt-1 h-4 w-4 shrink-0 text-muted-foreground" />
-                  </Link>
-                ) : (
-                  <a href={manualSearchUrl(l)} target="_blank" rel="noopener noreferrer" className="flex h-full items-start gap-3 rounded-xl border border-border bg-card p-4 transition-colors hover:border-primary">
-                  <LockThumb id={l.id} />
-                  <div className="min-w-0 flex-1">
-                    <p className="font-mono text-xs uppercase tracking-wider text-muted-foreground">
-                      {l.brand} · {CATEGORY_LABEL[l.category]}
-                    </p>
-                    <p className="mt-1 text-lg font-bold">{l.brand === "ASSA" ? `ASSA ${l.model}` : l.model}</p>
-                    <p className="mt-1 text-sm text-muted-foreground">{l.note}</p>
-                    <p className="mt-3 text-sm font-semibold text-primary">{hasDirectManual(l) ? "Öppna manual (PDF)" : "Hitta manual hos tillverkaren"}</p>
-                  </div>
-                  <ExternalLink className="mt-1 h-4 w-4 shrink-0 text-muted-foreground" />
-                  </a>
-                )}
-              </li>
-            ))}
+                </li>
+              );
+            })}
           </ul>
         )}
 
@@ -120,6 +148,8 @@ function LockCasesPage() {
           Manualerna öppnas från ASSA ABLOY:s, STEP:s och Safetrons egna webbplatser. Kontrollera alltid modell och utförande mot låshusets märkning.
         </p>
       </main>
+
+      {zoomId && <ImageZoom lock={LOCK_CASES.find((l) => l.id === zoomId)!} onClose={() => setZoomId(null)} />}
     </div>
   );
 }
@@ -133,6 +163,49 @@ function LockThumb({ id }: { id: string }) {
       ) : (
         <span className="px-1 text-center text-[10px] leading-tight text-muted-foreground">Bild saknas</span>
       )}
+    </div>
+  );
+}
+
+function ImageZoom({ lock, onClose }: { lock: (typeof LOCK_CASES)[number]; onClose: () => void }) {
+  const src = LOCK_IMAGES[lock.id];
+  const name = lock.brand === "ASSA" ? `ASSA ${lock.model}` : lock.model;
+
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClose();
+    };
+    window.addEventListener("keydown", onKey);
+    document.body.style.overflow = "hidden";
+    return () => {
+      window.removeEventListener("keydown", onKey);
+      document.body.style.overflow = "";
+    };
+  }, [onClose]);
+
+  return (
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center bg-background/95 p-4 backdrop-blur-sm"
+      onClick={onClose}
+      role="dialog"
+      aria-modal="true"
+      aria-label={`Förstorad bild på ${name}`}
+    >
+      <button
+        onClick={onClose}
+        aria-label="Stäng"
+        className="absolute right-4 top-4 flex h-10 w-10 items-center justify-center rounded-full border border-border bg-card text-foreground transition-colors hover:bg-muted"
+      >
+        <X className="h-5 w-5" />
+      </button>
+      <figure className="max-w-3xl" onClick={(e) => e.stopPropagation()}>
+        {src ? (
+          <img src={src} alt={`Produktbild ${name}`} className="max-h-[80vh] w-auto max-w-full rounded-xl border border-border bg-card object-contain p-8 shadow-lg" />
+        ) : (
+          <p className="rounded-xl border border-border bg-card p-6 text-center text-sm text-muted-foreground">Bild saknas för {name}.</p>
+        )}
+        <figcaption className="mt-3 text-center text-sm font-bold">{name}</figcaption>
+      </figure>
     </div>
   );
 }
