@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { ExternalLink, Maximize2, Search, X } from "lucide-react";
 import { AppTabs } from "@/components/app-tabs";
 import {
