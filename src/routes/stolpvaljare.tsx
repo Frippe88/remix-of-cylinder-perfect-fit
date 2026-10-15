@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { AppTabs } from "@/components/app-tabs";
-import { matchStrikePlates, STRIKE_PLATES, type StrikeKind, type StrikeBrand } from "@/lib/strike-plates";
+import { matchStrikePlates, strikeBrand, STRIKE_PLATES, type StrikeKind, type StrikeBrand, type StrikeMatch } from "@/lib/strike-plates";
 import { strikeImage, strikeImageNote } from "@/lib/strike-images";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 
@@ -52,11 +52,22 @@ function StrikePage() {
   const [brand, setBrand] = useState<StrikeBrand>("alla");
   const [open, setOpen] = useState<string | null>(null);
   const openPlate = STRIKE_PLATES.find((x) => x.article === open);
+  const ready = num(h) > 0 && num(w) > 0;
   const results = useMemo(
     () => matchStrikePlates({ heightMm: num(h), widthMm: num(w), ploMm: p ? num(p) : undefined, kind, brand }),
     [h, w, p, kind, brand],
   );
-  const ready = num(h) > 0 && num(w) > 0;
+  // Utan mått visas hela katalogen (med fabrikats-/typfilter), sorterad efter mått.
+  const shown: StrikeMatch[] = useMemo(
+    () =>
+      ready
+        ? results
+        : STRIKE_PLATES.filter((s) => kind === "alla" || (kind === "el") === s.electric)
+            .filter((s) => brand === "alla" || strikeBrand(s) === brand)
+            .map((s) => ({ ...s, heightSlackMm: 0, widthSlackMm: 0, ploDiffMm: null }))
+            .sort((a, b) => a.heightMm - b.heightMm || a.widthMm - b.widthMm || a.ploMm - b.ploMm || a.article.localeCompare(b.article, "sv")),
+    [ready, results, kind, brand],
+  );
 
   return (
     <div className="min-h-screen">
