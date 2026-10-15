@@ -130,10 +130,19 @@ export const LOCK_CASES: LockCase[] = [
 ];
 
 /** Verifierade direktlänkar till tillverkarens manual-PDF (hämtade från steplock.com produktsidor). */
+const CONNECT_PDF = "https://www.assaabloy.com/se/sv/documents/support-service/nedladdningscenter/product-information/installationsanvisningar/lashus-slutbleck/M2586.1502%20Monteringsanvisning%20Connect%20hakr.%20sv-eng%20MK21-05-07.pdf";
+const MODUL_PDF = "https://www.assaabloy.com/se/sv/documents/support-service/nedladdningscenter/product-information/installationsanvisningar/lashus-slutbleck/Monteringsanvisning%20modullas.pdf";
+
 const MANUAL_PDF: Record<string, string> = {
   // ASSA ABLOY officiella PDF:er (assaabloy.com nedladdningscenter)
   "Connect 310": "https://www.assaabloy.com/se/sv/documents/support-service/nedladdningscenter/product-information/installationsanvisningar/lashus-slutbleck/M2586.1502%20Monteringsanvisning%20Connect%20hakr.%20sv-eng%20MK21-05-07.pdf",
   "Connect 410": "https://www.assaabloy.com/se/sv/documents/support-service/nedladdningscenter/product-information/installationsanvisningar/lashus-slutbleck/M2586.1502%20Monteringsanvisning%20Connect%20hakr.%20sv-eng%20MK21-05-07.pdf",
+  "Connect 311": CONNECT_PDF,
+  "Connect 411": CONNECT_PDF,
+  "562": MODUL_PDF,
+  "564": MODUL_PDF,
+  "566": MODUL_PDF,
+  "2000": MODUL_PDF,
   "2002": "https://www.assaabloy.com/se/sv/documents/support-service/nedladdningscenter/product-information/installationsanvisningar/lashus-slutbleck/M2586.1502%20Monteringsanvisning%20Connect%20hakr.%20sv-eng%20MK21-05-07.pdf",
   "560": "https://www.assaabloy.com/se/sv/documents/support-service/nedladdningscenter/product-information/installationsanvisningar/lashus-slutbleck/Monteringsanvisning%20modullas.pdf",
   "565": "https://www.assaabloy.com/se/sv/documents/support-service/nedladdningscenter/product-information/installationsanvisningar/lashus-slutbleck/Monteringsanvisning%20modullas.pdf",
