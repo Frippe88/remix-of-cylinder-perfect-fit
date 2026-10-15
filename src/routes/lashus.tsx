@@ -11,6 +11,7 @@ import {
   type LockBrand,
   type LockCategory,
 } from "@/lib/lock-cases";
+import { LOCK_IMAGES } from "@/lib/lock-images";
 
 export const Route = createFileRoute("/lashus")({
   head: () => ({
@@ -84,8 +85,9 @@ function LockCasesPage() {
             {list.map((l) => (
               <li key={l.id}>
                 {hasDirectManual(l) ? (
-                  <Link to="/manual/$id" params={{ id: l.id }} className="flex h-full items-start justify-between gap-3 rounded-xl border border-border bg-card p-4 transition-colors hover:border-primary">
-                  <div>
+                  <Link to="/manual/$id" params={{ id: l.id }} className="flex h-full items-start gap-3 rounded-xl border border-border bg-card p-4 transition-colors hover:border-primary">
+                  <LockThumb id={l.id} />
+                  <div className="min-w-0 flex-1">
                     <p className="font-mono text-xs uppercase tracking-wider text-muted-foreground">
                       {l.brand} · {CATEGORY_LABEL[l.category]}
                     </p>
@@ -96,8 +98,9 @@ function LockCasesPage() {
                   <ExternalLink className="mt-1 h-4 w-4 shrink-0 text-muted-foreground" />
                   </Link>
                 ) : (
-                  <a href={manualSearchUrl(l)} target="_blank" rel="noopener noreferrer" className="flex h-full items-start justify-between gap-3 rounded-xl border border-border bg-card p-4 transition-colors hover:border-primary">
-                  <div>
+                  <a href={manualSearchUrl(l)} target="_blank" rel="noopener noreferrer" className="flex h-full items-start gap-3 rounded-xl border border-border bg-card p-4 transition-colors hover:border-primary">
+                  <LockThumb id={l.id} />
+                  <div className="min-w-0 flex-1">
                     <p className="font-mono text-xs uppercase tracking-wider text-muted-foreground">
                       {l.brand} · {CATEGORY_LABEL[l.category]}
                     </p>
@@ -117,6 +120,19 @@ function LockCasesPage() {
           Manualerna öppnas från ASSA ABLOY:s, STEP:s och Safetrons egna webbplatser. Kontrollera alltid modell och utförande mot låshusets märkning.
         </p>
       </main>
+    </div>
+  );
+}
+
+function LockThumb({ id }: { id: string }) {
+  const src = LOCK_IMAGES[id];
+  return (
+    <div className="flex h-20 w-20 shrink-0 items-center justify-center overflow-hidden rounded-lg border border-border bg-background">
+      {src ? (
+        <img src={src} alt="" loading="lazy" className="h-full w-full object-contain p-1" />
+      ) : (
+        <span className="px-1 text-center text-[10px] leading-tight text-muted-foreground">Bild saknas</span>
+      )}
     </div>
   );
 }
