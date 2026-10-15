@@ -44,7 +44,14 @@ export const STRIKE_IMAGES: Record<string, string> = {
   "930-13": "/__l5e/assets-v1/a2fb93ca-7880-450c-9921-9a4ef8f241a5/930-13.jpg",
   "9487-2": "/__l5e/assets-v1/fcbf6783-c135-4453-aec8-78d8ecc11e50/9487-2.jpg",
   "9487-3": "/__l5e/assets-v1/2f05b968-80eb-4af5-b237-d20d89f36016/9487-3.jpg",
-  "9487-4": "/__l5e/assets-v1/c704b271-d69c-494a-9e79-9bf56d5a924d/9487-4.jpg"
+  "9487-4": "/__l5e/assets-v1/c704b271-d69c-494a-9e79-9bf56d5a924d/9487-4.jpg",
+  "730": "/__l5e/assets-v1/dde52d50-979d-417c-9d02-cd51630e7975/730.jpg",
+  "917W": "/__l5e/assets-v1/51f53f82-b981-4f68-a2e6-1d60cba041c6/917W.jpg",
+  "930T": "/__l5e/assets-v1/50d6d131-d400-42e2-a540-d24f37a7caf4/930T.jpg",
+  "946W": "/__l5e/assets-v1/bf1599ed-e376-421f-8425-5abbc80d9c12/946W.jpg",
+  "965-S": "/__l5e/assets-v1/92eb7fa9-ba0b-4f49-9ad8-76b615359898/965-S.jpg",
+  "965W": "/__l5e/assets-v1/2d67eafa-7a57-4e4a-9ec9-2928e2b367f9/965W.jpg",
+  "975W": "/__l5e/assets-v1/38633d02-bbfa-418d-83e7-32087c7c688a/975W.jpg"
 };
 
 export const strikeImage = (article: string): string | undefined => STRIKE_IMAGES[article];
