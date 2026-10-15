@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { AppTabs } from "@/components/app-tabs";
-import { matchStrikePlates, STRIKE_PLATES, type StrikeKind, type StrikeBrand } from "@/lib/strike-plates";
+import { matchStrikePlates, strikeBrand, STRIKE_PLATES, type StrikeKind, type StrikeBrand, type StrikeMatch } from "@/lib/strike-plates";
 import { strikeImage, strikeImageNote } from "@/lib/strike-images";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 
@@ -52,11 +52,22 @@ function StrikePage() {
   const [brand, setBrand] = useState<StrikeBrand>("alla");
   const [open, setOpen] = useState<string | null>(null);
   const openPlate = STRIKE_PLATES.find((x) => x.article === open);
+  const ready = num(h) > 0 && num(w) > 0;
   const results = useMemo(
     () => matchStrikePlates({ heightMm: num(h), widthMm: num(w), ploMm: p ? num(p) : undefined, kind, brand }),
     [h, w, p, kind, brand],
   );
-  const ready = num(h) > 0 && num(w) > 0;
+  // Utan mått visas hela katalogen (med fabrikats-/typfilter), sorterad efter mått.
+  const shown: StrikeMatch[] = useMemo(
+    () =>
+      ready
+        ? results
+        : STRIKE_PLATES.filter((s) => kind === "alla" || (kind === "el") === s.electric)
+            .filter((s) => brand === "alla" || strikeBrand(s) === brand)
+            .map((s) => ({ ...s, heightSlackMm: 0, widthSlackMm: 0, ploDiffMm: null }))
+            .sort((a, b) => a.heightMm - b.heightMm || a.widthMm - b.widthMm || a.ploMm - b.ploMm || a.article.localeCompare(b.article, "sv")),
+    [ready, results, kind, brand],
+  );
 
   return (
     <div className="min-h-screen">
@@ -95,23 +106,26 @@ function StrikePage() {
           ))}
         </div>
 
-        {!ready ? (
-          <p className="rounded-xl border border-dashed border-border p-6 text-center text-muted-foreground">
-            Fyll i urtagets höjd och bredd för att se passande stolpar.
+        {!ready && (
+          <p className="rounded-xl border border-dashed border-border p-4 text-center text-sm text-muted-foreground">
+            Fyll i urtagets mått för att filtrera listan – just nu visas alla stolpar i katalogen.
           </p>
-        ) : results.length === 0 ? (
+        )}
+        {ready && results.length === 0 ? (
           <p className="rounded-xl border border-warning bg-warning-soft p-4 text-sm">
             Ingen stolpe i katalogen ryms i det urtaget. Kontrollera måtten eller välj en annan typ.
           </p>
         ) : (
           <>
-            <p className="text-sm text-muted-foreground">{results.length} passande stolpar – bäst först</p>
+            <p className="text-sm text-muted-foreground">
+              {ready ? `${results.length} passande stolpar – bäst först` : `Alla stolpar i katalogen (${shown.length} st)`}
+            </p>
             <ul className="grid gap-3 sm:grid-cols-2">
-              {results.map((s, i) => {
+              {shown.map((s, i) => {
                 const exactPlo = s.ploDiffMm === 0;
                 const img = strikeImage(s.article);
                 return (
-                  <li key={s.article} className={`rounded-xl border bg-card p-4 ${i === 0 ? "border-primary ring-1 ring-primary" : "border-border"}`}>
+                  <li key={s.article} className={`rounded-xl border bg-card p-4 ${ready && i === 0 ? "border-primary ring-1 ring-primary" : "border-border"}`}>
                     <button
                       type="button"
                       onClick={() => setOpen(s.article)}
@@ -122,7 +136,7 @@ function StrikePage() {
                         <img src={img} alt={s.article} loading="lazy" className="h-20 w-20 shrink-0 rounded-md border border-border bg-card object-contain" />
                       )}
                       <div className="min-w-0 flex-1">
-                        {i === 0 && <p className="text-xs font-bold uppercase tracking-wide text-primary">Bäst passform</p>}
+                        {ready && i === 0 && <p className="text-xs font-bold uppercase tracking-wide text-primary">Bäst passform</p>}
                         <p className="text-lg font-extrabold">{s.article}</p>
                         <p className="text-sm text-muted-foreground">{s.fits}</p>
                         <p className="mt-1 text-xs font-semibold text-primary">Tryck för stor bild</p>
