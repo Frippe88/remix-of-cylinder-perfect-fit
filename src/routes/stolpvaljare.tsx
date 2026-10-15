@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { AppTabs } from "@/components/app-tabs";
 import { matchStrikePlates, strikeBrand, STRIKE_PLATES, type StrikeKind, type StrikeBrand, type StrikeMatch } from "@/lib/strike-plates";
 import { strikeImage, strikeImageNote } from "@/lib/strike-images";
@@ -51,6 +51,7 @@ function StrikePage() {
   const [kind, setKind] = useState<StrikeKind>("alla");
   const [brand, setBrand] = useState<StrikeBrand>("alla");
   const [open, setOpen] = useState<string | null>(null);
+  const [selected, setSelected] = useState<string | null>(null);
   const openPlate = STRIKE_PLATES.find((x) => x.article === open);
   const ready = num(h) > 0 && num(w) > 0;
   const results = useMemo(
@@ -72,18 +73,29 @@ function StrikePage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [nq]);
   // Utan mått visas hela katalogen (med fabrikats-/typfilter), sorterad efter mått.
-  const shown: StrikeMatch[] = useMemo(
-    () =>
-      (ready
-        ? results
-        : STRIKE_PLATES.filter((s) => kind === "alla" || (kind === "el") === s.electric)
-            .filter((s) => brand === "alla" || strikeBrand(s) === brand)
-            .map((s) => ({ ...s, heightSlackMm: 0, widthSlackMm: 0, ploDiffMm: null }))
-            .sort((a, b) => a.heightMm - b.heightMm || a.widthMm - b.widthMm || a.ploMm - b.ploMm || a.article.localeCompare(b.article, "sv"))
-      ).filter(hit),
+  const shown: StrikeMatch[] = useMemo(() => {
+    const base = (ready
+      ? results
+      : STRIKE_PLATES.filter((s) => kind === "alla" || (kind === "el") === s.electric)
+          .filter((s) => brand === "alla" || strikeBrand(s) === brand)
+          .map((s) => ({ ...s, heightSlackMm: 0, widthSlackMm: 0, ploDiffMm: null }))
+          .sort((a, b) => a.heightMm - b.heightMm || a.widthMm - b.widthMm || a.ploMm - b.ploMm || a.article.localeCompare(b.article, "sv"))
+    ).filter(hit);
+    // En vald stolpe ska alltid synas i listan, även om ett filter annars skulle gömma den.
+    if (!ready && selected && !base.some((x) => x.article === selected)) {
+      const sel = STRIKE_PLATES.find((x) => x.article === selected);
+      if (sel) base.unshift({ ...sel, heightSlackMm: 0, widthSlackMm: 0, ploDiffMm: null });
+    }
+    return base;
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [ready, results, kind, brand, nq],
-  );
+  }, [ready, results, kind, brand, nq, selected]);
+
+  // När detaljdialogen stängs, visa den valda stolpen i listan nedanför.
+  useEffect(() => {
+    if (!open && selected) {
+      document.getElementById(`stolpe-${selected}`)?.scrollIntoView({ behavior: "smooth", block: "center" });
+    }
+  }, [open, selected]);
 
   return (
     <div className="min-h-screen">
@@ -103,7 +115,7 @@ function StrikePage() {
             <input
               type="search"
               value={q}
-              onChange={(e) => setQ(e.target.value)}
+              onChange={(e) => { setQ(e.target.value); if (!e.target.value) setSelected(null); }}
               onFocus={() => setFocus(true)}
               onBlur={() => setTimeout(() => setFocus(false), 150)}
               placeholder="t.ex. 930, 931-20 eller ST6504"
@@ -118,7 +130,14 @@ function StrikePage() {
                   <button
                     type="button"
                     onMouseDown={(e) => e.preventDefault()}
-                    onClick={() => { setQ(s.article); setFocus(false); setOpen(s.article); }}
+                    onClick={() => {
+                      setSelected(s.article);
+                      setQ(s.article);
+                      setFocus(false);
+                      setOpen(s.article);
+                      if (brand !== "alla" && strikeBrand(s) !== brand) setBrand("alla");
+                      if (kind !== "alla" && (kind === "el") !== s.electric) setKind("alla");
+                    }}
                     className="flex w-full items-center gap-3 px-3 py-2 text-left hover:bg-muted"
                   >
                     {strikeImage(s.article) ? (
@@ -182,10 +201,10 @@ function StrikePage() {
                 const exactPlo = s.ploDiffMm === 0;
                 const img = strikeImage(s.article);
                 return (
-                  <li key={s.article} className={`rounded-xl border bg-card p-4 ${ready && i === 0 ? "border-primary ring-1 ring-primary" : "border-border"}`}>
+                  <li key={s.article} id={`stolpe-${s.article}`} className={`rounded-xl border bg-card p-4 ${selected === s.article || (ready && i === 0) ? "border-primary ring-1 ring-primary" : "border-border"}`}>
                     <button
                       type="button"
-                      onClick={() => setOpen(s.article)}
+                      onClick={() => { setSelected(s.article); setOpen(s.article); }}
                       className="flex w-full items-start gap-3 text-left"
                       aria-label={`Visa bild på ${s.article}`}
                     >
@@ -193,7 +212,11 @@ function StrikePage() {
                         <img src={img} alt={s.article} loading="lazy" className="h-20 w-20 shrink-0 rounded-md border border-border bg-card object-contain" />
                       )}
                       <div className="min-w-0 flex-1">
-                        {ready && i === 0 && <p className="text-xs font-bold uppercase tracking-wide text-primary">Bäst passform</p>}
+                        {selected === s.article ? (
+                          <p className="text-xs font-bold uppercase tracking-wide text-primary">Vald stolpe</p>
+                        ) : ready && i === 0 ? (
+                          <p className="text-xs font-bold uppercase tracking-wide text-primary">Bäst passform</p>
+                        ) : null}
                         <p className="text-lg font-extrabold">{s.article}</p>
                         <p className="text-sm text-muted-foreground">{s.fits}</p>
                         <p className="mt-1 text-xs font-semibold text-primary">Tryck för stor bild</p>
