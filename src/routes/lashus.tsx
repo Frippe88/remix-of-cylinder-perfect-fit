@@ -45,7 +45,7 @@ function LockCasesPage() {
         <div className="mx-auto max-w-5xl px-4 py-6 sm:py-8">
           <p className="font-mono text-xs uppercase tracking-widest text-accent">Låssmedsverktyg</p>
           <h1 className="mt-1 text-3xl font-extrabold tracking-tight sm:text-4xl">Låshusmanualer</h1>
-          <p className="mt-2 max-w-xl text-sm opacity-80">ASSA och STEP – klicka på ett låshus för att hitta manualen.</p>
+          <p className="mt-2 max-w-xl text-sm opacity-80">ASSA och STEP – klicka på ett låshus för att förstora bilden, eller på ”Öppna manual” för att komma in i manualen.</p>
           <AppTabs />
         </div>
       </header>
@@ -163,6 +163,49 @@ function LockThumb({ id }: { id: string }) {
       ) : (
         <span className="px-1 text-center text-[10px] leading-tight text-muted-foreground">Bild saknas</span>
       )}
+    </div>
+  );
+}
+
+function ImageZoom({ lock, onClose }: { lock: (typeof LOCK_CASES)[number]; onClose: () => void }) {
+  const src = LOCK_IMAGES[lock.id];
+  const name = lock.brand === "ASSA" ? `ASSA ${lock.model}` : lock.model;
+
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClose();
+    };
+    window.addEventListener("keydown", onKey);
+    document.body.style.overflow = "hidden";
+    return () => {
+      window.removeEventListener("keydown", onKey);
+      document.body.style.overflow = "";
+    };
+  }, [onClose]);
+
+  return (
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center bg-background/95 p-4 backdrop-blur-sm"
+      onClick={onClose}
+      role="dialog"
+      aria-modal="true"
+      aria-label={`Förstorad bild på ${name}`}
+    >
+      <button
+        onClick={onClose}
+        aria-label="Stäng"
+        className="absolute right-4 top-4 flex h-10 w-10 items-center justify-center rounded-full border border-border bg-card text-foreground transition-colors hover:bg-muted"
+      >
+        <X className="h-5 w-5" />
+      </button>
+      <figure className="max-w-3xl" onClick={(e) => e.stopPropagation()}>
+        {src ? (
+          <img src={src} alt={`Produktbild ${name}`} className="max-h-[80vh] w-auto max-w-full rounded-xl border border-border bg-card object-contain p-8 shadow-lg" />
+        ) : (
+          <p className="rounded-xl border border-border bg-card p-6 text-center text-sm text-muted-foreground">Bild saknas för {name}.</p>
+        )}
+        <figcaption className="mt-3 text-center text-sm font-bold">{name}</figcaption>
+      </figure>
     </div>
   );
 }
