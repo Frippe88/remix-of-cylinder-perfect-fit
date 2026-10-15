@@ -119,12 +119,21 @@ function StrikePage() {
                     type="button"
                     onMouseDown={(e) => e.preventDefault()}
                     onClick={() => { setQ(s.article); setFocus(false); setOpen(s.article); }}
-                    className="flex w-full items-center justify-between gap-3 px-3 py-2.5 text-left hover:bg-muted"
+                    className="flex w-full items-center gap-3 px-3 py-2 text-left hover:bg-muted"
                   >
-                    <span className="font-bold">{s.article}</span>
-                    <span className="truncate text-xs text-muted-foreground">{s.heightMm}×{s.widthMm} • plös {s.ploMm} mm</span>
+                    {strikeImage(s.article) ? (
+                      <img src={strikeImage(s.article)} alt="" loading="lazy" className="h-10 w-10 shrink-0 rounded-md border border-border bg-card object-contain" />
+                    ) : (
+                      <span className="h-10 w-10 shrink-0 rounded-md border border-dashed border-border bg-muted" />
+                    )}
+                    <span className="min-w-0 flex-1">
+                      <span className="block font-bold">{s.article}</span>
+                      <span className="block truncate text-xs text-muted-foreground">{s.heightMm}×{s.widthMm} • plös {s.ploMm} mm</span>
+                    </span>
+                    <span className="rounded-md bg-muted px-2 py-1 text-xs font-semibold capitalize">{s.shape}</span>
                   </button>
                 </li>
+
               ))}
             </ul>
           )}
