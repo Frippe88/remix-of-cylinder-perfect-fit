@@ -22,4 +22,9 @@ describe("matchStrikePlates", () => {
   it("för smalt urtag ger inga träffar", () => {
     expect(matchStrikePlates({ heightMm: 300, widthMm: 30 })).toEqual([]);
   });
+  it("ASSA-filter ger ASSA-stolpar för elslutbleck", () => {
+    const r = matchStrikePlates({ heightMm: 245, widthMm: 40, kind: "el", brand: "ASSA" });
+    expect(r.map((s) => s.article)).toContain("930");
+    expect(r.every((s) => !s.article.startsWith("ST"))).toBe(true);
+  });
 });

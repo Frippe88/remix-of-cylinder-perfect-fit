@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { AppTabs } from "@/components/app-tabs";
-import { matchStrikePlates, STRIKE_PLATES, type StrikeKind } from "@/lib/strike-plates";
+import { matchStrikePlates, STRIKE_PLATES, type StrikeKind, type StrikeBrand } from "@/lib/strike-plates";
 import { strikeImage, strikeImageNote } from "@/lib/strike-images";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 
