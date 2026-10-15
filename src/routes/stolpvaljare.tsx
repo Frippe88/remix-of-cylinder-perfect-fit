@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { AppTabs } from "@/components/app-tabs";
 import { matchStrikePlates, strikeBrand, STRIKE_PLATES, type StrikeKind, type StrikeBrand, type StrikeMatch } from "@/lib/strike-plates";
 import { strikeImage, strikeImageNote } from "@/lib/strike-images";
@@ -51,6 +51,7 @@ function StrikePage() {
   const [kind, setKind] = useState<StrikeKind>("alla");
   const [brand, setBrand] = useState<StrikeBrand>("alla");
   const [open, setOpen] = useState<string | null>(null);
+  const [selected, setSelected] = useState<string | null>(null);
   const openPlate = STRIKE_PLATES.find((x) => x.article === open);
   const ready = num(h) > 0 && num(w) > 0;
   const results = useMemo(
@@ -103,7 +104,7 @@ function StrikePage() {
             <input
               type="search"
               value={q}
-              onChange={(e) => setQ(e.target.value)}
+              onChange={(e) => { setQ(e.target.value); if (!e.target.value) setSelected(null); }}
               onFocus={() => setFocus(true)}
               onBlur={() => setTimeout(() => setFocus(false), 150)}
               placeholder="t.ex. 930, 931-20 eller ST6504"
@@ -118,7 +119,14 @@ function StrikePage() {
                   <button
                     type="button"
                     onMouseDown={(e) => e.preventDefault()}
-                    onClick={() => { setQ(s.article); setFocus(false); setOpen(s.article); }}
+                    onClick={() => {
+                      setSelected(s.article);
+                      setQ(s.article);
+                      setFocus(false);
+                      setOpen(s.article);
+                      if (brand !== "alla" && strikeBrand(s) !== brand) setBrand("alla");
+                      if (kind !== "alla" && (kind === "el") !== s.electric) setKind("alla");
+                    }}
                     className="flex w-full items-center gap-3 px-3 py-2 text-left hover:bg-muted"
                   >
                     {strikeImage(s.article) ? (
