@@ -83,37 +83,64 @@ function LockCasesPage() {
           <p className="rounded-lg border border-border bg-card p-6 text-center">Inget låshus matchar sökningen.</p>
         ) : (
           <ul className="grid gap-3 sm:grid-cols-2">
-            {list.map((l) => (
-              <li key={l.id}>
-                {hasDirectManual(l) ? (
-                  <Link to="/manual/$id" params={{ id: l.id }} className="flex h-full items-start gap-3 rounded-xl border border-border bg-card p-4 transition-colors hover:border-primary">
-                  <LockThumb id={l.id} />
-                  <div className="min-w-0 flex-1">
-                    <p className="font-mono text-xs uppercase tracking-wider text-muted-foreground">
-                      {l.brand} · {CATEGORY_LABEL[l.category]}
-                    </p>
-                    <p className="mt-1 text-lg font-bold">{l.brand === "ASSA" ? `ASSA ${l.model}` : l.model}</p>
-                    <p className="mt-1 text-sm text-muted-foreground">{l.note}</p>
-                    <p className="mt-3 text-sm font-semibold text-primary">{hasDirectManual(l) ? "Öppna manual (PDF)" : "Hitta manual hos tillverkaren"}</p>
+            {list.map((l) => {
+              const zoomable = Boolean(LOCK_IMAGES[l.id]);
+              return (
+                <li key={l.id}>
+                  <div
+                    className={`flex h-full items-start gap-3 rounded-xl border border-border bg-card p-4 transition-colors ${
+                      zoomable ? "cursor-zoom-in hover:border-primary" : ""
+                    }`}
+                    onClick={zoomable ? () => setZoomId(l.id) : undefined}
+                    onKeyDown={
+                      zoomable
+                        ? (e) => {
+                            if (e.key === "Enter" || e.key === " ") {
+                              e.preventDefault();
+                              setZoomId(l.id);
+                            }
+                          }
+                        : undefined
+                    }
+                    role={zoomable ? "button" : undefined}
+                    tabIndex={zoomable ? 0 : undefined}
+                    aria-label={zoomable ? `Förstora bilden på ${l.brand === "ASSA" ? `ASSA ${l.model}` : l.model}` : undefined}
+                  >
+                    <LockThumb id={l.id} />
+                    <div className="min-w-0 flex-1">
+                      <p className="font-mono text-xs uppercase tracking-wider text-muted-foreground">
+                        {l.brand} · {CATEGORY_LABEL[l.category]}
+                      </p>
+                      <p className="mt-1 text-lg font-bold">{l.brand === "ASSA" ? `ASSA ${l.model}` : l.model}</p>
+                      <p className="mt-1 text-sm text-muted-foreground">{l.note}</p>
+                      <div className="mt-3">
+                        {hasDirectManual(l) ? (
+                          <Link
+                            to="/manual/$id"
+                            params={{ id: l.id }}
+                            onClick={(e) => e.stopPropagation()}
+                            className="inline-flex items-center gap-1.5 rounded-lg bg-primary px-3 py-2 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90"
+                          >
+                            Öppna manual (PDF)
+                          </Link>
+                        ) : (
+                          <a
+                            href={manualSearchUrl(l)}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            onClick={(e) => e.stopPropagation()}
+                            className="inline-flex items-center gap-1.5 rounded-lg border border-primary bg-card px-3 py-2 text-sm font-semibold text-primary transition-colors hover:bg-muted"
+                          >
+                            Hitta manual hos tillverkaren
+                          </a>
+                        )}
+                      </div>
+                    </div>
+                    {zoomable && <Maximize2 className="mt-1 h-4 w-4 shrink-0 text-muted-foreground" />}
                   </div>
-                  <ExternalLink className="mt-1 h-4 w-4 shrink-0 text-muted-foreground" />
-                  </Link>
-                ) : (
-                  <a href={manualSearchUrl(l)} target="_blank" rel="noopener noreferrer" className="flex h-full items-start gap-3 rounded-xl border border-border bg-card p-4 transition-colors hover:border-primary">
-                  <LockThumb id={l.id} />
-                  <div className="min-w-0 flex-1">
-                    <p className="font-mono text-xs uppercase tracking-wider text-muted-foreground">
-                      {l.brand} · {CATEGORY_LABEL[l.category]}
-                    </p>
-                    <p className="mt-1 text-lg font-bold">{l.brand === "ASSA" ? `ASSA ${l.model}` : l.model}</p>
-                    <p className="mt-1 text-sm text-muted-foreground">{l.note}</p>
-                    <p className="mt-3 text-sm font-semibold text-primary">{hasDirectManual(l) ? "Öppna manual (PDF)" : "Hitta manual hos tillverkaren"}</p>
-                  </div>
-                  <ExternalLink className="mt-1 h-4 w-4 shrink-0 text-muted-foreground" />
-                  </a>
-                )}
-              </li>
-            ))}
+                </li>
+              );
+            })}
           </ul>
         )}
 
@@ -121,6 +148,8 @@ function LockCasesPage() {
           Manualerna öppnas från ASSA ABLOY:s, STEP:s och Safetrons egna webbplatser. Kontrollera alltid modell och utförande mot låshusets märkning.
         </p>
       </main>
+
+      {zoomId && <ImageZoom lock={LOCK_CASES.find((l) => l.id === zoomId)!} onClose={() => setZoomId(null)} />}
     </div>
   );
 }
