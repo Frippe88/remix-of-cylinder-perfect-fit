@@ -61,6 +61,8 @@ export const LOCK_IMAGES: Record<string, string> = {
   "assa-851c": "/__l5e/assets-v1/25f914fe-6250-4d7a-a495-3718cafda6ef/assa-851c.jpg",
   "assa-8765": "/__l5e/assets-v1/0f7f6890-962b-4c2e-ab92-cac5cce9958b/assa-8765.jpg",
   "assa-9787": "/__l5e/assets-v1/71ef801d-1590-4f25-bf68-23064f7a6d74/assa-9787.jpg",
+  "safetron-sl620": "/__l5e/assets-v1/fb3490ec-9dfb-431c-98ac-43643864e09b/safetron-sl620.jpg",
+  "safetron-sl630": "/__l5e/assets-v1/c327ead8-0131-4bc2-953f-c2aaa0266940/safetron-sl630.jpg",
   "step-110": "/__l5e/assets-v1/05229610-352c-430e-8512-f1ef1ab75236/step-110.png",
   "step-112": "/__l5e/assets-v1/46975a83-ad84-420a-b26c-23d82ffc2f01/step-112.png",
   "step-120": "/__l5e/assets-v1/0f35d8f6-4e06-4087-8545-cb63694b9302/step-120.png",
