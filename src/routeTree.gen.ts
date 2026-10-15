@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as LashusRouteImport } from './routes/lashus'
+import { Route as StolpvaljareRouteImport } from './routes/stolpvaljare'
 import { Route as ManualIdRouteImport } from './routes/manual.$id'
 import { Route as ApiPublicManualIdRouteImport } from './routes/api/public/manual/$id'
 
@@ -22,6 +23,11 @@ const IndexRoute = IndexRouteImport.update({
 const LashusRoute = LashusRouteImport.update({
   id: '/lashus',
   path: '/lashus',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const StolpvaljareRoute = StolpvaljareRouteImport.update({
+  id: '/stolpvaljare',
+  path: '/stolpvaljare',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ManualIdRoute = ManualIdRouteImport.update({
@@ -38,12 +44,14 @@ const ApiPublicManualIdRoute = ApiPublicManualIdRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/lashus': typeof LashusRoute
+  '/stolpvaljare': typeof StolpvaljareRoute
   '/manual/$id': typeof ManualIdRoute
   '/api/public/manual/$id': typeof ApiPublicManualIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/lashus': typeof LashusRoute
+  '/stolpvaljare': typeof StolpvaljareRoute
   '/manual/$id': typeof ManualIdRoute
   '/api/public/manual/$id': typeof ApiPublicManualIdRoute
 }
@@ -51,20 +59,30 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/lashus': typeof LashusRoute
+  '/stolpvaljare': typeof StolpvaljareRoute
   '/manual/$id': typeof ManualIdRoute
   '/api/public/manual/$id': typeof ApiPublicManualIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/lashus' | '/manual/$id' | '/api/public/manual/$id'
+  fullPaths:
+    '/' | '/lashus' | '/stolpvaljare' | '/manual/$id' | '/api/public/manual/$id'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/lashus' | '/manual/$id' | '/api/public/manual/$id'
-  id: '__root__' | '/' | '/lashus' | '/manual/$id' | '/api/public/manual/$id'
+  to:
+    '/' | '/lashus' | '/stolpvaljare' | '/manual/$id' | '/api/public/manual/$id'
+  id:
+    | '__root__'
+    | '/'
+    | '/lashus'
+    | '/stolpvaljare'
+    | '/manual/$id'
+    | '/api/public/manual/$id'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   LashusRoute: typeof LashusRoute
+  StolpvaljareRoute: typeof StolpvaljareRoute
   ManualIdRoute: typeof ManualIdRoute
   ApiPublicManualIdRoute: typeof ApiPublicManualIdRoute
 }
@@ -83,6 +101,13 @@ declare module '@tanstack/react-router' {
       path: '/lashus'
       fullPath: '/lashus'
       preLoaderRoute: typeof LashusRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/stolpvaljare': {
+      id: '/stolpvaljare'
+      path: '/stolpvaljare'
+      fullPath: '/stolpvaljare'
+      preLoaderRoute: typeof StolpvaljareRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/manual/$id': {
@@ -105,6 +130,7 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   LashusRoute: LashusRoute,
+  StolpvaljareRoute: StolpvaljareRoute,
   ManualIdRoute: ManualIdRoute,
   ApiPublicManualIdRoute: ApiPublicManualIdRoute,
 }
