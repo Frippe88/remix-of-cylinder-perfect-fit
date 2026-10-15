@@ -57,16 +57,32 @@ function StrikePage() {
     () => matchStrikePlates({ heightMm: num(h), widthMm: num(w), ploMm: p ? num(p) : undefined, kind, brand }),
     [h, w, p, kind, brand],
   );
+  const [q, setQ] = useState("");
+  const [focus, setFocus] = useState(false);
+  const norm = (s: string) => s.toLowerCase().replace(/\s+/g, "");
+  const nq = norm(q);
+  const hit = (s: { article: string; fits: string }) =>
+    !nq || norm(s.article).includes(nq) || norm(s.article).replace(/^st/, "").startsWith(nq) || norm(s.fits).includes(nq);
+  const suggestions = useMemo(() => {
+    if (!nq) return [];
+    const rank = (a: string) => (norm(a).startsWith(nq) || norm(a).replace(/^st/, "").startsWith(nq) ? 0 : 1);
+    return STRIKE_PLATES.filter(hit)
+      .sort((a, b) => rank(a.article) - rank(b.article) || a.article.localeCompare(b.article, "sv", { numeric: true }))
+      .slice(0, 8);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [nq]);
   // Utan mått visas hela katalogen (med fabrikats-/typfilter), sorterad efter mått.
   const shown: StrikeMatch[] = useMemo(
     () =>
-      ready
+      (ready
         ? results
         : STRIKE_PLATES.filter((s) => kind === "alla" || (kind === "el") === s.electric)
             .filter((s) => brand === "alla" || strikeBrand(s) === brand)
             .map((s) => ({ ...s, heightSlackMm: 0, widthSlackMm: 0, ploDiffMm: null }))
-            .sort((a, b) => a.heightMm - b.heightMm || a.widthMm - b.widthMm || a.ploMm - b.ploMm || a.article.localeCompare(b.article, "sv")),
-    [ready, results, kind, brand],
+            .sort((a, b) => a.heightMm - b.heightMm || a.widthMm - b.widthMm || a.ploMm - b.ploMm || a.article.localeCompare(b.article, "sv"))
+      ).filter(hit),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [ready, results, kind, brand, nq],
   );
 
   return (
@@ -81,6 +97,38 @@ function StrikePage() {
       </header>
 
       <main className="mx-auto max-w-5xl space-y-5 px-4 py-6">
+        <section className="relative rounded-xl border border-border bg-card p-4">
+          <label className="block">
+            <span className="text-sm font-semibold">Sök stolpe</span>
+            <input
+              type="search"
+              value={q}
+              onChange={(e) => setQ(e.target.value)}
+              onFocus={() => setFocus(true)}
+              onBlur={() => setTimeout(() => setFocus(false), 150)}
+              placeholder="t.ex. 930, 931-20 eller ST6504"
+              autoComplete="off"
+              className="mt-1 w-full rounded-lg border border-input bg-card px-3 py-3 text-lg font-semibold"
+            />
+          </label>
+          {focus && suggestions.length > 0 && (
+            <ul className="absolute left-4 right-4 z-20 mt-1 max-h-80 overflow-y-auto rounded-lg border border-border bg-card shadow-lg">
+              {suggestions.map((s) => (
+                <li key={s.article}>
+                  <button
+                    type="button"
+                    onMouseDown={(e) => e.preventDefault()}
+                    onClick={() => { setQ(s.article); setFocus(false); setOpen(s.article); }}
+                    className="flex w-full items-center justify-between gap-3 px-3 py-2.5 text-left hover:bg-muted"
+                  >
+                    <span className="font-bold">{s.article}</span>
+                    <span className="truncate text-xs text-muted-foreground">{s.heightMm}×{s.widthMm} • plös {s.ploMm} mm</span>
+                  </button>
+                </li>
+              ))}
+            </ul>
+          )}
+        </section>
         <section className="grid gap-3 rounded-xl border border-border bg-card p-4 sm:grid-cols-3">
           <NumField label="Urtagets höjd" hint="t.ex. 245" value={h} onChange={setH} />
           <NumField label="Urtagets bredd" hint="t.ex. 40" value={w} onChange={setW} />
