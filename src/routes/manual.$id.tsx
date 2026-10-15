@@ -134,7 +134,7 @@ function ManualPage() {
         )}
         <div ref={containerRef} className="space-y-3" />
         {status === "klar" && pages > 0 && (
-          <p className="text-center text-xs text-muted-foreground">{pages} sidor · Källa: {lock.brand === "STEP" ? "STEP (steplock.com)" : "ASSA ABLOY (assaabloy.com)"}</p>
+          <p className="text-center text-xs text-muted-foreground">{pages} sidor · Källa: {lock.brand === "STEP" ? "STEP (steplock.com)" : lock.brand === "SAFETRON" ? "SAFETRON (safetron.com)" : "ASSA ABLOY (assaabloy.com)"}</p>
         )}
       </main>
     </div>
