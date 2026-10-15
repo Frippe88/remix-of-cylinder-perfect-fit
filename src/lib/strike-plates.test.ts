@@ -20,7 +20,7 @@ describe("matchStrikePlates", () => {
     expect(r).toHaveLength(4);
   });
   it("för smalt urtag ger inga träffar", () => {
-    expect(matchStrikePlates({ heightMm: 300, widthMm: 30 })).toEqual([]);
+    expect(matchStrikePlates({ heightMm: 300, widthMm: 25 })).toEqual([]);
   });
   it("ASSA-filter ger ASSA-stolpar för elslutbleck", () => {
     const r = matchStrikePlates({ heightMm: 245, widthMm: 40, kind: "el", brand: "ASSA" });
