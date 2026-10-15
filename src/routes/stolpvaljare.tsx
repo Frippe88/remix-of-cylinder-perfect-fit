@@ -121,11 +121,11 @@ function StrikePage() {
               {ready ? `${results.length} passande stolpar – bäst först` : `Alla stolpar i katalogen (${shown.length} st)`}
             </p>
             <ul className="grid gap-3 sm:grid-cols-2">
-              {results.map((s, i) => {
+              {shown.map((s, i) => {
                 const exactPlo = s.ploDiffMm === 0;
                 const img = strikeImage(s.article);
                 return (
-                  <li key={s.article} className={`rounded-xl border bg-card p-4 ${i === 0 ? "border-primary ring-1 ring-primary" : "border-border"}`}>
+                  <li key={s.article} className={`rounded-xl border bg-card p-4 ${ready && i === 0 ? "border-primary ring-1 ring-primary" : "border-border"}`}>
                     <button
                       type="button"
                       onClick={() => setOpen(s.article)}
@@ -136,7 +136,7 @@ function StrikePage() {
                         <img src={img} alt={s.article} loading="lazy" className="h-20 w-20 shrink-0 rounded-md border border-border bg-card object-contain" />
                       )}
                       <div className="min-w-0 flex-1">
-                        {i === 0 && <p className="text-xs font-bold uppercase tracking-wide text-primary">Bäst passform</p>}
+                        {ready && i === 0 && <p className="text-xs font-bold uppercase tracking-wide text-primary">Bäst passform</p>}
                         <p className="text-lg font-extrabold">{s.article}</p>
                         <p className="text-sm text-muted-foreground">{s.fits}</p>
                         <p className="mt-1 text-xs font-semibold text-primary">Tryck för stor bild</p>
