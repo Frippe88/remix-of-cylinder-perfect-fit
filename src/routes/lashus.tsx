@@ -114,7 +114,7 @@ function LockCasesPage() {
         )}
 
         <p className="text-xs text-muted-foreground">
-          Manualerna öppnas från ASSA ABLOY:s och STEP:s egna webbplatser. Kontrollera alltid modell och utförande mot låshusets märkning.
+          Manualerna öppnas från ASSA ABLOY:s, STEP:s och Safetrons egna webbplatser. Kontrollera alltid modell och utförande mot låshusets märkning.
         </p>
       </main>
     </div>
