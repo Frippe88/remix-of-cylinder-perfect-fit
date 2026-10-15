@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
-import { ExternalLink, Search } from "lucide-react";
+import { ExternalLink, Maximize2, Search, X } from "lucide-react";
 import { AppTabs } from "@/components/app-tabs";
 import {
   CATEGORY_LABEL,
@@ -36,6 +36,7 @@ function LockCasesPage() {
   const [query, setQuery] = useState("");
   const [brand, setBrand] = useState<LockBrand | "alla">("alla");
   const [category, setCategory] = useState<LockCategory | "alla">("alla");
+  const [zoomId, setZoomId] = useState<string | null>(null);
   const list = useMemo(() => filterLocks(LOCK_CASES, query, brand, category), [query, brand, category]);
 
   return (
