@@ -13,7 +13,6 @@ export interface StrikePlate {
 }
 
 export const STRIKE_PLATES: StrikePlate[] = [
-export const STRIKE_DIMS: StrikeDim[] = [
   // Plan stolpe, samma yttermått som ASSA 1487-serien (200×40)
   { article: "ST4009-13", heightMm: 200, widthMm: 40, ploMm: 13, shape: "plan", fits: "Elslutbleck STEP 40/90/48/98", electric: true, note: "Samma yttermått som slutbleck 1487-1" },
   { article: "ST4009-16", heightMm: 200, widthMm: 40, ploMm: 16, shape: "plan", fits: "Elslutbleck STEP 40/90/48/98", electric: true, note: "Samma yttermått som slutbleck 1487-2" },
