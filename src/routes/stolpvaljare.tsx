@@ -1,7 +1,9 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { AppTabs } from "@/components/app-tabs";
-import { matchStrikePlates, type StrikeKind } from "@/lib/strike-plates";
+import { matchStrikePlates, STRIKE_PLATES, type StrikeKind } from "@/lib/strike-plates";
+import { strikeImage, strikeImageNote } from "@/lib/strike-images";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 
 export const Route = createFileRoute("/stolpvaljare")({
   head: () => ({
@@ -47,6 +49,8 @@ function StrikePage() {
   const [w, setW] = useState("");
   const [p, setP] = useState("");
   const [kind, setKind] = useState<StrikeKind>("alla");
+  const [open, setOpen] = useState<string | null>(null);
+  const openPlate = STRIKE_PLATES.find((x) => x.article === open);
   const results = useMemo(
     () => matchStrikePlates({ heightMm: num(h), widthMm: num(w), ploMm: p ? num(p) : undefined, kind }),
     [h, w, p, kind],
@@ -95,16 +99,26 @@ function StrikePage() {
             <ul className="grid gap-3 sm:grid-cols-2">
               {results.map((s, i) => {
                 const exactPlo = s.ploDiffMm === 0;
+                const img = strikeImage(s.article);
                 return (
                   <li key={s.article} className={`rounded-xl border bg-card p-4 ${i === 0 ? "border-primary ring-1 ring-primary" : "border-border"}`}>
-                    <div className="flex items-start justify-between gap-2">
-                      <div>
+                    <button
+                      type="button"
+                      onClick={() => setOpen(s.article)}
+                      className="flex w-full items-start gap-3 text-left"
+                      aria-label={`Visa bild på ${s.article}`}
+                    >
+                      {img && (
+                        <img src={img} alt={s.article} loading="lazy" className="h-20 w-20 shrink-0 rounded-md border border-border bg-card object-contain" />
+                      )}
+                      <div className="min-w-0 flex-1">
                         {i === 0 && <p className="text-xs font-bold uppercase tracking-wide text-primary">Bäst passform</p>}
                         <p className="text-lg font-extrabold">{s.article}</p>
                         <p className="text-sm text-muted-foreground">{s.fits}</p>
+                        <p className="mt-1 text-xs font-semibold text-primary">Tryck för stor bild</p>
                       </div>
                       <span className="rounded-md bg-muted px-2 py-1 text-xs font-semibold capitalize">{s.shape}</span>
-                    </div>
+                    </button>
                     <dl className="mt-3 grid grid-cols-3 gap-2 text-center text-sm">
                       <div className="rounded-md bg-muted p-2"><dt className="text-xs text-muted-foreground">Höjd</dt><dd className="font-bold">{s.heightMm} mm</dd></div>
                       <div className="rounded-md bg-muted p-2"><dt className="text-xs text-muted-foreground">Bredd</dt><dd className="font-bold">{s.widthMm} mm</dd></div>
@@ -129,6 +143,29 @@ function StrikePage() {
         <p className="text-xs text-muted-foreground">
           Uppgifterna bygger på STEP:s stolpguide och ASSA 1487-serien. Kontrollera alltid mot tillverkarens måttskiss innan beställning.
         </p>
+
+        <Dialog open={!!openPlate} onOpenChange={(o) => !o && setOpen(null)}>
+          <DialogContent className="max-h-[95vh] overflow-y-auto sm:max-w-lg">
+            {openPlate && (
+              <>
+                <DialogHeader>
+                  <DialogTitle className="text-2xl font-extrabold">{openPlate.article}</DialogTitle>
+                  <DialogDescription>{openPlate.fits} • <span className="capitalize">{openPlate.shape}</span> stolpe</DialogDescription>
+                </DialogHeader>
+                {strikeImage(openPlate.article) && (
+                  <img src={strikeImage(openPlate.article)} alt={`Produktbild ${openPlate.article}`} className="max-h-[60vh] w-full rounded-lg border border-border bg-card object-contain" />
+                )}
+                {strikeImageNote(openPlate.article) && <p className="text-xs text-muted-foreground">{strikeImageNote(openPlate.article)}</p>}
+                <dl className="grid grid-cols-3 gap-2 text-center text-sm">
+                  <div className="rounded-md bg-muted p-2"><dt className="text-xs text-muted-foreground">Höjd</dt><dd className="font-bold">{openPlate.heightMm} mm</dd></div>
+                  <div className="rounded-md bg-muted p-2"><dt className="text-xs text-muted-foreground">Bredd</dt><dd className="font-bold">{openPlate.widthMm} mm</dd></div>
+                  <div className="rounded-md bg-muted p-2"><dt className="text-xs text-muted-foreground">Plös</dt><dd className="font-bold">{openPlate.ploMm} mm</dd></div>
+                </dl>
+                {openPlate.note && <p className="text-sm text-muted-foreground">{openPlate.note}</p>}
+              </>
+            )}
+          </DialogContent>
+        </Dialog>
       </main>
     </div>
   );
