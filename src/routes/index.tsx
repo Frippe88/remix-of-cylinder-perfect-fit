@@ -3,7 +3,6 @@ import { Check } from "lucide-react";
 import { useState } from "react";
 import { CylinderResults } from "@/components/cylinder-results";
 import { PickListButton } from "@/components/pick-list-button";
-import { AppTabs } from "@/components/app-tabs";
 import {
   formatMm,
   EXTENDER_SIZES,
@@ -102,7 +101,6 @@ function Index() {
           <p className="mt-2 max-w-xl text-sm opacity-80">
             Godkänd avvikelse −1 till +2 mm.
           </p>
-          <AppTabs />
         </div>
       </header>
 

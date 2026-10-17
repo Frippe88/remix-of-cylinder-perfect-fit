@@ -10,81 +10,33 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as LashusRouteImport } from './routes/lashus'
-import { Route as StolpvaljareRouteImport } from './routes/stolpvaljare'
-import { Route as ManualIdRouteImport } from './routes/manual.$id'
-import { Route as ApiPublicManualIdRouteImport } from './routes/api/public/manual/$id'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const LashusRoute = LashusRouteImport.update({
-  id: '/lashus',
-  path: '/lashus',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const StolpvaljareRoute = StolpvaljareRouteImport.update({
-  id: '/stolpvaljare',
-  path: '/stolpvaljare',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ManualIdRoute = ManualIdRouteImport.update({
-  id: '/manual/$id',
-  path: '/manual/$id',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ApiPublicManualIdRoute = ApiPublicManualIdRouteImport.update({
-  id: '/api/public/manual/$id',
-  path: '/api/public/manual/$id',
-  getParentRoute: () => rootRouteImport,
-} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/lashus': typeof LashusRoute
-  '/stolpvaljare': typeof StolpvaljareRoute
-  '/manual/$id': typeof ManualIdRoute
-  '/api/public/manual/$id': typeof ApiPublicManualIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/lashus': typeof LashusRoute
-  '/stolpvaljare': typeof StolpvaljareRoute
-  '/manual/$id': typeof ManualIdRoute
-  '/api/public/manual/$id': typeof ApiPublicManualIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/lashus': typeof LashusRoute
-  '/stolpvaljare': typeof StolpvaljareRoute
-  '/manual/$id': typeof ManualIdRoute
-  '/api/public/manual/$id': typeof ApiPublicManualIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths:
-    '/' | '/lashus' | '/stolpvaljare' | '/manual/$id' | '/api/public/manual/$id'
+  fullPaths: '/'
   fileRoutesByTo: FileRoutesByTo
-  to:
-    '/' | '/lashus' | '/stolpvaljare' | '/manual/$id' | '/api/public/manual/$id'
-  id:
-    | '__root__'
-    | '/'
-    | '/lashus'
-    | '/stolpvaljare'
-    | '/manual/$id'
-    | '/api/public/manual/$id'
+  to: '/'
+  id: '__root__' | '/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  LashusRoute: typeof LashusRoute
-  StolpvaljareRoute: typeof StolpvaljareRoute
-  ManualIdRoute: typeof ManualIdRoute
-  ApiPublicManualIdRoute: typeof ApiPublicManualIdRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -96,43 +48,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/lashus': {
-      id: '/lashus'
-      path: '/lashus'
-      fullPath: '/lashus'
-      preLoaderRoute: typeof LashusRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/stolpvaljare': {
-      id: '/stolpvaljare'
-      path: '/stolpvaljare'
-      fullPath: '/stolpvaljare'
-      preLoaderRoute: typeof StolpvaljareRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/manual/$id': {
-      id: '/manual/$id'
-      path: '/manual/$id'
-      fullPath: '/manual/$id'
-      preLoaderRoute: typeof ManualIdRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/public/manual/$id': {
-      id: '/api/public/manual/$id'
-      path: '/api/public/manual/$id'
-      fullPath: '/api/public/manual/$id'
-      preLoaderRoute: typeof ApiPublicManualIdRouteImport
-      parentRoute: typeof rootRouteImport
-    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  LashusRoute: LashusRoute,
-  StolpvaljareRoute: StolpvaljareRoute,
-  ManualIdRoute: ManualIdRoute,
-  ApiPublicManualIdRoute: ApiPublicManualIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
