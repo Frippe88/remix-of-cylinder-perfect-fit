@@ -3,7 +3,6 @@ import { Check } from "lucide-react";
 import { useState } from "react";
 import { CylinderResults } from "@/components/cylinder-results";
 import { PickListButton } from "@/components/pick-list-button";
-import { AppTabs } from "@/components/app-tabs";
 import {
   formatMm,
   EXTENDER_SIZES,
