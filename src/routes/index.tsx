@@ -101,7 +101,6 @@ function Index() {
           <p className="mt-2 max-w-xl text-sm opacity-80">
             Godkänd avvikelse −1 till +2 mm.
           </p>
-          <AppTabs />
         </div>
       </header>
 
