@@ -1,11 +1,11 @@
 {
-  "version": 1,
   "asset_id": "fb3490ec-9dfb-431c-98ac-43643864e09b",
-  "project_id": "db7f1720-e16d-53da-a1c9-cb6ec191decf",
-  "url": "/__l5e/assets-v1/fb3490ec-9dfb-431c-98ac-43643864e09b/safetron-sl620.jpg",
-  "r2_key": "a/v1/db7f1720-e16d-53da-a1c9-cb6ec191decf/fb3490ec-9dfb-431c-98ac-43643864e09b/safetron-sl620.jpg",
-  "original_filename": "safetron-sl620.jpg",
-  "size": 40602,
   "content_type": "image/jpeg",
-  "created_at": "2026-10-15T16:56:19Z"
+  "created_at": "2026-10-15T16:56:19Z",
+  "original_filename": "safetron-sl620.jpg",
+  "project_id": "97244da6-da76-4fb8-8837-4f54ddba10cf",
+  "r2_key": "a/v1/97244da6-da76-4fb8-8837-4f54ddba10cf/fb3490ec-9dfb-431c-98ac-43643864e09b/safetron-sl620.jpg",
+  "size": 40602,
+  "url": "/__l5e/assets-v1/fb3490ec-9dfb-431c-98ac-43643864e09b/safetron-sl620.jpg",
+  "version": 1
 }
