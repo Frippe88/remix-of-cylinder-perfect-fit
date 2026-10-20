@@ -19,7 +19,7 @@ import {
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Cylinderkalkylator – förlängare och ringar för låssmeder" },
+      { title: "Cylinderhjälpen" },
       { name: "description", content: "Räkna fram rätt kombination av cylinderförlängare och cylinderringar, för enkel- och dubbelcylinder." },
       { property: "og:title", content: "Cylinderkalkylator" },
       { property: "og:description", content: "Exakt beräkning av cylinderförlängare och ringar för låssmeder." },
