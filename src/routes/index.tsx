@@ -108,7 +108,7 @@ function Index() {
         <section className="space-y-5">
           <Panel title="Mätning">
             <p className="text-xs text-muted-foreground">
-              Välj den cylinder du ska sätta in. iLOQ gäller bara om cylindern eller låset är märkt iLOQ – annars är det den ovala.
+              Välj den cylinder du ska sätta in. Oval cylinder är vanligast – rund cylinder har rund profil och egna ringar och förlängare, medan iLOQ gäller bara om cylindern eller låset är märkt iLOQ.
             </p>
             <div className="space-y-2">
               {CYLINDER_OPTIONS.map((o) => (
