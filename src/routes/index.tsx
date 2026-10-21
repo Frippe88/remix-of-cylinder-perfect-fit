@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { Check } from "lucide-react";
-import { useState } from "react";
+import { Check, KeyRound, Minus, Moon, Plus, Sun } from "lucide-react";
+import { useEffect, useState } from "react";
 import { CylinderResults } from "@/components/cylinder-results";
 import { PickListButton } from "@/components/pick-list-button";
 import {
@@ -95,12 +95,18 @@ function Index() {
   return (
     <div className="min-h-screen">
       <header className="bg-primary text-primary-foreground">
-        <div className="mx-auto max-w-5xl px-4 py-6 sm:py-8">
-          <p className="font-mono text-xs uppercase tracking-widest text-accent">Låssmedsverktyg</p>
-          <h1 className="mt-1 text-3xl font-extrabold tracking-tight sm:text-4xl">Cylinderkalkylator</h1>
-          <p className="mt-2 max-w-xl text-sm opacity-80">
-            Godkänd avvikelse −1 till +2 mm.
-          </p>
+        <div className="mx-auto flex max-w-5xl items-start justify-between gap-4 px-4 py-6 sm:py-8">
+          <div className="flex items-center gap-3 sm:gap-4">
+            <span className="flex size-12 shrink-0 items-center justify-center rounded-xl bg-accent/15 ring-1 ring-accent/40 sm:size-14">
+              <KeyRound className="size-6 text-accent sm:size-7" aria-hidden />
+            </span>
+            <div>
+              <h1 className="text-2xl font-extrabold tracking-tight sm:text-4xl">Cylinderhjälpen</h1>
+              <p className="mt-0.5 text-sm opacity-80">Snabb och exakt cylinderberäkning för låssmeder</p>
+              <p className="mt-1 font-mono text-xs uppercase tracking-widest text-accent">Godkänd avvikelse −1 till +2 mm</p>
+            </div>
+          </div>
+          <ThemeToggle />
         </div>
       </header>
 
@@ -177,21 +183,53 @@ function Panel({ title, children }: { title: string; children: React.ReactNode }
   );
 }
 
-function DepthInput({ label, value, onChange }: { label: string; value: string; onChange: (v: string) => void }) {
+function ThemeToggle() {
+  const [dark, setDark] = useState(false);
+  useEffect(() => setDark(document.documentElement.classList.contains("dark")), []);
+  const flip = () => {
+    const next = !dark;
+    setDark(next);
+    document.documentElement.classList.toggle("dark", next);
+    try { localStorage.setItem("theme", next ? "dark" : "light"); } catch { /* ignore */ }
+  };
   return (
-    <label className="block">
-      <span className="text-sm font-semibold">{label}</span>
-      <div className="mt-1 flex items-center rounded-lg border border-input bg-card focus-within:ring-2 focus-within:ring-ring">
+    <button
+      onClick={flip}
+      aria-label={dark ? "Byt till ljust läge" : "Byt till mörkt läge"}
+      className="flex size-11 shrink-0 items-center justify-center rounded-lg ring-1 ring-primary-foreground/25 transition hover:bg-primary-foreground/10"
+    >
+      {dark ? <Sun className="size-5" aria-hidden /> : <Moon className="size-5" aria-hidden />}
+    </button>
+  );
+}
+
+function DepthInput({ label, value, onChange }: { label: string; value: string; onChange: (v: string) => void }) {
+  const step = (d: number) => {
+    const n = parse(value) ?? 0;
+    onChange(String(Math.max(0, Math.round((n + d) * 10) / 10)).replace(".", ","));
+  };
+  const btn = "flex size-12 shrink-0 items-center justify-center text-foreground transition hover:bg-muted active:bg-muted";
+  return (
+    <div>
+      <label className="text-sm font-semibold" htmlFor={label}>{label}</label>
+      <div className="mt-1 flex items-center overflow-hidden rounded-lg border border-input bg-card focus-within:ring-2 focus-within:ring-ring">
+        <button type="button" onClick={() => step(-1)} aria-label={`Minska ${label.toLowerCase()} 1 mm`} className={`${btn} border-r border-input`}>
+          <Minus className="size-5" aria-hidden />
+        </button>
         <input
+          id={label}
           inputMode="decimal"
           value={value}
           onChange={(e) => onChange(e.target.value.replace(/[^0-9.,]/g, "").slice(0, 6))}
           placeholder="t.ex. 36"
-          className="w-full bg-transparent px-3 py-3 font-mono text-xl font-bold outline-none"
+          className="w-full min-w-0 bg-transparent px-3 py-3 text-center font-mono text-xl font-bold outline-none"
         />
-        <span className="pr-3 text-sm text-muted-foreground">mm</span>
+        <span className="pr-2 text-sm text-muted-foreground">mm</span>
+        <button type="button" onClick={() => step(1)} aria-label={`Öka ${label.toLowerCase()} 1 mm`} className={`${btn} border-l border-input`}>
+          <Plus className="size-5" aria-hidden />
+        </button>
       </div>
-    </label>
+    </div>
   );
 }
 
