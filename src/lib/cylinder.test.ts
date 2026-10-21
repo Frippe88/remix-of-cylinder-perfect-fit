@@ -132,6 +132,6 @@ describe("rund cylinder", () => {
     // mycket djupt: alltid ett svar
     const deep = calculate({ depth: 70, extenders: [10], rings: [8, 13], baseMm: ROUND_CYLINDER_MM, relaxed: true });
     expect(deep.length).toBeGreaterThan(0);
-    expect(deep[0]!.deviation).toBeLessThanOrEqual(2); // 31+30-70-8 = -1... 31+30-70-13 = -2
+    expect(deep[0]!.deviation).toBe(3); // 31+50-70-8 = +3 (ring 13 ger −2, men under gränsen −1)
   });
 });
