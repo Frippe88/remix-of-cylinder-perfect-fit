@@ -20,12 +20,30 @@ import {
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Cylinderhjälpen" },
-      { name: "description", content: "Räkna fram rätt kombination av cylinderförlängare och cylinderringar, för enkel- och dubbelcylinder." },
-      { property: "og:title", content: "Cylinderkalkylator" },
+      { title: "Cylinderhjälpen – cylinderkalkylator för låssmeder" },
+      { name: "description", content: "Cylinderhjälpen räknar fram rätt kombination av cylinderförlängare och cylinderringar, för enkel- och dubbelcylinder." },
+      { name: "application-name", content: "Cylinderhjälpen" },
+      { property: "og:site_name", content: "Cylinderhjälpen" },
+      { property: "og:title", content: "Cylinderhjälpen – cylinderkalkylator för låssmeder" },
       { property: "og:description", content: "Exakt beräkning av cylinderförlängare och ringar för låssmeder." },
+      { property: "og:url", content: "https://xn--cylinderhjlpen-fib.se/" },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
+      { name: "twitter:title", content: "Cylinderhjälpen" },
+    ],
+    links: [{ rel: "canonical", href: "https://xn--cylinderhjlpen-fib.se/" }],
+    scripts: [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "WebSite",
+          name: "Cylinderhjälpen",
+          alternateName: "cylinderhjälpen.se",
+          url: "https://cylinderhjälpen.se/",
+          inLanguage: "sv",
+        }),
+      },
     ],
   }),
   component: Index,
