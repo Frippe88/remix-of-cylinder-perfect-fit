@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { calculate, deviationOf, filterByMode, EXTENDER_SIZES, RING_HEIGHTS, ILOQ_RING_HEIGHTS, ILOQ_CYLINDER_MM } from "./cylinder";
+import { calculate, deviationOf, filterByMode, EXTENDER_SIZES, RING_HEIGHTS, ILOQ_RING_HEIGHTS, ILOQ_CYLINDER_MM, ROUND_CYLINDER_MM } from "./cylinder";
 
 const all = { extenders: [...EXTENDER_SIZES], rings: [...RING_HEIGHTS] };
 
