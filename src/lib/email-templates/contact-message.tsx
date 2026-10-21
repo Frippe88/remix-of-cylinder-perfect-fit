@@ -31,7 +31,7 @@ const ContactMessage = ({ name, email, message }: Props) => (
 
 export const template = {
   component: ContactMessage,
-  subject: (d: Record<string, any>) => `Kontakt från ${d.name || 'besökare'} – Cylinderhjälpen`,
+  subject: (d: Record<string, any>) => `Kontakt från ${d['name'] || 'besökare'} – Cylinderhjälpen`,
   displayName: 'Kontaktformulär',
   to: 'cylinderkalkyl@gmail.com',
   previewData: { name: 'Anna Andersson', email: 'anna@example.com', message: 'Hej! Jag har en fråga om runda cylindrar.' },
