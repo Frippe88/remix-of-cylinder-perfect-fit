@@ -3,6 +3,7 @@ import { Check, KeyRound, Minus, Moon, Plus, Sun } from "lucide-react";
 import { useEffect, useState } from "react";
 import { CylinderResults } from "@/components/cylinder-results";
 import { PickListButton } from "@/components/pick-list-button";
+import { ContactForm } from "@/components/contact-form";
 import {
   formatMm,
   EXTENDER_SIZES,
@@ -170,6 +171,7 @@ function Index() {
           {type === "double" && <CylinderResults title="Insida" depth={parse(inside)} ext={ext} rings={activeRings} baseMm={baseMm} relaxed={isRound} selected={selIn} onSelect={(c) => setSel({ key: selKey, out: selOut, in: c })} />}
         </section>
       </main>
+      <ContactForm />
     </div>
   );
 }
