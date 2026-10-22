@@ -79,9 +79,12 @@ const CYLINDER_OPTIONS = [
 
 type Cyl = "standard" | "round" | "iloq";
 
+const ROUND_BRANDS = ["ASSA ABLOY", "dormakaba / DORMA", "EVVA", "iLOQ", "Abloy", "Ruko", "FAS", "Annat fabrikat"] as const;
+
 function Index() {
   const [type, setType] = useState<"single" | "double">("single");
   const [cyl, setCyl] = useState<Cyl>("standard");
+  const [brand, setBrand] = useState<string>(ROUND_BRANDS[0]);
   const [outside, setOutside] = useState("");
   const [inside, setInside] = useState("");
   const [stdExt, setStdExt] = useState<number[]>([...EXTENDER_SIZES]);
@@ -157,6 +160,21 @@ function Index() {
                 </button>
               ))}
             </div>
+            {isRound && (
+              <label className="block text-sm font-semibold text-foreground">
+                Fabrikat
+                <select
+                  value={brand}
+                  onChange={(e) => setBrand(e.target.value)}
+                  className="mt-1 block w-full rounded-lg border border-input bg-card px-3 py-3 text-base font-normal text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+                >
+                  {ROUND_BRANDS.map((b) => (
+                    <option key={b} value={b}>{b}</option>
+                  ))}
+                </select>
+                <span className="mt-1 block text-xs font-normal text-muted-foreground">Mått per fabrikat läggs in när de är verifierade. Tills vidare räknas alla med 31 mm.</span>
+              </label>
+            )}
             <div className="grid grid-cols-2 gap-1 rounded-lg bg-muted p-1">
               {(["single", "double"] as const).map((t) => (
                 <button
