@@ -26,15 +26,17 @@ const list = (a: readonly number[]) => a.map((n) => `${String(n).replace(".", ",
 export const GUIDES: Guide[] = [
   {
     slug: "rakna-cylinderlangd",
-    title: "Räkna cylinderlängd – så får du rätt mått",
-    description: "Steg för steg: mät dörrdjupet och räkna fram cylinder, förlängare och ringar för ett snyggt montage.",
-    answer: `Mät dörrdjupet från låshusets centrum ut till dörrbladets yta på den sida du räknar. En standard oval cylinder är ${STANDARD_CYLINDER_MM} mm. Det som saknas fylls med förlängare, och ringen bestämmer hur mycket cylindern sticker ut.`,
+    title: "Räkna cylinderlängd – mät dörrdjupet och få rätt mått",
+    description: "Steg för steg: mät dörrdjupet från låshuset ut till dörrens yta och räkna fram cylinder, förlängare och ringar för ett snyggt montage.",
+    answer: `Mät dörrdjupet från låshusets cylinderfäste ut till dörrbladets yta på den sida du räknar – det är inte samma sak som hela dörrens tjocklek. En standard oval cylinder är ${STANDARD_CYLINDER_MM} mm. Det som saknas fylls med förlängare, och ringen bestämmer hur mycket cylindern sticker ut.`,
     sections: [
-      { heading: "Så går du till väga", body: ["1. Mät dörrdjupet på utsidan (och insidan vid dubbelcylinder).", "2. Välj cylindertyp: oval, rund eller iLOQ.", "3. Kombinera förlängare och ring så att utsticket hamnar så nära noll som möjligt.", "4. Kontrollera att avvikelsen ligger inom regeln för cylindertypen."] },
+      { heading: "Så mäter du dörrdjupet", body: ["Mät från låshusets cylinderfäste ut till dörrbladets yttre yta, på den sida du ska räkna.", "Mät med skjutmått för bästa precision och undvik att runda av till hela centimeter.", "Ta med skylt, täckbricka eller behör om de bygger på dörrbladet.", "Vid dubbelcylinder mäts varje sida för sig – måtten är ofta olika."] },
+      { heading: "Så räknar du cylinderlängden", body: ["1. Mät dörrdjupet på utsidan (och insidan vid dubbelcylinder).", "2. Välj cylindertyp: oval, rund eller iLOQ.", "3. Kombinera förlängare och ring så att utsticket hamnar så nära noll som möjligt.", "4. Kontrollera att avvikelsen ligger inom regeln för cylindertypen."] },
       { heading: "Vilka delar finns", body: [`Förlängare för oval cylinder: ${list(EXTENDER_SIZES)}.`, `Ringar för oval cylinder: ${list(RING_HEIGHTS)}.`] },
     ],
-    mistakes: ["Att mäta från fel punkt på låshuset.", "Att glömma tjockleken på skylt eller behör.", "Att räkna båda sidor som samma mått vid dubbelcylinder."],
+    mistakes: ["Att mäta hela dörrtjockleken och dela på två.", "Att mäta från fel punkt på låshuset.", "Att glömma tjockleken på skylt eller behör.", "Att räkna båda sidor som samma mått vid dubbelcylinder."],
   },
+
   {
     slug: "cylinder-sticker-ut",
     title: "Cylinder sticker ut för mycket? Så räknar du rätt",
@@ -88,16 +90,6 @@ export const GUIDES: Guide[] = [
       { heading: "Fabrikat kan skilja", body: ["Behör från olika fabrikat (t.ex. ASSA, dormakaba och EVVA) kan ge något olika mått. Kontrollera mot tillverkarens produktblad när det är kritiskt."] },
     ],
     mistakes: ["Att använda ovala ringar på rund cylinder.", "Att tro att rund cylinder har samma tolerans som oval."],
-  },
-  {
-    slug: "cylinder-matt-dorrtjocklek",
-    title: "Mäta dörrdjup för cylinder",
-    description: "Så mäter du dörrdjupet rätt inför cylindermontage – från låshuset ut till dörrens yta, med hänsyn till behör.",
-    answer: "Dörrdjupet mäts från låshusets cylinderfäste ut till dörrbladets yttre yta på respektive sida. Det är inte samma sak som hela dörrens tjocklek.",
-    sections: [
-      { heading: "Praktiska tips", body: ["Mät med skjutmått för bästa precision.", "Ta med skylt, täckbricka eller behör om de bygger på dörrbladet.", "Mät båda sidor vid dubbelcylinder."] },
-    ],
-    mistakes: ["Att mäta total dörrtjocklek och dela på två.", "Att runda av till hela centimeter."],
   },
 ];
 
