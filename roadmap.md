@@ -14,3 +14,7 @@
 
 # Tolerans
 - [x] Oval: −2 till +2 mm. Rund: ingen regel, närmaste vinner, ingen varning.
+
+# Guider
+- [x] Korta rubriken "Räkna cylinderlängd" så guidlistan blir jämnare.
+- [ ] Jämna mellanrum mellan guidekorten på startsidan (lika höjd i tvåkolumnsraden).

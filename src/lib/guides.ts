@@ -26,8 +26,8 @@ const list = (a: readonly number[]) => a.map((n) => `${String(n).replace(".", ",
 export const GUIDES: Guide[] = [
   {
     slug: "rakna-cylinderlangd",
-    title: "Räkna cylinderlängd – mät dörrdjupet och få rätt mått",
-    description: "Steg för steg: mät dörrdjupet från låshuset ut till dörrens yta och räkna fram cylinder, förlängare och ringar för ett snyggt montage.",
+    title: "Räkna cylinderlängd",
+    description: "Mät dörrdjupet från låshuset ut till dörrens yta och räkna fram cylinder, förlängare och ringar.",
     answer: `Mät dörrdjupet från låshusets cylinderfäste ut till dörrbladets yta på den sida du räknar – det är inte samma sak som hela dörrens tjocklek. En standard oval cylinder är ${STANDARD_CYLINDER_MM} mm. Det som saknas fylls med förlängare, och ringen bestämmer hur mycket cylindern sticker ut.`,
     sections: [
       { heading: "Så mäter du dörrdjupet", body: ["Mät från låshusets cylinderfäste ut till dörrbladets yttre yta, på den sida du ska räkna.", "Mät med skjutmått för bästa precision och undvik att runda av till hela centimeter.", "Ta med skylt, förstärkningsbehör eller andra tillbehör som bygger på dörrbladet.", "Vid dubbelcylinder mäts varje sida för sig – måttet på in- och utsida är sällan detsamma och varierar ofta."] },
