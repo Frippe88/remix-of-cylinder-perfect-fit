@@ -24,3 +24,8 @@
 - [x] Korta rubriken "Räkna cylinderlängd" så guidlistan blir jämnare.
 - [x] Jämna mellanrum mellan guidekorten på startsidan (lika höjd i tvåkolumnsraden).
 - [x] Litet mellanrum mellan guide-sektionen och "Kontakta oss" på startsidan.
+- [x] Ta bort montageskissen under bästa rekommendationen.
+
+# Plocklista
+- [ ] Lyft listans utseende (tydligare rader per sida, bättre typografi) utan att den kopierade texten blir konstig.
+
