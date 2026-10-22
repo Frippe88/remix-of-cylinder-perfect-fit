@@ -17,5 +17,5 @@
 
 # Guider
 - [x] Korta rubriken "Räkna cylinderlängd" så guidlistan blir jämnare.
-- [ ] Jämna mellanrum mellan guidekorten på startsidan (lika höjd i tvåkolumnsraden).
-- [ ] Litet mellanrum mellan guide-sektionen och "Kontakta oss" på startsidan.
+- [x] Jämna mellanrum mellan guidekorten på startsidan (lika höjd i tvåkolumnsraden).
+- [x] Litet mellanrum mellan guide-sektionen och "Kontakta oss" på startsidan.
