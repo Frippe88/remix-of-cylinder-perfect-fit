@@ -4,6 +4,7 @@ import { GUIDES, getGuide } from "@/lib/guides";
 const BASE = "https://xn--cylinderhjlpen-fib.se/guider/";
 
 export const Route = createFileRoute("/guider/$slug")({
+  staticData: { sitemap: true },
   loader: ({ params }) => {
     const guide = getGuide(params.slug);
     if (!guide) throw notFound();
