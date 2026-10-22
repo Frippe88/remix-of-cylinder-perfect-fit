@@ -34,7 +34,7 @@ export const GUIDES: Guide[] = [
       { heading: "Så räknar du cylinderlängden", body: ["1. Mät dörrdjupet på utsidan (och insidan vid dubbelcylinder).", "2. Välj cylindertyp: oval, rund eller iLOQ.", "3. Kombinera förlängare och ring så att utsticket hamnar så nära noll som möjligt.", "4. Kontrollera att avvikelsen ligger inom regeln för cylindertypen."] },
       { heading: "Vilka delar finns", body: [`Förlängare för oval cylinder: ${list(EXTENDER_SIZES)}.`, `Ringar för oval cylinder: ${list(RING_HEIGHTS)}.`] },
     ],
-    mistakes: ["Att mäta hela dörrtjockleken och dela på två.", "Att mäta från fel punkt på låshuset.", "Att glömma tjockleken på skylt eller behör.", "Att räkna båda sidor som samma mått vid dubbelcylinder."],
+    mistakes: ["Att mäta hela dörrtjockleken och dela på två.", "Att mäta från fel punkt på låshuset.", "Att glömma räkna med utsticket från extra skylt, förstärkningsbehör eller täckbricka.", "Att räkna båda sidor som samma mått vid dubbelcylinder."],
   },
 
   {
