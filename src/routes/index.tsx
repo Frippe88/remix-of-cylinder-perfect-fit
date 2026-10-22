@@ -129,7 +129,7 @@ function Index() {
             <div>
               <h1 className="text-2xl font-extrabold tracking-tight sm:text-4xl">Cylinderhjälpen</h1>
               <p className="mt-0.5 text-sm opacity-80">Snabb och enkel cylinderberäkning för ett snyggt montage</p>
-              <p className="mt-1 font-mono text-xs uppercase tracking-widest text-accent">Godkänd avvikelse −1 till +2 mm</p>
+              <p className="mt-1 font-mono text-xs uppercase tracking-widest text-accent">Oval cylinder: godkänd avvikelse −2 till +2 mm · Rund: närmaste möjliga</p>
             </div>
           </div>
           <ThemeToggle />
@@ -172,7 +172,7 @@ function Index() {
                     <option key={b} value={b}>{b}</option>
                   ))}
                 </select>
-                <span className="mt-1 block text-xs font-normal text-muted-foreground">Mått per fabrikat läggs in när de är verifierade. Tills vidare räknas alla med 31 mm.</span>
+                <span className="mt-1 block text-xs font-normal text-muted-foreground">Runda cylindrar har ingen fast toleransregel – kalkylatorn väljer alltid närmaste möjliga utstick. Mått per fabrikat läggs in när de är verifierade. Tills vidare räknas alla med 31 mm.</span>
               </label>
             )}
             <div className="grid grid-cols-2 gap-1 rounded-lg bg-muted p-1">

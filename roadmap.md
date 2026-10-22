@@ -11,3 +11,6 @@
 
 # iLOQ dubbelcylinder
 - [x] Räkna med 6 mm extra på insidan (två 3 mm brickor) och visa förklaring.
+
+# Tolerans
+- [x] Oval: −2 till +2 mm. Rund: ingen regel, närmaste vinner, ingen varning.

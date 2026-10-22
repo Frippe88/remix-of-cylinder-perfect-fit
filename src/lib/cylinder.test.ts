@@ -11,20 +11,20 @@ describe("deviationOf", () => {
 });
 
 describe("toleranser", () => {
-  it("alla resultat ligger inom −1 till +2 mm", () => {
+  it("alla resultat ligger inom −2 till +2 mm", () => {
     for (let d = 0; d <= 60; d += 0.5) {
       for (const c of calculate({ depth: d, ...all })) {
-        expect(c.deviation).toBeGreaterThanOrEqual(-1);
+        expect(c.deviation).toBeGreaterThanOrEqual(-2);
         expect(c.deviation).toBeLessThanOrEqual(2);
         expect(c.deviation).toBe(deviationOf(d, c.totalExtension, c.ring));
       }
     }
   });
-  it("gränsvärden −1 och +2 accepteras, −1,5 och +2,5 inte", () => {
-    const r = calculate({ depth: 26, extenders: [], rings: [6] }); // 31-26-6 = -1
-    expect(r.map((c) => c.deviation)).toEqual([-1]);
+  it("gränsvärden −2 och +2 accepteras, −2,5 och +2,5 inte", () => {
+    const r = calculate({ depth: 27, extenders: [], rings: [6] }); // 31-27-6 = -2
+    expect(r.map((c) => c.deviation)).toEqual([-2]);
     expect(calculate({ depth: 23, extenders: [], rings: [6] })[0]!.deviation).toBe(2);
-    expect(calculate({ depth: 26.5, extenders: [], rings: [6] })).toEqual([]);
+    expect(calculate({ depth: 27.5, extenders: [], rings: [6] })).toEqual([]);
     expect(calculate({ depth: 22.5, extenders: [], rings: [6] })).toEqual([]);
   });
   it("exakt 0 sorteras först", () => {
@@ -84,7 +84,7 @@ describe("iLOQ-cylinder", () => {
   it("alla iLOQ-resultat ligger inom tolerans", () => {
     for (let d = 0; d <= 80; d += 0.5) {
       for (const c of calculate({ depth: d, ...iloq })) {
-        expect(c.deviation).toBeGreaterThanOrEqual(-1);
+        expect(c.deviation).toBeGreaterThanOrEqual(-2);
         expect(c.deviation).toBeLessThanOrEqual(2);
         expect(c.deviation).toBe(deviationOf(d, c.totalExtension, c.ring, ILOQ_CYLINDER_MM));
       }
@@ -132,7 +132,7 @@ describe("rund cylinder", () => {
     // mycket djupt: alltid ett svar
     const deep = calculate({ depth: 70, extenders: [10], rings: [8, 13], baseMm: ROUND_CYLINDER_MM, relaxed: true });
     expect(deep.length).toBeGreaterThan(0);
-    expect(deep[0]!.deviation).toBe(3); // 31+50-70-8 = +3 (ring 13 ger −2, men under gränsen −1)
+    expect(deep[0]!.deviation).toBe(-2); // 31+50-70-13 = −2 (inom −2)
   });
 });
 
