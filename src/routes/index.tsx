@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { GUIDES } from "@/lib/guides";
-import { Check, Info, KeyRound, Minus, Moon, Plus, Sun } from "lucide-react";
+import { Check, Info, KeyRound, Minus, Moon, Plus, ShieldCheck, Sun } from "lucide-react";
 import { useEffect, useState } from "react";
 import { CylinderResults } from "@/components/cylinder-results";
 import { PickListButton } from "@/components/pick-list-button";
@@ -131,7 +131,14 @@ function Index() {
             <div>
               <h1 className="text-2xl font-extrabold tracking-tight sm:text-4xl">Cylinderhjälpen</h1>
               <p className="mt-0.5 text-sm opacity-80">Snabb och enkel cylinderberäkning för ett snyggt montage</p>
-              <p className="mt-1 font-mono text-xs uppercase tracking-widest text-accent">Oval cylinder: godkänd avvikelse −2 till +2 mm · Rund: närmaste möjliga</p>
+              <ul className="mt-2.5 flex flex-wrap gap-1.5" aria-label="Regler">
+                <li className="inline-flex items-center gap-1.5 rounded-full bg-accent/15 px-2.5 py-1 text-xs font-semibold text-accent ring-1 ring-accent/40">
+                  <ShieldCheck className="size-3.5" aria-hidden />Oval & iLOQ: −2 till +2 mm
+                </li>
+                <li className="inline-flex items-center gap-1.5 rounded-full bg-primary-foreground/10 px-2.5 py-1 text-xs font-semibold ring-1 ring-primary-foreground/25">
+                  <Check className="size-3.5" aria-hidden />Rund: närmaste möjliga
+                </li>
+              </ul>
             </div>
           </div>
           <ThemeToggle />
