@@ -129,7 +129,7 @@ function Index() {
               <KeyRound className="size-6 text-accent sm:size-7" aria-hidden />
             </span>
             <div>
-              <h1 className="text-xl font-extrabold leading-tight tracking-tight sm:text-3xl">Cylinderhjälpen – kalkylator för rätt mått & montage</h1>
+              <h1 className="text-xl font-extrabold leading-tight tracking-tight sm:text-3xl">Cylinderhjälpen – kalkylator för rätt mått och montage</h1>
               <p className="mt-0.5 text-sm opacity-80">Snabb och enkel cylinderberäkning för ett snyggt montage</p>
               <ul className="mt-2.5 flex flex-wrap gap-1.5" aria-label="Regler">
                 <li className="inline-flex items-center gap-1.5 rounded-full bg-accent/15 px-2.5 py-1 text-xs font-semibold text-accent ring-1 ring-accent/40">
