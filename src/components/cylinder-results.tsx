@@ -59,7 +59,7 @@ export function CylinderResults({ title, depth, ext, rings, baseMm, relaxed = fa
         </div>
       ) : (
         <>
-          <ResultCard c={best} best side={title} {...sel} />
+          <ResultCard relaxed={relaxed} c={best} best side={title} {...sel} />
           <Alternatives key={`${depth}:${baseMm}:${ext.join(",")}:${rings.join(",")}`} results={results} best={best} relaxed={relaxed} side={title} {...sel} />
         </>
       )}
@@ -91,7 +91,7 @@ function Alternatives({ results, best, relaxed, side, chosen, onSelect }: { resu
         </div>
         <p className="text-xs text-muted-foreground">{mode === "all" ? (relaxed ? "Bäst passform först." : "Inom −2 till +2 mm. Bäst passform först.") : mode === "exact" ? "Alternativ i liv med ringen." : "Alternativ med färre förlängare."}</p>
         {shown.length === 0 ? <p className="py-3 text-sm text-muted-foreground">Inga fler alternativ i den här vyn.</p> : <>
-          <div className="space-y-2">{shown.slice(0, visible).map((c, i) => <ResultCard key={i} c={c} side={side} chosen={chosen} onSelect={onSelect} />)}</div>
+          <div className="space-y-2">{shown.slice(0, visible).map((c, i) => <ResultCard relaxed={relaxed} key={i} c={c} side={side} chosen={chosen} onSelect={onSelect} />)}</div>
           <div className="flex flex-wrap items-center justify-between gap-2">
             <p className="text-xs text-muted-foreground">Visar {Math.min(visible, shown.length)} av {shown.length} alternativ{forSide}</p>
             {visible < shown.length && <Button variant="outline" size="sm" onClick={() => setVisible(visible + PAGE_SIZE)}><Plus aria-hidden />Visa fler</Button>}
@@ -102,7 +102,7 @@ function Alternatives({ results, best, relaxed, side, chosen, onSelect }: { resu
   );
 }
 
-function ResultCard({ c, best = false, side = null, chosen, onSelect }: { c: Combination; best?: boolean; side?: string | null } & CardSel) {
+function ResultCard({ c, best = false, side = null, relaxed = false, chosen, onSelect }: { c: Combination; best?: boolean; side?: string | null; relaxed?: boolean } & CardSel) {
   const exact = c.deviation === 0;
   const outsideTolerance = !relaxed && (c.deviation < TOLERANCE_MIN || c.deviation > TOLERANCE_MAX);
   const isChosen = same(c, chosen);

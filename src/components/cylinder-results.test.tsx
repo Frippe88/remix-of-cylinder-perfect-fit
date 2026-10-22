@@ -43,6 +43,6 @@ describe("Results overview", () => {
   it("shows the round cylinder best fit with an explicit out-of-tolerance warning", () => {
     render(<CylinderResults title={null} depth={12} baseMm={30} rings={[8, 13]} ext={[10]} relaxed />);
     expect(screen.getByText("+5 mm")).toBeInTheDocument();
-    expect(screen.getByText("Utanför toleransen −1 till +2 mm.")).toBeInTheDocument();
+    expect(screen.getByText("Utanför toleransen −2 till +2 mm (ovala cylindrar).")).toBeInTheDocument();
   });
 });
