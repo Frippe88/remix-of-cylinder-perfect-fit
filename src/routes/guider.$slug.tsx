@@ -56,7 +56,11 @@ function GuidePage() {
           <h2 className="text-xl font-semibold">Vanliga misstag</h2>
           <ul className="mt-2 list-disc space-y-1 pl-5">{g.mistakes.map((m) => <li key={m}>{m}</li>)}</ul>
         </section>
-        <Link to="/" className="mt-8 inline-block rounded-lg bg-primary px-5 py-3 font-semibold text-primary-foreground">Beräkna mitt montage</Link>
+        <section className="mt-6 rounded-xl border bg-card p-5">
+          <h2 className="text-xl font-semibold">Undvik misstagen – låt kalkylatorn räkna</h2>
+          <p className="mt-2">Kalkylatorn väger ihop cylinder, förlängare och ringar åt dig och kontrollerar avvikelsen mot regeln för cylindertypen. Du slipper huvudräkningen och misstagen ovan, och ser direkt vilken kombination som ger snyggast montage.</p>
+          <Link to="/" className="mt-4 inline-block rounded-lg bg-primary px-5 py-3 font-semibold text-primary-foreground">Beräkna mitt montage</Link>
+        </section>
       </article>
       <aside className="mt-10 border-t pt-6">
         <h2 className="font-semibold">Fler guider</h2>
