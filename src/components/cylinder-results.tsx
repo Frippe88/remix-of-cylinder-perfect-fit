@@ -1,7 +1,6 @@
 import { useMemo, useState } from "react";
 import { AlertTriangle, ArrowDown, ArrowUp, Check, ChevronDown, ChevronUp, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { MountDiagram } from "@/components/mount-diagram";
 import {
   calculate, filterByMode, describeDeviation, formatMm, formatSigned,
   TOLERANCE_MIN, TOLERANCE_MAX, type Combination, type ViewMode,
@@ -60,7 +59,7 @@ export function CylinderResults({ title, depth, ext, rings, baseMm, relaxed = fa
         </div>
       ) : (
         <>
-          <ResultCard relaxed={relaxed} c={best} best side={title} depth={depth} baseMm={baseMm} {...sel} />
+          <ResultCard relaxed={relaxed} c={best} best side={title} {...sel} />
           <Alternatives key={`${depth}:${baseMm}:${ext.join(",")}:${rings.join(",")}`} results={results} best={best} relaxed={relaxed} side={title} {...sel} />
         </>
       )}
@@ -103,7 +102,7 @@ function Alternatives({ results, best, relaxed, side, chosen, onSelect }: { resu
   );
 }
 
-function ResultCard({ c, best = false, side = null, relaxed = false, depth, baseMm, chosen, onSelect }: { c: Combination; best?: boolean; side?: string | null; relaxed?: boolean; depth?: number; baseMm?: number } & CardSel) {
+function ResultCard({ c, best = false, side = null, relaxed = false, chosen, onSelect }: { c: Combination; best?: boolean; side?: string | null; relaxed?: boolean } & CardSel) {
   const exact = c.deviation === 0;
   const outsideTolerance = !relaxed && (c.deviation < TOLERANCE_MIN || c.deviation > TOLERANCE_MAX);
   const isChosen = same(c, chosen);
@@ -120,7 +119,6 @@ function ResultCard({ c, best = false, side = null, relaxed = false, depth, base
       <p className={`mt-3 flex items-start gap-1.5 border-t pt-2 text-xs font-medium ${outsideTolerance ? "text-warning" : exact ? "text-success" : "text-muted-foreground"}`}>
         {outsideTolerance && <AlertTriangle className="size-3.5 shrink-0" aria-hidden />}<span>{describeDeviation(c.deviation)}{outsideTolerance && <span className="mt-0.5 block">Utanför toleransen −2 till +2 mm (ovala cylindrar).</span>}</span>
       </p>
-      {best && depth !== undefined && baseMm !== undefined && <MountDiagram c={c} depth={depth} baseMm={baseMm} warn={outsideTolerance} />}
       {onSelect && (
         <Button variant={isChosen ? "outline" : "secondary"} size="sm" aria-pressed={isChosen} onClick={() => onSelect(c)} className={`mt-3 w-full ${isChosen ? "border-success text-success" : ""}`}>
           {isChosen ? <><Check aria-hidden />Vald för plocklista</> : "Välj för plocklista"}
