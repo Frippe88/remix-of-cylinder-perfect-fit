@@ -15,6 +15,11 @@
 # Tolerans
 - [x] Oval: −2 till +2 mm. Rund: ingen regel, närmaste vinner, ingen varning.
 
+# Domän och synlighet (väntar på cylinderhjalpen.se)
+- [ ] Byt domän i alla ställen där xn--cylinderhjlpen-fib.se är inbakad (robots.txt, sitemap, guider, startsidan, avsändaradress).
+- [ ] Koppla cylinderhjalpen.se som custom domain i Lovable och sätt DNS hos Strato (www sköts automatiskt).
+- [ ] Skicka in sitemap.xml till Google Search Console när den nya domänen är aktiv.
+
 # Guider
 - [x] Korta rubriken "Räkna cylinderlängd" så guidlistan blir jämnare.
 - [x] Jämna mellanrum mellan guidekorten på startsidan (lika höjd i tvåkolumnsraden).
