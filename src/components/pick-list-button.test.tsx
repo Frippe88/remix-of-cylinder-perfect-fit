@@ -19,7 +19,7 @@ describe("Plocklista", () => {
     render(<PickListButton sides={sides} ext={ext} rings={rings} baseMm={31} relaxed={false} />);
     fireEvent.click(screen.getByRole("button", { name: /Kopiera plocklista/ }));
     expect(writeText).toHaveBeenCalledWith(
-      "Utsida: 2 st 8 mm förlängare + 11 mm ring\nInsida: 1 st 8 mm förlängare + 8 mm ring",
+      "Utsida: 2 st 8 mm förlängare + 11 mm ring\nInsida: 1 st 12,5 mm förlängare + 11 mm ring",
     );
   });
 
