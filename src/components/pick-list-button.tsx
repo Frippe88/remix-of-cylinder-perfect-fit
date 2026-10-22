@@ -52,7 +52,7 @@ function SideTag({ label }: { label: string | null }) {
 function Row({ caption, icon, children }: { caption: string; icon: ReactNode; children: ReactNode }) {
   return (
     <div className="grid grid-cols-[minmax(0,88px)_minmax(0,1fr)] items-center gap-x-3 gap-y-1 sm:grid-cols-[minmax(0,96px)_minmax(0,1fr)]">
-      <span className="flex items-center gap-1.5 text-xs font-semibold text-muted-foreground">
+      <span className="flex items-center gap-1.5 text-xs font-semibold text-foreground/80">
         <span className="text-foreground/50" aria-hidden>{icon}</span>
         {caption}
       </span>
@@ -122,7 +122,7 @@ export function PickListButton({ sides, ext, rings, baseMm, insideBaseMm = baseM
           <li key={`${p.label ?? "cyl"}:${i}`} className="space-y-2.5 px-4 py-3.5">
             <div className="flex items-center justify-between gap-2">
               <SideTag label={p.label} />
-              <span className="shrink-0 font-mono text-xs text-muted-foreground">dörrdjup {formatMm(p.depth)}</span>
+              <span className="shrink-0 font-mono text-xs text-foreground/70">dörrdjup {formatMm(p.depth)}</span>
             </div>
             <Row caption="Förlängare" icon={<Layers className="size-3.5" />}>
               {p.c.extenders.length === 0 ? (
@@ -130,7 +130,7 @@ export function PickListButton({ sides, ext, rings, baseMm, insideBaseMm = baseM
               ) : (
                 grouped(p.c).map(([s, n]) => (
                   <span key={s} className="inline-flex items-baseline gap-1.5 rounded-md border border-input bg-muted px-2 py-1 font-mono">
-                    <span className="text-xs text-muted-foreground">{n} st</span>
+                    <span className="text-xs text-foreground/70">{n} st</span>
                     <span className="text-sm font-bold text-foreground">{formatMm(s)}</span>
                   </span>
                 ))
