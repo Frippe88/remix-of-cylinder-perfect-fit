@@ -22,13 +22,13 @@ export function pickLine(c: Combination) {
   return parts.join(" + ");
 }
 
-export function PickListButton({ sides, ext, rings, baseMm, relaxed }: {
-  sides: PickSide[]; ext: number[]; rings: number[]; baseMm: number; relaxed: boolean;
+export function PickListButton({ sides, ext, rings, baseMm, insideBaseMm = baseMm, relaxed }: {
+  sides: PickSide[]; ext: number[]; rings: number[]; baseMm: number; insideBaseMm?: number; relaxed: boolean;
 }) {
   const [copied, setCopied] = useState(false);
   const picks = sides
     .filter((s) => s.depth !== null)
-    .map((s) => ({ label: s.label, c: s.selected ?? bestFor(s.depth as number, ext, rings, baseMm, relaxed) }))
+    .map((s) => ({ label: s.label, c: s.selected ?? bestFor(s.depth as number, ext, rings, s.label === "Insida" ? insideBaseMm : baseMm, relaxed) }))
     .filter((s): s is { label: string | null; c: Combination } => !!s.c);
   if (picks.length === 0) return null;
 

@@ -135,3 +135,13 @@ describe("rund cylinder", () => {
     expect(deep[0]!.deviation).toBe(3); // 31+50-70-8 = +3 (ring 13 ger −2, men under gränsen −1)
   });
 });
+
+import { cylinderBaseMm } from "./cylinder";
+describe("iLOQ dubbelcylinder", () => {
+  it("lägger till 6 mm endast på insidan vid dubbelcylinder", () => {
+    expect(cylinderBaseMm("iloq", "inside", true)).toBe(46);
+    expect(cylinderBaseMm("iloq", "outside", true)).toBe(40);
+    expect(cylinderBaseMm("iloq", "inside", false)).toBe(40);
+    expect(cylinderBaseMm("standard", "inside", true)).toBe(31);
+  });
+});
