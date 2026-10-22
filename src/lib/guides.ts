@@ -39,7 +39,7 @@ export const GUIDES: Guide[] = [
 
   {
     slug: "cylinder-sticker-ut",
-    title: "Cylinder sticker ut för mycket? Så räknar du rätt",
+    title: "Cylinder sticker ut för mycket?",
     description: `Godkänd avvikelse för oval cylinder är ${TOLERANCE_MIN} till +${TOLERANCE_MAX} mm. Så väljer du ring och förlängare när cylindern sticker ut.`,
     answer: `För ovala cylindrar och iLOQ gäller en godkänd avvikelse på ${TOLERANCE_MIN} till +${TOLERANCE_MAX} mm enligt regelboken. Sticker cylindern ut mer behöver du en annan ring eller färre förlängare.`,
     sections: [
