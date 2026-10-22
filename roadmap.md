@@ -8,3 +8,6 @@
 - [x] To bort fliken, sidan och alla stödfiler helt (återkommer kanske senare).
 - [x] Lägg in ASSA-stolpar för elslutbleck (700- och 900-serien) och fabrikatsfilter.
 - [ ] Bilder på ASSA elslutbleckstolpar (saknar verifierade foton).
+
+# iLOQ dubbelcylinder
+- [x] Räkna med 6 mm extra på insidan (två 3 mm brickor) och visa förklaring.
