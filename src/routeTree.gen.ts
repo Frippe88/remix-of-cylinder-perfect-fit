@@ -10,11 +10,23 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as GuiderIndexRouteImport } from './routes/guider.index'
+import { Route as GuiderSlugRouteImport } from './routes/guider.$slug'
 import { Route as LovableEmailTransactionalPreviewRouteImport } from './routes/lovable/email/transactional/preview'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const GuiderIndexRoute = GuiderIndexRouteImport.update({
+  id: '/guider/',
+  path: '/guider/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const GuiderSlugRoute = GuiderSlugRouteImport.update({
+  id: '/guider/$slug',
+  path: '/guider/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LovableEmailTransactionalPreviewRoute =
@@ -26,27 +38,41 @@ const LovableEmailTransactionalPreviewRoute =
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/guider/$slug': typeof GuiderSlugRoute
+  '/guider/': typeof GuiderIndexRoute
   '/lovable/email/transactional/preview': typeof LovableEmailTransactionalPreviewRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/guider/$slug': typeof GuiderSlugRoute
+  '/guider': typeof GuiderIndexRoute
   '/lovable/email/transactional/preview': typeof LovableEmailTransactionalPreviewRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/guider/$slug': typeof GuiderSlugRoute
+  '/guider/': typeof GuiderIndexRoute
   '/lovable/email/transactional/preview': typeof LovableEmailTransactionalPreviewRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/lovable/email/transactional/preview'
+  fullPaths:
+    '/' | '/guider/$slug' | '/guider/' | '/lovable/email/transactional/preview'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/lovable/email/transactional/preview'
-  id: '__root__' | '/' | '/lovable/email/transactional/preview'
+  to: '/' | '/guider/$slug' | '/guider' | '/lovable/email/transactional/preview'
+  id:
+    | '__root__'
+    | '/'
+    | '/guider/$slug'
+    | '/guider/'
+    | '/lovable/email/transactional/preview'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  GuiderSlugRoute: typeof GuiderSlugRoute
+  GuiderIndexRoute: typeof GuiderIndexRoute
   LovableEmailTransactionalPreviewRoute: typeof LovableEmailTransactionalPreviewRoute
 }
 
@@ -57,6 +83,20 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/guider/': {
+      id: '/guider/'
+      path: '/guider'
+      fullPath: '/guider/'
+      preLoaderRoute: typeof GuiderIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/guider/$slug': {
+      id: '/guider/$slug'
+      path: '/guider/$slug'
+      fullPath: '/guider/$slug'
+      preLoaderRoute: typeof GuiderSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/lovable/email/transactional/preview': {
@@ -71,6 +111,8 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  GuiderSlugRoute: GuiderSlugRoute,
+  GuiderIndexRoute: GuiderIndexRoute,
   LovableEmailTransactionalPreviewRoute: LovableEmailTransactionalPreviewRoute,
 }
 export const routeTree = rootRouteImport

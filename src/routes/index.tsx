@@ -1,4 +1,5 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { GUIDES } from "@/lib/guides";
 import { Check, Info, KeyRound, Minus, Moon, Plus, Sun } from "lucide-react";
 import { useEffect, useState } from "react";
 import { CylinderResults } from "@/components/cylinder-results";
@@ -224,6 +225,16 @@ function Index() {
           )}
         </section>
       </main>
+      <section className="mx-auto mt-8 w-full max-w-2xl px-4">
+        <h2 className="text-lg font-semibold">Guider om cylindermontage</h2>
+        <ul className="mt-2 grid gap-2 sm:grid-cols-2">
+          {GUIDES.map((g) => (
+            <li key={g.slug}>
+              <Link to="/guider/$slug" params={{ slug: g.slug }} className="block rounded-lg border bg-card p-3 text-sm hover:border-primary">{g.title}</Link>
+            </li>
+          ))}
+        </ul>
+      </section>
       <ContactForm />
     </div>
   );
