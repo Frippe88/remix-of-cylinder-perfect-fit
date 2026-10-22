@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { Check, KeyRound, Minus, Moon, Plus, Sun } from "lucide-react";
+import { Check, Info, KeyRound, Minus, Moon, Plus, Sun } from "lucide-react";
 import { useEffect, useState } from "react";
 import { CylinderResults } from "@/components/cylinder-results";
 import { PickListButton } from "@/components/pick-list-button";
@@ -11,6 +11,8 @@ import {
   ILOQ_RING_HEIGHTS,
   STANDARD_CYLINDER_MM,
   ILOQ_CYLINDER_MM,
+  ILOQ_DOUBLE_INSIDE_EXTRA_MM,
+  cylinderBaseMm,
   ROUND_CYLINDER_MM,
   ROUND_EXTENDER_SIZES,
   ROUND_RING_HEIGHTS,
@@ -88,7 +90,9 @@ function Index() {
   const [roundRings, setRoundRings] = useState<number[]>([...ROUND_RING_HEIGHTS]);
 
   const isRound = cyl === "round";
-  const baseMm = cyl === "iloq" ? ILOQ_CYLINDER_MM : isRound ? ROUND_CYLINDER_MM : STANDARD_CYLINDER_MM;
+  const baseMm = cylinderBaseMm(cyl, "outside", type === "double");
+  const insideBaseMm = cylinderBaseMm(cyl, "inside", type === "double");
+  const iloqDouble = cyl === "iloq" && type === "double";
   const ringValues = isRound ? [...ROUND_RING_HEIGHTS] : cyl === "iloq" ? [...RING_HEIGHTS, ...ILOQ_RING_HEIGHTS] : [...RING_HEIGHTS];
   const extValues = isRound ? [...ROUND_EXTENDER_SIZES] : [...EXTENDER_SIZES];
   const ext = isRound ? roundExt : stdExt;
@@ -183,10 +187,23 @@ function Index() {
         <section className="min-w-0 space-y-7">
           <PickListButton
             sides={type === "single" ? [{ label: null, depth: parse(outside), selected: selOut }] : [{ label: "Utsida", depth: parse(outside), selected: selOut }, { label: "Insida", depth: parse(inside), selected: selIn }]}
-            ext={ext} rings={activeRings} baseMm={baseMm} relaxed={isRound}
+            ext={ext} rings={activeRings} baseMm={baseMm} insideBaseMm={insideBaseMm} relaxed={isRound}
           />
           <CylinderResults title={type === "single" ? null : "Utsida"} depth={parse(outside)} ext={ext} rings={activeRings} baseMm={baseMm} relaxed={isRound} selected={selOut} onSelect={(c) => setSel({ key: selKey, out: c, in: selIn })} />
-          {type === "double" && <CylinderResults title="Insida" depth={parse(inside)} ext={ext} rings={activeRings} baseMm={baseMm} relaxed={isRound} selected={selIn} onSelect={(c) => setSel({ key: selKey, out: selOut, in: c })} />}
+          {type === "double" && (
+            <div className="space-y-3">
+              {iloqDouble && (
+                <div role="note" className="flex gap-3 rounded-xl border border-accent/50 bg-accent/10 p-3 text-sm">
+                  <Info className="mt-0.5 size-5 shrink-0 text-accent" aria-hidden />
+                  <p>
+                    <span className="font-bold">iLOQ dubbelcylinder: +{ILOQ_DOUBLE_INSIDE_EXTRA_MM} mm på insidan.</span>{" "}
+                    <span className="text-muted-foreground">Kitets två monteringsbrickor (3 mm styck) bygger ut cylindern, så insidan räknas med {insideBaseMm} mm istället för {ILOQ_CYLINDER_MM} mm.</span>
+                  </p>
+                </div>
+              )}
+              <CylinderResults title="Insida" depth={parse(inside)} ext={ext} rings={activeRings} baseMm={insideBaseMm} relaxed={isRound} selected={selIn} onSelect={(c) => setSel({ key: selKey, out: selOut, in: c })} />
+            </div>
+          )}
         </section>
       </main>
       <ContactForm />
