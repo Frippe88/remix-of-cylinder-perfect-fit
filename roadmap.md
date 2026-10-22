@@ -27,5 +27,5 @@
 - [x] Ta bort montageskissen under bästa rekommendationen.
 
 # Plocklista
-- [ ] Lyft listans utseende (tydligare rader per sida, bättre typografi) utan att den kopierade texten blir konstig.
+- [x] Lyft listans utseende (tydligare rader per sida, bättre typografi) utan att den kopierade texten blir konstig.
 
