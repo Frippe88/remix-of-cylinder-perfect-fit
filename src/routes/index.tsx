@@ -79,7 +79,7 @@ const CYLINDER_OPTIONS = [
 
 type Cyl = "standard" | "round" | "iloq";
 
-const ROUND_BRANDS = ["ASSA ABLOY", "dormakaba / DORMA", "EVVA", "iLOQ", "Abloy", "Ruko", "FAS", "Annat fabrikat"] as const;
+const ROUND_BRANDS = ["ASSA ABLOY", "dormakaba / DORMA", "EVVA", "Annat fabrikat"] as const;
 
 function Index() {
   const [type, setType] = useState<"single" | "double">("single");
