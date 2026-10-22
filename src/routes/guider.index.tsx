@@ -4,6 +4,7 @@ import { GUIDES } from "@/lib/guides";
 const URL = "https://xn--cylinderhjlpen-fib.se/guider";
 
 export const Route = createFileRoute("/guider/")({
+  staticData: { sitemap: true },
   head: () => ({
     meta: [
       { title: "Guider om cylindermontage – Cylinderhjälpen" },

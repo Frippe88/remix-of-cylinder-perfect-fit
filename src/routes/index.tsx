@@ -21,6 +21,7 @@ import {
 } from "@/lib/cylinder";
 
 export const Route = createFileRoute("/")({
+  staticData: { sitemap: true },
   head: () => ({
     meta: [
       { title: "Cylinderhjälpen – cylinderkalkylator för låssmeder" },
