@@ -66,7 +66,7 @@ function GuidePage() {
         <h2 className="font-semibold">Fler guider</h2>
         <ul className="mt-2 space-y-1">
           {others.map((o) => (
-            <li key={o.slug}><Link to="/guider/$slug" params={{ slug: o.slug }} className="text-primary hover:underline">{o.title}</Link></li>
+            <li key={o.slug}><Link to="/guider/$slug" params={{ slug: o.slug }} className="font-medium text-link hover:underline">{o.title}</Link></li>
           ))}
         </ul>
       </aside>
