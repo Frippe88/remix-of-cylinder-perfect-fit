@@ -15,7 +15,7 @@ export const ILOQ_RING_HEIGHTS = [27, 30, 33] as const;
 export const ROUND_CYLINDER_MM = 31;
 export const ROUND_EXTENDER_SIZES = [10] as const;
 export const ROUND_RING_HEIGHTS = [8, 13] as const; // endast för runda cylindrar
-export const TOLERANCE_MIN = -1;
+export const TOLERANCE_MIN = -2;
 export const TOLERANCE_MAX = 2;
 
 export interface Combination {
@@ -62,7 +62,7 @@ export function calculate(input: CalcInput): Combination[] {
   const base = toT(baseMm) - toT(depth);
 
   // relaxed: hitta alltid bästa möjliga, även om avvikelsen överstiger TOLERANCE_MAX.
-  // Öka taket stegvis tills minst en kombination hittas (nedre gräns −1 gäller fortfarande).
+  // Öka taket stegvis tills minst en kombination hittas (nedre gräns −2 gäller fortfarande).
   let cap = toT(TOLERANCE_MAX);
   for (;;) {
     const out = calculateWithCap(sizes, ringT, base, cap);

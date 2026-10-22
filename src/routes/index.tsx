@@ -129,7 +129,7 @@ function Index() {
             <div>
               <h1 className="text-2xl font-extrabold tracking-tight sm:text-4xl">Cylinderhjälpen</h1>
               <p className="mt-0.5 text-sm opacity-80">Snabb och enkel cylinderberäkning för ett snyggt montage</p>
-              <p className="mt-1 font-mono text-xs uppercase tracking-widest text-accent">Godkänd avvikelse −1 till +2 mm</p>
+              <p className="mt-1 font-mono text-xs uppercase tracking-widest text-accent">Oval cylinder: godkänd avvikelse −2 till +2 mm · Rund: närmaste möjliga</p>
             </div>
           </div>
           <ThemeToggle />
