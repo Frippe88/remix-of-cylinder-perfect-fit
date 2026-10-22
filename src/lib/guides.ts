@@ -89,7 +89,7 @@ export const GUIDES: Guide[] = [
     sections: [
       { heading: "Fabrikat kan skilja", body: ["Behör från olika fabrikat (t.ex. ASSA, dormakaba och EVVA) kan ge något olika mått. Kontrollera mot tillverkarens produktblad när det är kritiskt."] },
     ],
-    mistakes: ["Att använda ovala ringar på rund cylinder.", "Att tro att rund cylinder har samma tolerans som oval."],
+    mistakes: ["Att tro att rund cylinder har samma tolerans som oval."],
   },
 ];
 
