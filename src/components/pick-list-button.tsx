@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { ArrowDown, ArrowUp, Check, ClipboardCopy, ClipboardList, Disc3, Layers } from "lucide-react";
+import { useState, type ReactNode } from "react";
+import { AlertTriangle, ArrowDown, ArrowUp, Check, ClipboardCopy, ClipboardList, Disc3, Layers } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { calculate, formatMm, type Combination } from "@/lib/cylinder";
 
@@ -49,11 +49,11 @@ function SideTag({ label }: { label: string | null }) {
   );
 }
 
-function Row({ caption, icon, children }: { caption: string; icon: React.ReactNode; children: React.ReactNode }) {
+function Row({ caption, icon, children }: { caption: string; icon: ReactNode; children: ReactNode }) {
   return (
-    <div className="grid grid-cols-[minmax(0,72px)_minmax(0,1fr)] items-center gap-2">
-      <span className="flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
-        {icon}
+    <div className="grid grid-cols-[minmax(0,88px)_minmax(0,1fr)] items-center gap-x-3 gap-y-1 sm:grid-cols-[minmax(0,96px)_minmax(0,1fr)]">
+      <span className="flex items-center gap-1.5 text-xs font-semibold text-muted-foreground">
+        <span className="text-foreground/50" aria-hidden>{icon}</span>
         {caption}
       </span>
       <span className="flex flex-wrap items-center gap-1.5">{children}</span>
@@ -65,6 +65,7 @@ export function PickListButton({ sides, ext, rings, baseMm, insideBaseMm = baseM
   sides: PickSide[]; ext: number[]; rings: number[]; baseMm: number; insideBaseMm?: number; relaxed: boolean;
 }) {
   const [copied, setCopied] = useState(false);
+  const [failed, setFailed] = useState(false);
   const picks = sides
     .filter((s) => s.depth !== null)
     .map((s) => ({ label: s.label, depth: s.depth as number, c: s.selected ?? bestFor(s.depth as number, ext, rings, s.label === "Insida" ? insideBaseMm : baseMm, relaxed) }))
@@ -75,25 +76,40 @@ export function PickListButton({ sides, ext, rings, baseMm, insideBaseMm = baseM
   const parts = picks.reduce((n, p) => n + p.c.extenderCount + 1, 0);
 
   const copy = async () => {
+    setFailed(false);
+    let ok = true;
     try {
       await navigator.clipboard.writeText(text);
     } catch {
-      const ta = document.createElement("textarea");
-      ta.value = text;
-      document.body.appendChild(ta);
-      ta.select();
-      document.execCommand("copy");
-      ta.remove();
+      try {
+        const ta = document.createElement("textarea");
+        ta.value = text;
+        ta.setAttribute("readonly", "");
+        ta.style.position = "fixed";
+        ta.style.top = "0";
+        ta.style.left = "0";
+        ta.style.opacity = "0";
+        document.body.appendChild(ta);
+        ta.select();
+        ok = document.execCommand("copy");
+        ta.remove();
+      } catch {
+        ok = false;
+      }
     }
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
+    if (ok) {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } else {
+      setFailed(true);
+    }
   };
 
   return (
     <div className="overflow-hidden rounded-xl border bg-card shadow-card" aria-label="Plocklista">
       <div className="flex items-center justify-between gap-3 border-b bg-muted/50 px-4 py-2.5">
         <p className="flex items-center gap-2 text-sm font-bold uppercase tracking-wide text-foreground">
-          <ClipboardList className="size-4 text-accent" aria-hidden />
+          <ClipboardList className="size-4 shrink-0 text-accent" aria-hidden />
           Plocklista
         </p>
         <span className="shrink-0 rounded-full border border-input bg-card px-2 py-0.5 font-mono text-[11px] font-bold text-muted-foreground">
@@ -103,26 +119,26 @@ export function PickListButton({ sides, ext, rings, baseMm, insideBaseMm = baseM
 
       <ul className="divide-y divide-border">
         {picks.map((p, i) => (
-          <li key={`${p.label ?? "cyl"}:${i}`} className="space-y-2 px-4 py-3">
+          <li key={`${p.label ?? "cyl"}:${i}`} className="space-y-2.5 px-4 py-3.5">
             <div className="flex items-center justify-between gap-2">
               <SideTag label={p.label} />
               <span className="shrink-0 font-mono text-xs text-muted-foreground">dörrdjup {formatMm(p.depth)}</span>
             </div>
-            <Row caption="Förlängare" icon={<Layers className="size-3" aria-hidden />}>
+            <Row caption="Förlängare" icon={<Layers className="size-3.5" />}>
               {p.c.extenders.length === 0 ? (
                 <span className="text-sm font-semibold text-muted-foreground">Inga förlängare</span>
               ) : (
                 grouped(p.c).map(([s, n]) => (
-                  <span key={s} className="inline-flex items-baseline gap-1 rounded-md bg-secondary px-2 py-1">
-                    <span className="font-mono text-sm font-bold text-secondary-foreground">{n} st</span>
-                    <span className="font-mono text-sm font-bold text-foreground">{formatMm(s)}</span>
+                  <span key={s} className="inline-flex items-baseline gap-1.5 rounded-md border border-input bg-muted px-2 py-1 font-mono">
+                    <span className="text-xs text-muted-foreground">{n} st</span>
+                    <span className="text-sm font-bold text-foreground">{formatMm(s)}</span>
                   </span>
                 ))
               )}
             </Row>
-            <Row caption="Ring" icon={<Disc3 className="size-3" aria-hidden />}>
-              <span className="inline-flex items-center gap-1.5 rounded-md border border-accent/40 bg-accent/10 px-2 py-1">
-                <span className="font-mono text-sm font-bold text-foreground">{formatMm(p.c.ring)}</span>
+            <Row caption="Ring" icon={<Disc3 className="size-3.5" />}>
+              <span className="inline-flex items-center rounded-md border border-accent/50 bg-accent/10 px-2.5 py-1 font-mono text-sm font-bold text-foreground">
+                {formatMm(p.c.ring)}
               </span>
             </Row>
           </li>
@@ -134,7 +150,14 @@ export function PickListButton({ sides, ext, rings, baseMm, insideBaseMm = baseM
           {copied ? <Check aria-hidden /> : <ClipboardCopy aria-hidden />}
           {copied ? "Kopierad!" : "Kopiera plocklista"}
         </Button>
-        <p className="text-xs text-muted-foreground">Tryck ”Välj för plocklista” på ett annat alternativ för att byta.</p>
+        {failed ? (
+          <p className="flex items-start gap-1.5 text-xs font-medium text-warning">
+            <AlertTriangle className="size-3.5 shrink-0" aria-hidden />
+            <span>Kunde inte kopiera automatiskt. Markera listan och kopiera själv.</span>
+          </p>
+        ) : (
+          <p className="text-xs text-muted-foreground">Tryck ”Välj för plocklista” på ett annat alternativ för att byta.</p>
+        )}
       </div>
     </div>
   );
