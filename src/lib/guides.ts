@@ -30,7 +30,7 @@ export const GUIDES: Guide[] = [
     description: "Steg för steg: mät dörrdjupet från låshuset ut till dörrens yta och räkna fram cylinder, förlängare och ringar för ett snyggt montage.",
     answer: `Mät dörrdjupet från låshusets cylinderfäste ut till dörrbladets yta på den sida du räknar – det är inte samma sak som hela dörrens tjocklek. En standard oval cylinder är ${STANDARD_CYLINDER_MM} mm. Det som saknas fylls med förlängare, och ringen bestämmer hur mycket cylindern sticker ut.`,
     sections: [
-      { heading: "Så mäter du dörrdjupet", body: ["Mät från låshusets cylinderfäste ut till dörrbladets yttre yta, på den sida du ska räkna.", "Mät med skjutmått för bästa precision och undvik att runda av till hela centimeter.", "Ta med skylt, täckbricka eller behör om de bygger på dörrbladet.", "Vid dubbelcylinder mäts varje sida för sig – måtten är ofta olika."] },
+      { heading: "Så mäter du dörrdjupet", body: ["Mät från låshusets cylinderfäste ut till dörrbladets yttre yta, på den sida du ska räkna.", "Mät med skjutmått för bästa precision och undvik att runda av till hela centimeter.", "Ta med skylt, täckbricka eller behör om de bygger på dörrbladet.", "Vid dubbelcylinder mäts varje sida för sig – måttet på in- och utsida är sällan detsamma och varierar ofta."] },
       { heading: "Så räknar du cylinderlängden", body: ["1. Mät dörrdjupet på utsidan (och insidan vid dubbelcylinder).", "2. Välj cylindertyp: oval, rund eller iLOQ.", "3. Kombinera förlängare och ring så att utsticket hamnar så nära noll som möjligt.", "4. Kontrollera att avvikelsen ligger inom regeln för cylindertypen."] },
       { heading: "Vilka delar finns", body: [`Förlängare för oval cylinder: ${list(EXTENDER_SIZES)}.`, `Ringar för oval cylinder: ${list(RING_HEIGHTS)}.`] },
     ],
@@ -63,7 +63,7 @@ export const GUIDES: Guide[] = [
     slug: "dubbelcylinder-matt",
     title: "Dubbelcylinder – så räknar du måtten",
     description: "Vid dubbelcylinder räknas utsida och insida var för sig. Så mäter och räknar du båda sidor rätt.",
-    answer: "Vid dubbelcylinder har dörren cylinder på båda sidor. Mät dörrdjupet separat på utsidan och insidan och räkna varje sida för sig – måtten är ofta olika.",
+    answer: "Vid dubbelcylinder har dörren cylinder på båda sidor. Mät dörrdjupet separat på utsidan och insidan och räkna varje sida för sig – måttet på in- och utsida är sällan detsamma och varierar ofta.",
     sections: [
       { heading: "Varför sidorna skiljer sig", body: ["Låshuset sitter sällan exakt mitt i dörrbladet, och behör eller skyltar kan vara olika tjocka på de två sidorna."] },
       { heading: "Tänk på iLOQ", body: [`Vid iLOQ dubbelcylinder bygger monteringsbrickorna ${ILOQ_DOUBLE_INSIDE_EXTRA_MM} mm extra på insidan.`] },
