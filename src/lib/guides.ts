@@ -52,10 +52,10 @@ export const GUIDES: Guide[] = [
     description: "Guide till cylinderringar för oval cylinder: vilka höjder som finns och hur du väljer rätt tillsammans med förlängare.",
     answer: `Ringen väljs så att cylinderns utstick hamnar inom ${TOLERANCE_MIN} till +${TOLERANCE_MAX} mm. Vanliga ringhöjder för oval cylinder är ${list(RING_HEIGHTS)}.`,
     sections: [
-      { heading: "Ring och förlängare tillsammans", body: ["Förlängarna tar upp det stora måttet, ringen finjusterar resten. Ofta finns flera fungerande kombinationer – välj den med minst avvikelse och färst delar."] },
-      { heading: "iLOQ har egna ringar", body: [`För iLOQ-cylinder används ringar på ${list(ILOQ_RING_HEIGHTS)}.`] },
+      { heading: "Ring och förlängare tillsammans", body: ["Förlängarna tar upp det stora måttet och ringen finjusterar resten. Ofta finns flera kombinationer som fungerar. Välj då den som hamnar närmast dörrens yta, och om två är lika bra, den som behöver minst antal förlängare. Färre delar ger ett stabilare och snyggare montage."] },
+      { heading: "Ringar till iLOQ", body: [`iLOQ har egna, högre ringar på ${list(ILOQ_RING_HEIGHTS)}. Vanliga ringar går också att använda på iLOQ-cylinder när det ger ett bättre montage. Det viktiga är att utsticket hamnar inom ${TOLERANCE_MIN} till +${TOLERANCE_MAX} mm.`] },
     ],
-    mistakes: ["Att välja ring innan förlängarna är bestämda.", "Att blanda ihop iLOQ-ringar med vanliga ringar."],
+    mistakes: ["Att välja ring innan förlängarna är bestämda.", "Att bygga på med fler förlängare än nödvändigt när en annan ring hade räckt."],
   },
   {
     slug: "dubbelcylinder-matt",
