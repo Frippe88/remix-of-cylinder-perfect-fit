@@ -112,7 +112,7 @@ export function PickListButton({ sides, ext, rings, baseMm, insideBaseMm = baseM
           <ClipboardList className="size-4 shrink-0 text-accent" aria-hidden />
           Plocklista
         </p>
-        <span className="shrink-0 rounded-full border border-input bg-card px-2 py-0.5 font-mono text-[11px] font-bold text-muted-foreground">
+        <span className="shrink-0 rounded-full border border-input bg-card px-2 py-0.5 font-mono text-[11px] font-bold text-foreground/90">
           {parts} {parts === 1 ? "del" : "delar"}
         </span>
       </div>
@@ -122,7 +122,7 @@ export function PickListButton({ sides, ext, rings, baseMm, insideBaseMm = baseM
           <li key={`${p.label ?? "cyl"}:${i}`} className="space-y-2.5 px-4 py-3.5">
             <div className="flex items-center justify-between gap-2">
               <SideTag label={p.label} />
-              <span className="shrink-0 font-mono text-xs text-foreground/70">dörrdjup {formatMm(p.depth)}</span>
+              <span className="shrink-0 font-mono text-xs text-foreground/90">dörrdjup {formatMm(p.depth)}</span>
             </div>
             <Row caption="Förlängare" icon={<Layers className="size-3.5" />}>
               {p.c.extenders.length === 0 ? (
@@ -130,7 +130,7 @@ export function PickListButton({ sides, ext, rings, baseMm, insideBaseMm = baseM
               ) : (
                 grouped(p.c).map(([s, n]) => (
                   <span key={s} className="inline-flex items-baseline gap-1.5 rounded-md border border-input bg-muted px-2 py-1 font-mono">
-                    <span className="text-xs text-foreground/70">{n} st</span>
+                    <span className="text-xs text-foreground/80">{n} st</span>
                     <span className="text-sm font-bold text-foreground">{formatMm(s)}</span>
                   </span>
                 ))
@@ -156,7 +156,7 @@ export function PickListButton({ sides, ext, rings, baseMm, insideBaseMm = baseM
             <span>Kunde inte kopiera automatiskt. Markera listan och kopiera själv.</span>
           </p>
         ) : (
-          <p className="text-xs text-muted-foreground">Tryck ”Välj för plocklista” på ett annat alternativ för att byta.</p>
+          <p className="text-xs text-foreground/75">Tryck ”Välj för plocklista” på ett annat alternativ för att byta.</p>
         )}
       </div>
     </div>
