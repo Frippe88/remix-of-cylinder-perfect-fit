@@ -124,7 +124,7 @@ function Index() {
     <div className="min-h-screen">
       <header className="bg-primary text-primary-foreground">
         <div className="mx-auto flex max-w-5xl items-start justify-between gap-4 px-4 py-6 sm:py-8">
-          <div className="flex items-center gap-3 sm:gap-4">
+          <div className="flex items-start gap-3 sm:gap-4">
             <span className="flex size-12 shrink-0 items-center justify-center rounded-xl bg-accent/15 ring-1 ring-accent/40 sm:size-14">
               <KeyRound className="size-6 text-accent sm:size-7" aria-hidden />
             </span>
