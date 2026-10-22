@@ -124,12 +124,13 @@ function Index() {
     <div className="min-h-screen">
       <header className="bg-primary text-primary-foreground">
         <div className="mx-auto flex max-w-5xl items-start justify-between gap-4 px-4 py-6 sm:py-8">
-          <div className="flex items-center gap-3 sm:gap-4">
+          <div className="flex items-start gap-3 sm:gap-4">
             <span className="flex size-12 shrink-0 items-center justify-center rounded-xl bg-accent/15 ring-1 ring-accent/40 sm:size-14">
               <KeyRound className="size-6 text-accent sm:size-7" aria-hidden />
             </span>
             <div>
-              <h1 className="text-2xl font-extrabold tracking-tight sm:text-4xl">Cylinderhjälpen</h1>
+              <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-accent">Cylinderhjälpen</p>
+              <h1 className="mt-1 text-xl font-extrabold leading-tight tracking-tight sm:text-3xl">Cylinderkalkylator för rätt ringar och förlängare</h1>
               <p className="mt-0.5 text-sm opacity-80">Snabb och enkel cylinderberäkning för ett snyggt montage</p>
               <ul className="mt-2.5 flex flex-wrap gap-1.5" aria-label="Regler">
                 <li className="inline-flex items-center gap-1.5 rounded-full bg-accent/15 px-2.5 py-1 text-xs font-semibold text-accent ring-1 ring-accent/40">
