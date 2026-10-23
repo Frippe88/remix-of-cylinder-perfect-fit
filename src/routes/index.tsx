@@ -153,11 +153,11 @@ function Index() {
             </button>
           </div>
         </div>
-        <div className="relative mx-auto flex max-w-5xl flex-wrap gap-1.5 px-4 pb-4 sm:pb-6 max-sm:hidden" aria-label="Regler">
-          <span className="inline-flex items-center gap-1.5 rounded-full bg-accent/15 px-2.5 py-1 text-xs font-semibold text-accent ring-1 ring-accent/40">
+        <div className="relative mx-auto flex max-w-5xl flex-wrap gap-1.5 px-4 pb-3 sm:pb-6" aria-label="Regler">
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-accent/15 px-2 py-1 text-[11px] font-semibold text-accent ring-1 ring-accent/40 sm:px-2.5 sm:text-xs">
             <ShieldCheck className="size-3.5" aria-hidden />Oval & iLOQ: −2 till +2mm
           </span>
-          <span className="inline-flex items-center gap-1.5 rounded-full bg-primary-foreground/10 px-2.5 py-1 text-xs font-semibold ring-1 ring-primary-foreground/25">
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-primary-foreground/10 px-2 py-1 text-[11px] font-semibold ring-1 ring-primary-foreground/25 sm:px-2.5 sm:text-xs">
             <Check className="size-3.5" aria-hidden />Rund: närmaste möjliga
           </span>
         </div>
