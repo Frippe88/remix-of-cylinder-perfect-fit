@@ -99,6 +99,7 @@ function Index() {
   const [roundRings, setRoundRings] = useState<number[]>([...ROUND_RING_HEIGHTS]);
   const [project, setProject, projectStore] = useProject();
   const [projectOpen, setProjectOpen] = useState(false);
+  const [switchProject, setSwitchProject] = useState(false);
   const [singleSide, setSingleSide] = useState<"Utsida" | "Insida">("Utsida");
 
   const isRound = cyl === "round";
@@ -239,7 +240,7 @@ function Index() {
           <PickListButton
             sides={type === "single" ? [{ label: isRound ? null : singleSide, depth: parse(outside), selected: selOut }] : [{ label: "Utsida", depth: parse(outside), selected: selOut }, { label: "Insida", depth: parse(inside), selected: selIn }]}
             ext={ext} rings={activeRings} baseMm={baseMm} insideBaseMm={insideBaseMm} relaxed={isRound}
-            projectName={project.name} projectDoors={project.doors.length} projectCount={projectStore.list.length} onOpenProject={() => setProjectOpen(true)}
+            projectName={project.name} projectDoors={project.doors.length} projectCount={projectStore.list.length} onOpenProject={() => { setSwitchProject(true); setProjectOpen(true); }}
             onSave={(sides) => {
               const name = window.prompt("Namn på dörren", nextDoorName(project.doors));
               if (name === null) return;
@@ -265,8 +266,8 @@ function Index() {
           )}
         </section>
       </main>
-      <ProjectBar project={project} projects={projectStore.list.length} onOpen={() => setProjectOpen(true)} />
-      <ProjectPanel project={project} setProject={setProject} store={projectStore} open={projectOpen} onOpenChange={setProjectOpen} />
+      <ProjectBar project={project} projects={projectStore.list.length} onOpen={() => { setSwitchProject(false); setProjectOpen(true); }} />
+      <ProjectPanel project={project} setProject={setProject} store={projectStore} open={projectOpen} onOpenChange={(v) => { setProjectOpen(v); if (!v) setSwitchProject(false); }} closeOnSelect={switchProject} />
       <Toaster position="top-center" />
       <section className="mx-auto mt-10 w-full max-w-5xl px-4">
         <h2 className="mt-1 text-2xl font-extrabold tracking-tight">Guider om cylindermontage</h2>
