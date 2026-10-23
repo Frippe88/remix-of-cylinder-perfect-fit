@@ -54,7 +54,7 @@ async function copyText(text: string) {
 function CopyButton({ text, label }: { text: string; label: string }) {
   const [ok, setOk] = useState(false);
   return (
-    <Button className="min-h-11 w-full font-semibold" variant={ok ? "outline" : "default"}
+    <Button className={`min-h-11 w-full font-semibold ${ok ? "border-success/40 text-success" : "bg-accent text-accent-foreground hover:bg-accent/85"}`} variant={ok ? "outline" : "default"}
       onClick={async () => { if (await copyText(text)) { setOk(true); setTimeout(() => setOk(false), 2000); } }}>
       {ok ? <Check aria-hidden /> : <ClipboardCopy aria-hidden />}{ok ? "Kopierad!" : label}
     </Button>
@@ -69,8 +69,8 @@ function Chip({ children, accent, side }: { children: React.ReactNode; accent?: 
 function DoorCard({ d, onToggle, onRemove, onSetSide }: { d: Door; onToggle: () => void; onRemove: () => void; onSetSide: (i: number, label: string) => void }) {
   const hasSide = RING_HAS_SIDE[d.kind];
   return (
-    <li className={`overflow-hidden rounded-lg border bg-card shadow-card ${d.done ? "border-success/30" : "border-border"}`}>
-      <div className={`flex items-center gap-3 border-b px-3 py-3 ${d.done ? "border-success/20 bg-success-soft" : "bg-muted/30"}`}>
+    <li className="overflow-hidden rounded-lg border border-border bg-card shadow-card">
+      <div className="flex items-center gap-3 border-b bg-muted/30 px-3 py-3">
         <Button variant="ghost" size="icon" onClick={onToggle} aria-pressed={d.done} aria-label={d.done ? "Markera som ej monterad" : "Markera som monterad"}
           className={`size-8 shrink-0 rounded-md border-2 ${d.done ? "border-success bg-success-soft text-success hover:bg-success-soft" : "border-input bg-card hover:border-success hover:bg-success-soft"}`}>
           {d.done && <Check className="size-4" />}
@@ -83,7 +83,7 @@ function DoorCard({ d, onToggle, onRemove, onSetSide }: { d: Door; onToggle: () 
       </div>
       <ul className="space-y-2 p-3">
         {d.sides.map((s, i) => (
-          <li key={i} className={`rounded-md border p-2.5 text-sm ${s.label && hasSide ? sideChip(s.label) : "border-border bg-muted/30"}`}>
+          <li key={i} className="border-b border-border/60 pb-3 text-sm last:border-b-0 last:pb-0">
             <div className="flex items-center justify-between gap-2">
             {hasSide ? (
               <Button variant="ghost" type="button" onClick={() => onSetSide(i, s.label === "Utsida" ? "Insida" : "Utsida")}
@@ -122,7 +122,7 @@ function NameField({ name, onSave }: { name: string; onSave: (name: string) => v
       <input value={draft} onChange={(e) => { setDraft(e.target.value); setSaved(false); }} enterKeyHint="done"
         placeholder="Projektnamn, t.ex. Storgatan 4" aria-label="Projektnamn"
         className="h-11 min-w-0 flex-1 rounded-lg border border-input bg-background px-3 text-base" />
-      <Button type="submit" variant={dirty ? "default" : "outline"} className={`h-11 shrink-0 font-semibold ${saved ? "text-success" : ""}`}>
+      <Button type="submit" variant={dirty ? "default" : "outline"} className={`h-11 shrink-0 font-semibold ${saved ? "text-success" : dirty ? "bg-accent text-accent-foreground hover:bg-accent/85" : "border-accent/40"}`}>
         <Check aria-hidden /> {saved ? "Sparat!" : "Spara"}
       </Button>
     </form>
@@ -141,12 +141,12 @@ export function ProjectPanel({ project, setProject, store, open, onOpenChange }:
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent side="bottom" className="max-h-[92dvh] overflow-y-auto rounded-t-xl p-0 sm:mx-auto sm:max-w-2xl">
-        <SheetHeader className="border-b bg-muted/40 px-4 pb-4 pt-5 text-left sm:px-6">
+        <SheetHeader className="border-b border-t-4 border-t-accent bg-muted/40 px-4 pb-4 pt-5 text-left sm:px-6">
           <SheetTitle className="flex items-center gap-2 pr-8 text-xl"><FolderOpen className="size-5 text-accent" aria-hidden />Projekt</SheetTitle>
           <SheetDescription>Sparas i den här telefonen/webbläsaren.</SheetDescription>
           <div className="flex flex-wrap gap-2 pt-1 text-xs font-semibold">
-            <span className="inline-flex items-center gap-1.5 rounded-md border bg-card px-2.5 py-1.5"><DoorOpen className="size-3.5 text-muted-foreground" aria-hidden />{project.doors.length} {project.doors.length === 1 ? "dörr" : "dörrar"}</span>
-            <span className="inline-flex items-center gap-1.5 rounded-md border border-success/30 bg-success-soft px-2.5 py-1.5 text-success"><Check className="size-3.5" aria-hidden />{done} monterade</span>
+            <span className="inline-flex items-center gap-1.5 rounded-md border border-accent/30 bg-card px-2.5 py-1.5"><DoorOpen className="size-3.5 text-accent" aria-hidden />{project.doors.length} {project.doors.length === 1 ? "dörr" : "dörrar"}</span>
+            <span className="inline-flex items-center gap-1.5 rounded-md border bg-card px-2.5 py-1.5 text-muted-foreground"><Check className="size-3.5 text-success" aria-hidden />{done} monterade</span>
           </div>
         </SheetHeader>
         <div className="space-y-4 px-4 py-5 sm:px-6">
@@ -160,14 +160,14 @@ export function ProjectPanel({ project, setProject, store, open, onOpenChange }:
               </select>
               <ChevronDown aria-hidden className="pointer-events-none absolute right-4 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
             </div>
-            <Button variant="outline" className="h-11 shrink-0 font-semibold" onClick={() => { store.create(); setTab("doors"); }}>
+            <Button variant="outline" className="h-11 shrink-0 border-accent/40 font-semibold" onClick={() => { store.create(); setTab("doors"); }}>
               <Plus aria-hidden /> Nytt
             </Button>
           </div>
           <NameField key={store.active} name={project.name} onSave={(name) => setProject((p) => ({ ...p, name }))} />
           <div className="grid grid-cols-2 gap-1 rounded-lg border bg-muted p-1" role="group" aria-label="Projektvy">
             {(["doors", "total"] as const).map((t) => (
-              <Button variant="ghost" key={t} onClick={() => setTab(t)} aria-pressed={tab === t} className={`min-h-11 whitespace-normal rounded-md px-2 text-sm font-semibold ${tab === t ? "bg-card text-foreground shadow-card hover:bg-card" : "text-muted-foreground hover:bg-card/50 hover:text-foreground"}`}>
+              <Button variant="ghost" key={t} onClick={() => setTab(t)} aria-pressed={tab === t} className={`min-h-11 whitespace-normal rounded-md px-2 text-sm font-semibold ${tab === t ? "bg-accent text-accent-foreground shadow-card hover:bg-accent/85 hover:text-accent-foreground" : "text-muted-foreground hover:bg-card/50 hover:text-foreground"}`}>
                 {t === "doors" ? <DoorOpen aria-hidden /> : <ClipboardList aria-hidden />}
                 {t === "doors" ? "Dörr för dörr" : "Total plocklista"}
               </Button>
@@ -211,14 +211,14 @@ export function ProjectPanel({ project, setProject, store, open, onOpenChange }:
               ) : <>
               <div className="border-y py-4">
                 {totals.extenders.length > 0 && <>
-                  <p className="flex items-center gap-2 text-xs font-bold uppercase tracking-wide text-muted-foreground"><Layers className="size-4" aria-hidden />Förlängare</p>
+                  <p className="flex items-center gap-2 text-xs font-bold uppercase tracking-wide text-muted-foreground"><Layers className="size-4 text-accent" aria-hidden />Förlängare</p>
                   <ul className="mb-3 mt-1 divide-y">{totals.extenders.map((e) => (
-                    <li key={e.kind + e.size} className="flex items-center justify-between gap-3 py-2.5 text-sm"><span className="font-semibold">{formatMm(e.size)} <span className="text-xs font-normal text-muted-foreground">({KIND_LABEL[e.kind]})</span></span><Chip>{e.count} st</Chip></li>
+                    <li key={e.kind + e.size} className="flex items-center justify-between gap-3 py-2.5 text-sm"><span className="font-semibold">{formatMm(e.size)} <span className="text-xs font-normal text-muted-foreground">({KIND_LABEL[e.kind]})</span></span><Chip accent>{e.count} st</Chip></li>
                   ))}</ul>
                 </>}
-                <p className="text-xs font-bold uppercase tracking-wide text-muted-foreground">Ringar</p>
+                <p className="flex items-center gap-2 text-xs font-bold uppercase tracking-wide text-muted-foreground"><span className="size-3 rounded-full border-2 border-accent" aria-hidden />Ringar</p>
                 <ul className="mt-2 space-y-2">{totals.rings.map((r) => (
-                  <li key={r.kind + r.side + r.size} className={`flex items-center justify-between gap-3 rounded-md border px-3 py-2.5 text-sm ${sideChip(r.side) ?? "border-border bg-muted/30"}`}><span className="flex min-w-0 flex-wrap items-center gap-x-2 gap-y-1"><span className="font-mono font-bold">{formatMm(r.size)}</span>{r.side && <span className="inline-flex items-center gap-1 font-semibold">{r.side === "Insida" ? <ArrowDown className="size-3.5" aria-hidden /> : <ArrowUp className="size-3.5" aria-hidden />}{r.side}</span>} <span className="text-xs text-muted-foreground">({KIND_LABEL[r.kind]})</span></span><span className="shrink-0 font-mono font-bold">{r.count} st</span></li>
+                  <li key={r.kind + r.side + r.size} className="flex items-center justify-between gap-3 border-b border-border/60 py-2.5 text-sm last:border-b-0"><span className="flex min-w-0 flex-wrap items-center gap-x-2 gap-y-1"><span className="font-mono font-bold">{formatMm(r.size)}</span>{r.side && <span className={`inline-flex items-center gap-1 font-semibold ${r.side === "Insida" ? "text-side-inside" : "text-side-outside"}`}>{r.side === "Insida" ? <ArrowDown className="size-3.5" aria-hidden /> : <ArrowUp className="size-3.5" aria-hidden />}{r.side}</span>} <span className="text-xs text-muted-foreground">({KIND_LABEL[r.kind]})</span></span><Chip accent>{r.count} st</Chip></li>
                 ))}</ul>
               </div>
               <CopyButton text={totalsText(project, onlyLeft)} label="Kopiera inköpslista" />
