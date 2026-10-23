@@ -73,7 +73,7 @@ const CYLINDER_OPTIONS = [
     id: "round" as const,
     name: "Rund cylinder",
     mm: ROUND_CYLINDER_MM,
-    hint: "Cylinder med rund profil. Använder egna ringar (8 och 13 mm) och 10 mm förlängare.",
+    hint: "Cylinder med rund profil. Använder egna ringar (8mm och 13mm) och 10mm förlängare.",
   },
   {
     id: "iloq" as const,
@@ -143,7 +143,7 @@ function Index() {
               <p className="mt-0.5 text-sm opacity-80">Snabb och enkel cylinderberäkning för ett snyggt montage</p>
               <ul className="mt-2.5 flex flex-wrap gap-1.5" aria-label="Regler">
                 <li className="inline-flex items-center gap-1.5 rounded-full bg-accent/15 px-2.5 py-1 text-xs font-semibold text-accent ring-1 ring-accent/40">
-                  <ShieldCheck className="size-3.5" aria-hidden />Oval & iLOQ: −2 till +2 mm
+                  <ShieldCheck className="size-3.5" aria-hidden />Oval & iLOQ: −2 till +2mm
                 </li>
                 <li className="inline-flex items-center gap-1.5 rounded-full bg-primary-foreground/10 px-2.5 py-1 text-xs font-semibold ring-1 ring-primary-foreground/25">
                   <Check className="size-3.5" aria-hidden />Rund: närmaste möjliga
@@ -172,7 +172,7 @@ function Index() {
                   <span className="flex items-center justify-between gap-3">
                     <span className="text-sm font-bold">{o.name}</span>
                     <span className={`shrink-0 rounded-md px-2 py-0.5 font-mono text-xs font-bold ${cyl === o.id ? "bg-accent text-accent-foreground" : "bg-muted text-muted-foreground"}`}>
-                      {o.mm} mm
+                      {o.mm}mm
                     </span>
                   </span>
                   <span className="mt-1 block text-xs leading-snug text-muted-foreground">{o.hint}</span>
@@ -191,7 +191,7 @@ function Index() {
                     <option key={b} value={b}>{b}</option>
                   ))}
                 </select>
-                <span className="mt-1 block text-xs font-normal text-muted-foreground">Runda cylindrar har ingen fast toleransregel – kalkylatorn väljer alltid närmaste möjliga utstick. Mått per fabrikat läggs in när de är verifierade. Tills vidare räknas alla med 31 mm.</span>
+                <span className="mt-1 block text-xs font-normal text-muted-foreground">Runda cylindrar har ingen fast toleransregel – kalkylatorn väljer alltid närmaste möjliga utstick. Mått per fabrikat läggs in när de är verifierade. Tills vidare räknas alla med 31mm.</span>
               </label>
             )}
             <div className="grid grid-cols-2 gap-1 rounded-lg bg-muted p-1">
@@ -256,8 +256,8 @@ function Index() {
                 <div role="note" className="flex gap-3 rounded-xl border border-accent/50 bg-accent/10 p-3 text-sm">
                   <Info className="mt-0.5 size-5 shrink-0 text-accent" aria-hidden />
                   <p>
-                    <span className="font-bold">iLOQ dubbelcylinder: +{ILOQ_DOUBLE_INSIDE_EXTRA_MM} mm på insidan.</span>{" "}
-                    <span className="text-muted-foreground">Kitets två monteringsbrickor (3 mm styck) bygger ut cylindern, så insidan räknas med {insideBaseMm} mm istället för {ILOQ_CYLINDER_MM} mm.</span>
+                    <span className="font-bold">iLOQ dubbelcylinder: +{ILOQ_DOUBLE_INSIDE_EXTRA_MM}mm på insidan.</span>{" "}
+                    <span className="text-muted-foreground">Kitets två monteringsbrickor (3mm styck) bygger ut cylindern, så insidan räknas med {insideBaseMm}mm istället för {ILOQ_CYLINDER_MM}mm.</span>
                   </p>
                 </div>
               )}

@@ -139,7 +139,7 @@ export function describeDeviation(d: number): string {
 }
 
 export function formatMm(v: number): string {
-  return `${v.toLocaleString("sv-SE", { maximumFractionDigits: 1 })} mm`;
+  return `${v.toLocaleString("sv-SE", { maximumFractionDigits: 1 })}mm`;
 }
 
 export function formatSigned(v: number): string {
