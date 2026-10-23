@@ -122,11 +122,13 @@ function Index() {
 
   return (
     <div className="min-h-screen">
-      <header className="bg-primary text-primary-foreground">
-        <div className="mx-auto flex max-w-5xl items-start justify-between gap-4 px-4 py-6 sm:py-8">
+      <header className="relative overflow-hidden bg-primary bg-header text-primary-foreground">
+        <div aria-hidden className="blueprint pointer-events-none absolute inset-0 [mask-image:linear-gradient(to_bottom,black,transparent)]" />
+        <div aria-hidden className="absolute inset-x-0 bottom-0 h-1 bg-accent" />
+        <div className="relative mx-auto flex max-w-5xl items-start justify-between gap-4 px-4 py-6 sm:py-8">
           <div className="flex items-start gap-3 sm:gap-4">
-            <span className="flex size-12 shrink-0 items-center justify-center rounded-xl bg-accent/15 ring-1 ring-accent/40 sm:size-14">
-              <KeyRound className="size-6 text-accent sm:size-7" aria-hidden />
+            <span className="flex size-12 shrink-0 items-center justify-center rounded-xl bg-accent shadow-elevated sm:size-14">
+              <KeyRound className="size-6 text-accent-foreground sm:size-7" aria-hidden />
             </span>
             <div>
               <h1 className="text-xl font-extrabold leading-tight tracking-tight sm:text-3xl">Cylinderhjälpen – kalkylator för rätt mått och montage</h1>
@@ -157,11 +159,11 @@ function Index() {
                   key={o.id}
                   onClick={() => switchCyl(o.id)}
                   aria-pressed={cyl === o.id}
-                  className={`w-full rounded-lg border p-3 text-left transition ${cyl === o.id ? "border-primary bg-primary/5 shadow-card" : "border-input bg-card hover:bg-muted"}`}
+                  className={`w-full rounded-lg border p-3 text-left transition ${cyl === o.id ? "border-accent bg-accent/10 shadow-card ring-1 ring-accent" : "border-input bg-card hover:border-foreground/30 hover:bg-muted"}`}
                 >
                   <span className="flex items-center justify-between gap-3">
                     <span className="text-sm font-bold">{o.name}</span>
-                    <span className={`shrink-0 rounded-md px-2 py-0.5 font-mono text-xs font-bold ${cyl === o.id ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground"}`}>
+                    <span className={`shrink-0 rounded-md px-2 py-0.5 font-mono text-xs font-bold ${cyl === o.id ? "bg-accent text-accent-foreground" : "bg-muted text-muted-foreground"}`}>
                       {o.mm} mm
                     </span>
                   </span>
@@ -189,7 +191,7 @@ function Index() {
                 <button
                   key={t}
                   onClick={() => setType(t)}
-                  className={`rounded-md py-2 text-sm font-semibold transition ${type === t ? "bg-card shadow-card" : "text-muted-foreground"}`}
+                  className={`rounded-md py-2 text-sm font-semibold transition ${type === t ? "bg-card shadow-card ring-1 ring-border" : "text-muted-foreground"}`}
                 >
                   {t === "single" ? "Enkelcylinder" : "Dubbelcylinder"}
                 </button>
@@ -233,12 +235,16 @@ function Index() {
           )}
         </section>
       </main>
-      <section className="mx-auto mt-8 w-full max-w-2xl px-4">
-        <h2 className="text-lg font-semibold">Guider om cylindermontage</h2>
-        <ul className="mt-2 grid gap-2 sm:grid-cols-2">
+      <section className="mx-auto mt-10 w-full max-w-5xl px-4">
+        <p className="text-xs font-bold uppercase tracking-[0.18em] text-muted-foreground">Kunskapsbank</p>
+        <h2 className="mt-1 text-2xl font-extrabold tracking-tight">Guider om cylindermontage</h2>
+        <ul className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
           {GUIDES.map((g) => (
             <li key={g.slug} className="h-full">
-              <Link to="/guider/$slug" params={{ slug: g.slug }} className="block h-full rounded-lg border bg-card p-3 text-sm hover:border-primary">{g.title}</Link>
+              <Link to="/guider/$slug" params={{ slug: g.slug }} className="group flex h-full items-center justify-between gap-3 rounded-xl border bg-card p-4 text-sm font-semibold shadow-card transition hover:-translate-y-0.5 hover:border-accent hover:shadow-elevated">
+                <span className="flex items-center gap-3"><BookOpen className="size-4 shrink-0 text-accent" aria-hidden />{g.title}</span>
+                <ArrowRight className="size-4 shrink-0 text-muted-foreground transition group-hover:translate-x-0.5 group-hover:text-foreground" aria-hidden />
+              </Link>
             </li>
           ))}
         </ul>
@@ -251,7 +257,7 @@ function Index() {
 function Panel({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <div className="space-y-3 rounded-xl border bg-card p-4 shadow-card">
-      <h2 className="text-sm font-bold uppercase tracking-wide text-foreground">{title}</h2>
+      <h2 className="flex items-center gap-2 text-xs font-bold uppercase tracking-[0.14em] text-foreground"><span className="h-3.5 w-1 rounded-full bg-accent" aria-hidden />{title}</h2>
       {children}
     </div>
   );
