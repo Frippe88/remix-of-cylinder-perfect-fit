@@ -101,6 +101,26 @@ function DoorCard({ d, onToggle, onRemove, onSetSide }: { d: Door; onToggle: () 
   );
 }
 
+function NameField({ name, onSave }: { name: string; onSave: (name: string) => void }) {
+  const [draft, setDraft] = useState(name);
+  const [saved, setSaved] = useState(false);
+  const dirty = draft.trim() !== name;
+  const save = (el?: HTMLInputElement | null) => {
+    onSave(draft.trim()); setDraft(draft.trim()); el?.blur();
+    setSaved(true); setTimeout(() => setSaved(false), 2000);
+  };
+  return (
+    <form className="flex gap-2" onSubmit={(e) => { e.preventDefault(); save(e.currentTarget.querySelector("input")); }}>
+      <input value={draft} onChange={(e) => { setDraft(e.target.value); setSaved(false); }} enterKeyHint="done"
+        placeholder="Projektnamn, t.ex. Storgatan 4" aria-label="Projektnamn"
+        className="h-11 min-w-0 flex-1 rounded-lg border border-input bg-background px-3 text-base" />
+      <Button type="submit" variant={dirty ? "default" : "outline"} className={`h-11 shrink-0 font-semibold ${saved ? "text-success" : ""}`}>
+        <Check aria-hidden /> {saved ? "Sparat!" : "Spara"}
+      </Button>
+    </form>
+  );
+}
+
 export function ProjectPanel({ project, setProject, store, open, onOpenChange }: {
   project: Project; setProject: (fn: (p: Project) => Project) => void; store: ProjectStore; open: boolean; onOpenChange: (v: boolean) => void;
 }) {
@@ -126,9 +146,7 @@ export function ProjectPanel({ project, setProject, store, open, onOpenChange }:
               <Plus aria-hidden /> Nytt
             </Button>
           </div>
-          <input value={project.name} onChange={(e) => setProject((p) => ({ ...p, name: e.target.value }))}
-            placeholder="Projektnamn, t.ex. Storgatan 4" aria-label="Projektnamn"
-            className="h-11 w-full rounded-lg border border-input bg-background px-3 text-base" />
+          <NameField key={store.active} name={project.name} onSave={(name) => setProject((p) => ({ ...p, name }))} />
           <div className="grid grid-cols-2 rounded-lg bg-muted p-1">
             {(["doors", "total"] as const).map((t) => (
               <button key={t} onClick={() => setTab(t)} className={`min-h-10 rounded-md text-sm font-semibold ${tab === t ? "bg-card shadow-card" : "text-muted-foreground"}`}>
