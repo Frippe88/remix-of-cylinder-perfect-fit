@@ -29,4 +29,14 @@ describe("Plocklista", () => {
     );
     expect(container).toBeEmptyDOMElement();
   });
+
+  it("runda cylindrar får ingen sida i den kopierade listan", async () => {
+    const writeText = vi.fn().mockResolvedValue(undefined);
+    Object.defineProperty(navigator, "clipboard", { value: { writeText }, configurable: true });
+    render(
+      <PickListButton sides={[{ label: null, depth: 45, selected: null }]} ext={[10]} rings={[8, 13]} baseMm={31} relaxed />,
+    );
+    fireEvent.click(screen.getByRole("button", { name: /Kopiera plocklista/ }));
+    expect(writeText).toHaveBeenCalledWith("2 st 10 mm förlängare + 8 mm ring");
+  });
 });
