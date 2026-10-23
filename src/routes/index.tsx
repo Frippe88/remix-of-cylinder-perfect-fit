@@ -99,6 +99,7 @@ function Index() {
   const [roundRings, setRoundRings] = useState<number[]>([...ROUND_RING_HEIGHTS]);
   const [project, setProject] = useProject();
   const [projectOpen, setProjectOpen] = useState(false);
+  const [singleSide, setSingleSide] = useState<"Utsida" | "Insida">("Utsida");
 
   const isRound = cyl === "round";
   const baseMm = cylinderBaseMm(cyl, "outside", type === "double");
