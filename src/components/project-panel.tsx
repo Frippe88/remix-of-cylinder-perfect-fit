@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Check, ClipboardCopy, FolderOpen, Trash2, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from "@/components/ui/sheet";
-import { doorsText, KIND_LABEL, projectTotals, totalsText, type Door, type Project } from "@/lib/project";
+import { doorsText, KIND_LABEL, projectTotals, RING_HAS_SIDE, setDoorSide, totalsText, type Door, type Project } from "@/lib/project";
 import { sideChip } from "@/components/pick-list-button";
 import { formatMm } from "@/lib/cylinder";
 
@@ -39,7 +39,8 @@ function Chip({ children, accent, side }: { children: React.ReactNode; accent?: 
   return <span className={`inline-flex rounded-md border px-2 py-0.5 font-mono text-xs font-bold ${tone ?? (accent ? "border-accent/50 bg-accent/10" : "border-input bg-muted")}`}>{children}</span>;
 }
 
-function DoorCard({ d, onToggle, onRemove }: { d: Door; onToggle: () => void; onRemove: () => void }) {
+function DoorCard({ d, onToggle, onRemove, onSetSide }: { d: Door; onToggle: () => void; onRemove: () => void; onSetSide: (i: number, label: string) => void }) {
+  const hasSide = RING_HAS_SIDE[d.kind];
   return (
     <li className={`rounded-xl border bg-card p-3 shadow-card ${d.done ? "opacity-60" : ""}`}>
       <div className="flex items-center gap-3">
@@ -53,7 +54,15 @@ function DoorCard({ d, onToggle, onRemove }: { d: Door; onToggle: () => void; on
       <ul className="mt-2 space-y-1.5 pl-10">
         {d.sides.map((s, i) => (
           <li key={i} className="flex flex-wrap items-center gap-1.5 text-sm">
-            {s.label && <span className={`w-14 text-xs font-semibold uppercase ${s.label === "Insida" ? "text-side-inside" : "text-side-outside"}`}>{s.label}</span>}
+            {hasSide ? (
+              <button type="button" onClick={() => onSetSide(i, s.label === "Utsida" ? "Insida" : "Utsida")}
+                aria-label={s.label ? `Byt sida för ${d.name}: ${s.label.toLowerCase()}` : `Välj sida för ${d.name}`}
+                className={`w-16 rounded-md border px-1 py-0.5 text-left text-[11px] font-bold uppercase tracking-wide ${s.label ? sideChip(s.label) : "border-warning/40 bg-warning-soft text-warning"}`}>
+                {s.label ?? "Sida?"}
+              </button>
+            ) : (
+              <span className="w-16 text-[11px] font-bold uppercase tracking-wide text-muted-foreground">Cylinder</span>
+            )}
             <span className="font-mono text-xs text-muted-foreground">{formatMm(s.depth)}</span>
             {s.extenders.length === 0 ? <span className="text-xs text-muted-foreground">inga förl.</span> :
               s.extenders.map((e, j) => <Chip key={j} side={s.label}>{formatMm(e)}</Chip>)}
@@ -93,11 +102,13 @@ export function ProjectPanel({ project, setProject, open, onOpenChange }: {
             <p className="py-6 text-center text-sm text-muted-foreground">Inga dörrar än. Räkna en dörr och tryck "Spara i projekt".</p>
           ) : tab === "doors" ? (
             <>
+              <p className="text-xs text-muted-foreground">Tryck på sidetiketten <span className="font-semibold text-side-outside">utsida</span>/<span className="font-semibold text-side-inside">insida</span> för att byta sida på en rad.</p>
               <ul className="space-y-2">
                 {project.doors.map((d) => (
                   <DoorCard key={d.id} d={d}
                     onToggle={() => setProject((p) => ({ ...p, doors: p.doors.map((x) => x.id === d.id ? { ...x, done: !x.done } : x) }))}
-                    onRemove={() => setProject((p) => ({ ...p, doors: p.doors.filter((x) => x.id !== d.id) }))} />
+                    onRemove={() => setProject((p) => ({ ...p, doors: p.doors.filter((x) => x.id !== d.id) }))}
+                    onSetSide={(i, label) => setProject((p) => ({ ...p, doors: p.doors.map((x) => x.id === d.id ? setDoorSide(x, i, label) : x) }))} />
                 ))}
               </ul>
               <CopyButton text={doorsText(project)} label="Kopiera dörrlista" />

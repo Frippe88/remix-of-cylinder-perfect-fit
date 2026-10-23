@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { doorsText, nextDoorName, projectTotals, totalsText, type Door } from "./project";
+import { doorsText, nextDoorName, projectTotals, setDoorSide, totalsText, type Door } from "./project";
 
 const doors: Door[] = [
   { id: "1", name: "Dörr 1", kind: "oval", done: false, sides: [
@@ -46,5 +46,20 @@ describe("nextDoorName", () => {
   it("föreslår nästa lediga dörrnummer", () => {
     expect(nextDoorName([])).toBe("Dörr 1");
     expect(nextDoorName(doors)).toBe("Dörr 3");
+  });
+});
+
+describe("setDoorSide", () => {
+  const missing: Door = { id: "9", name: "Dörr 9", kind: "oval", done: false, sides: [{ label: null, depth: 50, ring: 11, extenders: [] }] };
+  const round: Door = { id: "10", name: "Dörr 10", kind: "rund", done: false, sides: [{ label: null, depth: 45, ring: 13, extenders: [10] }] };
+  it("kan sätta sida på en dörr som sparades utan sida", () => {
+    expect(setDoorSide(missing, 0, "Utsida").sides[0]!.label).toBe("Utsida");
+  });
+  it("kan växla mellan utsida och insida", () => {
+    const d: Door = { ...missing, sides: [{ label: "Utsida", depth: 50, ring: 11, extenders: [] }] };
+    expect(setDoorSide(d, 0, "Insida").sides[0]!.label).toBe("Insida");
+  });
+  it("runda cylindrar får aldrig sida – samma ring ute som inne", () => {
+    expect(setDoorSide(round, 0, "Insida")).toEqual(round);
   });
 });

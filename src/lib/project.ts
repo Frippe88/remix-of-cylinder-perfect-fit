@@ -18,6 +18,12 @@ export function nextDoorName(doors: Door[]): string {
   return `Dörr ${n}`;
 }
 
+/** Sätter sida på en dörrs rader. Runda cylindrar har samma ring ute som inne – de får ingen sida. */
+export function setDoorSide(door: Door, sideIndex: number, label: string | null): Door {
+  if (!RING_HAS_SIDE[door.kind]) return door;
+  return { ...door, sides: door.sides.map((s, i) => (i === sideIndex ? { ...s, label } : s)) };
+}
+
 export interface Totals {
   extenders: { size: number; kind: RingKind; count: number }[];
   rings: { size: number; kind: RingKind; side: string; count: number }[];
