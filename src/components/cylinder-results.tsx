@@ -8,7 +8,7 @@ import {
 
 const MODES: { id: ViewMode; label: string }[] = [
   { id: "all", label: "Alla" },
-  { id: "exact", label: "Exakt 0 mm" },
+  { id: "exact", label: "Exakt 0mm" },
   { id: "fewer", label: "Färre förlängare" },
 ];
 const PAGE_SIZE = 4;
@@ -96,7 +96,7 @@ function Alternatives({ results, best, relaxed, side, chosen, onSelect }: { resu
         <div role="group" aria-label="Filtrera alternativ" className="grid grid-cols-3 gap-1 rounded-md bg-muted p-1">
           {MODES.map(m => <Button key={m.id} variant="ghost" size="sm" aria-pressed={mode === m.id} onClick={() => { setMode(m.id); setVisible(PAGE_SIZE); }} className={`min-h-10 px-1 text-xs hover:bg-card ${mode === m.id ? "bg-card text-foreground shadow-card" : "text-muted-foreground"}`}>{m.label}</Button>)}
         </div>
-        <p className="text-xs text-muted-foreground">{mode === "all" ? (relaxed ? "Bäst passform först." : "Inom −2 till +2 mm. Bäst passform först.") : mode === "exact" ? "Alternativ i liv med ringen." : "Alternativ med färre förlängare."}</p>
+        <p className="text-xs text-muted-foreground">{mode === "all" ? (relaxed ? "Bäst passform först." : "Inom −2 till +2mm. Bäst passform först.") : mode === "exact" ? "Alternativ i liv med ringen." : "Alternativ med färre förlängare."}</p>
         {shown.length === 0 ? <p className="py-3 text-sm text-muted-foreground">Inga fler alternativ i den här vyn.</p> : <>
           <div className="space-y-2">{shown.slice(0, visible).map((c, i) => <ResultCard relaxed={relaxed} key={i} c={c} side={side} chosen={chosen} onSelect={onSelect} />)}</div>
           <div className="flex flex-wrap items-center justify-between gap-2">
@@ -124,7 +124,7 @@ function ResultCard({ c, best = false, side = null, relaxed = false, chosen, onS
         <div><dt className="text-xs text-muted-foreground">Förlängare · {c.extenderCount} st</dt><dd className="mt-1 flex min-h-7 flex-wrap items-center gap-1.5">{c.extenders.length === 0 ? <span className="text-sm font-semibold">Inga förlängare</span> : c.extenders.map((e, i) => <span key={i} className="rounded bg-secondary px-1.5 py-1 font-mono text-xs font-bold">{formatMm(e)}</span>)}</dd><dd className="mt-1 text-xs text-muted-foreground">Totalt <span className="font-mono text-foreground">{formatMm(c.totalExtension)}</span></dd></div>
       </dl>
       <p className={`mt-3 flex items-start gap-1.5 border-t pt-2 text-xs font-medium ${outsideTolerance ? "text-warning" : exact ? "text-success" : "text-muted-foreground"}`}>
-        {outsideTolerance && <AlertTriangle className="size-3.5 shrink-0" aria-hidden />}<span>{describeDeviation(c.deviation)}{outsideTolerance && <span className="mt-0.5 block">Utanför toleransen −2 till +2 mm (ovala cylindrar).</span>}</span>
+        {outsideTolerance && <AlertTriangle className="size-3.5 shrink-0" aria-hidden />}<span>{describeDeviation(c.deviation)}{outsideTolerance && <span className="mt-0.5 block">Utanför toleransen −2 till +2mm (ovala cylindrar).</span>}</span>
       </p>
       {onSelect && (
         <Button variant={isChosen ? "outline" : "secondary"} size="sm" aria-pressed={isChosen} onClick={() => onSelect(c)} className={`mt-3 w-full ${isChosen ? "border-success text-success" : ""}`}>
