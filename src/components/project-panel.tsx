@@ -6,18 +6,45 @@ import { doorsText, KIND_LABEL, projectTotals, RING_HAS_SIDE, setDoorSide, total
 import { sideChip } from "@/components/pick-list-button";
 import { formatMm } from "@/lib/cylinder";
 
-const KEY = "cylinderhjalpen.project.v1";
+const OLD_KEY = "cylinderhjalpen.project.v1";
+const KEY = "cylinderhjalpen.projects.v2";
 const EMPTY: Project = { name: "", doors: [] };
 
+interface Saved { id: string; project: Project }
+interface Store { active: string; list: Saved[] }
+const newId = () => `${Date.now()}${Math.random().toString(36).slice(2, 6)}`;
+const fresh = (): Store => { const id = newId(); return { active: id, list: [{ id, project: EMPTY }] }; };
+
+export interface ProjectStore {
+  list: Saved[]; active: string;
+  select: (id: string) => void; create: () => void; remove: () => void;
+}
+
 export function useProject() {
-  const [project, setProject] = useState<Project>(EMPTY);
+  const [store, setStore] = useState<Store>(fresh);
   const [loaded, setLoaded] = useState(false);
   useEffect(() => {
-    try { const raw = localStorage.getItem(KEY); if (raw) setProject(JSON.parse(raw)); } catch { /* ignore */ }
+    try {
+      const raw = localStorage.getItem(KEY);
+      if (raw) setStore(JSON.parse(raw));
+      else {
+        const old = localStorage.getItem(OLD_KEY);
+        if (old) { const id = newId(); setStore({ active: id, list: [{ id, project: JSON.parse(old) }] }); }
+      }
+    } catch { /* ignore */ }
     setLoaded(true);
   }, []);
-  useEffect(() => { if (loaded) localStorage.setItem(KEY, JSON.stringify(project)); }, [project, loaded]);
-  return [project, setProject] as const;
+  useEffect(() => { if (loaded) localStorage.setItem(KEY, JSON.stringify(store)); }, [store, loaded]);
+  const current = store.list.find((s) => s.id === store.active) ?? store.list[0]!;
+  const setProject = (fn: (p: Project) => Project) =>
+    setStore((s) => ({ ...s, list: s.list.map((x) => (x.id === (s.list.some((y) => y.id === s.active) ? s.active : s.list[0]!.id) ? { ...x, project: fn(x.project) } : x)) }));
+  const ps: ProjectStore = {
+    list: store.list, active: current.id,
+    select: (id) => setStore((s) => ({ ...s, active: id })),
+    create: () => setStore((s) => { const id = newId(); return { active: id, list: [...s.list, { id, project: EMPTY }] }; }),
+    remove: () => setStore((s) => { const list = s.list.filter((x) => x.id !== current.id); return list.length ? { active: list[0]!.id, list } : fresh(); }),
+  };
+  return [current.project, setProject, ps] as const;
 }
 
 async function copyText(text: string) {
