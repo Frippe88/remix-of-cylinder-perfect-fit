@@ -13,4 +13,4 @@ Allow: /
 User-agent: *
 Allow: /
 
-Sitemap: https://xn--cylinderhjlpen-fib.se/sitemap.xml
+Sitemap: https://cylinderhjalpen.se/sitemap.xml

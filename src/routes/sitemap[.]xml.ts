@@ -3,7 +3,7 @@ import { getRouterInstance } from "@tanstack/react-start";
 import { sitemapPathForLocation, sitemapStaticPaths, sitemapXML, isSitemapRouteIncluded, type SitemapEntry } from "@/lib/sitemap";
 import { GUIDES } from "@/lib/guides";
 
-const BASE_URL = "https://xn--cylinderhjlpen-fib.se";
+const BASE_URL = "https://cylinderhjalpen.se";
 
 export const Route = createFileRoute("/sitemap.xml")({
   staticData: { sitemap: false },

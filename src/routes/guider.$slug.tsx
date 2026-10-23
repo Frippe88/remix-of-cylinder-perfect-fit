@@ -1,7 +1,7 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { GUIDES, getGuide } from "@/lib/guides";
 
-const BASE = "https://xn--cylinderhjlpen-fib.se/guider/";
+const BASE = "https://cylinderhjalpen.se/guider/";
 
 export const Route = createFileRoute("/guider/$slug")({
   staticData: { sitemap: true },
