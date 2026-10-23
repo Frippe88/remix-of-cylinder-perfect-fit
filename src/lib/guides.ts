@@ -68,7 +68,7 @@ export const GUIDES: Guide[] = [
       { heading: "Varför sidorna skiljer sig", body: ["Låshuset sitter sällan exakt mitt i dörrbladet, och behör eller skyltar kan vara olika tjocka på de två sidorna."] },
       { heading: "Tänk på iLOQ", body: [`Vid iLOQ dubbelcylinder bygger monteringsbrickorna ${ILOQ_DOUBLE_INSIDE_EXTRA_MM} mm extra på insidan.`] },
     ],
-    mistakes: ["Att räkna ena sidan och anta samma mått på den andra.", "Att blanda ihop in- och utsida i plocklistan."],
+    mistakes: ["Att räkna ena sidan och anta samma mått på den andra."],
   },
   {
     slug: "iloq-dubbelcylinder-montage",
