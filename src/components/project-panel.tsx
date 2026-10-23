@@ -226,7 +226,7 @@ export function ProjectPanel({ project, setProject, store, open, onOpenChange, c
               </>}
             </>
           )}
-          {project.doors.length > 0 && (
+          {tab === "total" && project.doors.length > 0 && (
             <div className="space-y-2 border-t border-border pt-4">
               <p className="flex items-center gap-2 text-xs font-bold uppercase tracking-wide text-muted-foreground"><ClipboardCopy className="size-4 text-accent" aria-hidden />Kopiera</p>
               <CopyButton text={doorsText(project)} label="Kopiera dörrlista" />
