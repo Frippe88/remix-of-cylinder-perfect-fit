@@ -49,5 +49,7 @@
 - [x] "Byt projekt" i plocklistan stänger projektfliken direkt när ett projekt valts – man hamnar tillbaka vid plocklistan och kan spara. Öppnar man fliken som vanligt får den stå kvar.
 - [x] Kopiera dörrlista, inköpslista och "inköpslista och dörrlista" samlade i en grupp – endast i "Total plocklista", inte i "Dörr för dörr".
 
+- [x] Förtydligad beta: BETA-märke på Projekt-knappen, i flikens rubrik och i fältfältet, plus orange ruta som förklarar gratis under testperioden, lokalt sparande och feedback-länk.
+
 # Måttvisning
 - [x] Alla mått utan mellanslag före mm (t.ex. 12mm) – även rund cylinder där 8an saknade mm från början.
