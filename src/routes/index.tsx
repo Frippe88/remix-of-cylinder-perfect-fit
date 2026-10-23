@@ -148,7 +148,7 @@ function Index() {
       </header>
 
       <main className="mx-auto grid max-w-5xl gap-6 px-4 py-6 lg:grid-cols-[340px_1fr]">
-        <section className="space-y-5">
+        <section className="contents lg:block">
           <Panel title="Mätning">
             <p className="text-xs text-muted-foreground">
               Välj den cylinder du ska sätta in. Oval cylinder är vanligast – rund cylinder har rund profil och egna ringar och förlängare, medan iLOQ gäller bara om cylindern eller låset är märkt iLOQ.
@@ -205,15 +205,17 @@ function Index() {
             <p className="text-xs text-foreground">Avstånd från låshusets referenspunkt till dörrbladets yta.</p>
           </Panel>
 
-          <Panel title="Förlängare i lager">
-            <ChipGroup values={extValues} selected={ext} onToggle={(v) => toggle(ext, setExt, v)} />
-          </Panel>
-          <Panel title="Ringhöjder i lager">
-            <ChipGroup values={ringValues} selected={activeRings} onToggle={(v) => toggle(activeRings, setActiveRings, v)} />
-          </Panel>
+          <div className="order-3 space-y-5 lg:order-none lg:mt-5">
+            <Panel title="Förlängare i lager">
+              <ChipGroup values={extValues} selected={ext} onToggle={(v) => toggle(ext, setExt, v)} />
+            </Panel>
+            <Panel title="Ringhöjder i lager">
+              <ChipGroup values={ringValues} selected={activeRings} onToggle={(v) => toggle(activeRings, setActiveRings, v)} />
+            </Panel>
+          </div>
         </section>
 
-        <section className="min-w-0 space-y-7">
+        <section className="order-2 min-w-0 space-y-7 lg:order-none">
           <PickListButton
             sides={type === "single" ? [{ label: null, depth: parse(outside), selected: selOut }] : [{ label: "Utsida", depth: parse(outside), selected: selOut }, { label: "Insida", depth: parse(inside), selected: selIn }]}
             ext={ext} rings={activeRings} baseMm={baseMm} insideBaseMm={insideBaseMm} relaxed={isRound}
@@ -249,12 +251,6 @@ function Index() {
         </ul>
       </section>
       <ContactForm />
-      <footer className="border-t bg-card/60">
-        <div className="mx-auto flex max-w-5xl flex-col gap-1 px-4 py-6 text-xs text-muted-foreground sm:flex-row sm:items-center sm:justify-between">
-          <span className="flex items-center gap-2 font-semibold text-foreground"><KeyRound className="size-4 text-accent" aria-hidden />Cylinderhjälpen</span>
-          <span>Cylinderberäkning för låssmeder · cylinderhjalpen.se</span>
-        </div>
-      </footer>
     </div>
   );
 }

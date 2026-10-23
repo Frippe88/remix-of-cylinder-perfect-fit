@@ -1,3 +1,4 @@
+import { KeyRound } from "lucide-react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import {
   Outlet,
@@ -136,6 +137,12 @@ function RootComponent() {
     <QueryClientProvider client={queryClient}>
       {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
       <Outlet />
+      <footer className="border-t bg-card/60">
+        <div className="mx-auto flex max-w-5xl flex-col gap-1 px-4 py-6 text-xs text-muted-foreground sm:flex-row sm:items-center sm:justify-between">
+          <span className="flex items-center gap-2 font-semibold text-foreground"><KeyRound className="size-4 text-accent" aria-hidden />Cylinderhjälpen</span>
+          <span>Cylinderberäkning för låssmeder · cylinderhjalpen.se</span>
+        </div>
+      </footer>
     </QueryClientProvider>
   );
 }

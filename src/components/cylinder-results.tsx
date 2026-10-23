@@ -51,7 +51,14 @@ export function CylinderResults({ title, depth, ext, rings, baseMm, relaxed = fa
         {depth !== null && <span className="shrink-0 text-xs text-muted-foreground">Dörrdjup <strong className="font-mono text-foreground">{formatMm(depth)}</strong></span>}
       </div>
       {depth === null ? (
-        <p className="py-5 text-sm text-muted-foreground">Ange dörrdjup för att se resultat.</p>
+        <ol className="grid gap-3 py-2 sm:grid-cols-3">
+          {["Välj cylinder", "Ange dörrdjup", "Få kombination och plocklista"].map((s, i) => (
+            <li key={s} className="flex items-center gap-3 rounded-xl border bg-card p-3 text-sm font-semibold shadow-card">
+              <span className="flex size-7 shrink-0 items-center justify-center rounded-md bg-accent font-mono text-xs font-bold text-accent-foreground">{i + 1}</span>
+              {s}
+            </li>
+          ))}
+        </ol>
       ) : !best ? (
         <div className="border-l-2 border-destructive bg-card p-4">
           <p className="font-semibold text-destructive">Ingen lösning {title ? `för ${title.toLowerCase()} ` : ""}med valda lagerstorlekar.</p>
