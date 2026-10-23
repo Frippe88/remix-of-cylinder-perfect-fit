@@ -1,0 +1,61 @@
+// Projekt med flera dörrar – ren logik (lagring sköts i UI via localStorage).
+import { formatMm } from "./cylinder";
+
+export type RingKind = "oval" | "rund" | "iloq";
+export interface DoorSide { label: string | null; depth: number; ring: number; extenders: number[] }
+export interface Door { id: string; name: string; kind: RingKind; done: boolean; sides: DoorSide[] }
+export interface Project { name: string; doors: Door[] }
+
+export const KIND_LABEL: Record<RingKind, string> = { oval: "oval", rund: "rund", iloq: "iLOQ" };
+
+export function nextDoorName(doors: Door[]): string {
+  let n = doors.length + 1;
+  const names = new Set(doors.map((d) => d.name));
+  while (names.has(`Dörr ${n}`)) n++;
+  return `Dörr ${n}`;
+}
+
+export interface Totals {
+  extenders: { size: number; kind: RingKind; count: number }[];
+  rings: { size: number; kind: RingKind; count: number }[];
+}
+
+/** Summerar allt material för alla dörrar i projektet. */
+export function projectTotals(doors: Door[]): Totals {
+  const ext = new Map<string, { size: number; kind: RingKind; count: number }>();
+  const rings = new Map<string, { size: number; kind: RingKind; count: number }>();
+  const extKind = (k: RingKind): RingKind => (k === "rund" ? "rund" : "oval");
+  for (const d of doors) for (const s of d.sides) {
+    for (const e of s.extenders) {
+      const k = extKind(d.kind), key = `${k}:${e}`;
+      const cur = ext.get(key) ?? { size: e, kind: k, count: 0 };
+      cur.count++; ext.set(key, cur);
+    }
+    const key = `${d.kind}:${s.ring}`;
+    const cur = rings.get(key) ?? { size: s.ring, kind: d.kind, count: 0 };
+    cur.count++; rings.set(key, cur);
+  }
+  const sort = (a: { kind: string; size: number }, b: { kind: string; size: number }) =>
+    a.kind.localeCompare(b.kind) || a.size - b.size;
+  return { extenders: [...ext.values()].sort(sort), rings: [...rings.values()].sort(sort) };
+}
+
+function sideText(s: DoorSide): string {
+  const counts = new Map<number, number>();
+  s.extenders.forEach((e) => counts.set(e, (counts.get(e) ?? 0) + 1));
+  const parts = [...counts].sort((a, b) => a[0] - b[0]).map(([e, n]) => `${n} st ${formatMm(e)} förlängare`);
+  parts.push(`${formatMm(s.ring)} ring`);
+  return (s.label ? `${s.label}: ` : "") + parts.join(" + ");
+}
+
+export function totalsText(p: Project): string {
+  const t = projectTotals(p.doors);
+  const lines = [`${p.name || "Projekt"} – ${p.doors.length} ${p.doors.length === 1 ? "dörr" : "dörrar"}`];
+  if (t.extenders.length) { lines.push("", "Förlängare:"); t.extenders.forEach((e) => lines.push(`${e.count} st ${formatMm(e.size)} (${KIND_LABEL[e.kind]})`)); }
+  if (t.rings.length) { lines.push("", "Ringar:"); t.rings.forEach((r) => lines.push(`${r.count} st ${formatMm(r.size)} (${KIND_LABEL[r.kind]})`)); }
+  return lines.join("\n");
+}
+
+export function doorsText(p: Project): string {
+  return p.doors.map((d) => [`${d.name} (${KIND_LABEL[d.kind]})`, ...d.sides.map((s) => "  " + sideText(s))].join("\n")).join("\n");
+}
