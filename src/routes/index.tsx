@@ -133,7 +133,7 @@ function Index() {
       <header className="relative overflow-hidden bg-primary bg-header text-primary-foreground">
         <div aria-hidden className="blueprint pointer-events-none absolute inset-0 [mask-image:linear-gradient(to_bottom,black,transparent)]" />
         <div aria-hidden className="absolute inset-x-0 bottom-0 h-1 bg-accent" />
-        <div className="relative mx-auto flex max-w-5xl items-center gap-3 px-4 py-3 sm:py-6">
+        <div className="relative mx-auto flex max-w-5xl items-center gap-2.5 px-4 py-3 sm:gap-3 sm:py-6">
           <span className="flex size-9 shrink-0 items-center justify-center rounded-xl bg-accent shadow-elevated sm:size-12">
             <KeyRound className="size-5 text-accent-foreground sm:size-6" aria-hidden />
           </span>
@@ -141,12 +141,12 @@ function Index() {
             <h1 className="truncate text-base font-extrabold leading-tight tracking-tight sm:text-2xl">
               Cylinderhjälpen<span className="hidden sm:inline"> – kalkylator för rätt mått och montage</span>
             </h1>
-            <p className="truncate text-xs opacity-80 sm:hidden">Kalkylator för rätt mått</p>
+            <p className="truncate text-[11px] leading-tight opacity-80 sm:hidden">Kalkylator för rätt mått och montage</p>
           </div>
           <div className="flex shrink-0 items-center gap-2">
             <ThemeToggle />
             <button type="button" onClick={() => { setSwitchProject(false); setProjectOpen(true); }} aria-label="Öppna projekt"
-              className="inline-flex h-9 items-center gap-1.5 rounded-lg bg-primary-foreground/10 px-2.5 text-sm font-semibold ring-1 ring-primary-foreground/25 hover:bg-primary-foreground/20 sm:h-10 sm:px-3">
+              className="inline-flex h-9 items-center gap-1 rounded-lg bg-primary-foreground/10 px-2 text-sm font-semibold ring-1 ring-primary-foreground/25 hover:bg-primary-foreground/20 sm:h-10 sm:gap-1.5 sm:px-3">
               <FolderOpen className="size-4 text-accent" aria-hidden /><span className="hidden sm:inline">Projekt</span>
               <span className="hidden rounded-full border border-accent/50 bg-accent/15 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-accent sm:inline">Beta</span>
               <span className="rounded-full bg-accent px-1.5 text-xs font-bold text-accent-foreground">{projectStore.list.length}</span>
