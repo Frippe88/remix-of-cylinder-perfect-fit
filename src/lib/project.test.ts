@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { doorsText, nextDoorName, projectTotals, totalsText, type Door } from "./project";
+import { doorsText, nextDoorName, projectTotals, setDoorSide, totalsText, type Door } from "./project";
 
 const doors: Door[] = [
   { id: "1", name: "Dörr 1", kind: "oval", done: false, sides: [
