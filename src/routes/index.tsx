@@ -133,15 +133,15 @@ function Index() {
       <header className="relative overflow-hidden bg-primary bg-header text-primary-foreground">
         <div aria-hidden className="blueprint pointer-events-none absolute inset-0 [mask-image:linear-gradient(to_bottom,black,transparent)]" />
         <div aria-hidden className="absolute inset-x-0 bottom-0 h-1 bg-accent" />
-        <div className="relative mx-auto flex max-w-5xl items-start justify-between gap-4 px-4 py-6 sm:py-8">
-          <div className="flex items-start gap-3 sm:gap-4">
-            <span className="flex size-12 shrink-0 items-center justify-center rounded-xl bg-accent shadow-elevated sm:size-14">
-              <KeyRound className="size-6 text-accent-foreground sm:size-7" aria-hidden />
+        <div className="relative mx-auto flex max-w-5xl flex-wrap items-center justify-between gap-x-4 gap-y-3 px-4 py-4 sm:items-start sm:py-8">
+          <div className="order-last flex min-w-0 flex-1 items-start gap-3 sm:order-none">
+            <span className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-accent shadow-elevated sm:size-14">
+              <KeyRound className="size-5 text-accent-foreground sm:size-7" aria-hidden />
             </span>
-            <div>
-              <h1 className="text-xl font-extrabold leading-tight tracking-tight sm:text-3xl">Cylinderhjälpen – kalkylator för rätt mått och montage</h1>
-              <p className="mt-0.5 text-sm opacity-80">Snabb och enkel cylinderberäkning för ett snyggt montage</p>
-              <ul className="mt-2.5 flex flex-wrap gap-1.5" aria-label="Regler">
+            <div className="min-w-0">
+              <h1 className="text-lg font-extrabold leading-snug tracking-tight sm:text-3xl sm:leading-tight">Cylinderhjälpen – kalkylator för rätt mått och montage</h1>
+              <p className="mt-0.5 text-xs opacity-80 sm:text-sm">Snabb och enkel cylinderberäkning för ett snyggt montage</p>
+              <ul className="mt-2 flex flex-wrap gap-1.5" aria-label="Regler">
                 <li className="inline-flex items-center gap-1.5 rounded-full bg-accent/15 px-2.5 py-1 text-xs font-semibold text-accent ring-1 ring-accent/40">
                   <ShieldCheck className="size-3.5" aria-hidden />Oval & iLOQ: −2 till +2mm
                 </li>
