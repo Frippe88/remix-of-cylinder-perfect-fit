@@ -77,3 +77,14 @@ export function totalsText(p: Project, remainingOnly = false): string {
 export function doorsText(p: Project): string {
   return p.doors.map((d) => [`${d.name} (${KIND_LABEL[d.kind]})`, ...d.sides.map((s) => "  " + sideText(s, d.kind))].join("\n")).join("\n");
 }
+
+/** Whole project as shareable text: every door, then the full material list. */
+export function projectText(p: Project): string {
+  const doors = p.doors.map((d) => [`${d.name} (${KIND_LABEL[d.kind]})${d.done ? " – monterad" : ""}`, ...d.sides.map((s) => "  " + sideText(s, d.kind))].join("\n")).join("\n\n");
+  return [`${p.name || "Projekt"}`, "", "Dörrar:", doors, "", "Totalt material:", totalsText(p).split("\n").slice(2).join("\n")].join("\n").trim();
+}
+
+/** Empties a project's doors but keeps the project and its name. */
+export function clearDoors(p: Project): Project {
+  return { ...p, doors: [] };
+}
