@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
-import { ArrowDown, ArrowUp, Check, ChevronDown, ClipboardCopy, ClipboardList, DoorOpen, FolderOpen, Layers, Plus, Trash2, X } from "lucide-react";
+import { ArrowDown, ArrowUp, Check, ChevronDown, ClipboardCopy, ClipboardList, DoorOpen, FolderOpen, Info, Layers, Plus, Trash2, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from "@/components/ui/sheet";
 import { clearDoors, doorsText, doorsToPick, KIND_LABEL, projectText, projectTotals, RING_HAS_SIDE, setDoorSide, totalsText, type Door, type Project } from "@/lib/project";
 import { sideChip } from "@/components/pick-list-button";
+import { CONTACT_EMAIL } from "@/components/contact-form";
 import { formatMm } from "@/lib/cylinder";
 
 const OLD_KEY = "cylinderhjalpen.project.v1";
@@ -143,7 +144,13 @@ export function ProjectPanel({ project, setProject, store, open, onOpenChange, c
       <SheetContent side="bottom" className="max-h-[92dvh] overflow-y-auto rounded-t-xl p-0 sm:mx-auto sm:max-w-2xl">
         <SheetHeader className="border-b border-t-4 border-t-accent bg-muted/40 px-4 pb-4 pt-5 text-left sm:px-6">
           <SheetTitle className="flex items-center gap-2 pr-8 text-xl"><FolderOpen className="size-5 text-accent" aria-hidden />Projekt<span className="rounded-full border border-accent/50 bg-accent/10 px-2 py-0.5 text-[11px] font-bold uppercase tracking-wide text-accent">Beta</span></SheetTitle>
-          <SheetDescription>Gratis under testperioden. Projekten sparas i den här telefonen/webbläsaren – inloggning och molnsparande kommer senare.</SheetDescription>
+          <SheetDescription className="mt-1 flex items-start gap-2 rounded-lg border border-accent/30 bg-accent/5 px-3 py-2.5 text-sm leading-snug text-foreground">
+            <Info className="mt-0.5 size-4 shrink-0 text-accent" aria-hidden />
+            <span>
+              <span className="font-bold text-accent">Beta – gratis under testperioden.</span> Funktionen är ny och byggs på löpande. Projekten sparas bara i den här telefonen eller webbläsaren: byter du enhet eller rensar webbläsaren försvinner de, för ingen kopia finns i molnet än. Inloggning och synkning mellan enheter kommer när funktionen är klar.
+              {" "}Saknas något eller blir det fel? <a href={`mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent("Feedback om Projekt (beta)")}`} className="font-semibold text-link underline underline-offset-2">Skicka feedback</a> – vi rättar under betan.
+            </span>
+          </SheetDescription>
           <div className="flex flex-wrap gap-2 pt-1 text-xs font-semibold">
             <span className="inline-flex items-center gap-1.5 rounded-md border border-accent/30 bg-card px-2.5 py-1.5"><DoorOpen className="size-3.5 text-accent" aria-hidden />{project.doors.length} {project.doors.length === 1 ? "dörr" : "dörrar"}</span>
             <span className="inline-flex items-center gap-1.5 rounded-md border bg-card px-2.5 py-1.5 text-muted-foreground"><Check className="size-3.5 text-success" aria-hidden />{done} monterade</span>
@@ -252,6 +259,7 @@ export function ProjectBar({ project, projects = 1, onOpen }: { project: Project
     <button onClick={onOpen} className="fixed inset-x-3 bottom-3 z-40 mx-auto flex max-w-md items-center gap-3 rounded-xl bg-primary px-4 py-3 text-left text-primary-foreground shadow-elevated">
       <FolderOpen className="size-5 shrink-0 text-accent" aria-hidden />
       <span className="flex-1 truncate text-sm font-semibold">{project.name || "Projekt"} · {project.doors.length} {project.doors.length === 1 ? "dörr" : "dörrar"}</span>
+      <span className="shrink-0 rounded-full border border-accent/50 bg-accent/15 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-accent">Beta</span>
       <span className="text-sm font-bold text-accent">Visa →</span>
     </button>
   );
