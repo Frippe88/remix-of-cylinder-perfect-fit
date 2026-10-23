@@ -47,4 +47,4 @@
 - [x] Total plocklista: välja "Kvar att montera" eller "Hela projektet" så monterade dörrar inte räknas med
 - [x] Plocklistan visar vilket projekt dörren sparas i: raden "Sparas i <namn> · antal dörrar" med "Byt projekt", och spara-knappen har projektets namn
 - [x] "Byt projekt" i plocklistan stänger projektfliken direkt när ett projekt valts – man hamnar tillbaka vid plocklistan och kan spara. Öppnar man fliken som vanligt får den stå kvar.
-- [x] Kopiera dörrlista, inköpslista och hela projektet samlade i en grupp – endast i "Total plocklista", inte i "Dörr för dörr".
+- [x] Kopiera dörrlista, inköpslista och "inköpslista och dörrlista" samlade i en grupp – endast i "Total plocklista", inte i "Dörr för dörr".
