@@ -203,9 +203,21 @@ function Index() {
                 </button>
               ))}
             </div>
-            <p className="text-xs text-muted-foreground">
-              {type === "single" ? "Cylinder på utsida eller insida." : "Cylinder på både utsida och insida."}
-            </p>
+            {type === "single" ? (
+              <div>
+                <p className="text-xs text-muted-foreground">Var sitter cylindern? Ringen för utsida och insida ser olika ut.</p>
+                <div className="mt-1.5 grid grid-cols-2 gap-2">
+                  {(["Utsida", "Insida"] as const).map((s) => (
+                    <button key={s} type="button" onClick={() => setSingleSide(s)} aria-pressed={singleSide === s}
+                      className={`min-h-10 rounded-lg border text-sm font-semibold ${singleSide === s ? "border-accent bg-accent/10 text-foreground" : "border-input text-muted-foreground"}`}>
+                      {s}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            ) : (
+              <p className="text-xs text-muted-foreground">Cylinder på både utsida och insida.</p>
+            )}
             <DepthInput label={type === "single" ? "Dörrdjup" : "Dörrdjup utsida"} value={outside} onChange={setOutside} />
             {type === "double" && <DepthInput label="Dörrdjup insida" value={inside} onChange={setInside} />}
             <p className="text-xs text-foreground">Avstånd från låshusets referenspunkt till dörrbladets yta.</p>
