@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Check, ChevronDown, ClipboardCopy, FolderOpen, Plus, Trash2, X } from "lucide-react";
+import { ArrowDown, ArrowUp, Check, ChevronDown, ClipboardCopy, ClipboardList, DoorOpen, FolderOpen, Layers, Plus, Trash2, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from "@/components/ui/sheet";
 import { doorsText, doorsToPick, KIND_LABEL, projectTotals, RING_HAS_SIDE, setDoorSide, totalsText, type Door, type Project } from "@/lib/project";
@@ -69,31 +69,39 @@ function Chip({ children, accent, side }: { children: React.ReactNode; accent?: 
 function DoorCard({ d, onToggle, onRemove, onSetSide }: { d: Door; onToggle: () => void; onRemove: () => void; onSetSide: (i: number, label: string) => void }) {
   const hasSide = RING_HAS_SIDE[d.kind];
   return (
-    <li className={`rounded-xl border bg-card p-3 shadow-card ${d.done ? "opacity-60" : ""}`}>
-      <div className="flex items-center gap-3">
-        <button onClick={onToggle} aria-label={d.done ? "Markera som ej monterad" : "Markera som monterad"}
-          className={`flex size-7 shrink-0 items-center justify-center rounded-md border-2 ${d.done ? "border-success bg-success text-primary-foreground" : "border-input"}`}>
+    <li className={`overflow-hidden rounded-lg border bg-card shadow-card ${d.done ? "border-success/30" : "border-border"}`}>
+      <div className={`flex items-center gap-3 border-b px-3 py-3 ${d.done ? "border-success/20 bg-success-soft" : "bg-muted/30"}`}>
+        <Button variant="ghost" size="icon" onClick={onToggle} aria-pressed={d.done} aria-label={d.done ? "Markera som ej monterad" : "Markera som monterad"}
+          className={`size-8 shrink-0 rounded-md border-2 ${d.done ? "border-success bg-success-soft text-success hover:bg-success-soft" : "border-input bg-card hover:border-success hover:bg-success-soft"}`}>
           {d.done && <Check className="size-4" />}
-        </button>
-        <p className={`flex-1 font-bold ${d.done ? "line-through" : ""}`}>{d.name} <span className="text-xs font-medium text-muted-foreground">· {KIND_LABEL[d.kind]}</span></p>
-        <button onClick={onRemove} aria-label={`Ta bort ${d.name}`} className="p-1 text-muted-foreground hover:text-destructive"><Trash2 className="size-4" /></button>
+        </Button>
+        <div className="min-w-0 flex-1">
+          <p className={`break-words text-sm font-bold ${d.done ? "text-muted-foreground line-through" : "text-foreground"}`}>{d.name}</p>
+          <p className="mt-0.5 text-xs text-muted-foreground">{KIND_LABEL[d.kind]}{d.done && <span className="ml-2 font-semibold text-success">Monterad</span>}</p>
+        </div>
+        <Button variant="ghost" size="icon" onClick={onRemove} aria-label={`Ta bort ${d.name}`} title={`Ta bort ${d.name}`} className="size-8 shrink-0 text-muted-foreground hover:bg-warning-soft hover:text-destructive"><Trash2 className="size-4" /></Button>
       </div>
-      <ul className="mt-2 space-y-1.5 pl-10">
+      <ul className="space-y-2 p-3">
         {d.sides.map((s, i) => (
-          <li key={i} className="flex flex-wrap items-center gap-1.5 text-sm">
+          <li key={i} className={`rounded-md border p-2.5 text-sm ${s.label && hasSide ? sideChip(s.label) : "border-border bg-muted/30"}`}>
+            <div className="flex items-center justify-between gap-2">
             {hasSide ? (
-              <button type="button" onClick={() => onSetSide(i, s.label === "Utsida" ? "Insida" : "Utsida")}
+              <Button variant="ghost" type="button" onClick={() => onSetSide(i, s.label === "Utsida" ? "Insida" : "Utsida")}
                 aria-label={s.label ? `Byt sida för ${d.name}: ${s.label.toLowerCase()}` : `Välj sida för ${d.name}`}
-                className={`w-16 rounded-md border px-1 py-0.5 text-left text-[11px] font-bold uppercase tracking-wide ${s.label ? sideChip(s.label) : "border-warning/40 bg-warning-soft text-warning"}`}>
+                className={`h-8 justify-start rounded-md border px-2 text-xs font-bold ${s.label ? `${sideChip(s.label)} hover:bg-card/60 hover:text-inherit` : "border-warning/40 bg-warning-soft text-warning hover:bg-warning-soft hover:text-warning"}`}>
+                {s.label === "Insida" ? <ArrowDown aria-hidden /> : s.label === "Utsida" ? <ArrowUp aria-hidden /> : null}
                 {s.label ?? "Sida?"}
-              </button>
+              </Button>
             ) : (
               <span className="w-16 text-[11px] font-bold uppercase tracking-wide text-muted-foreground">Cylinder</span>
             )}
-            <span className="font-mono text-xs text-muted-foreground">{formatMm(s.depth)}</span>
+            <span className="shrink-0 font-mono text-xs text-muted-foreground">{formatMm(s.depth)}</span>
+            </div>
+            <div className="mt-2 flex flex-wrap items-center gap-1.5">
             {s.extenders.length === 0 ? <span className="text-xs text-muted-foreground">inga förl.</span> :
               s.extenders.map((e, j) => <Chip key={j} side={s.label}>{formatMm(e)}</Chip>)}
             <Chip accent side={s.label}>ring {formatMm(s.ring)}</Chip>
+            </div>
           </li>
         ))}
       </ul>
@@ -132,12 +140,16 @@ export function ProjectPanel({ project, setProject, store, open, onOpenChange }:
   const totals = projectTotals(pickDoors);
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent side="bottom" className="max-h-[92dvh] overflow-y-auto rounded-t-2xl sm:mx-auto sm:max-w-2xl">
-        <SheetHeader className="text-left">
-          <SheetTitle>Projekt</SheetTitle>
-          <SheetDescription>{project.doors.length} {project.doors.length === 1 ? "dörr" : "dörrar"} · {done} monterade. Sparas i den här telefonen/webbläsaren.</SheetDescription>
+      <SheetContent side="bottom" className="max-h-[92dvh] overflow-y-auto rounded-t-xl p-0 sm:mx-auto sm:max-w-2xl">
+        <SheetHeader className="border-b bg-muted/40 px-4 pb-4 pt-5 text-left sm:px-6">
+          <SheetTitle className="flex items-center gap-2 pr-8 text-xl"><FolderOpen className="size-5 text-accent" aria-hidden />Projekt</SheetTitle>
+          <SheetDescription>Sparas i den här telefonen/webbläsaren.</SheetDescription>
+          <div className="flex flex-wrap gap-2 pt-1 text-xs font-semibold">
+            <span className="inline-flex items-center gap-1.5 rounded-md border bg-card px-2.5 py-1.5"><DoorOpen className="size-3.5 text-muted-foreground" aria-hidden />{project.doors.length} {project.doors.length === 1 ? "dörr" : "dörrar"}</span>
+            <span className="inline-flex items-center gap-1.5 rounded-md border border-success/30 bg-success-soft px-2.5 py-1.5 text-success"><Check className="size-3.5" aria-hidden />{done} monterade</span>
+          </div>
         </SheetHeader>
-        <div className="space-y-4 px-4 pb-6">
+        <div className="space-y-4 px-4 py-5 sm:px-6">
           <div className="flex gap-2">
             <div className="relative min-w-0 flex-1">
               <select value={store.active} onChange={(e) => store.select(e.target.value)} aria-label="Välj projekt"
@@ -153,11 +165,12 @@ export function ProjectPanel({ project, setProject, store, open, onOpenChange }:
             </Button>
           </div>
           <NameField key={store.active} name={project.name} onSave={(name) => setProject((p) => ({ ...p, name }))} />
-          <div className="grid grid-cols-2 rounded-lg bg-muted p-1">
+          <div className="grid grid-cols-2 gap-1 rounded-lg border bg-muted p-1" role="group" aria-label="Projektvy">
             {(["doors", "total"] as const).map((t) => (
-              <button key={t} onClick={() => setTab(t)} className={`min-h-10 rounded-md text-sm font-semibold ${tab === t ? "bg-card shadow-card" : "text-muted-foreground"}`}>
+              <Button variant="ghost" key={t} onClick={() => setTab(t)} aria-pressed={tab === t} className={`min-h-11 whitespace-normal rounded-md px-2 text-sm font-semibold ${tab === t ? "bg-card text-foreground shadow-card hover:bg-card" : "text-muted-foreground hover:bg-card/50 hover:text-foreground"}`}>
+                {t === "doors" ? <DoorOpen aria-hidden /> : <ClipboardList aria-hidden />}
                 {t === "doors" ? "Dörr för dörr" : "Total plocklista"}
-              </button>
+              </Button>
             ))}
           </div>
           {project.doors.length === 0 ? (
@@ -180,10 +193,11 @@ export function ProjectPanel({ project, setProject, store, open, onOpenChange }:
               {done > 0 && (
                 <div className="grid grid-cols-2 gap-2">
                   {([true, false] as const).map((v) => (
-                    <button key={String(v)} onClick={() => setRemainingOnly(v)} aria-pressed={remainingOnly === v}
-                      className={`min-h-10 rounded-lg border text-sm font-semibold ${remainingOnly === v ? "border-primary bg-primary text-primary-foreground" : "bg-card text-muted-foreground"}`}>
+                     <Button variant="outline" key={String(v)} onClick={() => setRemainingOnly(v)} aria-pressed={remainingOnly === v}
+                       className={`min-h-11 whitespace-normal rounded-md px-2 text-sm font-semibold ${remainingOnly === v ? "border-accent bg-accent/15 text-foreground hover:bg-accent/20 hover:text-foreground" : "bg-card text-muted-foreground hover:bg-muted hover:text-foreground"}`}>
+                       {remainingOnly === v && <Check aria-hidden />}
                       {v ? "Kvar att montera" : "Hela projektet"}
-                    </button>
+                     </Button>
                   ))}
                 </div>
               )}
@@ -195,16 +209,16 @@ export function ProjectPanel({ project, setProject, store, open, onOpenChange }:
               {pickDoors.length === 0 ? (
                 <p className="py-6 text-center text-sm text-muted-foreground">Alla dörrar är monterade – inget kvar att plocka.</p>
               ) : <>
-              <div className="rounded-xl border bg-card p-4 shadow-card">
+              <div className="border-y py-4">
                 {totals.extenders.length > 0 && <>
-                  <p className="text-xs font-bold uppercase tracking-wide text-muted-foreground">Förlängare</p>
+                  <p className="flex items-center gap-2 text-xs font-bold uppercase tracking-wide text-muted-foreground"><Layers className="size-4" aria-hidden />Förlängare</p>
                   <ul className="mb-3 mt-1 divide-y">{totals.extenders.map((e) => (
-                    <li key={e.kind + e.size} className="flex justify-between py-1.5 text-sm"><span>{formatMm(e.size)} <span className="text-muted-foreground">({KIND_LABEL[e.kind]})</span></span><span className="font-mono font-bold">{e.count} st</span></li>
+                    <li key={e.kind + e.size} className="flex items-center justify-between gap-3 py-2.5 text-sm"><span className="font-semibold">{formatMm(e.size)} <span className="text-xs font-normal text-muted-foreground">({KIND_LABEL[e.kind]})</span></span><Chip>{e.count} st</Chip></li>
                   ))}</ul>
                 </>}
                 <p className="text-xs font-bold uppercase tracking-wide text-muted-foreground">Ringar</p>
-                <ul className="mt-1 divide-y">{totals.rings.map((r) => (
-                  <li key={r.kind + r.side + r.size} className="flex justify-between py-1.5 text-sm"><span>{formatMm(r.size)} {r.side && <span className={`font-semibold ${r.side === "Insida" ? "text-side-inside" : "text-side-outside"}`}>{r.side.toLowerCase()}</span>} <span className="text-muted-foreground">({KIND_LABEL[r.kind]})</span></span><span className="font-mono font-bold">{r.count} st</span></li>
+                <ul className="mt-2 space-y-2">{totals.rings.map((r) => (
+                  <li key={r.kind + r.side + r.size} className={`flex items-center justify-between gap-3 rounded-md border px-3 py-2.5 text-sm ${sideChip(r.side) ?? "border-border bg-muted/30"}`}><span className="flex min-w-0 flex-wrap items-center gap-x-2 gap-y-1"><span className="font-mono font-bold">{formatMm(r.size)}</span>{r.side && <span className="inline-flex items-center gap-1 font-semibold">{r.side === "Insida" ? <ArrowDown className="size-3.5" aria-hidden /> : <ArrowUp className="size-3.5" aria-hidden />}{r.side}</span>} <span className="text-xs text-muted-foreground">({KIND_LABEL[r.kind]})</span></span><span className="shrink-0 font-mono font-bold">{r.count} st</span></li>
                 ))}</ul>
               </div>
               <CopyButton text={totalsText(project, onlyLeft)} label="Kopiera inköpslista" />
