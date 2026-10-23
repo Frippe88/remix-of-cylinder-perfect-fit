@@ -52,6 +52,7 @@
 - [x] Förtydligad beta: BETA-märke på Projekt-knappen, i flikens rubrik och i fältfältet, plus orange ruta som förklarar gratis under testperioden, lokalt sparande och feedback-länk.
 - [x] Projektfliken: egen "Beta – gratis under testperioden"-ruta längst ner som förklarar att projekten bara sparas lokalt, vad som kommer härnäst (inloggning och molnsynk, sedan prenumeration) och en "Skicka feedback"-knapp.
 - [x] Mobilheader: en kompakt rad med nyckel + "Cylinderhjälpen" till vänster och mörkt/ljust samt Projekt till höger, med underrubriken "Kalkylator för rätt mått och montage" under namnet.
+- [x] Regelbrickor (Oval & iLOQ −2 till +2mm, Rund: närmaste möjliga) syns även på mobilen under headern; på Very narrow phones staplas de på två rader.
 
 # Måttvisning
 - [x] Alla mått utan mellanslag före mm (t.ex. 12mm) – även rund cylinder där 8an saknade mm från början.
