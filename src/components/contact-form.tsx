@@ -6,7 +6,7 @@ export function ContactForm() {
   const href = `mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent("Fråga om Cylinderhjälpen")}`;
   return (
     <section className="mx-auto mt-6 max-w-5xl px-4 pb-10">
-      <div className="rounded-xl border bg-card p-5 shadow-card">
+      <div className="rounded-xl border border-l-4 border-l-accent bg-card p-5 shadow-card">
         <h2 className="flex items-center gap-2 text-lg font-bold"><Mail className="size-5" aria-hidden /> Kontakta oss</h2>
         <p className="mt-2 text-sm text-muted-foreground">
           Hittar du något som inte stämmer, saknar du ett mått eller har du ett förbättringsförslag? Hör gärna av dig – Cylinderhjälpen utvecklas tillsammans med dem som använder den i dagligt arbete.
@@ -21,7 +21,7 @@ export function ContactForm() {
             Vi svarar vanligtvis inom 2 arbetsdagar
           </li>
         </ul>
-        <a href={href} className="mt-4 inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground">
+        <a href={href} className="mt-4 inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2.5 text-sm font-semibold text-primary-foreground shadow-card transition hover:opacity-90 dark:bg-accent dark:text-accent-foreground">
           <Mail className="size-4" aria-hidden /> Mejla oss
         </a>
       </div>
