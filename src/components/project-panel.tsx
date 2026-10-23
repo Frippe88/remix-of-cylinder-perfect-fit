@@ -144,11 +144,10 @@ export function ProjectPanel({ project, setProject, store, open, onOpenChange, c
       <SheetContent side="bottom" className="max-h-[92dvh] overflow-y-auto rounded-t-xl p-0 sm:mx-auto sm:max-w-2xl">
         <SheetHeader className="border-b border-t-4 border-t-accent bg-muted/40 px-4 pb-4 pt-5 text-left sm:px-6">
           <SheetTitle className="flex items-center gap-2 pr-8 text-xl"><FolderOpen className="size-5 text-accent" aria-hidden />Projekt<span className="rounded-full border border-accent/50 bg-accent/10 px-2 py-0.5 text-[11px] font-bold uppercase tracking-wide text-accent">Beta</span></SheetTitle>
-          <SheetDescription className="mt-1 flex items-start gap-2 rounded-lg border border-accent/30 bg-accent/5 px-3 py-2.5 text-sm leading-snug text-foreground">
-            <Info className="mt-0.5 size-4 shrink-0 text-accent" aria-hidden />
+          <SheetDescription className="mt-1 flex items-start gap-2 rounded-lg border border-accent/30 bg-accent/5 px-3 py-2 text-xs leading-snug text-foreground">
+            <Info className="mt-0.5 size-3.5 shrink-0 text-accent" aria-hidden />
             <span>
-              <span className="font-bold text-accent">Beta – gratis under testperioden.</span> Funktionen är ny och byggs på löpande. Projekten sparas bara i den här telefonen eller webbläsaren: byter du enhet eller rensar webbläsaren försvinner de, för ingen kopia finns i molnet än. Inloggning och synkning mellan enheter kommer när funktionen är klar.
-              {" "}Saknas något eller blir det fel? <a href={`mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent("Feedback om Projekt (beta)")}`} className="font-semibold text-link underline underline-offset-2">Skicka feedback</a> – vi rättar under betan.
+              <span className="font-bold text-accent">Beta – gratis under testperioden.</span> Projekten sparas bara i den här telefonen/webbläsaren – molnsparande kommer senare. <a href={`mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent("Feedback om Projekt (beta)")}`} className="font-semibold text-link underline underline-offset-2">Skicka feedback</a>
             </span>
           </SheetDescription>
           <div className="flex flex-wrap gap-2 pt-1 text-xs font-semibold">
