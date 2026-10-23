@@ -102,11 +102,13 @@ export function ProjectPanel({ project, setProject, open, onOpenChange }: {
             <p className="py-6 text-center text-sm text-muted-foreground">Inga dörrar än. Räkna en dörr och tryck "Spara i projekt".</p>
           ) : tab === "doors" ? (
             <>
+              <p className="text-xs text-muted-foreground">Tryck på sidetiketten <span className="font-semibold text-side-outside">utsida</span>/<span className="font-semibold text-side-inside">insida</span> för att byta sida på en rad.</p>
               <ul className="space-y-2">
                 {project.doors.map((d) => (
                   <DoorCard key={d.id} d={d}
                     onToggle={() => setProject((p) => ({ ...p, doors: p.doors.map((x) => x.id === d.id ? { ...x, done: !x.done } : x) }))}
-                    onRemove={() => setProject((p) => ({ ...p, doors: p.doors.filter((x) => x.id !== d.id) }))} />
+                    onRemove={() => setProject((p) => ({ ...p, doors: p.doors.filter((x) => x.id !== d.id) }))}
+                    onSetSide={(i, label) => setProject((p) => ({ ...p, doors: p.doors.map((x) => x.id === d.id ? setDoorSide(x, i, label) : x) }))} />
                 ))}
               </ul>
               <CopyButton text={doorsText(project)} label="Kopiera dörrlista" />
