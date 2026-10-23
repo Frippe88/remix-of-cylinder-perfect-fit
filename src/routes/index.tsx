@@ -256,8 +256,8 @@ function Index() {
                 <div role="note" className="flex gap-3 rounded-xl border border-accent/50 bg-accent/10 p-3 text-sm">
                   <Info className="mt-0.5 size-5 shrink-0 text-accent" aria-hidden />
                   <p>
-                    <span className="font-bold">iLOQ dubbelcylinder: +{ILOQ_DOUBLE_INSIDE_EXTRA_MM} mm på insidan.</span>{" "}
-                    <span className="text-muted-foreground">Kitets två monteringsbrickor (3 mm styck) bygger ut cylindern, så insidan räknas med {insideBaseMm} mm istället för {ILOQ_CYLINDER_MM} mm.</span>
+                    <span className="font-bold">iLOQ dubbelcylinder: +{ILOQ_DOUBLE_INSIDE_EXTRA_MM}mm på insidan.</span>{" "}
+                    <span className="text-muted-foreground">Kitets två monteringsbrickor (3mm styck) bygger ut cylindern, så insidan räknas med {insideBaseMm}mm istället för {ILOQ_CYLINDER_MM}mm.</span>
                   </p>
                 </div>
               )}

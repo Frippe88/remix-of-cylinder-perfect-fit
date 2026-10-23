@@ -33,12 +33,12 @@ describe("projectTotals", () => {
   it("rund cylinder har samma ring ute och inne – ringen delas inte per sida", () => {
     const t = projectTotals(roundDouble);
     expect(t.rings).toEqual([{ size: 13, kind: "rund", side: "", count: 2 }]);
-    expect(totalsText({ name: "Storgatan 4", doors: roundDouble })).toContain("2st 13 mm ring (rund)");
-    expect(doorsText({ name: "Storgatan 4", doors: roundDouble })).toContain("Utsida: 1st 10 mm förlängare + 13 mm ring");
+    expect(totalsText({ name: "Storgatan 4", doors: roundDouble })).toContain("2st 13mm ring (rund)");
+    expect(doorsText({ name: "Storgatan 4", doors: roundDouble })).toContain("Utsida: 1st 10mm förlängare + 13mm ring");
     expect(doorsText({ name: "Storgatan 4", doors: roundDouble })).not.toContain("ring utsida");
   });
   it("oval ring märks fortfarande med sida i inköpslistan", () => {
-    expect(totalsText({ name: "Storgatan 4", doors })).toContain("1st 11 mm ring insida (oval)");
+    expect(totalsText({ name: "Storgatan 4", doors })).toContain("1st 11mm ring insida (oval)");
   });
 });
 
@@ -77,7 +77,7 @@ describe("hela projektet", () => {
     const t = projectText({ name: "Kund A", doors });
     expect(t).toContain("Dörr 1 (oval)");
     expect(t).toContain("Dörr 2 (rund) – monterad");
-    expect(t).toContain("2st 8 mm");
+    expect(t).toContain("2st 8mm");
   });
   it("töm dörrar behåller projektnamnet", async () => {
     const { clearDoors } = await import("./project");

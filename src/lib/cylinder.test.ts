@@ -11,7 +11,7 @@ describe("deviationOf", () => {
 });
 
 describe("toleranser", () => {
-  it("alla resultat ligger inom −2 till +2 mm", () => {
+  it("alla resultat ligger inom −2 till +2mm", () => {
     for (let d = 0; d <= 60; d += 0.5) {
       for (const c of calculate({ depth: d, ...all })) {
         expect(c.deviation).toBeGreaterThanOrEqual(-2);
@@ -67,13 +67,13 @@ describe("dubbelcylinder", () => {
 
 describe("iLOQ-cylinder", () => {
   const iloq = { extenders: [...EXTENDER_SIZES], rings: [...RING_HEIGHTS, ...ILOQ_RING_HEIGHTS], baseMm: ILOQ_CYLINDER_MM };
-  it("använder 40 mm som cylinderlängd", () => {
+  it("använder 40mm som cylinderlängd", () => {
     // djup 29, ring 11, inga förlängare: 40-29-11 = 0
     const r = calculate({ depth: 29, extenders: [], rings: [11], baseMm: ILOQ_CYLINDER_MM });
     expect(r[0]!.deviation).toBe(0);
     expect(deviationOf(29, 0, 11, ILOQ_CYLINDER_MM)).toBe(0);
   });
-  it("stödjer ringhöjderna 27, 30 och 33 mm", () => {
+  it("stödjer ringhöjderna 27, 30 och 33mm", () => {
     // djup 40: ring 27 + 12,5+8 = 40+20,5-40-27 = -6,5... kontrollera istället exakta träffar per ring
     for (const ring of ILOQ_RING_HEIGHTS) {
       // 40 + 0 - djup - ring = 0 => djup = 40 - ring
@@ -115,7 +115,7 @@ describe("alternativa kombinationer", () => {
 });
 
 describe("rund cylinder", () => {
-  it("använder 31 mm, ringar 8/13 och 10 mm förlängare", () => {
+  it("använder 31mm, ringar 8/13 och 10mm förlängare", () => {
     // 31 + 10 - 28 - 13 = 0
     expect(calculate({ depth: 28, extenders: [10], rings: [8, 13], baseMm: ROUND_CYLINDER_MM })[0]!.deviation).toBe(0);
     for (const c of calculate({ depth: 33.5, extenders: [10], rings: [8, 13], baseMm: ROUND_CYLINDER_MM })) {
@@ -138,7 +138,7 @@ describe("rund cylinder", () => {
 
 import { cylinderBaseMm } from "./cylinder";
 describe("iLOQ dubbelcylinder", () => {
-  it("lägger till 6 mm endast på insidan vid dubbelcylinder", () => {
+  it("lägger till 6mm endast på insidan vid dubbelcylinder", () => {
     expect(cylinderBaseMm("iloq", "inside", true)).toBe(46);
     expect(cylinderBaseMm("iloq", "outside", true)).toBe(40);
     expect(cylinderBaseMm("iloq", "inside", false)).toBe(40);
