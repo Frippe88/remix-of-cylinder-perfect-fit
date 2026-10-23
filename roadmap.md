@@ -36,6 +36,7 @@
 - [x] Utsida/Insida-väljaren för enkel cylinder har sidans färg (blå/grön), även i hjälptexten.
 
 # Projekt
+- [x] Tona ner hela blå/gröna ytor och lyft projektfliken med orange detaljer; båda vyerna kontrollerade i ljust/mörkt på telefon och dator.
 - [x] Förfina projektflikens sidfärger, dörrstatus och materialöversikt i ljust och mörkt läge; båda vyerna verifierade på telefon och dator, 14 tester godkända.
 - [x] Flera dörrar per projekt med totalsumma och "dörr för dörr"-lista, sparat lokalt utan konto.
 
