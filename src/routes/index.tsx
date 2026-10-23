@@ -7,6 +7,7 @@ import { PickListButton } from "@/components/pick-list-button";
 import { ProjectBar, ProjectPanel, useProject } from "@/components/project-panel";
 import { nextDoorName } from "@/lib/project";
 import { toast } from "sonner";
+import { Toaster } from "@/components/ui/sonner";
 import { ContactForm } from "@/components/contact-form";
 import {
   formatMm,
@@ -249,6 +250,9 @@ function Index() {
           )}
         </section>
       </main>
+      <ProjectBar project={project} onOpen={() => setProjectOpen(true)} />
+      <ProjectPanel project={project} setProject={setProject} open={projectOpen} onOpenChange={setProjectOpen} />
+      <Toaster position="top-center" />
       <section className="mx-auto mt-10 w-full max-w-5xl px-4">
         <h2 className="mt-1 text-2xl font-extrabold tracking-tight">Guider om cylindermontage</h2>
         <ul className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
