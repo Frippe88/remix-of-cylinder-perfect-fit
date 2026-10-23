@@ -15,10 +15,13 @@ describe("projectTotals", () => {
     expect(t.extenders).toContainEqual({ size: 8, kind: "oval", count: 2 });
     expect(t.extenders).toContainEqual({ size: 10, kind: "rund", count: 1 });
   });
+  it("skiljer på utsida- och insidaring", () => {
+    expect(projectTotals(doors).rings).toContainEqual({ size: 11, kind: "oval", side: "Insida", count: 1 });
+  });
   it("räknar en ring per sida och skiljer på oval och rund", () => {
     const t = projectTotals(doors);
-    expect(t.rings).toContainEqual({ size: 11, kind: "oval", count: 2 });
-    expect(t.rings).toContainEqual({ size: 13, kind: "rund", count: 1 });
+    expect(t.rings).toContainEqual({ size: 11, kind: "oval", side: "Utsida", count: 1 });
+    expect(t.rings).toContainEqual({ size: 13, kind: "rund", side: "Utsida", count: 1 });
   });
 });
 
