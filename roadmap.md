@@ -18,8 +18,8 @@
 # Domän och synlighet
 - [x] Byt domän i alla ställen där xn--cylinderhjlpen-fib.se är inbakad (robots.txt, sitemap, guider, startsidan).
 - [x] Koppla cylinderhjalpen.se som custom domain i Lovable (DNS hos Strato stämmer: A → 185.158.133.1).
-- [ ] Sätt cylinderhjalpen.se som primär domän (Project Settings → Domains → ⋯ → Set as primary) så att den gamla adressen vidarbefordrar dit.
-- [ ] Skicka in sitemap.xml till Google Search Console när cylinderhjalpen.se är aktiv.
+- [x] Sätt cylinderhjalpen.se som primär domän (Project Settings → Domains → ⋯ → Set as primary) så att den gamla adressen vidarbefordrar dit.
+- [x] Skicka in sitemap.xml till Google Search Console (skickad 2026-10-23; verifierad som ägare med HTML-tagg).
 - [ ] E-post: notify.cylinderhjalpen.se behöver delegated DNS till Lovable innan mallar kan skickas därifrån (send-email.ts pekar idag på notify.xn--cylinderhjlpen-fib.se; kontakt är mailto, skickas inte).
 
 # Guider
