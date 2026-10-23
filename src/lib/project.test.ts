@@ -70,3 +70,17 @@ describe("doorsToPick", () => {
   it("räknar bort monterade dörrar", () => expect(_dtp(ds, true).map((d) => d.id)).toEqual(["b"]));
   it("hela projektet tar med alla", () => expect(_dtp(ds, false)).toHaveLength(2));
 });
+
+describe("hela projektet", () => {
+  it("delningstexten har alla dörrar och totalt material", async () => {
+    const { projectText } = await import("./project");
+    const t = projectText({ name: "Kund A", doors });
+    expect(t).toContain("Dörr 1 (oval)");
+    expect(t).toContain("Dörr 2 (rund) – monterad");
+    expect(t).toContain("2st 8 mm");
+  });
+  it("töm dörrar behåller projektnamnet", async () => {
+    const { clearDoors } = await import("./project");
+    expect(clearDoors({ name: "Kund A", doors })).toEqual({ name: "Kund A", doors: [] });
+  });
+});
