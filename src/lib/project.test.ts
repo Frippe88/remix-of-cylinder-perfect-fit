@@ -33,12 +33,12 @@ describe("projectTotals", () => {
   it("rund cylinder har samma ring ute och inne – ringen delas inte per sida", () => {
     const t = projectTotals(roundDouble);
     expect(t.rings).toEqual([{ size: 13, kind: "rund", side: "", count: 2 }]);
-    expect(totalsText({ name: "Storgatan 4", doors: roundDouble })).toContain("2 st 13 mm ring (rund)");
-    expect(doorsText({ name: "Storgatan 4", doors: roundDouble })).toContain("Utsida: 1 st 10 mm förlängare + 13 mm ring");
+    expect(totalsText({ name: "Storgatan 4", doors: roundDouble })).toContain("2st 13 mm ring (rund)");
+    expect(doorsText({ name: "Storgatan 4", doors: roundDouble })).toContain("Utsida: 1st 10 mm förlängare + 13 mm ring");
     expect(doorsText({ name: "Storgatan 4", doors: roundDouble })).not.toContain("ring utsida");
   });
   it("oval ring märks fortfarande med sida i inköpslistan", () => {
-    expect(totalsText({ name: "Storgatan 4", doors })).toContain("1 st 11 mm ring insida (oval)");
+    expect(totalsText({ name: "Storgatan 4", doors })).toContain("1st 11 mm ring insida (oval)");
   });
 });
 
