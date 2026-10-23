@@ -4,6 +4,10 @@ import { ArrowRight, BookOpen, Check, Info, KeyRound, Minus, Moon, Plus, ShieldC
 import { useEffect, useState } from "react";
 import { CylinderResults } from "@/components/cylinder-results";
 import { PickListButton } from "@/components/pick-list-button";
+import { ProjectBar, ProjectPanel, useProject } from "@/components/project-panel";
+import { nextDoorName } from "@/lib/project";
+import { toast } from "sonner";
+import { Toaster } from "@/components/ui/sonner";
 import { ContactForm } from "@/components/contact-form";
 import {
   formatMm,
@@ -93,6 +97,8 @@ function Index() {
   const [rings, setRings] = useState<number[]>([...RING_HEIGHTS]);
   const [roundExt, setRoundExt] = useState<number[]>([...ROUND_EXTENDER_SIZES]);
   const [roundRings, setRoundRings] = useState<number[]>([...ROUND_RING_HEIGHTS]);
+  const [project, setProject] = useProject();
+  const [projectOpen, setProjectOpen] = useState(false);
 
   const isRound = cyl === "round";
   const baseMm = cylinderBaseMm(cyl, "outside", type === "double");
@@ -219,6 +225,13 @@ function Index() {
           <PickListButton
             sides={type === "single" ? [{ label: null, depth: parse(outside), selected: selOut }] : [{ label: "Utsida", depth: parse(outside), selected: selOut }, { label: "Insida", depth: parse(inside), selected: selIn }]}
             ext={ext} rings={activeRings} baseMm={baseMm} insideBaseMm={insideBaseMm} relaxed={isRound}
+            onSave={(sides) => {
+              const name = window.prompt("Namn på dörren", nextDoorName(project.doors));
+              if (name === null) return;
+              const kind = isRound ? "rund" : cyl === "iloq" ? "iloq" : "oval";
+              setProject((p) => ({ ...p, doors: [...p.doors, { id: `${Date.now()}`, name: name.trim() || nextDoorName(p.doors), kind, done: false, sides }] }));
+              toast.success(`${name.trim() || "Dörren"} sparad i projektet`);
+            }}
           />
           <CylinderResults title={type === "single" ? null : "Utsida"} depth={parse(outside)} ext={ext} rings={activeRings} baseMm={baseMm} relaxed={isRound} selected={selOut} onSelect={(c) => setSel({ key: selKey, out: c, in: selIn })} />
           {type === "double" && (
@@ -237,6 +250,9 @@ function Index() {
           )}
         </section>
       </main>
+      <ProjectBar project={project} onOpen={() => setProjectOpen(true)} />
+      <ProjectPanel project={project} setProject={setProject} open={projectOpen} onOpenChange={setProjectOpen} />
+      <Toaster position="top-center" />
       <section className="mx-auto mt-10 w-full max-w-5xl px-4">
         <h2 className="mt-1 text-2xl font-extrabold tracking-tight">Guider om cylindermontage</h2>
         <ul className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">

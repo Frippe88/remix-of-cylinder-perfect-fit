@@ -1,7 +1,8 @@
 import { useState, type ReactNode } from "react";
-import { AlertTriangle, ArrowDown, ArrowUp, Check, ClipboardCopy, ClipboardList, Disc3, Layers } from "lucide-react";
+import { AlertTriangle, ArrowDown, ArrowUp, Check, ClipboardCopy, ClipboardList, Disc3, FolderPlus, Layers } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { calculate, formatMm, type Combination } from "@/lib/cylinder";
+import type { DoorSide } from "@/lib/project";
 
 export type PickSide = { label: string | null; depth: number | null; selected: Combination | null };
 
@@ -61,8 +62,9 @@ function Row({ caption, icon, children }: { caption: string; icon: ReactNode; ch
   );
 }
 
-export function PickListButton({ sides, ext, rings, baseMm, insideBaseMm = baseMm, relaxed }: {
+export function PickListButton({ sides, ext, rings, baseMm, insideBaseMm = baseMm, relaxed, onSave }: {
   sides: PickSide[]; ext: number[]; rings: number[]; baseMm: number; insideBaseMm?: number; relaxed: boolean;
+  onSave?: (sides: DoorSide[]) => void;
 }) {
   const [copied, setCopied] = useState(false);
   const [failed, setFailed] = useState(false);
@@ -150,6 +152,11 @@ export function PickListButton({ sides, ext, rings, baseMm, insideBaseMm = baseM
           {copied ? <Check aria-hidden /> : <ClipboardCopy aria-hidden />}
           {copied ? "Kopierad!" : "Kopiera plocklista"}
         </Button>
+        {onSave && (
+          <Button variant="outline" className="min-h-11 w-full font-semibold" onClick={() => onSave(picks.map((p) => ({ label: p.label, depth: p.depth, ring: p.c.ring, extenders: [...p.c.extenders] })))}>
+            <FolderPlus aria-hidden /> Spara i projekt
+          </Button>
+        )}
         {failed ? (
           <p className="flex items-start gap-1.5 text-xs font-medium text-warning">
             <AlertTriangle className="size-3.5 shrink-0" aria-hidden />
