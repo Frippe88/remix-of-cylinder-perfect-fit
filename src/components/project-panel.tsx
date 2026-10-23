@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Check, ClipboardCopy, FolderOpen, Plus, Trash2, X } from "lucide-react";
+import { Check, ChevronDown, ClipboardCopy, FolderOpen, Plus, Trash2, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from "@/components/ui/sheet";
 import { doorsText, KIND_LABEL, projectTotals, RING_HAS_SIDE, setDoorSide, totalsText, type Door, type Project } from "@/lib/project";
@@ -136,12 +136,15 @@ export function ProjectPanel({ project, setProject, store, open, onOpenChange }:
         </SheetHeader>
         <div className="space-y-4 px-4 pb-6">
           <div className="flex gap-2">
-            <select value={store.active} onChange={(e) => store.select(e.target.value)} aria-label="Välj projekt"
-              className="h-11 min-w-0 flex-1 rounded-lg border border-input bg-background px-3 text-base">
-              {store.list.map((s, i) => (
-                <option key={s.id} value={s.id}>{s.project.name || `Projekt ${i + 1}`} · {s.project.doors.length} {s.project.doors.length === 1 ? "dörr" : "dörrar"}</option>
-              ))}
-            </select>
+            <div className="relative min-w-0 flex-1">
+              <select value={store.active} onChange={(e) => store.select(e.target.value)} aria-label="Välj projekt"
+                className="h-11 w-full appearance-none rounded-lg border border-input bg-background py-0 pl-3 pr-10 text-base">
+                {store.list.map((s, i) => (
+                  <option key={s.id} value={s.id}>{s.project.name || `Projekt ${i + 1}`} · {s.project.doors.length} {s.project.doors.length === 1 ? "dörr" : "dörrar"}</option>
+                ))}
+              </select>
+              <ChevronDown aria-hidden className="pointer-events-none absolute right-4 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+            </div>
             <Button variant="outline" className="h-11 shrink-0 font-semibold" onClick={() => { store.create(); setTab("doors"); }}>
               <Plus aria-hidden /> Nytt
             </Button>
