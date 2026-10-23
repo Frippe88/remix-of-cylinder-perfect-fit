@@ -32,6 +32,7 @@
 # Plocklista
 - [x] Lyft listans utseende (tydligare rader per sida, bättre typografi) utan att den kopierade texten blir konstig.
 - [x] Rund cylinder har samma ring ute och inne – ingen sidindelning för rund (väljare, plocklista, totalsumma).
+- [x] Sidans färg (blå utsida, grön insida) finns på sidetiketter, förlängar-/ringchips och projektets totalsumma.
 
 # Projekt
 - [x] Flera dörrar per projekt med totalsumma och "dörr för dörr"-lista, sparat lokalt utan konto.
