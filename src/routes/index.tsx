@@ -236,7 +236,6 @@ function Index() {
         </section>
       </main>
       <section className="mx-auto mt-10 w-full max-w-5xl px-4">
-        <p className="text-xs font-bold uppercase tracking-[0.18em] text-muted-foreground">Tips &amp; guider</p>
         <h2 className="mt-1 text-2xl font-extrabold tracking-tight">Guider om cylindermontage</h2>
         <ul className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
           {GUIDES.map((g) => (
