@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Check, ClipboardCopy, FolderOpen, Plus, Trash2, X } from "lucide-react";
+import { Check, ChevronDown, ClipboardCopy, FolderOpen, Plus, Trash2, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from "@/components/ui/sheet";
 import { doorsText, KIND_LABEL, projectTotals, RING_HAS_SIDE, setDoorSide, totalsText, type Door, type Project } from "@/lib/project";
