@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { ArrowDown, ArrowUp, Check, ChevronDown, ClipboardCopy, ClipboardList, DoorOpen, FolderOpen, Layers, Plus, Trash2, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from "@/components/ui/sheet";
-import { doorsText, doorsToPick, KIND_LABEL, projectTotals, RING_HAS_SIDE, setDoorSide, totalsText, type Door, type Project } from "@/lib/project";
+import { clearDoors, doorsText, doorsToPick, KIND_LABEL, projectText, projectTotals, RING_HAS_SIDE, setDoorSide, totalsText, type Door, type Project } from "@/lib/project";
 import { sideChip } from "@/components/pick-list-button";
 import { formatMm } from "@/lib/cylinder";
 
@@ -187,6 +187,10 @@ export function ProjectPanel({ project, setProject, store, open, onOpenChange, c
                 ))}
               </ul>
               <CopyButton text={doorsText(project)} label="Kopiera dörrlista" />
+              <CopyButton text={projectText(project)} label="Kopiera hela projektet" />
+              <Button variant="ghost" className="w-full text-muted-foreground" onClick={() => { if (confirm(`Töm alla dörrar i ${project.name || "projektet"}? Projektet finns kvar.`)) setProject(clearDoors); }}>
+                <X aria-hidden /> Töm dörrar
+              </Button>
             </>
           ) : (
             <>
