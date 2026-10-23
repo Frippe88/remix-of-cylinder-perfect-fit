@@ -48,3 +48,17 @@ describe("nextDoorName", () => {
     expect(nextDoorName(doors)).toBe("Dörr 3");
   });
 });
+
+describe("setDoorSide", () => {
+  const missing: Door = { id: "9", name: "Dörr 9", kind: "oval", done: false, sides: [{ label: null, depth: 50, ring: 11, extenders: [] }] };
+  it("kan sätta sida på en dörr som sparades utan sida", () => {
+    expect(setDoorSide(missing, 0, "Utsida").sides[0].label).toBe("Utsida");
+  });
+  it("kan växla mellan utsida och insida", () => {
+    const d = { ...missing, sides: [{ label: "Utsida", depth: 50, ring: 11, extenders: [] }] };
+    expect(setDoorSide(d, 0, "Insida").sides[0].label).toBe("Insida");
+  });
+  it("runda cylindrar får aldrig sida – samma ring ute som inne", () => {
+    expect(setDoorSide(doors[1], 0, "Insida")).toEqual(doors[1]);
+  });
+});
