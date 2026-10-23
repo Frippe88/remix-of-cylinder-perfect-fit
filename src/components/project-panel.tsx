@@ -111,7 +111,7 @@ export function ProjectPanel({ project, setProject, open, onOpenChange }: {
                 </>}
                 <p className="text-xs font-bold uppercase tracking-wide text-muted-foreground">Ringar</p>
                 <ul className="mt-1 divide-y">{totals.rings.map((r) => (
-                  <li key={r.kind + r.side + r.size} className="flex justify-between py-1.5 text-sm"><span>{formatMm(r.size)} <span className="font-semibold">{r.side.toLowerCase()}</span> <span className="text-muted-foreground">({KIND_LABEL[r.kind]})</span></span><span className="font-mono font-bold">{r.count} st</span></li>
+                  <li key={r.kind + r.side + r.size} className="flex justify-between py-1.5 text-sm"><span>{formatMm(r.size)} {r.side && <span className="font-semibold">{r.side.toLowerCase()}</span>} <span className="text-muted-foreground">({KIND_LABEL[r.kind]})</span></span><span className="font-mono font-bold">{r.count} st</span></li>
                 ))}</ul>
               </div>
               <CopyButton text={totalsText(project)} label="Kopiera inköpslista" />

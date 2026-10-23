@@ -8,6 +8,9 @@ export interface Project { name: string; doors: Door[] }
 
 export const KIND_LABEL: Record<RingKind, string> = { oval: "oval", rund: "rund", iloq: "iLOQ" };
 
+// Runda cylindrar har likadan ring på utsidan och insidan – den behöver inte delas upp per sida.
+export const RING_HAS_SIDE: Record<RingKind, boolean> = { oval: true, rund: false, iloq: true };
+
 export function nextDoorName(doors: Door[]): string {
   let n = doors.length + 1;
   const names = new Set(doors.map((d) => d.name));
@@ -31,7 +34,7 @@ export function projectTotals(doors: Door[]): Totals {
       const cur = ext.get(key) ?? { size: e, kind: k, count: 0 };
       cur.count++; ext.set(key, cur);
     }
-    const side = s.label ?? "Utsida";
+    const side = RING_HAS_SIDE[d.kind] ? (s.label ?? "Utsida") : "";
     const key = `${d.kind}:${side}:${s.ring}`;
     const cur = rings.get(key) ?? { size: s.ring, kind: d.kind, side, count: 0 };
     cur.count++; rings.set(key, cur);
@@ -41,11 +44,12 @@ export function projectTotals(doors: Door[]): Totals {
   return { extenders: [...ext.values()].sort(sort), rings: [...rings.values()].sort(sort) };
 }
 
-function sideText(s: DoorSide): string {
+function sideText(s: DoorSide, kind: RingKind): string {
   const counts = new Map<number, number>();
   s.extenders.forEach((e) => counts.set(e, (counts.get(e) ?? 0) + 1));
   const parts = [...counts].sort((a, b) => a[0] - b[0]).map(([e, n]) => `${n} st ${formatMm(e)} förlängare`);
-  parts.push(`${formatMm(s.ring)} ring ${(s.label ?? "Utsida").toLowerCase()}`);
+  const side = RING_HAS_SIDE[kind] ? ` ${(s.label ?? "Utsida").toLowerCase()}` : "";
+  parts.push(`${formatMm(s.ring)} ring${side}`);
   return (s.label ? `${s.label}: ` : "") + parts.join(" + ");
 }
 
@@ -53,10 +57,10 @@ export function totalsText(p: Project): string {
   const t = projectTotals(p.doors);
   const lines = [`${p.name || "Projekt"} – ${p.doors.length} ${p.doors.length === 1 ? "dörr" : "dörrar"}`];
   if (t.extenders.length) { lines.push("", "Förlängare:"); t.extenders.forEach((e) => lines.push(`${e.count} st ${formatMm(e.size)} (${KIND_LABEL[e.kind]})`)); }
-  if (t.rings.length) { lines.push("", "Ringar:"); t.rings.forEach((r) => lines.push(`${r.count} st ${formatMm(r.size)} ring ${r.side.toLowerCase()} (${KIND_LABEL[r.kind]})`)); }
+  if (t.rings.length) { lines.push("", "Ringar:"); t.rings.forEach((r) => lines.push(`${r.count} st ${formatMm(r.size)} ring${r.side ? ` ${r.side.toLowerCase()}` : ""} (${KIND_LABEL[r.kind]})`)); }
   return lines.join("\n");
 }
 
 export function doorsText(p: Project): string {
-  return p.doors.map((d) => [`${d.name} (${KIND_LABEL[d.kind]})`, ...d.sides.map((s) => "  " + sideText(s))].join("\n")).join("\n");
+  return p.doors.map((d) => [`${d.name} (${KIND_LABEL[d.kind]})`, ...d.sides.map((s) => "  " + sideText(s, d.kind))].join("\n")).join("\n");
 }
