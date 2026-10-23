@@ -206,11 +206,11 @@ function Index() {
             </div>
             {type === "single" && !isRound && (
               <div>
-                <p className="text-xs text-muted-foreground">Var sitter cylindern? Ringen för utsida och insida ser olika ut.</p>
+                <p className="text-xs text-muted-foreground">Var sitter cylindern? Ringen för <span className="font-semibold text-side-outside">utsida</span> och <span className="font-semibold text-side-inside">insida</span> ser olika ut.</p>
                 <div className="mt-1.5 grid grid-cols-2 gap-2">
                   {(["Utsida", "Insida"] as const).map((s) => (
                     <button key={s} type="button" onClick={() => setSingleSide(s)} aria-pressed={singleSide === s}
-                      className={`min-h-10 rounded-lg border text-sm font-semibold ${singleSide === s ? "border-accent bg-accent/10 text-foreground" : "border-input text-muted-foreground"}`}>
+                      className={`min-h-10 rounded-lg border text-sm font-semibold transition ${singleSide === s ? (s === "Utsida" ? "border-side-outside/45 bg-side-outside-soft text-side-outside" : "border-side-inside/45 bg-side-inside-soft text-side-inside") : "border-input text-muted-foreground"}`}>
                       {s}
                     </button>
                   ))}
