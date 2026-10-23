@@ -141,7 +141,7 @@ function Index() {
             <h1 className="truncate text-base font-extrabold leading-tight tracking-tight sm:text-2xl">
               Cylinderhjälpen<span className="hidden sm:inline"> – kalkylator för rätt mått och montage</span>
             </h1>
-            <p className="truncate text-xs opacity-80 sm:hidden">Kalkylator för rätt mått</p>
+            <p className="text-xs leading-snug opacity-80 sm:hidden">Kalkylator för rätt mått och montage</p>
           </div>
           <div className="flex shrink-0 items-center gap-2">
             <ThemeToggle />

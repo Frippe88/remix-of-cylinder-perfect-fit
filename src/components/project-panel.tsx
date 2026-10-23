@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { ArrowDown, ArrowUp, Check, ChevronDown, ClipboardCopy, ClipboardList, DoorOpen, FolderOpen, Info, Layers, Plus, Trash2, X } from "lucide-react";
+import { ArrowDown, ArrowUp, Check, ChevronDown, ClipboardCopy, ClipboardList, Clock, DoorOpen, FolderOpen, Info, Layers, Mail, Plus, Trash2, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from "@/components/ui/sheet";
 import { clearDoors, doorsText, doorsToPick, KIND_LABEL, projectText, projectTotals, RING_HAS_SIDE, setDoorSide, totalsText, type Door, type Project } from "@/lib/project";
@@ -147,7 +147,7 @@ export function ProjectPanel({ project, setProject, store, open, onOpenChange, c
           <SheetDescription className="mt-1 flex items-start gap-2 rounded-lg border border-accent/30 bg-accent/5 px-3 py-2 text-xs leading-snug text-foreground">
             <Info className="mt-0.5 size-3.5 shrink-0 text-accent" aria-hidden />
             <span>
-              <span className="font-bold text-accent">Beta – gratis under testperioden.</span> Projekten sparas bara i den här telefonen/webbläsaren – molnsparande kommer senare. <a href={`mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent("Feedback om Projekt (beta)")}`} className="font-semibold text-link underline underline-offset-2">Skicka feedback</a>
+              <span className="font-bold text-accent">Beta – gratis under testperioden.</span> Projekten sparas bara i den här telefonen/webbläsaren – mer information och feedback längre ner.
             </span>
           </SheetDescription>
           <div className="flex flex-wrap gap-2 pt-1 text-xs font-semibold">
