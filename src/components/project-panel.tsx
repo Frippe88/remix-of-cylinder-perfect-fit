@@ -142,8 +142,8 @@ export function ProjectPanel({ project, setProject, store, open, onOpenChange, c
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent side="bottom" className="max-h-[92dvh] overflow-y-auto rounded-t-xl p-0 sm:mx-auto sm:max-w-2xl">
         <SheetHeader className="border-b border-t-4 border-t-accent bg-muted/40 px-4 pb-4 pt-5 text-left sm:px-6">
-          <SheetTitle className="flex items-center gap-2 pr-8 text-xl"><FolderOpen className="size-5 text-accent" aria-hidden />Projekt</SheetTitle>
-          <SheetDescription>Sparas i den här telefonen/webbläsaren.</SheetDescription>
+          <SheetTitle className="flex items-center gap-2 pr-8 text-xl"><FolderOpen className="size-5 text-accent" aria-hidden />Projekt<span className="rounded-full border border-accent/50 bg-accent/10 px-2 py-0.5 text-[11px] font-bold uppercase tracking-wide text-accent">Beta</span></SheetTitle>
+          <SheetDescription>Gratis under testperioden. Projekten sparas i den här telefonen/webbläsaren – inloggning och molnsparande kommer senare.</SheetDescription>
           <div className="flex flex-wrap gap-2 pt-1 text-xs font-semibold">
             <span className="inline-flex items-center gap-1.5 rounded-md border border-accent/30 bg-card px-2.5 py-1.5"><DoorOpen className="size-3.5 text-accent" aria-hidden />{project.doors.length} {project.doors.length === 1 ? "dörr" : "dörrar"}</span>
             <span className="inline-flex items-center gap-1.5 rounded-md border bg-card px-2.5 py-1.5 text-muted-foreground"><Check className="size-3.5 text-success" aria-hidden />{done} monterade</span>
