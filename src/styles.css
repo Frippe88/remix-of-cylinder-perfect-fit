@@ -169,6 +169,7 @@
   /* Samma taktila klick överallt som på lagerchipsen. */
   button, a, label:has(input), [role="button"], select {
     -webkit-tap-highlight-color: transparent;
+    cursor: pointer;
     touch-action: manipulation;
     transition-property: color, background-color, border-color, box-shadow, opacity, transform;
     transition-duration: 120ms;
@@ -176,6 +177,7 @@
   button:not(:disabled):active, a:active, label:has(input):active, [role="button"]:active {
     transform: scale(0.96);
   }
+  button:disabled { cursor: not-allowed; }
 }
 
 @utility bg-header {
