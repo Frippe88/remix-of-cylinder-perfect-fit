@@ -30,12 +30,12 @@ export const Route = createFileRoute("/")({
       { property: "og:site_name", content: "Cylinderhjälpen" },
       { property: "og:title", content: "Cylinderhjälpen – cylinderkalkylator för låssmeder" },
       { property: "og:description", content: "Exakt beräkning av cylinderförlängare och ringar för låssmeder." },
-      { property: "og:url", content: "https://xn--cylinderhjlpen-fib.se/" },
+      { property: "og:url", content: "https://cylinderhjalpen.se/" },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
       { name: "twitter:title", content: "Cylinderhjälpen" },
     ],
-    links: [{ rel: "canonical", href: "https://xn--cylinderhjlpen-fib.se/" }],
+    links: [{ rel: "canonical", href: "https://cylinderhjalpen.se/" }],
     scripts: [
       {
         type: "application/ld+json",
@@ -44,7 +44,7 @@ export const Route = createFileRoute("/")({
           "@type": "WebSite",
           name: "Cylinderhjälpen",
           alternateName: "cylinderhjälpen.se",
-          url: "https://cylinderhjälpen.se/",
+          url: "https://cylinderhjalpen.se/",
           inLanguage: "sv",
         }),
       },
