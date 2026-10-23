@@ -178,8 +178,9 @@ export function PickListButton({ sides, ext, rings, baseMm, insideBaseMm = baseM
           {copied ? "Kopierad!" : "Kopiera plocklista"}
         </Button>
         {onSave && (
-          <Button variant="outline" className="min-h-11 w-full font-semibold" onClick={() => onSave(picks.map((p) => ({ label: p.label, depth: p.depth, ring: p.c.ring, extenders: [...p.c.extenders] })))}>
-            <FolderPlus aria-hidden /> Spara i projekt
+          <Button variant="outline" className="min-h-11 w-full justify-start gap-2 font-semibold" onClick={() => onSave(picks.map((p) => ({ label: p.label, depth: p.depth, ring: p.c.ring, extenders: [...p.c.extenders] })))}>
+            <FolderPlus aria-hidden className="shrink-0" />
+            <span className="truncate">Spara i {savedTo ? `”${savedTo}”` : "projekt"}</span>
           </Button>
         )}
         {failed ? (
