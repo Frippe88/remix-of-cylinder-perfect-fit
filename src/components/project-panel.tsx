@@ -231,7 +231,7 @@ export function ProjectPanel({ project, setProject, store, open, onOpenChange, c
               <p className="flex items-center gap-2 text-xs font-bold uppercase tracking-wide text-muted-foreground"><ClipboardCopy className="size-4 text-accent" aria-hidden />Kopiera</p>
               <CopyButton text={doorsText(project)} label="Kopiera dörrlista" />
               <CopyButton text={totalsText(project, onlyLeft)} label="Kopiera inköpslista" />
-              <CopyButton text={projectText(project)} label="Kopiera hela projektet" />
+              <CopyButton text={projectText(project)} label="Kopiera inköpslista och dörrlista" />
               {done > 0 && onlyLeft && <p className="text-xs text-muted-foreground">Inköpslistan räknar bort {done} {done === 1 ? "monterad dörr" : "monterade dörrar"}.</p>}
             </div>
           )}
