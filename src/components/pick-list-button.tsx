@@ -50,7 +50,7 @@ function SideTag({ label }: { label: string | null }) {
   );
 }
 
-function sideChip(label: string | null) {
+export function sideChip(label: string | null) {
   if (label === "Insida") return "border-side-inside/30 bg-side-inside-soft text-side-inside";
   if (label === "Utsida") return "border-side-outside/30 bg-side-outside-soft text-side-outside";
   return null;
