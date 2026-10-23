@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Check, ClipboardCopy, FolderOpen, Trash2, X } from "lucide-react";
+import { Check, ClipboardCopy, FolderOpen, Plus, Trash2, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from "@/components/ui/sheet";
 import { doorsText, KIND_LABEL, projectTotals, RING_HAS_SIDE, setDoorSide, totalsText, type Door, type Project } from "@/lib/project";
@@ -101,8 +101,8 @@ function DoorCard({ d, onToggle, onRemove, onSetSide }: { d: Door; onToggle: () 
   );
 }
 
-export function ProjectPanel({ project, setProject, open, onOpenChange }: {
-  project: Project; setProject: (fn: (p: Project) => Project) => void; open: boolean; onOpenChange: (v: boolean) => void;
+export function ProjectPanel({ project, setProject, store, open, onOpenChange }: {
+  project: Project; setProject: (fn: (p: Project) => Project) => void; store: ProjectStore; open: boolean; onOpenChange: (v: boolean) => void;
 }) {
   const [tab, setTab] = useState<"doors" | "total">("doors");
   const totals = projectTotals(project.doors);
@@ -115,6 +115,17 @@ export function ProjectPanel({ project, setProject, open, onOpenChange }: {
           <SheetDescription>{project.doors.length} {project.doors.length === 1 ? "dörr" : "dörrar"} · {done} monterade. Sparas i den här telefonen/webbläsaren.</SheetDescription>
         </SheetHeader>
         <div className="space-y-4 px-4 pb-6">
+          <div className="flex gap-2">
+            <select value={store.active} onChange={(e) => store.select(e.target.value)} aria-label="Välj projekt"
+              className="h-11 min-w-0 flex-1 rounded-lg border border-input bg-background px-3 text-base">
+              {store.list.map((s, i) => (
+                <option key={s.id} value={s.id}>{s.project.name || `Projekt ${i + 1}`} · {s.project.doors.length} {s.project.doors.length === 1 ? "dörr" : "dörrar"}</option>
+              ))}
+            </select>
+            <Button variant="outline" className="h-11 shrink-0 font-semibold" onClick={() => { store.create(); setTab("doors"); }}>
+              <Plus aria-hidden /> Nytt
+            </Button>
+          </div>
           <input value={project.name} onChange={(e) => setProject((p) => ({ ...p, name: e.target.value }))}
             placeholder="Projektnamn, t.ex. Storgatan 4" aria-label="Projektnamn"
             className="h-11 w-full rounded-lg border border-input bg-background px-3 text-base" />
@@ -157,9 +168,9 @@ export function ProjectPanel({ project, setProject, open, onOpenChange }: {
               <CopyButton text={totalsText(project)} label="Kopiera inköpslista" />
             </>
           )}
-          {project.doors.length > 0 && (
-            <Button variant="ghost" className="w-full text-destructive" onClick={() => { if (confirm("Rensa hela projektet?")) setProject(() => EMPTY); }}>
-              <X aria-hidden /> Rensa projekt
+          {(project.doors.length > 0 || store.list.length > 1) && (
+            <Button variant="ghost" className="w-full text-destructive" onClick={() => { if (confirm(`Ta bort ${project.name || "projektet"}?`)) store.remove(); }}>
+              <X aria-hidden /> Ta bort projekt
             </Button>
           )}
         </div>
