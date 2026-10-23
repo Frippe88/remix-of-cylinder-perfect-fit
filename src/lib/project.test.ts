@@ -63,3 +63,10 @@ describe("setDoorSide", () => {
     expect(setDoorSide(round, 0, "Insida")).toEqual(round);
   });
 });
+
+import { doorsToPick as _dtp } from "./project";
+describe("doorsToPick", () => {
+  const ds = [{ id: "a", done: true }, { id: "b", done: false }] as unknown as Parameters<typeof _dtp>[0];
+  it("räknar bort monterade dörrar", () => expect(_dtp(ds, true).map((d) => d.id)).toEqual(["b"]));
+  it("hela projektet tar med alla", () => expect(_dtp(ds, false)).toHaveLength(2));
+});

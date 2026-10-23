@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Check, ChevronDown, ClipboardCopy, FolderOpen, Plus, Trash2, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from "@/components/ui/sheet";
-import { doorsText, KIND_LABEL, projectTotals, RING_HAS_SIDE, setDoorSide, totalsText, type Door, type Project } from "@/lib/project";
+import { doorsText, doorsToPick, KIND_LABEL, projectTotals, RING_HAS_SIDE, setDoorSide, totalsText, type Door, type Project } from "@/lib/project";
 import { sideChip } from "@/components/pick-list-button";
 import { formatMm } from "@/lib/cylinder";
 
@@ -125,8 +125,11 @@ export function ProjectPanel({ project, setProject, store, open, onOpenChange }:
   project: Project; setProject: (fn: (p: Project) => Project) => void; store: ProjectStore; open: boolean; onOpenChange: (v: boolean) => void;
 }) {
   const [tab, setTab] = useState<"doors" | "total">("doors");
-  const totals = projectTotals(project.doors);
+  const [remainingOnly, setRemainingOnly] = useState(true);
   const done = project.doors.filter((d) => d.done).length;
+  const onlyLeft = remainingOnly && done > 0;
+  const pickDoors = doorsToPick(project.doors, onlyLeft);
+  const totals = projectTotals(pickDoors);
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent side="bottom" className="max-h-[92dvh] overflow-y-auto rounded-t-2xl sm:mx-auto sm:max-w-2xl">
@@ -174,6 +177,24 @@ export function ProjectPanel({ project, setProject, store, open, onOpenChange }:
             </>
           ) : (
             <>
+              {done > 0 && (
+                <div className="grid grid-cols-2 gap-2">
+                  {([true, false] as const).map((v) => (
+                    <button key={String(v)} onClick={() => setRemainingOnly(v)} aria-pressed={remainingOnly === v}
+                      className={`min-h-10 rounded-lg border text-sm font-semibold ${remainingOnly === v ? "border-primary bg-primary text-primary-foreground" : "bg-card text-muted-foreground"}`}>
+                      {v ? "Kvar att montera" : "Hela projektet"}
+                    </button>
+                  ))}
+                </div>
+              )}
+              <p className="text-xs text-muted-foreground">
+                {onlyLeft
+                  ? `Visar ${pickDoors.length} kvarvarande ${pickDoors.length === 1 ? "dörr" : "dörrar"} (${done} monterade borträknade).`
+                  : `Visar alla ${project.doors.length} ${project.doors.length === 1 ? "dörr" : "dörrar"}.`}
+              </p>
+              {pickDoors.length === 0 ? (
+                <p className="py-6 text-center text-sm text-muted-foreground">Alla dörrar är monterade – inget kvar att plocka.</p>
+              ) : <>
               <div className="rounded-xl border bg-card p-4 shadow-card">
                 {totals.extenders.length > 0 && <>
                   <p className="text-xs font-bold uppercase tracking-wide text-muted-foreground">Förlängare</p>
@@ -186,7 +207,8 @@ export function ProjectPanel({ project, setProject, store, open, onOpenChange }:
                   <li key={r.kind + r.side + r.size} className="flex justify-between py-1.5 text-sm"><span>{formatMm(r.size)} {r.side && <span className={`font-semibold ${r.side === "Insida" ? "text-side-inside" : "text-side-outside"}`}>{r.side.toLowerCase()}</span>} <span className="text-muted-foreground">({KIND_LABEL[r.kind]})</span></span><span className="font-mono font-bold">{r.count} st</span></li>
                 ))}</ul>
               </div>
-              <CopyButton text={totalsText(project)} label="Kopiera inköpslista" />
+              <CopyButton text={totalsText(project, onlyLeft)} label="Kopiera inköpslista" />
+              </>}
             </>
           )}
           {(project.doors.length > 0 || store.list.length > 1) && (
