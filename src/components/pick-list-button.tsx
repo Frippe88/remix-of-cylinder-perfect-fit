@@ -1,5 +1,5 @@
 import { useState, type ReactNode } from "react";
-import { AlertTriangle, ArrowDown, ArrowUp, Check, ClipboardCopy, ClipboardList, Disc3, FolderPlus, Layers } from "lucide-react";
+import { AlertTriangle, ArrowDown, ArrowUp, Check, ClipboardCopy, ClipboardList, Disc3, FolderOpen, FolderPlus, Layers } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { calculate, formatMm, type Combination } from "@/lib/cylinder";
 import type { DoorSide } from "@/lib/project";
@@ -68,10 +68,13 @@ function Row({ caption, icon, children }: { caption: string; icon: ReactNode; ch
   );
 }
 
-export function PickListButton({ sides, ext, rings, baseMm, insideBaseMm = baseMm, relaxed, onSave }: {
+export function PickListButton({ sides, ext, rings, baseMm, insideBaseMm = baseMm, relaxed, onSave, projectName, projectDoors = 0, projectCount = 1, onOpenProject }: {
   sides: PickSide[]; ext: number[]; rings: number[]; baseMm: number; insideBaseMm?: number; relaxed: boolean;
   onSave?: (sides: DoorSide[]) => void;
+  projectName?: string; projectDoors?: number; projectCount?: number; onOpenProject?: () => void;
 }) {
+  const savedTo = (projectName ?? "").trim();
+  const projectLabel = savedTo || "Projekt";
   const [copied, setCopied] = useState(false);
   const [failed, setFailed] = useState(false);
   const picks = sides
