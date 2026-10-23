@@ -239,12 +239,13 @@ function Index() {
           <PickListButton
             sides={type === "single" ? [{ label: isRound ? null : singleSide, depth: parse(outside), selected: selOut }] : [{ label: "Utsida", depth: parse(outside), selected: selOut }, { label: "Insida", depth: parse(inside), selected: selIn }]}
             ext={ext} rings={activeRings} baseMm={baseMm} insideBaseMm={insideBaseMm} relaxed={isRound}
+            projectName={project.name} projectDoors={project.doors.length} projectCount={projectStore.list.length} onOpenProject={() => setProjectOpen(true)}
             onSave={(sides) => {
               const name = window.prompt("Namn på dörren", nextDoorName(project.doors));
               if (name === null) return;
               const kind = isRound ? "rund" : cyl === "iloq" ? "iloq" : "oval";
               setProject((p) => ({ ...p, doors: [...p.doors, { id: `${Date.now()}`, name: name.trim() || nextDoorName(p.doors), kind, done: false, sides }] }));
-              toast.success(`${name.trim() || "Dörren"} sparad i projektet`);
+              toast.success(`${name.trim() || "Dörren"} tillagd i ${project.name.trim() ? `”${project.name.trim()}”` : "projektet"}`);
             }}
           />
           <CylinderResults title={type === "single" ? null : "Utsida"} depth={parse(outside)} ext={ext} rings={activeRings} baseMm={baseMm} relaxed={isRound} selected={selOut} onSelect={(c) => setSel({ key: selKey, out: c, in: selIn })} />

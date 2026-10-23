@@ -44,3 +44,5 @@
 - [x] Flera projekt igång samtidigt (välj, skapa nytt, ta bort)
 - [x] Alla knappar ger samma taktila klick som förlängarchipsen
 - [x] Pil i projektväljaren flyttad lite in från högerkanten (egen chevron istället för webbläsarens)
+- [x] Total plocklista: välja "Kvar att montera" eller "Hela projektet" så monterade dörrar inte räknas med
+- [x] Plocklistan visar vilket projekt dörren sparas i: raden "Sparas i <namn> · antal dörrar" med "Byt projekt", och spara-knappen har projektets namn

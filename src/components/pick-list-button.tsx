@@ -1,5 +1,5 @@
 import { useState, type ReactNode } from "react";
-import { AlertTriangle, ArrowDown, ArrowUp, Check, ClipboardCopy, ClipboardList, Disc3, FolderPlus, Layers } from "lucide-react";
+import { AlertTriangle, ArrowDown, ArrowUp, Check, ClipboardCopy, ClipboardList, Disc3, FolderOpen, FolderPlus, Layers } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { calculate, formatMm, type Combination } from "@/lib/cylinder";
 import type { DoorSide } from "@/lib/project";
@@ -68,10 +68,13 @@ function Row({ caption, icon, children }: { caption: string; icon: ReactNode; ch
   );
 }
 
-export function PickListButton({ sides, ext, rings, baseMm, insideBaseMm = baseMm, relaxed, onSave }: {
+export function PickListButton({ sides, ext, rings, baseMm, insideBaseMm = baseMm, relaxed, onSave, projectName, projectDoors = 0, projectCount = 1, onOpenProject }: {
   sides: PickSide[]; ext: number[]; rings: number[]; baseMm: number; insideBaseMm?: number; relaxed: boolean;
   onSave?: (sides: DoorSide[]) => void;
+  projectName?: string; projectDoors?: number; projectCount?: number; onOpenProject?: () => void;
 }) {
+  const savedTo = (projectName ?? "").trim();
+  const projectLabel = savedTo || "Projekt";
   const [copied, setCopied] = useState(false);
   const [failed, setFailed] = useState(false);
   const picks = sides
@@ -125,6 +128,22 @@ export function PickListButton({ sides, ext, rings, baseMm, insideBaseMm = baseM
         </span>
       </div>
 
+      {projectCount > 1 && (
+        <div className="flex items-center justify-between gap-2 border-b border-accent/30 bg-accent/10 px-4 py-1.5">
+          <span className="flex min-w-0 items-center gap-1.5 text-xs font-semibold">
+            <FolderOpen className="size-3.5 shrink-0 text-accent" aria-hidden />
+            <span className="shrink-0 text-muted-foreground">Sparas i</span>
+            <span className="truncate font-bold text-foreground">{projectLabel}</span>
+            <span className="shrink-0 text-muted-foreground">· {projectDoors} {projectDoors === 1 ? "dörr" : "dörrar"}</span>
+          </span>
+          {onOpenProject && (
+            <Button variant="ghost" size="sm" onClick={onOpenProject} className="h-7 shrink-0 px-2 text-xs font-bold text-accent hover:bg-accent/15">
+              Byt projekt
+            </Button>
+          )}
+        </div>
+      )}
+
       <ul className="divide-y divide-border">
         {picks.map((p, i) => (
           <li key={`${p.label ?? "cyl"}:${i}`} className="space-y-2.5 px-4 py-3.5">
@@ -159,8 +178,9 @@ export function PickListButton({ sides, ext, rings, baseMm, insideBaseMm = baseM
           {copied ? "Kopierad!" : "Kopiera plocklista"}
         </Button>
         {onSave && (
-          <Button variant="outline" className="min-h-11 w-full font-semibold" onClick={() => onSave(picks.map((p) => ({ label: p.label, depth: p.depth, ring: p.c.ring, extenders: [...p.c.extenders] })))}>
-            <FolderPlus aria-hidden /> Spara i projekt
+          <Button variant="outline" className="min-h-11 w-full justify-start gap-2 font-semibold" onClick={() => onSave(picks.map((p) => ({ label: p.label, depth: p.depth, ring: p.c.ring, extenders: [...p.c.extenders] })))}>
+            <FolderPlus aria-hidden className="shrink-0" />
+            <span className="truncate">Spara i {savedTo ? `”${savedTo}”` : "projekt"}</span>
           </Button>
         )}
         {failed ? (
