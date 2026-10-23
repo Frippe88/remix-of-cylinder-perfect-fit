@@ -74,7 +74,7 @@ export function ProjectPanel({ project, setProject, open, onOpenChange }: {
       <SheetContent side="bottom" className="max-h-[92dvh] overflow-y-auto rounded-t-2xl sm:mx-auto sm:max-w-2xl">
         <SheetHeader className="text-left">
           <SheetTitle>Projekt</SheetTitle>
-          <SheetDescription>{project.doors.length} dörrar · {done} monterade. Sparas i den här telefonen/webbläsaren.</SheetDescription>
+          <SheetDescription>{project.doors.length} {project.doors.length === 1 ? "dörr" : "dörrar"} · {done} monterade. Sparas i den här telefonen/webbläsaren.</SheetDescription>
         </SheetHeader>
         <div className="space-y-4 px-4 pb-6">
           <input value={project.name} onChange={(e) => setProject((p) => ({ ...p, name: e.target.value }))}
@@ -111,7 +111,7 @@ export function ProjectPanel({ project, setProject, open, onOpenChange }: {
                 </>}
                 <p className="text-xs font-bold uppercase tracking-wide text-muted-foreground">Ringar</p>
                 <ul className="mt-1 divide-y">{totals.rings.map((r) => (
-                  <li key={r.kind + r.side + r.size} className="flex justify-between py-1.5 text-sm"><span>{formatMm(r.size)} <span className="font-semibold">{r.side.toLowerCase()}</span> <span className="text-muted-foreground">({KIND_LABEL[r.kind]})</span></span><span className="font-mono font-bold">{r.count} st</span></li>
+                  <li key={r.kind + r.side + r.size} className="flex justify-between py-1.5 text-sm"><span>{formatMm(r.size)} {r.side && <span className="font-semibold">{r.side.toLowerCase()}</span>} <span className="text-muted-foreground">({KIND_LABEL[r.kind]})</span></span><span className="font-mono font-bold">{r.count} st</span></li>
                 ))}</ul>
               </div>
               <CopyButton text={totalsText(project)} label="Kopiera inköpslista" />

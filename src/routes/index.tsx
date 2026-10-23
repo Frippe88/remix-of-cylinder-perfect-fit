@@ -204,7 +204,7 @@ function Index() {
                 </button>
               ))}
             </div>
-            {type === "single" ? (
+            {type === "single" && !isRound && (
               <div>
                 <p className="text-xs text-muted-foreground">Var sitter cylindern? Ringen för utsida och insida ser olika ut.</p>
                 <div className="mt-1.5 grid grid-cols-2 gap-2">
@@ -216,7 +216,8 @@ function Index() {
                   ))}
                 </div>
               </div>
-            ) : (
+            )}
+            {type === "double" && (
               <p className="text-xs text-muted-foreground">Cylinder på både utsida och insida.</p>
             )}
             <DepthInput label={type === "single" ? "Dörrdjup" : "Dörrdjup utsida"} value={outside} onChange={setOutside} />
@@ -236,7 +237,7 @@ function Index() {
 
         <section className="order-2 min-w-0 space-y-7 lg:order-none">
           <PickListButton
-            sides={type === "single" ? [{ label: singleSide, depth: parse(outside), selected: selOut }] : [{ label: "Utsida", depth: parse(outside), selected: selOut }, { label: "Insida", depth: parse(inside), selected: selIn }]}
+            sides={type === "single" ? [{ label: isRound ? null : singleSide, depth: parse(outside), selected: selOut }] : [{ label: "Utsida", depth: parse(outside), selected: selOut }, { label: "Insida", depth: parse(inside), selected: selIn }]}
             ext={ext} rings={activeRings} baseMm={baseMm} insideBaseMm={insideBaseMm} relaxed={isRound}
             onSave={(sides) => {
               const name = window.prompt("Namn på dörren", nextDoorName(project.doors));
