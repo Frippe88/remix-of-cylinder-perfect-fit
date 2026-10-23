@@ -50,6 +50,12 @@ function SideTag({ label }: { label: string | null }) {
   );
 }
 
+function sideChip(label: string | null) {
+  if (label === "Insida") return "border-side-inside/30 bg-side-inside-soft text-side-inside";
+  if (label === "Utsida") return "border-side-outside/30 bg-side-outside-soft text-side-outside";
+  return null;
+}
+
 function Row({ caption, icon, children }: { caption: string; icon: ReactNode; children: ReactNode }) {
   return (
     <div className="grid grid-cols-[minmax(0,88px)_minmax(0,1fr)] items-center gap-x-3 gap-y-1 sm:grid-cols-[minmax(0,96px)_minmax(0,1fr)]">
