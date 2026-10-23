@@ -134,7 +134,7 @@ function Index() {
         <div aria-hidden className="blueprint pointer-events-none absolute inset-0 [mask-image:linear-gradient(to_bottom,black,transparent)]" />
         <div aria-hidden className="absolute inset-x-0 bottom-0 h-1 bg-accent" />
         <div className="relative mx-auto flex max-w-5xl flex-wrap items-center justify-between gap-x-4 gap-y-3 px-4 py-4 sm:items-start sm:py-8">
-          <div className="order-last flex min-w-0 flex-1 items-start gap-3 sm:order-none">
+          <div className="order-last flex w-full min-w-0 items-start gap-3 sm:order-none sm:w-auto sm:flex-1">
             <span className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-accent shadow-elevated sm:size-14">
               <KeyRound className="size-5 text-accent-foreground sm:size-7" aria-hidden />
             </span>
