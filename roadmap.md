@@ -39,3 +39,5 @@
 - [x] Flera dörrar per projekt med totalsumma och "dörr för dörr"-lista, sparat lokalt utan konto.
 
 - [x] Plocklistan: varje rad för dörr 1–4 måste visa utsida/insida (även i kopierad text)
+- [x] Flera projekt igång samtidigt (välj, skapa nytt, ta bort)
+- [x] Alla knappar ger samma taktila klick som förlängarchipsen

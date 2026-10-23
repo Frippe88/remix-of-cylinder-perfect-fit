@@ -97,7 +97,7 @@ function Index() {
   const [rings, setRings] = useState<number[]>([...RING_HEIGHTS]);
   const [roundExt, setRoundExt] = useState<number[]>([...ROUND_EXTENDER_SIZES]);
   const [roundRings, setRoundRings] = useState<number[]>([...ROUND_RING_HEIGHTS]);
-  const [project, setProject] = useProject();
+  const [project, setProject, projectStore] = useProject();
   const [projectOpen, setProjectOpen] = useState(false);
   const [singleSide, setSingleSide] = useState<"Utsida" | "Insida">("Utsida");
 
@@ -264,8 +264,8 @@ function Index() {
           )}
         </section>
       </main>
-      <ProjectBar project={project} onOpen={() => setProjectOpen(true)} />
-      <ProjectPanel project={project} setProject={setProject} open={projectOpen} onOpenChange={setProjectOpen} />
+      <ProjectBar project={project} projects={projectStore.list.length} onOpen={() => setProjectOpen(true)} />
+      <ProjectPanel project={project} setProject={setProject} store={projectStore} open={projectOpen} onOpenChange={setProjectOpen} />
       <Toaster position="top-center" />
       <section className="mx-auto mt-10 w-full max-w-5xl px-4">
         <h2 className="mt-1 text-2xl font-extrabold tracking-tight">Guider om cylindermontage</h2>

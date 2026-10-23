@@ -1,23 +1,50 @@
 import { useEffect, useState } from "react";
-import { Check, ClipboardCopy, FolderOpen, Trash2, X } from "lucide-react";
+import { Check, ClipboardCopy, FolderOpen, Plus, Trash2, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from "@/components/ui/sheet";
 import { doorsText, KIND_LABEL, projectTotals, RING_HAS_SIDE, setDoorSide, totalsText, type Door, type Project } from "@/lib/project";
 import { sideChip } from "@/components/pick-list-button";
 import { formatMm } from "@/lib/cylinder";
 
-const KEY = "cylinderhjalpen.project.v1";
+const OLD_KEY = "cylinderhjalpen.project.v1";
+const KEY = "cylinderhjalpen.projects.v2";
 const EMPTY: Project = { name: "", doors: [] };
 
+interface Saved { id: string; project: Project }
+interface Store { active: string; list: Saved[] }
+const newId = () => `${Date.now()}${Math.random().toString(36).slice(2, 6)}`;
+const fresh = (): Store => { const id = newId(); return { active: id, list: [{ id, project: EMPTY }] }; };
+
+export interface ProjectStore {
+  list: Saved[]; active: string;
+  select: (id: string) => void; create: () => void; remove: () => void;
+}
+
 export function useProject() {
-  const [project, setProject] = useState<Project>(EMPTY);
+  const [store, setStore] = useState<Store>(fresh);
   const [loaded, setLoaded] = useState(false);
   useEffect(() => {
-    try { const raw = localStorage.getItem(KEY); if (raw) setProject(JSON.parse(raw)); } catch { /* ignore */ }
+    try {
+      const raw = localStorage.getItem(KEY);
+      if (raw) setStore(JSON.parse(raw));
+      else {
+        const old = localStorage.getItem(OLD_KEY);
+        if (old) { const id = newId(); setStore({ active: id, list: [{ id, project: JSON.parse(old) }] }); }
+      }
+    } catch { /* ignore */ }
     setLoaded(true);
   }, []);
-  useEffect(() => { if (loaded) localStorage.setItem(KEY, JSON.stringify(project)); }, [project, loaded]);
-  return [project, setProject] as const;
+  useEffect(() => { if (loaded) localStorage.setItem(KEY, JSON.stringify(store)); }, [store, loaded]);
+  const current = store.list.find((s) => s.id === store.active) ?? store.list[0]!;
+  const setProject = (fn: (p: Project) => Project) =>
+    setStore((s) => ({ ...s, list: s.list.map((x) => (x.id === (s.list.some((y) => y.id === s.active) ? s.active : s.list[0]!.id) ? { ...x, project: fn(x.project) } : x)) }));
+  const ps: ProjectStore = {
+    list: store.list, active: current.id,
+    select: (id) => setStore((s) => ({ ...s, active: id })),
+    create: () => setStore((s) => { const id = newId(); return { active: id, list: [...s.list, { id, project: EMPTY }] }; }),
+    remove: () => setStore((s) => { const list = s.list.filter((x) => x.id !== current.id); return list.length ? { active: list[0]!.id, list } : fresh(); }),
+  };
+  return [current.project, setProject, ps] as const;
 }
 
 async function copyText(text: string) {
@@ -74,8 +101,8 @@ function DoorCard({ d, onToggle, onRemove, onSetSide }: { d: Door; onToggle: () 
   );
 }
 
-export function ProjectPanel({ project, setProject, open, onOpenChange }: {
-  project: Project; setProject: (fn: (p: Project) => Project) => void; open: boolean; onOpenChange: (v: boolean) => void;
+export function ProjectPanel({ project, setProject, store, open, onOpenChange }: {
+  project: Project; setProject: (fn: (p: Project) => Project) => void; store: ProjectStore; open: boolean; onOpenChange: (v: boolean) => void;
 }) {
   const [tab, setTab] = useState<"doors" | "total">("doors");
   const totals = projectTotals(project.doors);
@@ -88,6 +115,17 @@ export function ProjectPanel({ project, setProject, open, onOpenChange }: {
           <SheetDescription>{project.doors.length} {project.doors.length === 1 ? "dörr" : "dörrar"} · {done} monterade. Sparas i den här telefonen/webbläsaren.</SheetDescription>
         </SheetHeader>
         <div className="space-y-4 px-4 pb-6">
+          <div className="flex gap-2">
+            <select value={store.active} onChange={(e) => store.select(e.target.value)} aria-label="Välj projekt"
+              className="h-11 min-w-0 flex-1 rounded-lg border border-input bg-background px-3 text-base">
+              {store.list.map((s, i) => (
+                <option key={s.id} value={s.id}>{s.project.name || `Projekt ${i + 1}`} · {s.project.doors.length} {s.project.doors.length === 1 ? "dörr" : "dörrar"}</option>
+              ))}
+            </select>
+            <Button variant="outline" className="h-11 shrink-0 font-semibold" onClick={() => { store.create(); setTab("doors"); }}>
+              <Plus aria-hidden /> Nytt
+            </Button>
+          </div>
           <input value={project.name} onChange={(e) => setProject((p) => ({ ...p, name: e.target.value }))}
             placeholder="Projektnamn, t.ex. Storgatan 4" aria-label="Projektnamn"
             className="h-11 w-full rounded-lg border border-input bg-background px-3 text-base" />
@@ -130,9 +168,9 @@ export function ProjectPanel({ project, setProject, open, onOpenChange }: {
               <CopyButton text={totalsText(project)} label="Kopiera inköpslista" />
             </>
           )}
-          {project.doors.length > 0 && (
-            <Button variant="ghost" className="w-full text-destructive" onClick={() => { if (confirm("Rensa hela projektet?")) setProject(() => EMPTY); }}>
-              <X aria-hidden /> Rensa projekt
+          {(project.doors.length > 0 || store.list.length > 1) && (
+            <Button variant="ghost" className="w-full text-destructive" onClick={() => { if (confirm(`Ta bort ${project.name || "projektet"}?`)) store.remove(); }}>
+              <X aria-hidden /> Ta bort projekt
             </Button>
           )}
         </div>
@@ -141,8 +179,8 @@ export function ProjectPanel({ project, setProject, open, onOpenChange }: {
   );
 }
 
-export function ProjectBar({ project, onOpen }: { project: Project; onOpen: () => void }) {
-  if (project.doors.length === 0) return null;
+export function ProjectBar({ project, projects = 1, onOpen }: { project: Project; projects?: number; onOpen: () => void }) {
+  if (project.doors.length === 0 && projects < 2) return null;
   return (
     <button onClick={onOpen} className="fixed inset-x-3 bottom-3 z-40 mx-auto flex max-w-md items-center gap-3 rounded-xl bg-primary px-4 py-3 text-left text-primary-foreground shadow-elevated">
       <FolderOpen className="size-5 shrink-0 text-accent" aria-hidden />
