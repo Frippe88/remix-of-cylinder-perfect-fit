@@ -79,7 +79,7 @@ export const GUIDES: Guide[] = [
       { heading: "Varför måtten blir annorlunda", body: ["Brickorna sitter mellan låshus och cylinder och skjuter ut cylindern. Räknar du utan dem sticker cylindern ut för mycket på insidan."] },
       { heading: "Utsidan påverkas inte", body: [`På utsidan räknas iLOQ-cylindern som vanligt, ${ILOQ_CYLINDER_MM} mm.`] },
     ],
-    mistakes: ["Att glömma brickorna på insidan.", "Att lägga till de 6 mm på båda sidor."],
+    mistakes: ["Att glömma räkna med båda brickorna.", "Att lägga till de 6 mm på båda sidor."],
   },
   {
     slug: "rund-cylinder-ringar-forlangare",
