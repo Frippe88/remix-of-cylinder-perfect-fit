@@ -27,6 +27,7 @@
 - [x] Jämna mellanrum mellan guidekorten på startsidan (lika höjd i tvåkolumnsraden).
 - [x] Litet mellanrum mellan guide-sektionen och "Kontakta oss" på startsidan.
 - [x] Ta bort montageskissen under bästa rekommendationen.
+- [x] Ta bort etiketten ovanför guide-sektionen på startsidan helt ("Kunskapsbank"/"Tips & guider"); bara rubriken står kvar.
 
 # Plocklista
 - [x] Lyft listans utseende (tydligare rader per sida, bättre typografi) utan att den kopierade texten blir konstig.
