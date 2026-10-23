@@ -38,4 +38,4 @@
 # Projekt
 - [x] Flera dörrar per projekt med totalsumma och "dörr för dörr"-lista, sparat lokalt utan konto.
 
-- [ ] Plocklistan: varje rad för dörr 1–4 måste visa utsida/insida (även i kopierad text)
+- [x] Plocklistan: varje rad för dörr 1–4 måste visa utsida/insida (även i kopierad text)
