@@ -129,8 +129,8 @@ function NameField({ name, onSave }: { name: string; onSave: (name: string) => v
   );
 }
 
-export function ProjectPanel({ project, setProject, store, open, onOpenChange }: {
-  project: Project; setProject: (fn: (p: Project) => Project) => void; store: ProjectStore; open: boolean; onOpenChange: (v: boolean) => void;
+export function ProjectPanel({ project, setProject, store, open, onOpenChange, closeOnSelect }: {
+  project: Project; setProject: (fn: (p: Project) => Project) => void; store: ProjectStore; open: boolean; onOpenChange: (v: boolean) => void; closeOnSelect?: boolean;
 }) {
   const [tab, setTab] = useState<"doors" | "total">("doors");
   const [remainingOnly, setRemainingOnly] = useState(true);
@@ -152,7 +152,7 @@ export function ProjectPanel({ project, setProject, store, open, onOpenChange }:
         <div className="space-y-4 px-4 py-5 sm:px-6">
           <div className="flex gap-2">
             <div className="relative min-w-0 flex-1">
-              <select value={store.active} onChange={(e) => store.select(e.target.value)} aria-label="Välj projekt"
+              <select value={store.active} onChange={(e) => { store.select(e.target.value); if (closeOnSelect) onOpenChange(false); }} aria-label="Välj projekt"
                 className="h-11 w-full appearance-none rounded-lg border border-input bg-background py-0 pl-3 pr-10 text-base">
                 {store.list.map((s, i) => (
                   <option key={s.id} value={s.id}>{s.project.name || `Projekt ${i + 1}`} · {s.project.doors.length} {s.project.doors.length === 1 ? "dörr" : "dörrar"}</option>
