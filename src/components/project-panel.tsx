@@ -179,8 +179,8 @@ export function ProjectPanel({ project, setProject, store, open, onOpenChange }:
   );
 }
 
-export function ProjectBar({ project, onOpen }: { project: Project; onOpen: () => void }) {
-  if (project.doors.length === 0) return null;
+export function ProjectBar({ project, projects = 1, onOpen }: { project: Project; projects?: number; onOpen: () => void }) {
+  if (project.doors.length === 0 && projects < 2) return null;
   return (
     <button onClick={onOpen} className="fixed inset-x-3 bottom-3 z-40 mx-auto flex max-w-md items-center gap-3 rounded-xl bg-primary px-4 py-3 text-left text-primary-foreground shadow-elevated">
       <FolderOpen className="size-5 shrink-0 text-accent" aria-hidden />

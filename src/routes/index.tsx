@@ -264,7 +264,7 @@ function Index() {
           )}
         </section>
       </main>
-      <ProjectBar project={project} onOpen={() => setProjectOpen(true)} />
+      <ProjectBar project={project} projects={projectStore.list.length} onOpen={() => setProjectOpen(true)} />
       <ProjectPanel project={project} setProject={setProject} store={projectStore} open={projectOpen} onOpenChange={setProjectOpen} />
       <Toaster position="top-center" />
       <section className="mx-auto mt-10 w-full max-w-5xl px-4">
