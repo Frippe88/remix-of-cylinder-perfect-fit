@@ -74,7 +74,7 @@ export function ProjectPanel({ project, setProject, open, onOpenChange }: {
       <SheetContent side="bottom" className="max-h-[92dvh] overflow-y-auto rounded-t-2xl sm:mx-auto sm:max-w-2xl">
         <SheetHeader className="text-left">
           <SheetTitle>Projekt</SheetTitle>
-          <SheetDescription>{project.doors.length} dörrar · {done} monterade. Sparas i den här telefonen/webbläsaren.</SheetDescription>
+          <SheetDescription>{project.doors.length} {project.doors.length === 1 ? "dörr" : "dörrar"} · {done} monterade. Sparas i den här telefonen/webbläsaren.</SheetDescription>
         </SheetHeader>
         <div className="space-y-4 px-4 pb-6">
           <input value={project.name} onChange={(e) => setProject((p) => ({ ...p, name: e.target.value }))}
