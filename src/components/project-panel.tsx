@@ -3,6 +3,7 @@ import { Check, ClipboardCopy, FolderOpen, Trash2, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from "@/components/ui/sheet";
 import { doorsText, KIND_LABEL, projectTotals, totalsText, type Door, type Project } from "@/lib/project";
+import { sideChip } from "@/components/pick-list-button";
 import { formatMm } from "@/lib/cylinder";
 
 const KEY = "cylinderhjalpen.project.v1";
@@ -33,8 +34,9 @@ function CopyButton({ text, label }: { text: string; label: string }) {
   );
 }
 
-function Chip({ children, accent }: { children: React.ReactNode; accent?: boolean }) {
-  return <span className={`inline-flex rounded-md border px-2 py-0.5 font-mono text-xs font-bold ${accent ? "border-accent/50 bg-accent/10" : "border-input bg-muted"}`}>{children}</span>;
+function Chip({ children, accent, side }: { children: React.ReactNode; accent?: boolean; side?: string | null }) {
+  const tone = side ? sideChip(side) : null;
+  return <span className={`inline-flex rounded-md border px-2 py-0.5 font-mono text-xs font-bold ${tone ?? (accent ? "border-accent/50 bg-accent/10" : "border-input bg-muted")}`}>{children}</span>;
 }
 
 function DoorCard({ d, onToggle, onRemove }: { d: Door; onToggle: () => void; onRemove: () => void }) {
@@ -51,11 +53,11 @@ function DoorCard({ d, onToggle, onRemove }: { d: Door; onToggle: () => void; on
       <ul className="mt-2 space-y-1.5 pl-10">
         {d.sides.map((s, i) => (
           <li key={i} className="flex flex-wrap items-center gap-1.5 text-sm">
-            {s.label && <span className="w-14 text-xs font-semibold uppercase text-muted-foreground">{s.label}</span>}
+            {s.label && <span className={`w-14 text-xs font-semibold uppercase ${s.label === "Insida" ? "text-side-inside" : "text-side-outside"}`}>{s.label}</span>}
             <span className="font-mono text-xs text-muted-foreground">{formatMm(s.depth)}</span>
             {s.extenders.length === 0 ? <span className="text-xs text-muted-foreground">inga förl.</span> :
-              s.extenders.map((e, j) => <Chip key={j}>{formatMm(e)}</Chip>)}
-            <Chip accent>ring {formatMm(s.ring)}</Chip>
+              s.extenders.map((e, j) => <Chip key={j} side={s.label}>{formatMm(e)}</Chip>)}
+            <Chip accent side={s.label}>ring {formatMm(s.ring)}</Chip>
           </li>
         ))}
       </ul>
@@ -111,7 +113,7 @@ export function ProjectPanel({ project, setProject, open, onOpenChange }: {
                 </>}
                 <p className="text-xs font-bold uppercase tracking-wide text-muted-foreground">Ringar</p>
                 <ul className="mt-1 divide-y">{totals.rings.map((r) => (
-                  <li key={r.kind + r.side + r.size} className="flex justify-between py-1.5 text-sm"><span>{formatMm(r.size)} {r.side && <span className="font-semibold">{r.side.toLowerCase()}</span>} <span className="text-muted-foreground">({KIND_LABEL[r.kind]})</span></span><span className="font-mono font-bold">{r.count} st</span></li>
+                  <li key={r.kind + r.side + r.size} className="flex justify-between py-1.5 text-sm"><span>{formatMm(r.size)} {r.side && <span className={`font-semibold ${r.side === "Insida" ? "text-side-inside" : "text-side-outside"}`}>{r.side.toLowerCase()}</span>} <span className="text-muted-foreground">({KIND_LABEL[r.kind]})</span></span><span className="font-mono font-bold">{r.count} st</span></li>
                 ))}</ul>
               </div>
               <CopyButton text={totalsText(project)} label="Kopiera inköpslista" />
