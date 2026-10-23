@@ -140,7 +140,7 @@ function Index() {
             </span>
             <div className="min-w-0">
               <h1 className="text-lg font-extrabold leading-snug tracking-tight sm:text-3xl sm:leading-tight">Cylinderhjälpen – kalkylator för rätt mått och montage</h1>
-              <p className="mt-0.5 text-xs opacity-80 sm:text-sm">Snabb och enkel cylinderberäkning för ett snyggt montage</p>
+              <p className="mt-0.5 text-xs opacity-80 sm:text-sm">Snabb cylinderberäkning för rätt montage</p>
               <ul className="mt-2 flex flex-wrap gap-1.5" aria-label="Regler">
                 <li className="inline-flex items-center gap-1.5 rounded-full bg-accent/15 px-2.5 py-1 text-xs font-semibold text-accent ring-1 ring-accent/40">
                   <ShieldCheck className="size-3.5" aria-hidden />Oval & iLOQ: −2 till +2mm
