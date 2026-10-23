@@ -50,6 +50,7 @@
 - [x] Kopiera dörrlista, inköpslista och "inköpslista och dörrlista" samlade i en grupp – endast i "Total plocklista", inte i "Dörr för dörr".
 
 - [x] Förtydligad beta: BETA-märke på Projekt-knappen, i flikens rubrik och i fältfältet, plus orange ruta som förklarar gratis under testperioden, lokalt sparande och feedback-länk.
+- [x] Mobilheader: mörkt/ljust överst i hörnet, Projekt/BETA direkt under, nyckelikonen uppe till vänster och rubriken i full bredd under.
 
 # Måttvisning
 - [x] Alla mått utan mellanslag före mm (t.ex. 12mm) – även rund cylinder där 8an saknade mm från början.
