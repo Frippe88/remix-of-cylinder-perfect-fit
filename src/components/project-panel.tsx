@@ -186,8 +186,6 @@ export function ProjectPanel({ project, setProject, store, open, onOpenChange, c
                     onSetSide={(i, label) => setProject((p) => ({ ...p, doors: p.doors.map((x) => x.id === d.id ? setDoorSide(x, i, label) : x) }))} />
                 ))}
               </ul>
-              <CopyButton text={doorsText(project)} label="Kopiera dörrlista" />
-              <CopyButton text={projectText(project)} label="Kopiera hela projektet" />
               <Button variant="ghost" className="w-full text-muted-foreground" onClick={() => { if (confirm(`Töm alla dörrar i ${project.name || "projektet"}? Projektet finns kvar.`)) setProject(clearDoors); }}>
                 <X aria-hidden /> Töm dörrar
               </Button>
@@ -225,9 +223,17 @@ export function ProjectPanel({ project, setProject, store, open, onOpenChange, c
                   <li key={r.kind + r.side + r.size} className="flex items-center justify-between gap-3 border-b border-border/60 py-2.5 text-sm last:border-b-0"><span className="flex min-w-0 flex-wrap items-center gap-x-2 gap-y-1"><span className="font-mono font-bold">{formatMm(r.size)}</span>{r.side && <span className={`inline-flex items-center gap-1 font-semibold ${r.side === "Insida" ? "text-side-inside" : "text-side-outside"}`}>{r.side === "Insida" ? <ArrowDown className="size-3.5" aria-hidden /> : <ArrowUp className="size-3.5" aria-hidden />}{r.side}</span>} <span className="text-xs text-muted-foreground">({KIND_LABEL[r.kind]})</span></span><Chip accent>{r.count} st</Chip></li>
                 ))}</ul>
               </div>
-              <CopyButton text={totalsText(project, onlyLeft)} label="Kopiera inköpslista" />
               </>}
             </>
+          )}
+          {tab === "total" && project.doors.length > 0 && (
+            <div className="space-y-2 border-t border-border pt-4">
+              <p className="flex items-center gap-2 text-xs font-bold uppercase tracking-wide text-muted-foreground"><ClipboardCopy className="size-4 text-accent" aria-hidden />Kopiera</p>
+              <CopyButton text={doorsText(project)} label="Kopiera dörrlista" />
+              <CopyButton text={totalsText(project, onlyLeft)} label="Kopiera inköpslista" />
+              <CopyButton text={projectText(project)} label="Kopiera hela projektet" />
+              {done > 0 && onlyLeft && <p className="text-xs text-muted-foreground">Inköpslistan räknar bort {done} {done === 1 ? "monterad dörr" : "monterade dörrar"}.</p>}
+            </div>
           )}
           {(project.doors.length > 0 || store.list.length > 1) && (
             <Button variant="ghost" className="w-full text-destructive" onClick={() => { if (confirm(`Ta bort ${project.name || "projektet"}?`)) store.remove(); }}>
