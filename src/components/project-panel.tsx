@@ -241,6 +241,25 @@ export function ProjectPanel({ project, setProject, store, open, onOpenChange, c
               {done > 0 && onlyLeft && <p className="text-xs text-muted-foreground">Inköpslistan räknar bort {done} {done === 1 ? "monterad dörr" : "monterade dörrar"}.</p>}
             </div>
           )}
+          <section className="rounded-xl border border-accent/30 bg-accent/5 p-3.5">
+            <h3 className="flex items-center gap-2 text-sm font-bold"><Info className="size-4 shrink-0 text-accent" aria-hidden />Beta – gratis under testperioden</h3>
+            <p className="mt-1.5 text-xs leading-relaxed text-muted-foreground">
+              Projektfunktionen är ny och byggs på löpande. Just nu är den gratis att använda, och den sparar bara i den här telefonen eller webbläsaren – ingen kopia finns i molnet än. Byter du enhet, eller rensar webbläsaren, försvinner projekten.
+            </p>
+            <ul className="mt-3 space-y-1.5 text-xs font-medium">
+              <li className="flex items-start gap-2"><Check className="mt-0.5 size-3.5 shrink-0 text-success" aria-hidden /><span>Idag: flera projekt, dörrar och total plocklista – utan kostnad</span></li>
+              <li className="flex items-start gap-2"><Clock className="mt-0.5 size-3.5 shrink-0 text-accent" aria-hidden /><span>Härnäst: inloggning och synkning mellan telefon och dator</span></li>
+              <li className="flex items-start gap-2"><Clock className="mt-0.5 size-3.5 shrink-0 text-accent" aria-hidden /><span>Senare: prenumeration som håller funktionen igång</span></li>
+            </ul>
+            <Button asChild variant="outline" className="mt-3.5 h-11 w-full border-accent/40 font-semibold">
+              <a href={`mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent("Feedback om Projekt (beta)")}&body=${encodeURIComponent("Hej!\n\nMin feedback om projektfunktionen:\n\n")}`}>
+                <Mail className="size-4 text-accent" aria-hidden /> Skicka feedback
+              </a>
+            </Button>
+            <p className="mt-2 text-center text-[11px] text-muted-foreground">
+              Mejl: <a className="font-semibold text-link underline underline-offset-2" href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>
+            </p>
+          </section>
           {(project.doors.length > 0 || store.list.length > 1) && (
             <Button variant="ghost" className="w-full text-destructive" onClick={() => { if (confirm(`Ta bort ${project.name || "projektet"}?`)) store.remove(); }}>
               <X aria-hidden /> Ta bort projekt
