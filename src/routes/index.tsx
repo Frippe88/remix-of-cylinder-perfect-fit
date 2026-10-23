@@ -236,7 +236,7 @@ function Index() {
 
         <section className="order-2 min-w-0 space-y-7 lg:order-none">
           <PickListButton
-            sides={type === "single" ? [{ label: null, depth: parse(outside), selected: selOut }] : [{ label: "Utsida", depth: parse(outside), selected: selOut }, { label: "Insida", depth: parse(inside), selected: selIn }]}
+            sides={type === "single" ? [{ label: singleSide, depth: parse(outside), selected: selOut }] : [{ label: "Utsida", depth: parse(outside), selected: selOut }, { label: "Insida", depth: parse(inside), selected: selIn }]}
             ext={ext} rings={activeRings} baseMm={baseMm} insideBaseMm={insideBaseMm} relaxed={isRound}
             onSave={(sides) => {
               const name = window.prompt("Namn på dörren", nextDoorName(project.doors));
