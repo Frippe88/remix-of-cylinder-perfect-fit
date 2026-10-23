@@ -128,6 +128,22 @@ export function PickListButton({ sides, ext, rings, baseMm, insideBaseMm = baseM
         </span>
       </div>
 
+      {projectCount > 1 && (
+        <div className="flex items-center justify-between gap-2 border-b border-accent/30 bg-accent/10 px-4 py-1.5">
+          <span className="flex min-w-0 items-center gap-1.5 text-xs font-semibold">
+            <FolderOpen className="size-3.5 shrink-0 text-accent" aria-hidden />
+            <span className="shrink-0 text-muted-foreground">Sparas i</span>
+            <span className="truncate font-bold text-foreground">{projectLabel}</span>
+            <span className="shrink-0 text-muted-foreground">· {projectDoors} {projectDoors === 1 ? "dörr" : "dörrar"}</span>
+          </span>
+          {onOpenProject && (
+            <Button variant="ghost" size="sm" onClick={onOpenProject} className="h-7 shrink-0 px-2 text-xs font-bold text-accent hover:bg-accent/15">
+              Byt projekt
+            </Button>
+          )}
+        </div>
+      )}
+
       <ul className="divide-y divide-border">
         {picks.map((p, i) => (
           <li key={`${p.label ?? "cyl"}:${i}`} className="space-y-2.5 px-4 py-3.5">
