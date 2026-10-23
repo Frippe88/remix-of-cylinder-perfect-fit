@@ -15,10 +15,12 @@
 # Tolerans
 - [x] Oval: −2 till +2 mm. Rund: ingen regel, närmaste vinner, ingen varning.
 
-# Domän och synlighet (väntar på cylinderhjalpen.se)
-- [ ] Byt domän i alla ställen där xn--cylinderhjlpen-fib.se är inbakad (robots.txt, sitemap, guider, startsidan, avsändaradress).
-- [ ] Koppla cylinderhjalpen.se som custom domain i Lovable och sätt DNS hos Strato (www sköts automatiskt).
-- [ ] Skicka in sitemap.xml till Google Search Console när den nya domänen är aktiv.
+# Domän och synlighet
+- [x] Byt domän i alla ställen där xn--cylinderhjlpen-fib.se är inbakad (robots.txt, sitemap, guider, startsidan).
+- [x] Koppla cylinderhjalpen.se som custom domain i Lovable (DNS hos Strato stämmer: A → 185.158.133.1).
+- [ ] Sätt cylinderhjalpen.se som primär domän (Project Settings → Domains → ⋯ → Set as primary) så att den gamla adressen vidarbefordrar dit.
+- [ ] Skicka in sitemap.xml till Google Search Console när cylinderhjalpen.se är aktiv.
+- [ ] E-post: notify.cylinderhjalpen.se behöver delegated DNS till Lovable innan mallar kan skickas därifrån (send-email.ts pekar idag på notify.xn--cylinderhjlpen-fib.se; kontakt är mailto, skickas inte).
 
 # Guider
 - [x] Korta rubriken "Räkna cylinderlängd" så guidlistan blir jämnare.
