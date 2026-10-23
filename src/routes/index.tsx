@@ -9,6 +9,7 @@ import { nextDoorName } from "@/lib/project";
 import { toast } from "sonner";
 import { Toaster } from "@/components/ui/sonner";
 import { ContactForm } from "@/components/contact-form";
+import { ShareSection } from "@/components/share-section";
 import {
   formatMm,
   EXTENDER_SIZES,
@@ -290,6 +291,7 @@ function Index() {
           ))}
         </ul>
       </section>
+      <ShareSection />
       <ContactForm />
     </div>
   );
