@@ -133,31 +133,33 @@ function Index() {
       <header className="relative overflow-hidden bg-primary bg-header text-primary-foreground">
         <div aria-hidden className="blueprint pointer-events-none absolute inset-0 [mask-image:linear-gradient(to_bottom,black,transparent)]" />
         <div aria-hidden className="absolute inset-x-0 bottom-0 h-1 bg-accent" />
-        <div className="relative mx-auto flex max-w-5xl flex-wrap items-center gap-x-4 gap-y-3 px-4 py-4 sm:items-start sm:py-8">
-          <span className="order-1 flex size-10 shrink-0 items-center justify-center rounded-xl bg-accent shadow-elevated sm:order-1 sm:size-14">
-            <KeyRound className="size-5 text-accent-foreground sm:size-7" aria-hidden />
+        <div className="relative mx-auto flex max-w-5xl items-center gap-3 px-4 py-3 sm:py-6">
+          <span className="flex size-9 shrink-0 items-center justify-center rounded-xl bg-accent shadow-elevated sm:size-12">
+            <KeyRound className="size-5 text-accent-foreground sm:size-6" aria-hidden />
           </span>
-          <div className="order-3 w-full min-w-0 sm:order-2 sm:w-auto sm:flex-1">
-            <h1 className="text-lg font-extrabold leading-snug tracking-tight sm:text-3xl sm:leading-tight">Cylinderhjälpen – kalkylator för rätt mått och montage</h1>
-            <p className="mt-0.5 text-xs opacity-80 sm:text-sm">Snabb cylinderberäkning för rätt montage</p>
-            <ul className="mt-2 flex flex-wrap gap-1.5" aria-label="Regler">
-              <li className="inline-flex items-center gap-1.5 rounded-full bg-accent/15 px-2.5 py-1 text-xs font-semibold text-accent ring-1 ring-accent/40">
-                <ShieldCheck className="size-3.5" aria-hidden />Oval & iLOQ: −2 till +2mm
-              </li>
-              <li className="inline-flex items-center gap-1.5 rounded-full bg-primary-foreground/10 px-2.5 py-1 text-xs font-semibold ring-1 ring-primary-foreground/25">
-                <Check className="size-3.5" aria-hidden />Rund: närmaste möjliga
-              </li>
-            </ul>
+          <div className="min-w-0 flex-1">
+            <h1 className="truncate text-base font-extrabold leading-tight tracking-tight sm:text-2xl">
+              Cylinderhjälpen<span className="hidden sm:inline"> – kalkylator för rätt mått och montage</span>
+            </h1>
+            <p className="truncate text-xs opacity-80 sm:hidden">Kalkylator för rätt mått och montage</p>
           </div>
-          <div className="order-2 ml-auto flex shrink-0 flex-col items-end gap-2 sm:order-3 sm:flex-row-reverse sm:items-center">
+          <div className="flex shrink-0 items-center gap-2">
             <ThemeToggle />
             <button type="button" onClick={() => { setSwitchProject(false); setProjectOpen(true); }} aria-label="Öppna projekt"
-              className="inline-flex h-10 items-center gap-1.5 rounded-lg bg-primary-foreground/10 px-3 text-sm font-semibold ring-1 ring-primary-foreground/25 hover:bg-primary-foreground/20">
+              className="inline-flex h-9 items-center gap-1.5 rounded-lg bg-primary-foreground/10 px-2.5 text-sm font-semibold ring-1 ring-primary-foreground/25 hover:bg-primary-foreground/20 sm:h-10 sm:px-3">
               <FolderOpen className="size-4 text-accent" aria-hidden /><span className="hidden sm:inline">Projekt</span>
-              <span className="rounded-full border border-accent/50 bg-accent/15 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-accent">Beta</span>
+              <span className="hidden rounded-full border border-accent/50 bg-accent/15 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-accent sm:inline">Beta</span>
               <span className="rounded-full bg-accent px-1.5 text-xs font-bold text-accent-foreground">{projectStore.list.length}</span>
             </button>
           </div>
+        </div>
+        <div className="relative mx-auto flex max-w-5xl flex-wrap gap-1.5 px-4 pb-4 sm:pb-6 max-sm:hidden" aria-label="Regler">
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-accent/15 px-2.5 py-1 text-xs font-semibold text-accent ring-1 ring-accent/40">
+            <ShieldCheck className="size-3.5" aria-hidden />Oval & iLOQ: −2 till +2mm
+          </span>
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-primary-foreground/10 px-2.5 py-1 text-xs font-semibold ring-1 ring-primary-foreground/25">
+            <Check className="size-3.5" aria-hidden />Rund: närmaste möjliga
+          </span>
         </div>
       </header>
 
