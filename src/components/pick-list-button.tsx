@@ -50,6 +50,12 @@ function SideTag({ label }: { label: string | null }) {
   );
 }
 
+export function sideChip(label: string | null) {
+  if (label === "Insida") return "border-side-inside/30 bg-side-inside-soft text-side-inside";
+  if (label === "Utsida") return "border-side-outside/30 bg-side-outside-soft text-side-outside";
+  return null;
+}
+
 function Row({ caption, icon, children }: { caption: string; icon: ReactNode; children: ReactNode }) {
   return (
     <div className="grid grid-cols-[minmax(0,88px)_minmax(0,1fr)] items-center gap-x-3 gap-y-1 sm:grid-cols-[minmax(0,96px)_minmax(0,1fr)]">
@@ -131,15 +137,15 @@ export function PickListButton({ sides, ext, rings, baseMm, insideBaseMm = baseM
                 <span className="text-sm font-semibold text-muted-foreground">Inga förlängare</span>
               ) : (
                 grouped(p.c).map(([s, n]) => (
-                  <span key={s} className="inline-flex items-baseline gap-1.5 rounded-md border border-input bg-muted px-2 py-1 font-mono">
-                    <span className="text-xs text-foreground/80">{n} st</span>
-                    <span className="text-sm font-bold text-foreground">{formatMm(s)}</span>
+                  <span key={s} className={`inline-flex items-baseline gap-1.5 rounded-md border px-2 py-1 font-mono ${sideChip(p.label) ?? "border-input bg-muted"}`}>
+                    <span className="text-xs opacity-70">{n} st</span>
+                    <span className="text-sm font-bold">{formatMm(s)}</span>
                   </span>
                 ))
               )}
             </Row>
             <Row caption="Ring" icon={<Disc3 className="size-3.5" />}>
-              <span className="inline-flex items-center rounded-md border border-accent/50 bg-accent/10 px-2.5 py-1 font-mono text-sm font-bold text-foreground">
+              <span className={`inline-flex items-center rounded-md border px-2.5 py-1 font-mono text-sm font-bold ${sideChip(p.label) ?? "border-accent/50 bg-accent/10 text-foreground"}`}>
                 {formatMm(p.c.ring)}
               </span>
             </Row>
