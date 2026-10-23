@@ -53,7 +53,7 @@ export function projectTotals(doors: Door[]): Totals {
 function sideText(s: DoorSide, kind: RingKind): string {
   const counts = new Map<number, number>();
   s.extenders.forEach((e) => counts.set(e, (counts.get(e) ?? 0) + 1));
-  const parts = [...counts].sort((a, b) => a[0] - b[0]).map(([e, n]) => `${n} st ${formatMm(e)} förlängare`);
+  const parts = [...counts].sort((a, b) => a[0] - b[0]).map(([e, n]) => `${n}st ${formatMm(e)} förlängare`);
   const side = RING_HAS_SIDE[kind] ? ` ${(s.label ?? "Utsida").toLowerCase()}` : "";
   parts.push(`${formatMm(s.ring)} ring${side}`);
   return (s.label ? `${s.label}: ` : "") + parts.join(" + ");
@@ -69,8 +69,8 @@ export function totalsText(p: Project, remainingOnly = false): string {
   const t = projectTotals(doors);
   const word = doors.length === 1 ? "dörr" : "dörrar";
   const lines = [`${p.name || "Projekt"} – ${doors.length} ${remainingOnly ? `kvarvarande ${word}` : word}`];
-  if (t.extenders.length) { lines.push("", "Förlängare:"); t.extenders.forEach((e) => lines.push(`${e.count} st ${formatMm(e.size)} (${KIND_LABEL[e.kind]})`)); }
-  if (t.rings.length) { lines.push("", "Ringar:"); t.rings.forEach((r) => lines.push(`${r.count} st ${formatMm(r.size)} ring${r.side ? ` ${r.side.toLowerCase()}` : ""} (${KIND_LABEL[r.kind]})`)); }
+  if (t.extenders.length) { lines.push("", "Förlängare:"); t.extenders.forEach((e) => lines.push(`${e.count}st ${formatMm(e.size)} (${KIND_LABEL[e.kind]})`)); }
+  if (t.rings.length) { lines.push("", "Ringar:"); t.rings.forEach((r) => lines.push(`${r.count}st ${formatMm(r.size)} ring${r.side ? ` ${r.side.toLowerCase()}` : ""} (${KIND_LABEL[r.kind]})`)); }
   return lines.join("\n");
 }
 

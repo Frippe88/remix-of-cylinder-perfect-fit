@@ -19,7 +19,7 @@ function bestFor(depth: number, ext: number[], rings: number[], baseMm: number, 
 export function pickLine(c: Combination) {
   const counts = new Map<number, number>();
   c.extenders.forEach((e) => counts.set(e, (counts.get(e) ?? 0) + 1));
-  const parts = [...counts].sort((a, b) => a[0] - b[0]).map(([s, n]) => `${n} st ${formatMm(s)} förlängare`);
+  const parts = [...counts].sort((a, b) => a[0] - b[0]).map(([s, n]) => `${n}st ${formatMm(s)} förlängare`);
   parts.push(`${formatMm(c.ring)} ring`);
   return parts.join(" + ");
 }
