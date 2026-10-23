@@ -59,9 +59,16 @@ function sideText(s: DoorSide, kind: RingKind): string {
   return (s.label ? `${s.label}: ` : "") + parts.join(" + ");
 }
 
-export function totalsText(p: Project): string {
-  const t = projectTotals(p.doors);
-  const lines = [`${p.name || "Projekt"} – ${p.doors.length} ${p.doors.length === 1 ? "dörr" : "dörrar"}`];
+/** Doors counted in the pick list: all, or only those not yet mounted. */
+export function doorsToPick(doors: Door[], remainingOnly: boolean): Door[] {
+  return remainingOnly ? doors.filter((d) => !d.done) : doors;
+}
+
+export function totalsText(p: Project, remainingOnly = false): string {
+  const doors = doorsToPick(p.doors, remainingOnly);
+  const t = projectTotals(doors);
+  const word = doors.length === 1 ? "dörr" : "dörrar";
+  const lines = [`${p.name || "Projekt"} – ${doors.length} ${remainingOnly ? `kvarvarande ${word}` : word}`];
   if (t.extenders.length) { lines.push("", "Förlängare:"); t.extenders.forEach((e) => lines.push(`${e.count} st ${formatMm(e.size)} (${KIND_LABEL[e.kind]})`)); }
   if (t.rings.length) { lines.push("", "Ringar:"); t.rings.forEach((r) => lines.push(`${r.count} st ${formatMm(r.size)} ring${r.side ? ` ${r.side.toLowerCase()}` : ""} (${KIND_LABEL[r.kind]})`)); }
   return lines.join("\n");
