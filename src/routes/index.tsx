@@ -200,7 +200,19 @@ function Index() {
                     <option key={b} value={b}>{b}</option>
                   ))}
                 </select>
-                <span className="mt-1 block text-xs font-normal text-muted-foreground">Runda cylindrar har ingen fast toleransregel – kalkylatorn väljer alltid närmaste möjliga utstick. {brand === "ASSA ABLOY" ? "ASSA ABLOY räknas med 33mm: råcylindern är 31mm, men cylinderhylsan (koppen) som sitter på bygger ut den till 33mm. Därför skiljer sig måttet – det är inget fel." : "Övriga fabrikat räknas tills vidare med 31mm. Mått per fabrikat läggs in när de är verifierade."}</span>
+                <span className="mt-2 block rounded-lg border-l-4 border-accent bg-accent/10 px-3 py-2.5 text-sm font-medium leading-snug text-foreground">
+                  <span className="block font-bold">
+                    {brand === "ASSA ABLOY" ? "ASSA ABLOY räknas med 33mm" : `${brand} räknas med 31mm`}
+                  </span>
+                  <span className="mt-1 block">
+                    {brand === "ASSA ABLOY"
+                      ? "Råcylindern är 31mm, men cylinderhylsan (koppen) som sitter på bygger ut den till 33mm. Därför skiljer sig måttet – det är inget fel."
+                      : brand === "dormakaba" || brand === "EVVA"
+                        ? `${brand} har ingen kopp eller hylsa som bygger ut – cylindern monteras direkt mot låshuset och ringen låses med stoppskruv. 31mm är rätt mått.`
+                        : "Standardmått för rund cylinder utan kopp eller hylsa."}
+                  </span>
+                  <span className="mt-1 block text-foreground/80">Rund cylinder har ingen fast toleransregel – kalkylatorn väljer alltid närmaste möjliga utstick.</span>
+                </span>
               </label>
             )}
             <div className="grid grid-cols-2 gap-1 rounded-lg bg-muted p-1">
@@ -232,7 +244,7 @@ function Index() {
             )}
             <DepthInput label={type === "single" ? "Dörrdjup" : "Dörrdjup utsida"} value={outside} onChange={setOutside} />
             {type === "double" && <DepthInput label="Dörrdjup insida" value={inside} onChange={setInside} />}
-            <p className="text-xs text-foreground">Avstånd från låshusets referenspunkt till dörrbladets yta.</p>
+            <p className="rounded-lg border-l-4 border-accent bg-accent/10 px-3 py-2 text-sm font-medium text-foreground">Dörrdjup = avstånd från låshusets referenspunkt till dörrbladets yta.</p>
           </Panel>
 
           <div className="order-3 space-y-5 lg:order-none lg:mt-5">
