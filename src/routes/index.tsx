@@ -10,6 +10,7 @@ import { DoorNameDialog } from "@/components/door-name-dialog";
 import { toast } from "sonner";
 import { Toaster } from "@/components/ui/sonner";
 import { ShareSection } from "@/components/share-section";
+import { trackEvent } from "@/lib/analytics";
 import {
   formatMm,
   EXTENDER_SIZES,
@@ -132,6 +133,13 @@ function Index() {
   const [sel, setSel] = useState<{ key: string; out: Combination | null; in: Combination | null }>({ key: "", out: null, in: null });
   const selOut = sel.key === selKey ? sel.out : null;
   const selIn = sel.key === selKey ? sel.in : null;
+
+  // GA4: räkna en beräkning när måtten stått still en stund (inte varje knapptryck).
+  useEffect(() => {
+    if (!outside && !inside) return;
+    const t = setTimeout(() => trackEvent("berakning", { cylinder: cyl, typ: type, fabrikat: isRound ? brand : undefined }), 2500);
+    return () => clearTimeout(t);
+  }, [cyl, brand, type, outside, inside, isRound]);
 
   const toggle = (list: number[], set: (v: number[]) => void, v: number) =>
     set(list.includes(v) ? list.filter((x) => x !== v) : [...list, v]);
