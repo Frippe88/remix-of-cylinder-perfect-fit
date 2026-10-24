@@ -294,13 +294,22 @@ export function ProjectPanel({ project, setProject, store, open, onOpenChange, c
 }
 
 export function ProjectBar({ project, projects = 1, onOpen }: { project: Project; projects?: number; onOpen: () => void }) {
+  const [hiddenAt, setHiddenAt] = useState<number | null>(null);
   if (project.doors.length === 0 && projects < 2) return null;
+  // Hidden until a new door is added (door count grows past the dismissed count)
+  if (hiddenAt !== null && project.doors.length <= hiddenAt) return null;
   return (
-    <button onClick={onOpen} className="fixed inset-x-3 bottom-3 z-40 mx-auto flex max-w-md items-center gap-3 rounded-xl bg-primary px-4 py-3 text-left text-primary-foreground shadow-elevated">
-      <FolderOpen className="size-5 shrink-0 text-accent" aria-hidden />
-      <span className="flex-1 truncate text-sm font-semibold">{project.name || "Projekt"} · {project.doors.length} {project.doors.length === 1 ? "dörr" : "dörrar"}</span>
-      <span className="shrink-0 rounded-full border border-accent/50 bg-accent/15 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-accent">Beta</span>
-      <span className="text-sm font-bold text-accent">Visa →</span>
-    </button>
+    <div className="fixed inset-x-3 bottom-3 z-40 mx-auto flex max-w-md items-stretch rounded-xl bg-primary text-primary-foreground shadow-elevated">
+      <button onClick={onOpen} className="flex min-w-0 flex-1 items-center gap-3 py-3 pl-4 pr-2 text-left">
+        <FolderOpen className="size-5 shrink-0 text-accent" aria-hidden />
+        <span className="flex-1 truncate text-sm font-semibold">{project.name || "Projekt"} · {project.doors.length} {project.doors.length === 1 ? "dörr" : "dörrar"}</span>
+        <span className="shrink-0 rounded-full border border-accent/50 bg-accent/15 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-accent">Beta</span>
+        <span className="text-sm font-bold text-accent">Visa →</span>
+      </button>
+      <button type="button" aria-label="Dölj projektlisten" onClick={() => setHiddenAt(project.doors.length)}
+        className="flex shrink-0 items-center border-l border-primary-foreground/20 px-3 opacity-80 hover:opacity-100">
+        <X className="size-4" aria-hidden />
+      </button>
+    </div>
   );
 }
