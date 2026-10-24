@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { ArrowDown, ArrowUp, Check, ChevronDown, ChevronsRight, ClipboardCopy, ClipboardList, Clock, DoorOpen, FolderOpen, Info, Layers, Mail, Pencil, Plus, Trash2, X } from "lucide-react";
 import { InfoSheetRow } from "@/components/info-sheet-row";
 import { Button } from "@/components/ui/button";
@@ -298,22 +298,29 @@ const MIN_KEY = "cylinderhjalpen.projectbar.min";
 export function ProjectBar({ project, projects = 1, onOpen }: { project: Project; projects?: number; onOpen: () => void }) {
   const [min, setMin] = useState(false);
   const [ready, setReady] = useState(false);
+  const doors = project.doors.length;
+  const seen = useRef(doors);
   useEffect(() => {
     try { setMin(localStorage.getItem(MIN_KEY) === "1"); } catch { /* ignore */ }
     setReady(true);
   }, []);
-  const toggle = (v: boolean) => {
+  const set = (v: boolean) => {
     setMin(v);
     try { localStorage.setItem(MIN_KEY, v ? "1" : "0"); } catch { /* ignore */ }
   };
-  if (project.doors.length === 0 && projects < 2) return null;
+  // En ny sparad dörr betyder att man mäter igen – då kommer listen tillbaka av sig själv.
+  useEffect(() => {
+    if (doors > seen.current) set(false);
+    seen.current = doors;
+  }, [doors]);
+  if (doors === 0 && projects < 2) return null;
   if (!ready) return null;
   if (min) {
     return (
-      <button type="button" onClick={() => toggle(false)} aria-label="Öppna projektlisten" title="Öppna projektlistan"
+      <button type="button" onClick={onOpen} aria-label="Öppna projektlistan" title="Öppna projektlistan"
         className="fixed bottom-3 right-3 z-40 flex size-14 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-elevated ring-1 ring-primary-foreground/15 transition active:scale-95">
         <FolderOpen className="size-6 text-accent" aria-hidden />
-        <span className="absolute -right-1 -top-1 flex size-6 items-center justify-center rounded-full bg-accent text-[11px] font-bold text-accent-foreground">{project.doors.length}</span>
+        <span className="absolute -right-1 -top-1 flex size-6 items-center justify-center rounded-full bg-accent text-[11px] font-bold text-accent-foreground">{doors}</span>
       </button>
     );
   }
@@ -321,11 +328,11 @@ export function ProjectBar({ project, projects = 1, onOpen }: { project: Project
     <div className="fixed inset-x-3 bottom-3 z-40 mx-auto flex max-w-md items-stretch rounded-xl bg-primary text-primary-foreground shadow-elevated">
       <button onClick={onOpen} className="flex min-w-0 flex-1 items-center gap-3 py-3 pl-4 pr-2 text-left">
         <FolderOpen className="size-5 shrink-0 text-accent" aria-hidden />
-        <span className="flex-1 truncate text-sm font-semibold">{project.name || "Projekt"} · {project.doors.length} {project.doors.length === 1 ? "dörr" : "dörrar"}</span>
+        <span className="flex-1 truncate text-sm font-semibold">{project.name || "Projekt"} · {doors} {doors === 1 ? "dörr" : "dörrar"}</span>
         <span className="shrink-0 rounded-full border border-accent/50 bg-accent/15 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-accent">Beta</span>
         <span className="text-sm font-bold text-accent">Visa →</span>
       </button>
-      <button type="button" aria-label="Minimera projektlisten" onClick={() => toggle(true)} title="Minimera"
+      <button type="button" aria-label="Minimera projektlisten" onClick={() => set(true)} title="Minimera"
         className="flex shrink-0 items-center border-l border-primary-foreground/20 px-3 opacity-80 hover:opacity-100">
         <ChevronsRight className="size-4" aria-hidden />
       </button>
