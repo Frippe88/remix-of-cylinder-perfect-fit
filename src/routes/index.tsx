@@ -8,7 +8,6 @@ import { ProjectBar, ProjectPanel, useProject } from "@/components/project-panel
 import { nextDoorName } from "@/lib/project";
 import { toast } from "sonner";
 import { Toaster } from "@/components/ui/sonner";
-import { ContactForm } from "@/components/contact-form";
 import { ShareSection } from "@/components/share-section";
 import {
   formatMm,
@@ -300,7 +299,6 @@ function Index() {
         </ul>
       </section>
       <ShareSection />
-      <ContactForm />
     </div>
   );
 }
