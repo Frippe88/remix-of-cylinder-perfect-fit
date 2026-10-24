@@ -60,6 +60,7 @@ export function ShareSection() {
       <div className="mt-4 rounded-xl border border-l-4 border-l-accent bg-card p-5 shadow-card">
         <h2 className="flex items-center gap-2 text-lg font-bold"><Smartphone className="size-5 text-accent" aria-hidden />Spara som app på hemskärmen</h2>
         <p className="mt-1 text-sm text-muted-foreground">Då öppnar du Cylinderhjälpen med ett tryck, direkt från telefonen.</p>
+        <p className="mt-2 text-sm font-semibold">Fungerar även utan internet – i källare, skyddsrum och garage. Öppna sidan en gång med täckning först, sedan finns kalkylatorn sparad i telefonen.</p>
         {installed ? (
           <p className="mt-3 text-sm font-semibold">Appen är installerad.</p>
         ) : prompt ? (
