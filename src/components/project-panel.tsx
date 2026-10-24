@@ -1,3 +1,4 @@
+import { trackEvent } from "@/lib/analytics";
 import { useEffect, useRef, useState } from "react";
 import { ArrowDown, ArrowUp, Check, ChevronDown, ChevronsRight, ClipboardCopy, ClipboardList, Clock, DoorOpen, FolderOpen, Info, Layers, Mail, Pencil, Plus, Trash2, X } from "lucide-react";
 import { InfoSheetRow } from "@/components/info-sheet-row";
@@ -59,7 +60,7 @@ function CopyButton({ text, label, small }: { text: string; label: string; small
   const [ok, setOk] = useState(false);
   return (
     <Button variant="outline" className={`w-full font-semibold ${small ? "min-h-10 px-2 text-xs" : "min-h-11"} ${ok ? "border-success/40 text-success" : "border-accent/40"}`}
-      onClick={async () => { if (await copyText(text)) { setOk(true); setTimeout(() => setOk(false), 2000); } }}>
+      onClick={async () => { if (await copyText(text)) { trackEvent("kopierad_plocklista", { typ: label }); setOk(true); setTimeout(() => setOk(false), 2000); } }}>
       {ok ? <Check aria-hidden /> : <ClipboardCopy aria-hidden className="text-accent" />}{ok ? "Kopierad!" : label}
     </Button>
   );
@@ -74,7 +75,7 @@ function PdfButton({ project, remainingOnly }: { project: Project; remainingOnly
   }, [project, remainingOnly]);
   return (
     <Button className="min-h-12 w-full bg-accent text-base font-bold text-accent-foreground hover:bg-accent/85" disabled={!blob}
-      onClick={() => { if (blob) void deliverFile(blob, pdfFileName(project)); }}>
+      onClick={() => { if (blob) { trackEvent("pdf_export", { dorrar: project.doors.length }); void deliverFile(blob, pdfFileName(project)); } }}>
       <FileDown aria-hidden />{blob ? "Ladda ner PDF" : "Förbereder PDF…"}
     </Button>
   );

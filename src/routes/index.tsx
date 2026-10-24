@@ -10,6 +10,7 @@ import { DoorNameDialog } from "@/components/door-name-dialog";
 import { toast } from "sonner";
 import { Toaster } from "@/components/ui/sonner";
 import { ShareSection } from "@/components/share-section";
+import { trackEvent } from "@/lib/analytics";
 import {
   formatMm,
   EXTENDER_SIZES,
@@ -132,6 +133,13 @@ function Index() {
   const [sel, setSel] = useState<{ key: string; out: Combination | null; in: Combination | null }>({ key: "", out: null, in: null });
   const selOut = sel.key === selKey ? sel.out : null;
   const selIn = sel.key === selKey ? sel.in : null;
+
+  // GA4: räkna en beräkning när måtten stått still en stund (inte varje knapptryck).
+  useEffect(() => {
+    if (!outside && !inside) return;
+    const t = setTimeout(() => trackEvent("berakning", { cylinder: cyl, typ: type, fabrikat: isRound ? brand : undefined }), 2500);
+    return () => clearTimeout(t);
+  }, [cyl, brand, type, outside, inside, isRound]);
 
   const toggle = (list: number[], set: (v: number[]) => void, v: number) =>
     set(list.includes(v) ? list.filter((x) => x !== v) : [...list, v]);
@@ -284,7 +292,7 @@ function Index() {
             sides={type === "single" ? [{ label: isRound ? null : singleSide, depth: parse(outside), selected: selOut }] : [{ label: "Utsida", depth: parse(outside), selected: selOut }, { label: "Insida", depth: parse(inside), selected: selIn }]}
             ext={ext} rings={activeRings} baseMm={baseMm} insideBaseMm={insideBaseMm} relaxed={isRound}
             projectName={project.name} projectDoors={project.doors.length} projectCount={projectStore.list.length} onOpenProject={() => { setSwitchProject(true); setProjectOpen(true); }}
-            onSave={(sides) => setPendingDoor({ sides, kind: isRound ? "rund" : cyl === "iloq" ? "iloq" : "oval" })}
+            onSave={(sides) => { trackEvent("sparad_dorr", { cylinder: cyl }); setPendingDoor({ sides, kind: isRound ? "rund" : cyl === "iloq" ? "iloq" : "oval" }); }}
           />
           <CylinderResults title={type === "single" ? null : "Utsida"} depth={parse(outside)} ext={ext} rings={activeRings} baseMm={baseMm} relaxed={isRound} selected={selOut} onSelect={(c) => setSel({ key: selKey, out: c, in: selIn })} />
           {type === "double" && <CylinderResults title="Insida" depth={parse(inside)} ext={ext} rings={activeRings} baseMm={insideBaseMm} relaxed={isRound} selected={selIn} onSelect={(c) => setSel({ key: selKey, out: selOut, in: c })} />}
