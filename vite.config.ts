@@ -6,6 +6,7 @@
 // You can pass additional config via defineConfig({ vite: { ... }, etc... }) if needed.
 import path from "node:path";
 import { defineConfig } from "@lovable.dev/vite-tanstack-config";
+import { VitePWA } from "vite-plugin-pwa";
 
 export default defineConfig({
   tanstackStart: {
@@ -14,6 +15,37 @@ export default defineConfig({
     server: { entry: "server" },
   },
   vite: {
+    plugins: [
+      VitePWA({
+        strategies: "generateSW",
+        registerType: "autoUpdate",
+        injectRegister: null,
+        manifest: false,
+        devOptions: { enabled: false },
+        filename: "sw.js",
+        outDir: "dist/client",
+        workbox: {
+          globDirectory: "dist/client",
+          globPatterns: ["assets/**/*.{js,css,woff2,png,svg,jpg}", "*.{png,svg,webmanifest}"],
+          navigateFallback: null,
+          cleanupOutdatedCaches: true,
+          clientsClaim: true,
+          skipWaiting: true,
+          runtimeCaching: [
+            {
+              urlPattern: ({ request, url }) => request.mode === "navigate" && !url.pathname.startsWith("/~oauth"),
+              handler: "NetworkFirst",
+              options: { cacheName: "pages", networkTimeoutSeconds: 4, expiration: { maxEntries: 30 } },
+            },
+            {
+              urlPattern: ({ url, sameOrigin }) => sameOrigin && url.pathname.startsWith("/assets/"),
+              handler: "CacheFirst",
+              options: { cacheName: "assets", expiration: { maxEntries: 200 } },
+            },
+          ],
+        },
+      }),
+    ],
     resolve: {
       alias: {
         "entities/lib/decode.js": path.resolve(__dirname, "node_modules/entities/lib/decode.js"),

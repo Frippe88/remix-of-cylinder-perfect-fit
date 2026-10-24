@@ -14,3 +14,4 @@
 - Manufacturer manual PDFs are proxied via /api/public/manual/$id (fixed per-lock allowlist in src/lib/lock-cases.ts) and rendered in-app with pdfjs-dist on /manual/$id. Why: mobile webviews show blank pages for external PDFs, and the allowlist stops arbitrary URL proxying.
 - Lock-case product photos map by lock id in src/lib/lock-images.ts (CDN assets from official manufacturer sources). Why: keeps catalog data and image pointers separate.
 - Sitemap is router-derived: src/lib/sitemap.ts + src/routes/sitemap[.]xml.ts; every route declares staticData.sitemap, guide slugs come from GUIDES. Why: new pages/guides appear automatically.
+- Offline support: vite-plugin-pwa generateSW (sw.js in dist/client), registered only via src/lib/register-sw.ts which refuses dev/preview/iframe. Why: preview must never get a stale service worker.
