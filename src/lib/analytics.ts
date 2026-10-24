@@ -1,7 +1,7 @@
 // Google Analytics 4 (gtag.js). Mät-ID är publikt (syns alltid i webbläsaren).
 // Hämtas från den kopplade Google Analytics-anslutningen; föllbackan är samma ID.
 // Laddas bara på den publicerade sajten — aldrig i förhandsvisning/lokalt.
-const envId = import.meta.env.VITE_LOVABLE_CONNECTOR_GOOGLE_ANALYTICS_API_KEY as string | undefined;
+const envId = import.meta.env["VITE_LOVABLE_CONNECTOR_GOOGLE_ANALYTICS_API_KEY"] as string | undefined;
 export const GA_MEASUREMENT_ID = (envId && envId.trim()) || "G-87Y3ES5WM7";
 
 type Gtag = (...args: unknown[]) => void;
