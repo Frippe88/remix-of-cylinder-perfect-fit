@@ -4,15 +4,17 @@ export const ILOQ_CYLINDER_MM = 40;
 // iLOQ dubbelcylinder: två 3 mm monteringsbrickor bygger ut cylindern på insidan.
 export const ILOQ_DOUBLE_INSIDE_EXTRA_MM = 6;
 
-export function cylinderBaseMm(cyl: "standard" | "round" | "iloq", side: "outside" | "inside", double: boolean): number {
-  if (cyl === "round") return ROUND_CYLINDER_MM;
+export function cylinderBaseMm(cyl: "standard" | "round" | "iloq", side: "outside" | "inside", double: boolean, brand?: string): number {
+  if (cyl === "round") return brand === "ASSA ABLOY" ? ASSA_ROUND_CYLINDER_MM : ROUND_CYLINDER_MM;
   if (cyl === "iloq") return ILOQ_CYLINDER_MM + (double && side === "inside" ? ILOQ_DOUBLE_INSIDE_EXTRA_MM : 0);
   return STANDARD_CYLINDER_MM;
 }
 export const EXTENDER_SIZES = [8, 10, 12.5] as const;
 export const RING_HEIGHTS = [6, 8, 11, 13, 16, 18, 21] as const;
 export const ILOQ_RING_HEIGHTS = [27, 30, 33] as const;
-export const ROUND_CYLINDER_MM = 33; // ASSA rund: 31mm råcylinder + cylinderhylsa = 33mm monterat
+export const ROUND_CYLINDER_MM = 31;
+// ASSA ABLOY rund: 31mm råcylinder + cylinderhylsa (kopp) = 33mm monterat.
+export const ASSA_ROUND_CYLINDER_MM = 33;
 export const ROUND_EXTENDER_SIZES = [10] as const;
 export const ROUND_RING_HEIGHTS = [8, 13] as const; // endast för runda cylindrar
 export const TOLERANCE_MIN = -2;

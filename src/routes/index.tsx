@@ -104,8 +104,8 @@ function Index() {
   const [singleSide, setSingleSide] = useState<"Utsida" | "Insida">("Utsida");
 
   const isRound = cyl === "round";
-  const baseMm = cylinderBaseMm(cyl, "outside", type === "double");
-  const insideBaseMm = cylinderBaseMm(cyl, "inside", type === "double");
+  const baseMm = cylinderBaseMm(cyl, "outside", type === "double", brand);
+  const insideBaseMm = cylinderBaseMm(cyl, "inside", type === "double", brand);
   const iloqDouble = cyl === "iloq" && type === "double";
   const ringValues = isRound ? [...ROUND_RING_HEIGHTS] : cyl === "iloq" ? [...RING_HEIGHTS, ...ILOQ_RING_HEIGHTS] : [...RING_HEIGHTS];
   const extValues = isRound ? [...ROUND_EXTENDER_SIZES] : [...EXTENDER_SIZES];
@@ -181,7 +181,7 @@ function Index() {
                   <span className="flex items-center justify-between gap-3">
                     <span className="text-sm font-bold">{o.name}</span>
                     <span className={`shrink-0 rounded-md px-2 py-0.5 font-mono text-xs font-bold ${cyl === o.id ? "bg-accent text-accent-foreground" : "bg-muted text-muted-foreground"}`}>
-                      {o.mm}mm
+                      {o.id === "round" ? baseMm : o.mm}mm
                     </span>
                   </span>
                   <span className="mt-1 block text-xs leading-snug text-muted-foreground">{o.hint}</span>
@@ -200,7 +200,7 @@ function Index() {
                     <option key={b} value={b}>{b}</option>
                   ))}
                 </select>
-                <span className="mt-1 block text-xs font-normal text-muted-foreground">Runda cylindrar har ingen fast toleransregel – kalkylatorn väljer alltid närmaste möjliga utstick. Mått per fabrikat läggs in när de är verifierade. Rund cylinder räknas med 33mm: ASSA ABLOY:s råcylinder är 31mm, men cylinderhylsan (koppen) som sitter på bygger ut den till 33mm. Därför skiljer sig måttet från oval cylinder – det är inget fel.</span>
+                <span className="mt-1 block text-xs font-normal text-muted-foreground">Runda cylindrar har ingen fast toleransregel – kalkylatorn väljer alltid närmaste möjliga utstick. {brand === "ASSA ABLOY" ? "ASSA ABLOY räknas med 33mm: råcylindern är 31mm, men cylinderhylsan (koppen) som sitter på bygger ut den till 33mm. Därför skiljer sig måttet – det är inget fel." : "Övriga fabrikat räknas tills vidare med 31mm. Mått per fabrikat läggs in när de är verifierade."}</span>
               </label>
             )}
             <div className="grid grid-cols-2 gap-1 rounded-lg bg-muted p-1">

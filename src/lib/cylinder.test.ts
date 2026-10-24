@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { calculate, deviationOf, filterByMode, EXTENDER_SIZES, RING_HEIGHTS, ILOQ_RING_HEIGHTS, ILOQ_CYLINDER_MM, ROUND_CYLINDER_MM } from "./cylinder";
+import { calculate, deviationOf, filterByMode, EXTENDER_SIZES, RING_HEIGHTS, ILOQ_RING_HEIGHTS, ILOQ_CYLINDER_MM, ROUND_CYLINDER_MM, ASSA_ROUND_CYLINDER_MM } from "./cylinder";
 
 const all = { extenders: [...EXTENDER_SIZES], rings: [...RING_HEIGHTS] };
 
@@ -117,20 +117,20 @@ describe("alternativa kombinationer", () => {
 describe("rund cylinder", () => {
   it("använder 33mm, ringar 8/13 och 10mm förlängare", () => {
     // 33 + 10 - 30 - 13 = 0
-    expect(calculate({ depth: 30, extenders: [10], rings: [8, 13], baseMm: ROUND_CYLINDER_MM })[0]!.deviation).toBe(0);
-    for (const c of calculate({ depth: 33.5, extenders: [10], rings: [8, 13], baseMm: ROUND_CYLINDER_MM })) {
+    expect(calculate({ depth: 30, extenders: [10], rings: [8, 13], baseMm: ASSA_ROUND_CYLINDER_MM })[0]!.deviation).toBe(0);
+    for (const c of calculate({ depth: 33.5, extenders: [10], rings: [8, 13], baseMm: ASSA_ROUND_CYLINDER_MM })) {
       expect([8, 13]).toContain(c.ring);
       expect(c.extenders.every((e) => e === 10)).toBe(true);
     }
   });
   it("ger alltid bästa resultat även utanför toleransen (relaxed)", () => {
     // djup 12: 33-12-13 = +8, utan relaxed inget resultat
-    expect(calculate({ depth: 12, extenders: [10], rings: [8, 13], baseMm: ROUND_CYLINDER_MM })).toEqual([]);
-    const r = calculate({ depth: 12, extenders: [10], rings: [8, 13], baseMm: ROUND_CYLINDER_MM, relaxed: true });
+    expect(calculate({ depth: 12, extenders: [10], rings: [8, 13], baseMm: ASSA_ROUND_CYLINDER_MM })).toEqual([]);
+    const r = calculate({ depth: 12, extenders: [10], rings: [8, 13], baseMm: ASSA_ROUND_CYLINDER_MM, relaxed: true });
     expect(r.length).toBeGreaterThan(0);
     expect(r[0]!.deviation).toBe(8); // bästa möjliga: ring 13, inga förlängare
     // mycket djupt: alltid ett svar
-    const deep = calculate({ depth: 70, extenders: [10], rings: [8, 13], baseMm: ROUND_CYLINDER_MM, relaxed: true });
+    const deep = calculate({ depth: 70, extenders: [10], rings: [8, 13], baseMm: ASSA_ROUND_CYLINDER_MM, relaxed: true });
     expect(deep.length).toBeGreaterThan(0);
     expect(deep[0]!.deviation).toBe(0); // 33+50-70-13 = 0
   });
@@ -143,5 +143,10 @@ describe("iLOQ dubbelcylinder", () => {
     expect(cylinderBaseMm("iloq", "outside", true)).toBe(40);
     expect(cylinderBaseMm("iloq", "inside", false)).toBe(40);
     expect(cylinderBaseMm("standard", "inside", true)).toBe(31);
+  });
+  it("endast ASSA ABLOY rund räknas med 33mm, övriga fabrikat 31mm", () => {
+    expect(cylinderBaseMm("round", "outside", false, "ASSA ABLOY")).toBe(33);
+    expect(cylinderBaseMm("round", "outside", false, "EVVA")).toBe(31);
+    expect(cylinderBaseMm("round", "inside", true, "dormakaba / DORMA")).toBe(ROUND_CYLINDER_MM);
   });
 });
