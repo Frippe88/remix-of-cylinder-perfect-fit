@@ -1,10 +1,9 @@
 # Roadmap
 
 ## Pågående
-- [x] Annonsbild: elektronisk iLOQ-cylinder med litet runt hål, stavfel rättat (v11).
 - [x] Bildversioner sparade och samlade i "Cylinderhjälpen annonsmaterial".
-- [x] Exakt matchning av annonsbildens cylinder mot iLOQ:s officiella C10S.1.SB-bild — avbröts av Fredrik ("det blir bara fel"); v11 gäller, v12 på disk används ej.
-- [ ] Webbadressen cylinderhjalpen.se föll bort längst ner i v8–v11 — väntar på Fredriks ok att lägga tillbaka.
+- [x] Exakt matchning av annonsbildens cylinder mot iLOQ:s officiella C10S.1.SB-bild — avbröts av Fredrik ("det blir bara fel"); v11 och v12 används ej.
+- [x] Slutgiltig annonsbild vald av Fredrik: v4 (rakna_i_huvudet_phone_swedish_cylinders_portrait_v4.jpg) — har cylinderhjalpen.se i foten, inga fler ändringar.
 
 ## Parkerat (väntar på Fredrik)
 - [ ] Skruvar + behör (256/2356) i plocklista och PDF — väntar på verifierade skruvlängder.
