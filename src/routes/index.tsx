@@ -242,6 +242,15 @@ function Index() {
             {type === "double" && (
               <p className="text-xs text-muted-foreground">Cylinder på både utsida och insida.</p>
             )}
+            {iloqDouble && (
+              <div role="note" className="flex gap-3 rounded-xl border border-accent/50 bg-accent/10 p-3 text-sm">
+                <Info className="mt-0.5 size-5 shrink-0 text-accent" aria-hidden />
+                <p>
+                  <span className="font-bold">iLOQ dubbelcylinder: +{ILOQ_DOUBLE_INSIDE_EXTRA_MM}mm på insidan.</span>{" "}
+                  <span className="text-muted-foreground">Kitets två monteringsbrickor (3mm styck) bygger ut cylindern, så insidan räknas med {insideBaseMm}mm istället för {ILOQ_CYLINDER_MM}mm.</span>
+                </p>
+              </div>
+            )}
             <p className="rounded-lg border-l-4 border-accent bg-accent/10 px-3 py-2 text-sm font-medium text-foreground">Dörrdjup = avstånd från låshusets referenspunkt till dörrbladets yta.</p>
             <DepthInput label={type === "single" ? "Dörrdjup" : "Dörrdjup utsida"} value={outside} onChange={setOutside} />
             {type === "double" && <DepthInput label="Dörrdjup insida" value={inside} onChange={setInside} />}
@@ -273,15 +282,6 @@ function Index() {
           <CylinderResults title={type === "single" ? null : "Utsida"} depth={parse(outside)} ext={ext} rings={activeRings} baseMm={baseMm} relaxed={isRound} selected={selOut} onSelect={(c) => setSel({ key: selKey, out: c, in: selIn })} />
           {type === "double" && (
             <div className="space-y-3">
-              {iloqDouble && (
-                <div role="note" className="flex gap-3 rounded-xl border border-accent/50 bg-accent/10 p-3 text-sm">
-                  <Info className="mt-0.5 size-5 shrink-0 text-accent" aria-hidden />
-                  <p>
-                    <span className="font-bold">iLOQ dubbelcylinder: +{ILOQ_DOUBLE_INSIDE_EXTRA_MM}mm på insidan.</span>{" "}
-                    <span className="text-muted-foreground">Kitets två monteringsbrickor (3mm styck) bygger ut cylindern, så insidan räknas med {insideBaseMm}mm istället för {ILOQ_CYLINDER_MM}mm.</span>
-                  </p>
-                </div>
-              )}
               <CylinderResults title="Insida" depth={parse(inside)} ext={ext} rings={activeRings} baseMm={insideBaseMm} relaxed={isRound} selected={selIn} onSelect={(c) => setSel({ key: selKey, out: selOut, in: c })} />
             </div>
           )}
