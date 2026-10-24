@@ -50,7 +50,7 @@ export function projectTotals(doors: Door[]): Totals {
   return { extenders: [...ext.values()].sort(sort), rings: [...rings.values()].sort(sort) };
 }
 
-function sideText(s: DoorSide, kind: RingKind): string {
+export function sideText(s: DoorSide, kind: RingKind): string {
   const counts = new Map<number, number>();
   s.extenders.forEach((e) => counts.set(e, (counts.get(e) ?? 0) + 1));
   const parts = [...counts].sort((a, b) => a[0] - b[0]).map(([e, n]) => `${n}st ${formatMm(e)} förlängare`);
