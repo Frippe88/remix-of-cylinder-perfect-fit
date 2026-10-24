@@ -293,11 +293,30 @@ export function ProjectPanel({ project, setProject, store, open, onOpenChange, c
   );
 }
 
+const MIN_KEY = "cylinderhjalpen.projectbar.min";
+
 export function ProjectBar({ project, projects = 1, onOpen }: { project: Project; projects?: number; onOpen: () => void }) {
-  const [hiddenAt, setHiddenAt] = useState<number | null>(null);
+  const [min, setMin] = useState(false);
+  const [ready, setReady] = useState(false);
+  useEffect(() => {
+    try { setMin(localStorage.getItem(MIN_KEY) === "1"); } catch { /* ignore */ }
+    setReady(true);
+  }, []);
+  const toggle = (v: boolean) => {
+    setMin(v);
+    try { localStorage.setItem(MIN_KEY, v ? "1" : "0"); } catch { /* ignore */ }
+  };
   if (project.doors.length === 0 && projects < 2) return null;
-  // Hidden until a new door is added (door count grows past the dismissed count)
-  if (hiddenAt !== null && project.doors.length <= hiddenAt) return null;
+  if (!ready) return null;
+  if (min) {
+    return (
+      <button type="button" onClick={() => toggle(false)} aria-label="Öppna projektlisten" title="Öppna projektlistan"
+        className="fixed bottom-3 right-3 z-40 flex size-14 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-elevated ring-1 ring-primary-foreground/15 transition active:scale-95">
+        <FolderOpen className="size-6 text-accent" aria-hidden />
+        <span className="absolute -right-1 -top-1 flex size-6 items-center justify-center rounded-full bg-accent text-[11px] font-bold text-accent-foreground">{project.doors.length}</span>
+      </button>
+    );
+  }
   return (
     <div className="fixed inset-x-3 bottom-3 z-40 mx-auto flex max-w-md items-stretch rounded-xl bg-primary text-primary-foreground shadow-elevated">
       <button onClick={onOpen} className="flex min-w-0 flex-1 items-center gap-3 py-3 pl-4 pr-2 text-left">
@@ -306,9 +325,9 @@ export function ProjectBar({ project, projects = 1, onOpen }: { project: Project
         <span className="shrink-0 rounded-full border border-accent/50 bg-accent/15 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-accent">Beta</span>
         <span className="text-sm font-bold text-accent">Visa →</span>
       </button>
-      <button type="button" aria-label="Dölj projektlisten" onClick={() => setHiddenAt(project.doors.length)}
+      <button type="button" aria-label="Minimera projektlisten" onClick={() => toggle(true)} title="Minimera"
         className="flex shrink-0 items-center border-l border-primary-foreground/20 px-3 opacity-80 hover:opacity-100">
-        <X className="size-4" aria-hidden />
+        <ChevronsRight className="size-4" aria-hidden />
       </button>
     </div>
   );
