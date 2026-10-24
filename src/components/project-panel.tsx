@@ -6,6 +6,8 @@ import { clearDoors, doorsText, doorsToPick, KIND_LABEL, projectText, projectTot
 import { sideChip } from "@/components/pick-list-button";
 import { CONTACT_EMAIL } from "@/components/contact-form";
 import { formatMm } from "@/lib/cylinder";
+import { FileDown } from "lucide-react";
+import { deliverFile, pdfFileName, projectPdf } from "@/lib/project-pdf";
 
 const OLD_KEY = "cylinderhjalpen.project.v1";
 const KEY = "cylinderhjalpen.projects.v2";
@@ -58,6 +60,21 @@ function CopyButton({ text, label }: { text: string; label: string }) {
     <Button className={`min-h-11 w-full font-semibold ${ok ? "border-success/40 text-success" : "bg-accent text-accent-foreground hover:bg-accent/85"}`} variant={ok ? "outline" : "default"}
       onClick={async () => { if (await copyText(text)) { setOk(true); setTimeout(() => setOk(false), 2000); } }}>
       {ok ? <Check aria-hidden /> : <ClipboardCopy aria-hidden />}{ok ? "Kopierad!" : label}
+    </Button>
+  );
+}
+
+function PdfButton({ project, remainingOnly }: { project: Project; remainingOnly: boolean }) {
+  const [blob, setBlob] = useState<Blob | null>(null);
+  useEffect(() => {
+    let live = true; setBlob(null);
+    projectPdf(project, remainingOnly).then((b) => { if (live) setBlob(b); }).catch(() => {});
+    return () => { live = false; };
+  }, [project, remainingOnly]);
+  return (
+    <Button variant="outline" className="min-h-11 w-full font-semibold" disabled={!blob}
+      onClick={() => { if (blob) void deliverFile(blob, pdfFileName(project)); }}>
+      <FileDown aria-hidden />{blob ? "Ladda ner PDF" : "Förbereder PDF…"}
     </Button>
   );
 }
@@ -238,6 +255,7 @@ export function ProjectPanel({ project, setProject, store, open, onOpenChange, c
               <CopyButton text={doorsText(project)} label="Kopiera dörrlista" />
               <CopyButton text={totalsText(project, onlyLeft)} label="Kopiera inköpslista" />
               <CopyButton text={projectText(project)} label="Kopiera inköpslista och dörrlista" />
+              <PdfButton project={project} remainingOnly={onlyLeft} />
               {done > 0 && onlyLeft && <p className="text-xs text-muted-foreground">Inköpslistan räknar bort {done} {done === 1 ? "monterad dörr" : "monterade dörrar"}.</p>}
             </div>
           )}
