@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
-import { ArrowDown, ArrowUp, Check, ChevronDown, ClipboardCopy, ClipboardList, Clock, DoorOpen, FolderOpen, Info, Layers, Mail, Plus, Trash2, X } from "lucide-react";
+import { ArrowDown, ArrowUp, Check, ChevronDown, ClipboardCopy, ClipboardList, Clock, DoorOpen, FolderOpen, Info, Layers, Mail, Pencil, Plus, Trash2, X } from "lucide-react";
+import { InfoSheetRow } from "@/components/info-sheet-row";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from "@/components/ui/sheet";
 import { clearDoors, doorsText, doorsToPick, KIND_LABEL, projectText, projectTotals, RING_HAS_SIDE, setDoorSide, totalsText, type Door, type Project } from "@/lib/project";
@@ -54,12 +55,12 @@ async function copyText(text: string) {
   try { await navigator.clipboard.writeText(text); return true; } catch { return false; }
 }
 
-function CopyButton({ text, label }: { text: string; label: string }) {
+function CopyButton({ text, label, small }: { text: string; label: string; small?: boolean }) {
   const [ok, setOk] = useState(false);
   return (
-    <Button className={`min-h-11 w-full font-semibold ${ok ? "border-success/40 text-success" : "bg-accent text-accent-foreground hover:bg-accent/85"}`} variant={ok ? "outline" : "default"}
+    <Button variant="outline" className={`w-full font-semibold ${small ? "min-h-10 px-2 text-xs" : "min-h-11"} ${ok ? "border-success/40 text-success" : "border-accent/40"}`}
       onClick={async () => { if (await copyText(text)) { setOk(true); setTimeout(() => setOk(false), 2000); } }}>
-      {ok ? <Check aria-hidden /> : <ClipboardCopy aria-hidden />}{ok ? "Kopierad!" : label}
+      {ok ? <Check aria-hidden /> : <ClipboardCopy aria-hidden className="text-accent" />}{ok ? "Kopierad!" : label}
     </Button>
   );
 }
@@ -72,7 +73,7 @@ function PdfButton({ project, remainingOnly }: { project: Project; remainingOnly
     return () => { live = false; };
   }, [project, remainingOnly]);
   return (
-    <Button variant="outline" className="min-h-11 w-full font-semibold" disabled={!blob}
+    <Button className="min-h-12 w-full bg-accent text-base font-bold text-accent-foreground hover:bg-accent/85" disabled={!blob}
       onClick={() => { if (blob) void deliverFile(blob, pdfFileName(project)); }}>
       <FileDown aria-hidden />{blob ? "Ladda ner PDF" : "Förbereder PDF…"}
     </Button>
@@ -131,18 +132,20 @@ function NameField({ name, onSave }: { name: string; onSave: (name: string) => v
   const [draft, setDraft] = useState(name);
   const [saved, setSaved] = useState(false);
   const dirty = draft.trim() !== name;
-  const save = (el?: HTMLInputElement | null) => {
-    onSave(draft.trim()); setDraft(draft.trim()); el?.blur();
+  const save = () => {
+    if (!dirty) return;
+    onSave(draft.trim()); setDraft(draft.trim());
     setSaved(true); setTimeout(() => setSaved(false), 2000);
   };
   return (
-    <form className="flex gap-2" onSubmit={(e) => { e.preventDefault(); save(e.currentTarget.querySelector("input")); }}>
-      <input value={draft} onChange={(e) => { setDraft(e.target.value); setSaved(false); }} enterKeyHint="done"
+    <form className="relative min-w-0 flex-1" onSubmit={(e) => { e.preventDefault(); save(); e.currentTarget.querySelector("input")?.blur(); }}>
+      <input value={draft} onChange={(e) => { setDraft(e.target.value); setSaved(false); }} onBlur={save} enterKeyHint="done"
         placeholder="Projektnamn, t.ex. Storgatan 4" aria-label="Projektnamn"
-        className="h-11 min-w-0 flex-1 rounded-lg border border-input bg-background px-3 text-base" />
-      <Button type="submit" variant={dirty ? "default" : "outline"} className={`h-11 shrink-0 font-semibold ${saved ? "text-success" : dirty ? "bg-accent text-accent-foreground hover:bg-accent/85" : "border-accent/40"}`}>
-        <Check aria-hidden /> {saved ? "Sparat!" : "Spara"}
-      </Button>
+        className="h-11 w-full rounded-lg border border-input bg-background pl-3 pr-11 text-base font-semibold" />
+      <button type="submit" aria-label={saved ? "Sparat" : "Spara namn"} title="Spara namn"
+        className={`absolute right-1.5 top-1/2 inline-flex size-8 -translate-y-1/2 items-center justify-center rounded-md ${saved ? "text-success" : dirty ? "bg-accent text-accent-foreground" : "text-muted-foreground"}`}>
+        {saved || !dirty ? <Check className="size-4" aria-hidden /> : <Pencil className="size-4" aria-hidden />}
+      </button>
     </form>
   );
 }
@@ -162,12 +165,7 @@ export function ProjectPanel({ project, setProject, store, open, onOpenChange, c
         <div className="min-h-0 flex-1 overflow-y-auto">
         <SheetHeader className="border-b border-t-4 border-t-accent bg-muted/40 px-4 pb-4 pt-5 text-left sm:px-6">
           <SheetTitle className="flex items-center gap-2 pr-8 text-xl"><FolderOpen className="size-5 text-accent" aria-hidden />Projekt<span className="rounded-full border border-accent/50 bg-accent/10 px-2 py-0.5 text-[11px] font-bold uppercase tracking-wide text-accent">Beta</span></SheetTitle>
-          <SheetDescription className="mt-1 flex items-start gap-2 rounded-lg border border-accent/30 bg-accent/5 px-3 py-2 text-xs leading-snug text-foreground">
-            <Info className="mt-0.5 size-3.5 shrink-0 text-accent" aria-hidden />
-            <span>
-              <span className="font-bold text-accent">Beta – gratis under testperioden.</span> Projekten sparas bara i den här telefonen/webbläsaren – mer information och feedback längre ner.
-            </span>
-          </SheetDescription>
+          <SheetDescription className="sr-only">Dina projekt, dörrar och plocklista. Sparas i den här webbläsaren.</SheetDescription>
           <div className="flex flex-wrap gap-2 pt-1 text-xs font-semibold">
             <span className="inline-flex items-center gap-1.5 rounded-md border border-accent/30 bg-card px-2.5 py-1.5"><DoorOpen className="size-3.5 text-accent" aria-hidden />{project.doors.length} {project.doors.length === 1 ? "dörr" : "dörrar"}</span>
             <span className="inline-flex items-center gap-1.5 rounded-md border bg-card px-2.5 py-1.5 text-muted-foreground"><Check className="size-3.5 text-success" aria-hidden />{done} monterade</span>
@@ -175,20 +173,22 @@ export function ProjectPanel({ project, setProject, store, open, onOpenChange, c
         </SheetHeader>
         <div className="space-y-4 px-4 py-5 sm:px-6">
           <div className="flex gap-2">
-            <div className="relative min-w-0 flex-1">
-              <select value={store.active} onChange={(e) => { store.select(e.target.value); if (closeOnSelect) onOpenChange(false); }} aria-label="Välj projekt"
-                className="h-11 w-full appearance-none rounded-lg border border-input bg-background py-0 pl-3 pr-10 text-base">
-                {store.list.map((s, i) => (
-                  <option key={s.id} value={s.id}>{s.project.name || `Projekt ${i + 1}`} · {s.project.doors.length} {s.project.doors.length === 1 ? "dörr" : "dörrar"}</option>
-                ))}
-              </select>
-              <ChevronDown aria-hidden className="pointer-events-none absolute right-4 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
-            </div>
+            <NameField key={store.active} name={project.name} onSave={(name) => setProject((p) => ({ ...p, name }))} />
             <Button variant="outline" className="h-11 shrink-0 border-accent/40 font-semibold" onClick={() => { store.create(); setTab("doors"); }}>
               <Plus aria-hidden /> Nytt
             </Button>
           </div>
-          <NameField key={store.active} name={project.name} onSave={(name) => setProject((p) => ({ ...p, name }))} />
+          {store.list.length > 1 && (
+            <div className="relative">
+              <select value={store.active} onChange={(e) => { store.select(e.target.value); if (closeOnSelect) onOpenChange(false); }} aria-label="Byt projekt"
+                className="h-10 w-full appearance-none rounded-lg border border-input bg-muted/40 py-0 pl-3 pr-10 text-sm font-medium">
+                {store.list.map((s, i) => (
+                  <option key={s.id} value={s.id}>Byt projekt: {s.project.name || `Projekt ${i + 1}`} · {s.project.doors.length} {s.project.doors.length === 1 ? "dörr" : "dörrar"}</option>
+                ))}
+              </select>
+              <ChevronDown aria-hidden className="pointer-events-none absolute right-4 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+            </div>
+          )}
           <div className="grid grid-cols-2 gap-1 rounded-lg border bg-muted p-1" role="group" aria-label="Projektvy">
             {(["doors", "total"] as const).map((t) => (
               <Button variant="ghost" key={t} onClick={() => setTab(t)} aria-pressed={tab === t} className={`min-h-11 whitespace-normal rounded-md px-2 text-sm font-semibold ${tab === t ? "bg-accent text-accent-foreground shadow-card hover:bg-accent/85 hover:text-accent-foreground" : "text-muted-foreground hover:bg-card/50 hover:text-foreground"}`}>
@@ -252,33 +252,35 @@ export function ProjectPanel({ project, setProject, store, open, onOpenChange, c
           )}
           {tab === "total" && project.doors.length > 0 && (
             <div className="space-y-2 border-t border-border pt-4">
-              <p className="flex items-center gap-2 text-xs font-bold uppercase tracking-wide text-muted-foreground"><ClipboardCopy className="size-4 text-accent" aria-hidden />Kopiera</p>
-              <CopyButton text={doorsText(project)} label="Kopiera dörrlista" />
-              <CopyButton text={totalsText(project, onlyLeft)} label="Kopiera inköpslista" />
-              <CopyButton text={projectText(project)} label="Kopiera inköpslista och dörrlista" />
               <PdfButton project={project} remainingOnly={onlyLeft} />
-              {done > 0 && onlyLeft && <p className="text-xs text-muted-foreground">Inköpslistan räknar bort {done} {done === 1 ? "monterad dörr" : "monterade dörrar"}.</p>}
+              <CopyButton text={projectText(project)} label="Kopiera allt" />
+              <div className="grid grid-cols-2 gap-2">
+                <CopyButton small text={totalsText(project, onlyLeft)} label="Bara inköpslista" />
+                <CopyButton small text={doorsText(project)} label="Bara dörrlista" />
+              </div>
+              {done > 0 && onlyLeft && <p className="text-xs text-muted-foreground">PDF och inköpslista räknar bort {done} {done === 1 ? "monterad dörr" : "monterade dörrar"}.</p>}
             </div>
           )}
-          <section className="rounded-xl border border-accent/30 bg-accent/5 p-3.5">
-            <h3 className="flex items-center gap-2 text-sm font-bold"><Info className="size-4 shrink-0 text-accent" aria-hidden />Beta – gratis under testperioden</h3>
-            <p className="mt-1.5 text-xs leading-relaxed text-muted-foreground">
-              Projektfunktionen är ny och byggs på löpande. Just nu är den gratis att använda, och den sparar bara i den här telefonen eller webbläsaren – ingen kopia finns i molnet än. Byter du enhet, eller rensar webbläsaren, försvinner projekten.
-            </p>
-            <ul className="mt-3 space-y-1.5 text-xs font-medium">
-              <li className="flex items-start gap-2"><Check className="mt-0.5 size-3.5 shrink-0 text-success" aria-hidden /><span>Idag: flera projekt, dörrar och total plocklista – utan kostnad</span></li>
-              <li className="flex items-start gap-2"><Clock className="mt-0.5 size-3.5 shrink-0 text-accent" aria-hidden /><span>Härnäst: inloggning och synkning mellan telefon och dator</span></li>
-              <li className="flex items-start gap-2"><Clock className="mt-0.5 size-3.5 shrink-0 text-accent" aria-hidden /><span>Senare: prenumeration som håller funktionen igång</span></li>
-            </ul>
-            <Button asChild variant="outline" className="mt-3.5 h-11 w-full border-accent/40 font-semibold">
-              <a href={`mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent("Feedback om Projekt (beta)")}&body=${encodeURIComponent("Hej!\n\nMin feedback om projektfunktionen:\n\n")}`}>
-                <Mail className="size-4 text-accent" aria-hidden /> Skicka feedback
-              </a>
-            </Button>
-            <p className="mt-2 text-center text-[11px] text-muted-foreground">
-              Mejl: <a className="font-semibold text-link underline underline-offset-2" href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>
-            </p>
-          </section>
+          <div className="overflow-hidden rounded-xl border border-accent/30 bg-accent/5">
+            <InfoSheetRow icon={<Info />} title="Beta – gratis under testperioden" hint="Tryck för info om sparande och feedback">
+              <p className="text-sm leading-relaxed text-muted-foreground">
+                Projektfunktionen är ny och byggs på löpande. Just nu är den gratis att använda, och den sparar bara i den här telefonen eller webbläsaren – ingen kopia finns i molnet än. Byter du enhet, eller rensar webbläsaren, försvinner projekten.
+              </p>
+              <ul className="mt-4 space-y-2 text-sm font-medium">
+                <li className="flex items-start gap-2"><Check className="mt-0.5 size-4 shrink-0 text-success" aria-hidden /><span>Idag: flera projekt, dörrar och total plocklista – utan kostnad</span></li>
+                <li className="flex items-start gap-2"><Clock className="mt-0.5 size-4 shrink-0 text-accent" aria-hidden /><span>Härnäst: inloggning och synkning mellan telefon och dator</span></li>
+                <li className="flex items-start gap-2"><Clock className="mt-0.5 size-4 shrink-0 text-accent" aria-hidden /><span>Senare: prenumeration som håller funktionen igång</span></li>
+              </ul>
+              <Button asChild variant="outline" className="mt-5 h-11 w-full border-accent/40 font-semibold">
+                <a href={`mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent("Feedback om Projekt (beta)")}&body=${encodeURIComponent("Hej!\n\nMin feedback om projektfunktionen:\n\n")}`}>
+                  <Mail className="size-4 text-accent" aria-hidden /> Skicka feedback
+                </a>
+              </Button>
+              <p className="mt-2 text-center text-xs text-muted-foreground">
+                Mejl: <a className="font-semibold text-link underline underline-offset-2" href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>
+              </p>
+            </InfoSheetRow>
+          </div>
           {(project.doors.length > 0 || store.list.length > 1) && (
             <Button variant="ghost" className="w-full text-destructive" onClick={() => { if (confirm(`Ta bort ${project.name || "projektet"}?`)) store.remove(); }}>
               <X aria-hidden /> Ta bort projekt
