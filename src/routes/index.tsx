@@ -29,7 +29,7 @@ export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
       { title: "Cylinderhjälpen – cylinderkalkylator för låssmeder" },
-      { name: "description", content: "Cylinderhjälpen räknar fram rätt kombination av cylinderförlängare och cylinderringar, för enkel- och dubbelcylinder." },
+      { name: "description", content: "Gratis cylinderkalkylator för låssmeder. Räkna fram rätt cylinderförlängare och cylinderringar för oval, rund och iLOQ – enkel- och dubbelcylinder." },
       { name: "application-name", content: "Cylinderhjälpen" },
       { property: "og:site_name", content: "Cylinderhjälpen" },
       { property: "og:title", content: "Cylinderhjälpen – cylinderkalkylator för låssmeder" },
