@@ -115,7 +115,7 @@ function Index() {
   const setActiveRings = isRound ? setRoundRings : setRings;
 
   // Valda alternativ för plocklistan; nollställs automatiskt när indata ändras.
-  const selKey = [cyl, type, outside, inside, ext.join(","), activeRings.join(",")].join("|");
+  const selKey = [cyl, brand, type, outside, inside, ext.join(","), activeRings.join(",")].join("|");
   const [sel, setSel] = useState<{ key: string; out: Combination | null; in: Combination | null }>({ key: "", out: null, in: null });
   const selOut = sel.key === selKey ? sel.out : null;
   const selIn = sel.key === selKey ? sel.in : null;
