@@ -50,9 +50,21 @@ export const Route = createFileRoute("/")({
           alternateName: "cylinderhjälpen.se",
           url: "https://cylinderhjalpen.se/",
           inLanguage: "sv",
+          publisher: {
+            "@type": "Organization",
+            name: "Cylinderhjälpen",
+            url: "https://cylinderhjalpen.se/",
+            logo: {
+              "@type": "ImageObject",
+              url: "https://cylinderhjalpen.se/icon-any-512.png",
+              width: 512,
+              height: 512,
+            },
+          },
         }),
       },
     ],
+
   }),
   component: Index,
 });
