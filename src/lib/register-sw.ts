@@ -5,7 +5,7 @@ function refused(): boolean {
   if (!import.meta.env.PROD) return true;
   if (window.self !== window.top) return true;
   const h = window.location.hostname.toLowerCase();
-  const label = h.split(".")[0];
+  const label = h.split(".")[0] ?? "";
   for (const d of [".lovable.app", ".gpt-eng.com", ".gptengineer.run"]) {
     if (h.endsWith(d) && (PREVIEW_LABEL.test(label) || /^project--.+-dev$/.test(label))) return true;
   }
