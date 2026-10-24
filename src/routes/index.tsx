@@ -5,7 +5,8 @@ import { useEffect, useState } from "react";
 import { CylinderResults } from "@/components/cylinder-results";
 import { PickListButton } from "@/components/pick-list-button";
 import { ProjectBar, ProjectPanel, useProject } from "@/components/project-panel";
-import { nextDoorName } from "@/lib/project";
+import { nextDoorName, type DoorSide } from "@/lib/project";
+import { DoorNameDialog } from "@/components/door-name-dialog";
 import { toast } from "sonner";
 import { Toaster } from "@/components/ui/sonner";
 import { ShareSection } from "@/components/share-section";
@@ -112,6 +113,7 @@ function Index() {
   const [project, setProject, projectStore] = useProject();
   const [projectOpen, setProjectOpen] = useState(false);
   const [switchProject, setSwitchProject] = useState(false);
+  const [pendingDoor, setPendingDoor] = useState<{ sides: DoorSide[]; kind: "oval" | "rund" | "iloq" } | null>(null);
   const [singleSide, setSingleSide] = useState<"Utsida" | "Insida">("Utsida");
 
   const isRound = cyl === "round";
@@ -282,18 +284,20 @@ function Index() {
             sides={type === "single" ? [{ label: isRound ? null : singleSide, depth: parse(outside), selected: selOut }] : [{ label: "Utsida", depth: parse(outside), selected: selOut }, { label: "Insida", depth: parse(inside), selected: selIn }]}
             ext={ext} rings={activeRings} baseMm={baseMm} insideBaseMm={insideBaseMm} relaxed={isRound}
             projectName={project.name} projectDoors={project.doors.length} projectCount={projectStore.list.length} onOpenProject={() => { setSwitchProject(true); setProjectOpen(true); }}
-            onSave={(sides) => {
-              const name = window.prompt("Namn på dörren", nextDoorName(project.doors));
-              if (name === null) return;
-              const kind = isRound ? "rund" : cyl === "iloq" ? "iloq" : "oval";
-              setProject((p) => ({ ...p, doors: [...p.doors, { id: `${Date.now()}`, name: name.trim() || nextDoorName(p.doors), kind, done: false, sides }] }));
-              toast.success(`${name.trim() || "Dörren"} tillagd i ${project.name.trim() ? `”${project.name.trim()}”` : "projektet"}`);
-            }}
+            onSave={(sides) => setPendingDoor({ sides, kind: isRound ? "rund" : cyl === "iloq" ? "iloq" : "oval" })}
           />
           <CylinderResults title={type === "single" ? null : "Utsida"} depth={parse(outside)} ext={ext} rings={activeRings} baseMm={baseMm} relaxed={isRound} selected={selOut} onSelect={(c) => setSel({ key: selKey, out: c, in: selIn })} />
           {type === "double" && <CylinderResults title="Insida" depth={parse(inside)} ext={ext} rings={activeRings} baseMm={insideBaseMm} relaxed={isRound} selected={selIn} onSelect={(c) => setSel({ key: selKey, out: selOut, in: c })} />}
         </section>
       </main>
+      <DoorNameDialog open={!!pendingDoor} defaultName={nextDoorName(project.doors)} projectName={project.name} onCancel={() => setPendingDoor(null)}
+        onConfirm={(name) => {
+          if (!pendingDoor) return;
+          const { sides, kind } = pendingDoor;
+          setProject((p) => ({ ...p, doors: [...p.doors, { id: `${Date.now()}`, name, kind, done: false, sides }] }));
+          setPendingDoor(null);
+          toast.success(`${name} tillagd i ${project.name.trim() ? `”${project.name.trim()}”` : "projektet"}`);
+        }} />
       <ProjectBar project={project} projects={projectStore.list.length} onOpen={() => { setSwitchProject(false); setProjectOpen(true); }} />
       <ProjectPanel project={project} setProject={setProject} store={projectStore} open={projectOpen} onOpenChange={(v) => { setProjectOpen(v); if (!v) setSwitchProject(false); }} closeOnSelect={switchProject} />
       <Toaster position="top-center" />
