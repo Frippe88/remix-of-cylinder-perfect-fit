@@ -200,7 +200,7 @@ function Index() {
                     <option key={b} value={b}>{b}</option>
                   ))}
                 </select>
-                <span className="mt-1 block text-xs font-normal text-muted-foreground">Runda cylindrar har ingen fast toleransregel – kalkylatorn väljer alltid närmaste möjliga utstick. Mått per fabrikat läggs in när de är verifierade. Tills vidare räknas alla med 31mm.</span>
+                <span className="mt-1 block text-xs font-normal text-muted-foreground">Runda cylindrar har ingen fast toleransregel – kalkylatorn väljer alltid närmaste möjliga utstick. Mått per fabrikat läggs in när de är verifierade. Rund cylinder räknas med 33mm: ASSA ABLOY:s råcylinder är 31mm, men cylinderhylsan (koppen) som sitter på bygger ut den till 33mm. Därför skiljer sig måttet från oval cylinder – det är inget fel.</span>
               </label>
             )}
             <div className="grid grid-cols-2 gap-1 rounded-lg bg-muted p-1">

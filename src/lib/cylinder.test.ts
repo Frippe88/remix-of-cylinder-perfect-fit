@@ -115,24 +115,24 @@ describe("alternativa kombinationer", () => {
 });
 
 describe("rund cylinder", () => {
-  it("använder 31mm, ringar 8/13 och 10mm förlängare", () => {
-    // 31 + 10 - 28 - 13 = 0
-    expect(calculate({ depth: 28, extenders: [10], rings: [8, 13], baseMm: ROUND_CYLINDER_MM })[0]!.deviation).toBe(0);
+  it("använder 33mm, ringar 8/13 och 10mm förlängare", () => {
+    // 33 + 10 - 30 - 13 = 0
+    expect(calculate({ depth: 30, extenders: [10], rings: [8, 13], baseMm: ROUND_CYLINDER_MM })[0]!.deviation).toBe(0);
     for (const c of calculate({ depth: 33.5, extenders: [10], rings: [8, 13], baseMm: ROUND_CYLINDER_MM })) {
       expect([8, 13]).toContain(c.ring);
       expect(c.extenders.every((e) => e === 10)).toBe(true);
     }
   });
   it("ger alltid bästa resultat även utanför toleransen (relaxed)", () => {
-    // djup 12: 31-12-13 = +6, utan relaxed inget resultat
+    // djup 12: 33-12-13 = +8, utan relaxed inget resultat
     expect(calculate({ depth: 12, extenders: [10], rings: [8, 13], baseMm: ROUND_CYLINDER_MM })).toEqual([]);
     const r = calculate({ depth: 12, extenders: [10], rings: [8, 13], baseMm: ROUND_CYLINDER_MM, relaxed: true });
     expect(r.length).toBeGreaterThan(0);
-    expect(r[0]!.deviation).toBe(6); // bästa möjliga: ring 13, inga förlängare
+    expect(r[0]!.deviation).toBe(8); // bästa möjliga: ring 13, inga förlängare
     // mycket djupt: alltid ett svar
     const deep = calculate({ depth: 70, extenders: [10], rings: [8, 13], baseMm: ROUND_CYLINDER_MM, relaxed: true });
     expect(deep.length).toBeGreaterThan(0);
-    expect(deep[0]!.deviation).toBe(-2); // 31+50-70-13 = −2 (inom −2)
+    expect(deep[0]!.deviation).toBe(0); // 33+50-70-13 = 0
   });
 });
 
