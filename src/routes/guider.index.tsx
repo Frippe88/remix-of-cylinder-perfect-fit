@@ -8,7 +8,7 @@ export const Route = createFileRoute("/guider/")({
   head: () => ({
     meta: [
       { title: "Guider om cylindermontage – Cylinderhjälpen" },
-      { name: "description", content: "Praktiska guider för låssmeder: cylinderlängd, ringar, förlängare, dubbelcylinder, iLOQ och rund cylinder." },
+      { name: "description", content: "Praktiska guider för låssmeder: så räknar du cylinderlängd, väljer ringar och förlängare, mäter dubbelcylinder och monterar iLOQ och rund cylinder." },
       { property: "og:title", content: "Guider om cylindermontage – Cylinderhjälpen" },
       { property: "og:description", content: "Praktiska guider om cylinderlängd, ringar och förlängare." },
       { property: "og:url", content: URL },

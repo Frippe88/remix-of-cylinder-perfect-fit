@@ -28,7 +28,7 @@ export const GUIDES: Guide[] = [
   {
     slug: "rakna-cylinderlangd",
     title: "Räkna cylinderlängd",
-    description: "Mät dörrdjupet från låshuset ut till dörrens yta och räkna fram cylinder, förlängare och ringar.",
+    description: "Så mäter du dörrdjupet från låshusets cylinderfäste ut till dörrens yta och räknar fram rätt cylinderlängd, förlängare och ringar steg för steg.",
     answer: `Mät dörrdjupet från låshusets cylinderfäste ut till dörrbladets yta på den sida du räknar – det är inte samma sak som hela dörrens tjocklek. En standard oval cylinder är ${STANDARD_CYLINDER_MM}mm. Förlängarna bygger upp cylindern till rätt längd, och ringen väljs efter hur mycket cylindern sticker ut.`,
     sections: [
       { heading: "Så mäter du dörrdjupet", body: ["Mät från låshusets cylinderfäste ut till dörrbladets yttre yta, på den sida du ska räkna.", "Mät med tumstock och läs av måttet i millimeter.", "Ta med skylt, förstärkningsbehör eller andra tillbehör som bygger på dörrbladet.", "Vid dubbelcylinder mäts varje sida för sig – måttet på in- och utsida är sällan detsamma och varierar ofta."] },
@@ -41,7 +41,7 @@ export const GUIDES: Guide[] = [
   {
     slug: "cylinder-sticker-ut",
     title: "Cylinder sticker ut för mycket?",
-    description: `Godkänd avvikelse för oval cylinder är ${TOLERANCE_MIN} till +${TOLERANCE_MAX}mm. Så väljer du ring och förlängare när cylindern sticker ut.`,
+    description: `Godkänd avvikelse för oval cylinder är ${TOLERANCE_MIN} till +${TOLERANCE_MAX}mm. Så väljer du rätt ring och förlängare när cylindern sticker ut för mycket.`,
     answer: `För ovala cylindrar och iLOQ gäller en godkänd avvikelse på ${TOLERANCE_MIN} till +${TOLERANCE_MAX}mm enligt regelboken. Sticker cylindern ut mer behöver du en annan ring eller färre förlängare.`,
     sections: [
       { heading: "Varför utsticket spelar roll", body: ["En cylinder som sticker ut för mycket är lättare att angripa och ser slarvig ut. En cylinder som sitter för djupt kan vara svår att använda med nyckel eller vred."] },
@@ -52,7 +52,7 @@ export const GUIDES: Guide[] = [
   {
     slug: "ring-oval-cylinder",
     title: "Vilken ring passar till oval cylinder?",
-    description: "Guide till cylinderringar för oval cylinder: vilka höjder som finns och hur du väljer rätt tillsammans med förlängare.",
+    description: "Guide till cylinderringar för oval cylinder: vilka ringhöjder som finns och hur du väljer rätt ring tillsammans med förlängare för ett snyggt montage.",
     answer: `Ringen väljs så att cylinderns utstick hamnar inom ${TOLERANCE_MIN} till +${TOLERANCE_MAX}mm. Vanliga ringhöjder för oval cylinder är ${list(RING_HEIGHTS)}.`,
     sections: [
       { heading: "Ring och förlängare tillsammans", body: ["Förlängarna tar upp det stora måttet och ringen finjusterar resten. Ofta finns flera kombinationer som fungerar. Välj då den som hamnar närmast dörrens yta, och om två är lika bra, den som behöver minst antal förlängare. Färre delar ger ett stabilare och snyggare montage."] },
@@ -63,7 +63,7 @@ export const GUIDES: Guide[] = [
   {
     slug: "dubbelcylinder-matt",
     title: "Dubbelcylinder – så räknar du måtten",
-    description: "Vid dubbelcylinder räknas utsida och insida var för sig. Så mäter och räknar du båda sidor rätt.",
+    description: "Vid dubbelcylinder räknas utsida och insida var för sig, eftersom måtten ofta skiljer sig. Så mäter du dörrdjupet och räknar båda sidor rätt.",
     answer: "Vid dubbelcylinder har dörren cylinder på båda sidor. Mät dörrdjupet separat på utsidan och insidan och räkna varje sida för sig – måttet på in- och utsida är sällan detsamma och varierar ofta.",
     sections: [
       { heading: "Varför sidorna skiljer sig", body: ["Låshuset sitter sällan exakt mitt i dörrbladet, och behör eller skyltar kan vara olika tjocka på de två sidorna."] },
@@ -74,7 +74,7 @@ export const GUIDES: Guide[] = [
   {
     slug: "iloq-dubbelcylinder-montage",
     title: "iLOQ dubbelcylinder – montage och mått",
-    description: `iLOQ dubbelcylinder bygger ${ILOQ_DOUBLE_INSIDE_EXTRA_MM}mm extra på insidan på grund av två monteringsbrickor. Så räknar du rätt.`,
+    description: `iLOQ dubbelcylinder bygger ${ILOQ_DOUBLE_INSIDE_EXTRA_MM}mm extra på insidan på grund av två monteringsbrickor på 3mm. Så räknar du förlängare och ringar rätt.`,
     answer: `En iLOQ-cylinder är ${ILOQ_CYLINDER_MM}mm. Vid dubbelmontage sitter två monteringsbrickor på 3mm vardera på insidan av låshuset, så insidan räknas som ${ILOQ_CYLINDER_MM + ILOQ_DOUBLE_INSIDE_EXTRA_MM}mm.`,
     sections: [
       { heading: "Varför måtten blir annorlunda", body: ["Brickorna sitter mellan låshus och cylinder och skjuter ut cylindern. Räknar du utan dem sticker cylindern ut för mycket på insidan."] },
@@ -85,7 +85,7 @@ export const GUIDES: Guide[] = [
   {
     slug: "rund-cylinder-ringar-forlangare",
     title: "Rund cylinder – ringar och förlängare",
-    description: "Så väljer du ringar och förlängare till rund cylinder. Ingen fast utsticksregel – målet är närmaste snygga montage.",
+    description: "Så väljer du ringar och förlängare till rund cylinder från ASSA ABLOY, dormakaba och EVVA. Ingen fast utsticksregel – målet är närmaste montage.",
     answer: `Rund cylinder räknas med ${ROUND_CYLINDER_MM}mm, utom ASSA ABLOY som räknas med ${ASSA_ROUND_CYLINDER_MM}mm på grund av cylinderhylsan. Ringar på ${list(ROUND_RING_HEIGHTS)} och förlängare på 10mm används. Det finns ingen fast regel för utstick, men målet är alltid så nära som möjligt.`,
     sections: [
       { heading: "Fabrikat skiljer sig", body: ["ASSA ABLOY:s runda cylinder är 31mm, men cylinderhylsan (koppen) bygger ut den till 33mm monterat. Därför räknar kalkylatorn ASSA ABLOY rund cylinder med 33mm.", "dormakaba och EVVA har ingen kopp eller hylsa som bygger ut. Cylindern monteras direkt mot låshuset och ringen låses med stoppskruv, så 31mm är rätt mått."] },
