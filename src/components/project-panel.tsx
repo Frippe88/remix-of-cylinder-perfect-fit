@@ -158,7 +158,8 @@ export function ProjectPanel({ project, setProject, store, open, onOpenChange, c
   const totals = projectTotals(pickDoors);
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent side="bottom" className="max-h-[92dvh] overflow-y-auto rounded-t-xl p-0 sm:mx-auto sm:max-w-2xl">
+      <SheetContent side="bottom" className="flex max-h-[92dvh] flex-col overflow-hidden rounded-t-xl p-0 sm:mx-auto sm:max-w-2xl [&>button:last-child]:z-20 [&>button:last-child]:rounded-full [&>button:last-child]:bg-card [&>button:last-child]:p-1.5 [&>button:last-child]:shadow-card [&>button:last-child]:opacity-100">
+        <div className="min-h-0 flex-1 overflow-y-auto">
         <SheetHeader className="border-b border-t-4 border-t-accent bg-muted/40 px-4 pb-4 pt-5 text-left sm:px-6">
           <SheetTitle className="flex items-center gap-2 pr-8 text-xl"><FolderOpen className="size-5 text-accent" aria-hidden />Projekt<span className="rounded-full border border-accent/50 bg-accent/10 px-2 py-0.5 text-[11px] font-bold uppercase tracking-wide text-accent">Beta</span></SheetTitle>
           <SheetDescription className="mt-1 flex items-start gap-2 rounded-lg border border-accent/30 bg-accent/5 px-3 py-2 text-xs leading-snug text-foreground">
@@ -283,6 +284,7 @@ export function ProjectPanel({ project, setProject, store, open, onOpenChange, c
               <X aria-hidden /> Ta bort projekt
             </Button>
           )}
+        </div>
         </div>
       </SheetContent>
     </Sheet>
