@@ -1,4 +1,4 @@
-import { Link2, Mail, MessageSquare, Share2 } from "lucide-react";
+import { Link2, Mail, MessageSquare, MoreVertical, Share, Share2, Smartphone } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 
@@ -30,6 +30,14 @@ export function ShareSection() {
           <Button variant="outline" asChild><a href={`mailto:?subject=${encodeURIComponent("Tips: Cylinderhjälpen")}&body=${msg}`} target="_top"><Mail aria-hidden />Mejl</a></Button>
           <Button variant="outline" onClick={copy}><Link2 aria-hidden />Kopiera länk</Button>
         </div>
+      </div>
+      <div className="mt-4 rounded-xl border border-l-4 border-l-accent bg-card p-5 shadow-card">
+        <h2 className="flex items-center gap-2 text-lg font-bold"><Smartphone className="size-5 text-accent" aria-hidden />Spara som app på hemskärmen</h2>
+        <p className="mt-1 text-sm text-muted-foreground">Då öppnar du Cylinderhjälpen med ett tryck, direkt från telefonen.</p>
+        <ul className="mt-3 space-y-2 text-sm">
+          <li><span className="font-semibold">iPhone (Safari):</span> tryck på Dela <Share aria-hidden className="inline size-4 align-text-bottom" /> och välj <span className="font-semibold">Lägg till på hemskärmen</span>.</li>
+          <li><span className="font-semibold">Android (Chrome):</span> tryck på menyn <MoreVertical aria-hidden className="inline size-4 align-text-bottom" /> och välj <span className="font-semibold">Installera app</span> eller <span className="font-semibold">Lägg till på startskärmen</span>.</li>
+        </ul>
       </div>
     </section>
   );
