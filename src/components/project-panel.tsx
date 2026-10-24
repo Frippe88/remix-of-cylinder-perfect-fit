@@ -317,7 +317,7 @@ export function ProjectBar({ project, projects = 1, onOpen }: { project: Project
   if (!ready) return null;
   if (min) {
     return (
-      <button type="button" onClick={onOpen} aria-label="Öppna projekt" title="Öppna projektet"
+      <button type="button" onClick={onOpen} aria-label="Öppna projektlistan" title="Öppna projektlistan"
         className="fixed bottom-3 right-3 z-40 flex size-14 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-elevated ring-1 ring-primary-foreground/15 transition active:scale-95">
         <FolderOpen className="size-6 text-accent" aria-hidden />
         <span className="absolute -right-1 -top-1 flex size-6 items-center justify-center rounded-full bg-accent text-[11px] font-bold text-accent-foreground">{doors}</span>
