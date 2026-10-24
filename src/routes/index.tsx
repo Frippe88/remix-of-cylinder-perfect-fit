@@ -242,9 +242,9 @@ function Index() {
             {type === "double" && (
               <p className="text-xs text-muted-foreground">Cylinder på både utsida och insida.</p>
             )}
+            <p className="rounded-lg border-l-4 border-accent bg-accent/10 px-3 py-2 text-sm font-medium text-foreground">Dörrdjup = avstånd från låshusets referenspunkt till dörrbladets yta.</p>
             <DepthInput label={type === "single" ? "Dörrdjup" : "Dörrdjup utsida"} value={outside} onChange={setOutside} />
             {type === "double" && <DepthInput label="Dörrdjup insida" value={inside} onChange={setInside} />}
-            <p className="rounded-lg border-l-4 border-accent bg-accent/10 px-3 py-2 text-sm font-medium text-foreground">Dörrdjup = avstånd från låshusets referenspunkt till dörrbladets yta.</p>
           </Panel>
 
           <div className="order-3 space-y-5 lg:order-none lg:mt-5">
