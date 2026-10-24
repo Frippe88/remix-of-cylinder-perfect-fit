@@ -88,7 +88,7 @@ export const GUIDES: Guide[] = [
     description: "Så väljer du ringar och förlängare till rund cylinder. Ingen fast utsticksregel – målet är närmaste snygga montage.",
     answer: `Rund cylinder räknas med ${ROUND_CYLINDER_MM}mm, utom ASSA ABLOY som räknas med ${ASSA_ROUND_CYLINDER_MM}mm på grund av cylinderhylsan. Ringar på ${list(ROUND_RING_HEIGHTS)} och förlängare på 10mm används. Det finns ingen fast regel för utstick, men målet är alltid så nära som möjligt.`,
     sections: [
-      { heading: "Fabrikat kan skilja", body: ["Behör från olika fabrikat (t.ex. ASSA, dormakaba och EVVA) kan ge något olika mått. Kontrollera mot tillverkarens produktblad när det är kritiskt.", "ASSA ABLOY:s runda cylinder är 31mm, men cylinderhylsan (koppen) bygger ut den till 33mm monterat. Därför räknar kalkylatorn ASSA ABLOY rund cylinder med 33mm, medan övriga fabrikat räknas med 31mm."] },
+      { heading: "Fabrikat skiljer sig", body: ["ASSA ABLOY:s runda cylinder är 31mm, men cylinderhylsan (koppen) bygger ut den till 33mm monterat. Därför räknar kalkylatorn ASSA ABLOY rund cylinder med 33mm.", "dormakaba och EVVA har ingen kopp eller hylsa som bygger ut. Cylindern monteras direkt mot låshuset och ringen låses med stoppskruv, så 31mm är rätt mått."] },
     ],
     mistakes: ["Att tro att rund cylinder har samma tolerans som oval."],
   },
