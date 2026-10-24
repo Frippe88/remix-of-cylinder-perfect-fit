@@ -1,6 +1,7 @@
 # Roadmap
 
 ## Pågående
+- [ ] GA4-spårning live: mät-ID rättat till G-87Y3ES5WM7 (ur den kopplade Google Analytics-anslutningen) — kräver publicering innan data börjar komma in.
 - [x] Bildversioner sparade och samlade i "Cylinderhjälpen annonsmaterial".
 - [x] Exakt matchning av annonsbildens cylinder mot iLOQ:s officiella C10S.1.SB-bild — avbröts av Fredrik ("det blir bara fel"); v11 och v12 används ej.
 - [x] Slutgiltig annonsbild vald av Fredrik: v4 (rakna_i_huvudet_phone_swedish_cylinders_portrait_v4.jpg) — har cylinderhjalpen.se i foten, inga fler ändringar.
