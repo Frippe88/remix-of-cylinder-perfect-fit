@@ -22,7 +22,7 @@ export async function projectPdf(p: Project, remainingOnly: boolean): Promise<Bl
   const doors = doorsToPick(p.doors, remainingOnly);
   const t = projectTotals(doors);
   doc.setTextColor(230, 120, 30); text("Cylinderhjälpen", 10, true); doc.setTextColor(0);
-  text(p.name || "Projekt", 20, true);
+  y += 5; text(p.name || "Projekt", 20, true); y += 1;
   text(`${new Date().toLocaleDateString("sv-SE")} · ${doors.length} ${doors.length === 1 ? "dörr" : "dörrar"}${remainingOnly ? " kvar att montera" : ""}`, 10);
 
   heading("Inköpslista");
