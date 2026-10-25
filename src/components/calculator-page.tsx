@@ -1,12 +1,13 @@
 import { Link } from "@tanstack/react-router";
 import { GUIDES } from "@/lib/guides";
-import { ArrowRight, BookOpen, Check, FolderOpen, Info, KeyRound, Minus, Moon, Package, Plus, ShieldCheck, Sun } from "lucide-react";
+import { ArrowRight, BookOpen, Check, CircleHelp, FolderOpen, Info, KeyRound, Minus, Moon, Package, Plus, ShieldCheck, Sun } from "lucide-react";
 import { Dialog, DialogClose, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { useEffect, useState } from "react";
 import { CylinderResults, ModePicker } from "@/components/cylinder-results";
 import type { ViewMode } from "@/lib/cylinder";
 import { PickListButton } from "@/components/pick-list-button";
 import { ProjectBar, ProjectPanel, useProject } from "@/components/project-panel";
+import { InfoSheetRow } from "@/components/info-sheet-row";
 import { ProDialog } from "@/components/pro-dialog";
 import { fittingOptions, nextDoorName, type DoorSide, type Fitting } from "@/lib/project";
 import { DoorNameDialog } from "@/components/door-name-dialog";
