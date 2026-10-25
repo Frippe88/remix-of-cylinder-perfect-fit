@@ -260,6 +260,12 @@ export function ProjectPanel({ project, setProject, store, open, onOpenChange, c
                     <li key={`${f.fitting}:${f.kind}:${f.side}:${f.size}`} className="flex items-center justify-between gap-3 py-2.5 text-sm"><span className="min-w-0 font-semibold">{fittingRingText(f.fitting, f.size, f.inner)} <span className="text-xs font-normal text-muted-foreground">{f.side.toLowerCase()} ({KIND_LABEL[f.kind]})</span></span><Chip accent>{f.count} st</Chip></li>
                   ))}</ul>
                 </>}
+                {totals.loose.length > 0 && <>
+                  <p className="mt-4 text-xs font-bold uppercase tracking-wide text-muted-foreground">Behör, plocka själv</p>
+                  <ul className="mt-2 divide-y">{totals.loose.map((f) => (
+                    <li key={f.fitting} className="flex items-center justify-between gap-3 py-2.5 text-sm"><span className="font-semibold">{looseFittingLabel(f.fitting)}</span><Chip accent>{f.count} st</Chip></li>
+                  ))}</ul>
+                </>}
               </div>
               </>}
             </>

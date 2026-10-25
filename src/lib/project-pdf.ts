@@ -30,7 +30,8 @@ export async function projectPdf(p: Project, remainingOnly: boolean): Promise<Bl
   if (t.extenders.length) { text("Förlängare", 11, true); t.extenders.forEach((e) => text(`${e.count}st  ${formatMm(e.size)} förlängare (${KIND_LABEL[e.kind]})`, 10, false, M + 4)); }
   if (t.rings.length) { y += 1; text("Ringar", 11, true); t.rings.forEach((r) => text(`${r.count}st  ${totalRingText(r)}`, 10, false, M + 4)); }
   if (t.fittings.length) { y += 1; text("Behör med ring", 11, true); t.fittings.forEach((f) => text(`${f.count}st  ${totalRingText(f)}`, 10, false, M + 4)); }
-  if (!t.extenders.length && !t.rings.length && !t.fittings.length && !t.kits.length) text("Inget material.", 10);
+  if (t.loose.length) { y += 1; text("Behör, plocka själv", 11, true); t.loose.forEach((f) => text(`${f.count}st  ${looseFittingLabel(f.fitting)}`, 10, false, M + 4)); }
+  if (!t.extenders.length && !t.rings.length && !t.fittings.length && !t.kits.length && !t.loose.length) text("Inget material.", 10);
 
   heading("Dörrlista");
   doors.forEach((d) => {
