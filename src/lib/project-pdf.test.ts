@@ -22,8 +22,9 @@ describe("behör i PDF", () => {
     await projectPdf(project, false);
     expect(printed).toContain("1st  256 behör med 11mm ring utsida (oval)");
     expect(printed).toContain("1st  2356 behör med 11mm ring utsida (iLOQ)");
-    expect(printed.some((line) => line.includes("256 behör med 11mm ring") && line.includes("dörrdjup"))).toBe(true);
-    expect(printed.some((line) => line.includes("2356 behör med 11mm ring") && line.includes("dörrdjup"))).toBe(true);
+    expect(printed.some((line) => line.startsWith("Utsida: 256 behör med 11mm ring"))).toBe(true);
+    expect(printed.some((line) => line.startsWith("Utsida: 2356 behör med 11mm ring"))).toBe(true);
+    expect(printed.some((line) => line.includes("dörrdjup"))).toBe(false);
     expect(printed.some((line) => line.includes("vred") || line.includes("täckbricka"))).toBe(false);
     expect(printed).not.toContain("Ringar");
   });

@@ -81,7 +81,7 @@ describe("projectTotals", () => {
     const t = projectTotals(roundDouble);
     expect(t.rings).toEqual([{ size: 13, kind: "rund", side: "", count: 2 }]);
     expect(totalsText({ name: "Storgatan 4", doors: roundDouble })).toContain("2st 13mm ring (rund)");
-    expect(doorsText({ name: "Storgatan 4", doors: roundDouble })).toContain("Utsida: 1st 10mm förlängare + 13mm ring");
+    expect(doorsText({ name: "Storgatan 4", doors: roundDouble })).toContain("Utsida: 13mm ring + 1st 10mm förlängare");
     expect(doorsText({ name: "Storgatan 4", doors: roundDouble })).not.toContain("ring utsida");
   });
   it("oval ring märks fortfarande med sida i inköpslistan", () => {

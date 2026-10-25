@@ -18,7 +18,7 @@ describe("Plocklista", () => {
     Object.defineProperty(navigator, "clipboard", { value: { writeText }, configurable: true });
     render(<PickListButton sides={[{ label: "Utsida", depth: 36, selected: null }]} ext={ext} rings={rings} baseMm={31} relaxed={false} fitting={fitting} />);
     fireEvent.click(screen.getByRole("button", { name: /Kopiera plocklista/ }));
-    expect(writeText).toHaveBeenCalledWith(`Utsida: 2st 8mm förlängare + ${fitting} behör med 11mm ring`);
+    expect(writeText).toHaveBeenCalledWith(`Utsida: ${fitting} behör med 11mm ring + 2st 8mm förlängare`);
   });
   it("copies one clean plain-text line per side, no extra characters", async () => {
     const writeText = vi.fn().mockResolvedValue(undefined);
@@ -26,7 +26,7 @@ describe("Plocklista", () => {
     render(<PickListButton sides={sides} ext={ext} rings={rings} baseMm={31} relaxed={false} />);
     fireEvent.click(screen.getByRole("button", { name: /Kopiera plocklista/ }));
     expect(writeText).toHaveBeenCalledWith(
-      "Utsida: 2st 8mm förlängare + 11mm ring\nInsida: 1st 12,5mm förlängare + 11mm ring",
+      "Utsida: 11mm ring + 2st 8mm förlängare\nInsida: 11mm ring + 1st 12,5mm förlängare",
     );
   });
 
@@ -44,6 +44,6 @@ describe("Plocklista", () => {
       <PickListButton sides={[{ label: null, depth: 45, selected: null }]} ext={[10]} rings={[8, 13]} baseMm={31} relaxed />,
     );
     fireEvent.click(screen.getByRole("button", { name: /Kopiera plocklista/ }));
-    expect(writeText).toHaveBeenCalledWith("2st 10mm förlängare + 8mm ring");
+    expect(writeText).toHaveBeenCalledWith("8mm ring + 2st 10mm förlängare");
   });
 });

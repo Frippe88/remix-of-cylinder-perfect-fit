@@ -69,10 +69,11 @@ export function projectTotals(doors: Door[]): Totals {
 export function sideText(s: DoorSide, kind: RingKind, fitting?: Fitting): string {
   const counts = new Map<number, number>();
   s.extenders.forEach((e) => counts.set(e, (counts.get(e) ?? 0) + 1));
-  const parts = [...counts].sort((a, b) => a[0] - b[0]).map(([e, n]) => `${n}st ${formatMm(e)} förlängare`);
-  const side = RING_HAS_SIDE[kind] ? ` ${(s.label ?? "Utsida").toLowerCase()}` : "";
-  parts.push(fitting ? `${fittingRingText(fitting, s.ring)}${side}` : `${formatMm(s.ring)} ring${side}`);
-  return (s.label ? `${s.label}: ` : "") + parts.join(" + ");
+  const ext = [...counts].sort((a, b) => a[0] - b[0]).map(([e, n]) => `${n}st ${formatMm(e)} förlängare`);
+  const side = RING_HAS_SIDE[kind] && !s.label ? ` ${"utsida"}` : "";
+  // Ordning: sida, behör med ring (eller ring), sist förlängare.
+  const ring = fitting ? `${fittingRingText(fitting, s.ring)}${side}` : `${formatMm(s.ring)} ring${side}`;
+  return (s.label ? `${s.label}: ` : "") + [ring, ...ext].join(" + ");
 }
 
 /** Doors counted in the pick list: all, or only those not yet mounted. */

@@ -37,7 +37,7 @@ export async function projectPdf(p: Project, remainingOnly: boolean): Promise<Bl
     doc.setDrawColor(60); doc.setLineWidth(0.3); doc.rect(M, y - 3.6, 4, 4);
     if (d.done) { doc.setFont("helvetica", "bold"); doc.setFontSize(9); doc.text("X", M + 0.9, y - 0.4); }
     text(`${d.name} (${KIND_LABEL[d.kind]})${d.done ? " – monterad" : ""}`, 11, true, M + 7);
-    d.sides.forEach((s) => text(`${sideText(s, d.kind, d.fitting)} · dörrdjup ${formatMm(s.depth)}`, 10, false, M + 7));
+    d.sides.forEach((s) => text(sideText(s, d.kind, d.fitting), 10, false, M + 7));
     y += 1.5;
   });
 
