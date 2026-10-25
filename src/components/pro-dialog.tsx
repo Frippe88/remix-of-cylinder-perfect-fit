@@ -1,0 +1,34 @@
+import { Check, Mail, Star } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { CONTACT_EMAIL } from "@/components/contact-form";
+
+const FEATURES = [
+  "Spara obegränsat antal egna projekt med alla dörrar",
+  "Behörsval – 256 (vred), 2356 (täckbricka) och skruvlängder",
+  "Total plocklista för hela bygget",
+  "PDF-arbetsorder att skicka till grossist eller kollega",
+];
+
+export function ProDialog({ open, onOpenChange }: { open: boolean; onOpenChange: (v: boolean) => void }) {
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="max-w-md">
+        <DialogHeader>
+          <DialogTitle className="flex items-center gap-2 text-xl"><Star className="size-5 text-accent" aria-hidden />Cylinderkalkyl Pro</DialogTitle>
+          <DialogDescription>Du tittar på ett exempelprojekt. Med Pro gör du samma sak med dina egna dörrar.</DialogDescription>
+        </DialogHeader>
+        <ul className="space-y-2 text-sm font-medium">
+          {FEATURES.map((f) => <li key={f} className="flex items-start gap-2"><Check className="mt-0.5 size-4 shrink-0 text-success" aria-hidden />{f}</li>)}
+        </ul>
+        <p className="rounded-lg border border-accent/30 bg-accent/5 p-3 text-sm">Lanseras snart som prenumeration. Vill du få förtur? Skicka ett mejl så hör vi av oss.</p>
+        <div className="grid gap-2">
+          <Button asChild className="min-h-11 bg-accent font-bold text-accent-foreground hover:bg-accent/85">
+            <a href={`mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent("Intresseanmälan Cylinderkalkyl Pro")}`}><Mail aria-hidden />Anmäl intresse</a>
+          </Button>
+          <Button variant="outline" className="min-h-11" onClick={() => onOpenChange(false)}>Fortsätt titta på exemplet</Button>
+        </div>
+      </DialogContent>
+    </Dialog>
+  );
+}
