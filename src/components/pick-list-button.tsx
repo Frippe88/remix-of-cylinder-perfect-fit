@@ -68,6 +68,8 @@ function Row({ caption, icon, children }: { caption: string; icon: ReactNode; ch
 }
 
 const FITTING_MENU: Record<Fitting, string> = {
+  vred: "Vred-Cylinder",
+  tackbricka: "Täckbricka-Cylinder",
   "256": "256 behör (ASSA vred)",
   "2356": "2356 behör (ASSA täckbricka)",
   "3212": "3212 behör (ASSA rund cylinder)",
