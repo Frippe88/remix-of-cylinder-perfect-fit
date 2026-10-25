@@ -80,6 +80,8 @@ export interface Totals {
   kits: { fitting: Fitting; count: number }[];
   /** 256/2356 med ring högre än färdig sats: plockas själv, ringen står på samma rad. */
   loose: Totals["fittings"];
+  /** Antal dörrar med dubbelcylinder. */
+  doubles: number;
 }
 
 /** Behör där ringen inte ingår i satsen; ringen plockas lös. */
@@ -148,29 +150,30 @@ export function totalRingText(r: { size: number; kind: RingKind; side: string; i
 export interface PurchaseSection { title: string; hint: string; items: { count: number; text: string }[] }
 
 /**
- * Inköpslista i tre tydliga grupper: färdiga satser, behör att plocka själv, lösa delar.
- * Ingen sida (utsida/insida) – på hyllan plockar man bara rätt artikel och millimeter.
+ * Inköpslista som chefen beställer från: behörssatser per ringhöjd, dubbelcylindrar,
+ * lösa ringar och förlängare. En lös ring över 21 mm står på behörsraden – aldrig två gånger.
  */
 export function purchaseList(t: Totals): PurchaseSection[] {
   const add = (m: Map<string, number>, k: string, n: number) => m.set(k, (m.get(k) ?? 0) + n);
-  const ready = new Map<string, number>();
-  t.fittings.forEach((f) => add(ready, withRing(FITTING_LABEL[f.fitting], `${formatMm(f.size)} ring`), f.count));
-  t.kits.forEach((k) => add(ready, FITTING_LABEL[k.fitting], k.count));
-  const loose = new Map<string, number>();
-  t.loose.forEach((f) => add(loose, `${FITTING_LABEL[f.fitting]} (utan ring)`, f.count));
-  const parts = new Map<string, number>();
+  const sets = new Map<string, number>();
+  [...t.fittings, ...t.loose].sort((a, b) => a.fitting.localeCompare(b.fitting, "sv", { numeric: true }) || a.size - b.size)
+    .forEach((f) => add(sets, fittingRingText(f.fitting, f.size, f.inner), f.count));
+  const kits = new Map<string, number>();
+  t.kits.forEach((k) => add(kits, FITTING_LABEL[k.fitting], k.count));
+  const rings = new Map<string, number>();
   const ringLabel = (r: { size: number; kind: RingKind; inner: boolean }) =>
     r.inner ? `${formatMm(r.size)} iLOQ innerring` : r.kind === "rund" ? `${formatMm(r.size)} rund ring` : `${formatMm(r.size)} ring`;
-  const ringEntries = [...t.rings, ...t.loose].sort((a, b) => Number(a.inner) - Number(b.inner) || a.kind.localeCompare(b.kind) || a.size - b.size);
-  ringEntries.forEach((r) => add(parts, ringLabel(r), r.count));
-  t.extenders.forEach((e) => add(parts, `${formatMm(e.size)} förlängare${e.kind === "rund" ? " rund" : ""}`, e.count));
+  [...t.rings].sort((a, b) => Number(a.inner) - Number(b.inner) || a.kind.localeCompare(b.kind) || a.size - b.size)
+    .forEach((r) => add(rings, ringLabel(r), r.count));
+  const ext = new Map<string, number>();
+  t.extenders.forEach((e) => add(ext, `${formatMm(e.size)} förlängare${e.kind === "rund" ? " rund" : ""}`, e.count));
   const items = (m: Map<string, number>) => [...m].map(([text, count]) => ({ count, text }));
-  const extTotal = t.extenders.reduce((n, e) => n + e.count, 0);
   return [
-    { title: "Färdiga behör", hint: "Behör med ring – samma ring räknas ihop", items: items(ready) },
-    { title: "Behör, plocka själv", hint: "Ringen ingår inte – ta ringen under Lösa delar", items: items(loose) },
-    { title: "Lösa delar", hint: "Ringar och förlängare", items: items(parts) },
-    { title: "Förlängare totalt", hint: "Alla dörrar", items: extTotal ? [{ count: extTotal, text: "förlängare totalt" }] : [] },
+    { title: "Behörssatser", hint: "Per behör och ringhöjd", items: items(sets) },
+    { title: "Dubbelcylindrar", hint: "Dörrar med cylinder på båda sidor", items: t.doubles ? [{ count: t.doubles, text: "dubbelcylinder" }] : [] },
+    { title: "Monteringskit", hint: "", items: items(kits) },
+    { title: "Ringar", hint: "Lösa ringar, per höjd", items: items(rings) },
+    { title: "Förlängare", hint: "Alla dörrar", items: items(ext) },
   ].filter((s) => s.items.length);
 }
 
@@ -185,13 +188,18 @@ export function totalsText(p: Project, remainingOnly = false): string {
   return lines.join("\n");
 }
 
+/** Rubrik per dörr: "Dörr 1 (oval) – Dubbelcylinder". */
+export function doorTitle(d: Door): string {
+  return `${d.name} (${KIND_LABEL[d.kind]})${d.sides.length > 1 ? " – Dubbelcylinder" : ""}`;
+}
+
 export function doorsText(p: Project): string {
-  return p.doors.map((d) => [`${d.name} (${KIND_LABEL[d.kind]})`, ...d.sides.map((s) => "  " + sideText(s, d.kind, d.fitting, d.sides.length > 1))].join("\n")).join("\n");
+  return p.doors.map((d) => [doorTitle(d), ...d.sides.map((s) => "  " + sideText(s, d.kind, d.fitting, d.sides.length > 1))].join("\n")).join("\n");
 }
 
 /** Whole project as shareable text: every door, then the full material list. */
 export function projectText(p: Project): string {
-  const doors = p.doors.map((d) => [`${d.name} (${KIND_LABEL[d.kind]})${d.done ? " – monterad" : ""}`, ...d.sides.map((s) => "  " + sideText(s, d.kind, d.fitting, d.sides.length > 1))].join("\n")).join("\n\n");
+  const doors = p.doors.map((d) => [`${doorTitle(d)}${d.done ? " – monterad" : ""}`, ...d.sides.map((s) => "  " + sideText(s, d.kind, d.fitting, d.sides.length > 1))].join("\n")).join("\n\n");
   return [`${p.name || "Projekt"}`, "", "Dörrar:", doors, "", "Totalt material:", totalsText(p).split("\n").slice(2).join("\n")].join("\n").trim();
 }
 
