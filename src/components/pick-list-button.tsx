@@ -71,6 +71,10 @@ const FITTING_MENU: Record<Fitting, string> = {
   "256": "256 behör (vred)",
   "2356": "2356 behör (täckbricka)",
   "3212": "3212 behör (ASSA rund cylinder)",
+  "18256": "18256 behör (dubbel oval cylinder)",
+  "DAK 7200": "DAK 7200 behör (dormakaba vred)",
+  "DAK 7101": "DAK 7101 behör (dormakaba täckbricka)",
+  "DAK 752": "DAK 752 behör (dormakaba rund cylinder)",
 };
 
 export function PickListButton({ sides, ext, rings, baseMm, insideBaseMm = baseMm, relaxed, onSave, projectName, projectDoors = 0, projectCount = 1, onOpenProject, fitting = null, onFittingChange, fittingChoices = ["256", "2356"] }: {
