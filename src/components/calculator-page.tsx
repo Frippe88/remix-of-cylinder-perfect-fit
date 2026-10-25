@@ -187,7 +187,7 @@ export function CalculatorPage({ variant }: { variant: "free" | "pro" }) {
                   key={o.id}
                   onClick={() => switchCyl(o.id)}
                   aria-pressed={cyl === o.id}
-                  className={`rounded-md px-1 py-2 text-center text-xs font-bold leading-tight transition sm:text-sm ${cyl === o.id ? "bg-accent text-accent-foreground shadow-card" : "text-muted-foreground hover:bg-card"}`}
+                  className={`rounded-md px-1 py-2 text-center text-xs font-bold leading-tight whitespace-nowrap transition sm:text-[13px] ${cyl === o.id ? "bg-accent text-accent-foreground shadow-card" : "text-muted-foreground hover:bg-card"}`}
                 >
                   {o.name}
                   <span className="block font-mono text-[10px] font-semibold opacity-80">{o.id === "round" ? baseMm : o.mm}mm</span>
