@@ -14,9 +14,6 @@ const FEATURES = [
 const COMING = [
   "Automatisk skruvlängd – räknas ut efter hur många förlängare dörren har",
 ];
-  "Kopiera till mejl/SMS – klistra in beställningen direkt",
-  "Flera projekt samtidigt – växla mellan olika byggen och kunder",
-];
 
 export function ProDialog({ open, onOpenChange }: { open: boolean; onOpenChange: (v: boolean) => void }) {
   return (
