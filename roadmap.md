@@ -1,6 +1,7 @@
 # Roadmap
 
 ## Pågående
+- [ ] Valt behör i alla projektets kopierade listor och PDF, per dörr och summerat.
 - [x] Valfritt 256/2356-behör mellan spara och kopiera i Pro för enkel oval/iLOQ; sparad dörr och enstaka kopiering behåller valet, verifierat efter omladdning.
 - [x] GA4-spårning publicerad och bekräftad live av Fredrik ("hittat nu, de verkar funka"): mät-ID G-87Y3ES5WM7, händelser syns i Realtid.
 - [x] Bildversioner sparade och samlade i "Cylinderhjälpen annonsmaterial".
@@ -10,5 +11,5 @@
 - [x] Ny flik /pro (Projekt & behör) som kopia av kalkylatorn; Fredrik säger vad som tas bort från gratisversionen.
 
 ## Parkerat (väntar på Fredrik)
-- [ ] Skruvlängder samt behör i total plocklista och PDF — väntar på verifierade skruvlängder och Fredriks nästa steg.
+- [ ] Skruvlängder — väntar på verifierade skruvlängder.
 - [ ] Annonser/spridning pausade tills allt på sidan är rätt.

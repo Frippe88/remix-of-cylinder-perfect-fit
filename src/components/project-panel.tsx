@@ -249,6 +249,12 @@ export function ProjectPanel({ project, setProject, store, open, onOpenChange, c
                 <ul className="mt-2 space-y-2">{totals.rings.map((r) => (
                   <li key={r.kind + r.side + r.size} className="flex items-center justify-between gap-3 border-b border-border/60 py-2.5 text-sm last:border-b-0"><span className="flex min-w-0 flex-wrap items-center gap-x-2 gap-y-1"><span className="font-mono font-bold">{formatMm(r.size)}</span>{r.side && <span className={`inline-flex items-center gap-1 font-semibold ${r.side === "Insida" ? "text-side-inside" : "text-side-outside"}`}>{r.side === "Insida" ? <ArrowDown className="size-3.5" aria-hidden /> : <ArrowUp className="size-3.5" aria-hidden />}{r.side}</span>} <span className="text-xs text-muted-foreground">({KIND_LABEL[r.kind]})</span></span><Chip accent>{r.count} st</Chip></li>
                 ))}</ul>
+                {totals.fittings.length > 0 && <>
+                  <p className="mt-4 text-xs font-bold uppercase tracking-wide text-muted-foreground">Behör</p>
+                  <ul className="mt-2 divide-y">{totals.fittings.map((f) => (
+                    <li key={f.fitting} className="flex items-center justify-between gap-3 py-2.5 text-sm"><span className="font-semibold">{FITTING_LABEL[f.fitting]}</span><Chip accent>{f.count} st</Chip></li>
+                  ))}</ul>
+                </>}
               </div>
               </>}
             </>
