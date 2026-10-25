@@ -78,8 +78,8 @@ const FITTING_MENU: Record<Fitting, string> = {
   "A10.11": "A10.11 monteringskit (iLOQ dubbelcylinder)",
 };
 
-export function PickListButton({ sides, ext, rings, baseMm, insideBaseMm = baseMm, relaxed, onSave, projectName, projectDoors = 0, projectCount = 1, onOpenProject, fitting = null, onFittingChange, fittingChoices = ["256", "2356"], iloqDouble = false }: {
-  sides: PickSide[]; ext: number[]; rings: number[]; baseMm: number; insideBaseMm?: number; relaxed: boolean;
+export function PickListButton({ sides, ext, rings, insideRings = rings, baseMm, insideBaseMm = baseMm, relaxed, onSave, projectName, projectDoors = 0, projectCount = 1, onOpenProject, fitting = null, onFittingChange, fittingChoices = ["256", "2356"], iloqDouble = false }: {
+  sides: PickSide[]; ext: number[]; rings: number[]; insideRings?: number[]; baseMm: number; insideBaseMm?: number; relaxed: boolean;
   onSave?: ((sides: DoorSide[]) => void) | undefined;
   projectName?: string; projectDoors?: number; projectCount?: number; onOpenProject?: () => void;
   fitting?: Fitting | null; onFittingChange?: ((value: Fitting | null) => void) | undefined;
@@ -91,7 +91,7 @@ export function PickListButton({ sides, ext, rings, baseMm, insideBaseMm = baseM
   const [failed, setFailed] = useState(false);
   const picks = sides
     .filter((s) => s.depth !== null)
-    .map((s) => ({ label: s.label, depth: s.depth as number, c: s.selected ?? bestFor(s.depth as number, ext, rings, s.label === "Insida" ? insideBaseMm : baseMm, relaxed) }))
+    .map((s) => ({ label: s.label, depth: s.depth as number, c: s.selected ?? (s.label === "Insida" ? bestFor(s.depth as number, ext, insideRings, insideBaseMm, relaxed) : bestFor(s.depth as number, ext, rings, baseMm, relaxed)) }))
     .filter((s): s is { label: string | null; depth: number; c: Combination } => !!s.c);
   if (picks.length === 0) return null;
 
