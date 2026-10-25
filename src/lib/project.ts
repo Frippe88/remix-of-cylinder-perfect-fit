@@ -42,7 +42,8 @@ export function fittingRingText(fitting: Fitting, ring: number, inner = false): 
 /** Vilka behör som kan väljas för given cylinder. Tom lista = inget behörsval. */
 export function fittingOptions(variant: "free" | "pro", cylinder: "standard" | "round" | "iloq", type: "single" | "double", brand?: string): Fitting[] {
   if (variant !== "pro") return [];
-  if (cylinder === "round") return brand === "ASSA ABLOY" ? ["3212"] : brand === "dormakaba / DORMA" ? ["DAK 752"] : [];
+  // Runda cylindrar: inget behörsval – bara ringar och förlängare per sida.
+  if (cylinder === "round") return [];
   if (type === "double") return cylinder === "standard" ? ["18256"] : ["A10.11"];
   // Enkelcylinder: 256 (vred) eller 2356 (täckbricka) – det chefen beställer per ringhöjd.
   return ["256", "2356"];
@@ -56,8 +57,8 @@ export interface Project { name: string; doors: Door[] }
 
 export const KIND_LABEL: Record<RingKind, string> = { oval: "oval", rund: "rund", iloq: "iLOQ" };
 
-// Runda cylindrar har likadan ring på utsidan och insidan – den behöver inte delas upp per sida.
-export const RING_HAS_SIDE: Record<RingKind, boolean> = { oval: true, rund: false, iloq: true };
+// Alla cylindertyper redovisas per sida (utsida/insida).
+export const RING_HAS_SIDE: Record<RingKind, boolean> = { oval: true, rund: true, iloq: true };
 
 export function nextDoorName(doors: Door[]): string {
   let n = doors.length + 1;
@@ -145,8 +146,8 @@ export function sideText(s: DoorSide, kind: RingKind, fitting?: Fitting, double 
   s.extenders.forEach((e) => counts.set(e, (counts.get(e) ?? 0) + 1));
   const ext = [...counts].sort((a, b) => a[0] - b[0]).map(([e, n]) => `${n}st ${formatMm(e)} förlängare`);
   const side = RING_HAS_SIDE[kind] && !s.label ? ` ${"utsida"}` : "";
-  // Ordning: sida, behör med ring (eller ring), sist förlängare.
-  const fit = double && fitting && PAIR_FITTINGS.includes(fitting) ? null : fittingForSide(fitting, s.label);
+  // Ordning: sida, behör med ring (eller ring), sist förlängare. Runda cylindrar: bara ring.
+  const fit = kind === "rund" || (double && fitting && PAIR_FITTINGS.includes(fitting)) ? null : fittingForSide(fitting, s.label);
   const inner = isIloqInner(kind, s.label, double);
   const ring = fit ? `${fittingRingText(fit, s.ring, inner)}${side}` : `${ringName(s.ring, inner)}${side}`;
   return (s.label ? `${s.label}: ` : "") + [ring, ...ext].join(" + ");
@@ -163,54 +164,76 @@ export function totalRingText(r: { size: number; kind: RingKind; side: string; i
   return `${base}${r.side ? ` ${r.side.toLowerCase()}` : ""} (${KIND_LABEL[r.kind]})`;
 }
 
-export interface PurchaseSection { title: string; hint: string; items: { count: number; text: string }[] }
+export interface PurchaseItem { count: number; text: string }
+export interface PurchaseGroup { title: string; items: PurchaseItem[] }
+export interface PurchaseSection { title: string; groups: PurchaseGroup[] }
+
+const SECTION_TITLE: Record<RingKind, string> = { oval: "Oval cylinder", rund: "Rund cylinder", iloq: "iLOQ cylinder" };
 
 /**
- * Inköpslista som chefen beställer från: behörssatser per ringhöjd, dubbelcylindrar,
- * lösa ringar och förlängare. En lös ring över 21 mm står på behörsraden – aldrig två gånger.
+ * Inköpslista per cylindertyp (oval, rund, iLOQ), varje typ uppdelad i enkelcylinder,
+ * dubbelcylinder och förlängare. Dubbelcylindrar står som ett par per dörr (utsida + insida).
  */
-export function purchaseList(t: Totals): PurchaseSection[] {
-  const add = (m: Map<string, number>, k: string, n: number) => m.set(k, (m.get(k) ?? 0) + n);
-  const sets = new Map<string, number>();
-  [...t.fittings, ...t.loose].sort((a, b) => a.fitting.localeCompare(b.fitting, "sv", { numeric: true }) || a.size - b.size)
-    .forEach((f) => add(sets, fittingRingText(f.fitting, f.size, f.inner), f.count));
-  t.setPairs.forEach((p) => add(sets, `${FITTING_LABEL[p.fitting]} (${formatMm(p.outer)} ring utsida + ${formatMm(p.inner)} ring insida)`, p.count));
-  const kits = new Map<string, number>();
-  t.kits.forEach((k) => add(kits, FITTING_LABEL[k.fitting], k.count));
-  const rings = new Map<string, number>();
-  const ringLabel = (r: { size: number; kind: RingKind; inner: boolean }) =>
-    r.inner ? `${formatMm(r.size)} iLOQ innerring` : r.kind === "rund" ? `${formatMm(r.size)} rund ring` : `${formatMm(r.size)} ring`;
-  [...t.rings].sort((a, b) => Number(a.inner) - Number(b.inner) || a.kind.localeCompare(b.kind) || a.size - b.size)
-    .forEach((r) => add(rings, ringLabel(r), r.count));
-  const ext = new Map<string, number>();
-  t.extenders.forEach((e) => add(ext, `${formatMm(e.size)} förlängare${e.kind === "rund" ? " rund" : ""}`, e.count));
-  const items = (m: Map<string, number>) => [...m].map(([text, count]) => ({ count, text }));
-  return [
-    { title: "Behörssatser", hint: "Per behör och ringhöjd", items: items(sets) },
-    { title: "iLOQ dubbelcylinder", hint: "Per dörr: ring utsida + iLOQ innerring (med skruvhål) insida", items: [
-      ...items(kits),
-      ...t.iloqPairs.map((p) => ({ count: p.count, text: `${formatMm(p.outer)} ring utsida + ${formatMm(p.inner)} iLOQ innerring insida` })),
-    ] },
-    { title: "Ringar", hint: "Lösa ringar, per höjd", items: items(rings) },
-    { title: "Förlängare", hint: "Alla dörrar", items: items(ext) },
-  ].filter((s) => s.items.length);
+export function purchaseList(doors: Door[]): PurchaseSection[] {
+  const sections: PurchaseSection[] = [];
+  const sorted = (m: Map<string, number>) => [...m].map(([text, count]) => ({ count, text }))
+    .sort((a, b) => a.text.localeCompare(b.text, "sv", { numeric: true }));
+  const add = (m: Map<string, number>, k: string) => m.set(k, (m.get(k) ?? 0) + 1);
+  for (const kind of ["oval", "rund", "iloq"] as RingKind[]) {
+    const ds = doors.filter((d) => d.kind === kind);
+    if (!ds.length) continue;
+    const single = new Map<string, number>(), kits = new Map<string, number>(), double = new Map<string, number>(), ext = new Map<string, number>();
+    const ring = (mm: number) => `${formatMm(mm)} ${kind === "rund" ? "rund ring" : "ring"}`;
+    for (const d of ds) {
+      d.sides.forEach((s) => s.extenders.forEach((e) => add(ext, `${formatMm(e)} förlängare`)));
+      // Runda cylindrar har inga behörssatser – bara ringar.
+      const fitting = kind === "rund" ? undefined : d.fitting;
+      if (d.sides.length > 1) {
+        const o = d.sides.find((s) => s.label !== "Insida") ?? d.sides[0]!;
+        const i = d.sides.find((s) => s !== o)!;
+        if (kind === "iloq") {
+          add(kits, FITTING_LABEL["A10.11"]);
+          add(double, `${ring(o.ring)} utsida + ${formatMm(i.ring)} iLOQ innerring insida`);
+        } else if (fitting && PAIR_FITTINGS.includes(fitting)) {
+          add(double, `${FITTING_LABEL[fitting]} (${formatMm(o.ring)} ring utsida + ${formatMm(i.ring)} ring insida)`);
+        } else {
+          add(double, `${ring(o.ring)} utsida + ${ring(i.ring)} insida`);
+        }
+      } else {
+        for (const s of d.sides) {
+          const fit = fitting && !KIT_FITTINGS.includes(fitting) && !PAIR_FITTINGS.includes(fitting) ? fitting : null;
+          add(single, fit ? fittingRingText(fit, s.ring) : ring(s.ring));
+        }
+      }
+    }
+    const groups = [
+      { title: "Enkelcylinder", items: sorted(single) },
+      { title: "Dubbelcylinder", items: [...sorted(kits), ...sorted(double)] },
+      { title: "Förlängare", items: sorted(ext) },
+    ].filter((g) => g.items.length);
+    if (groups.length) sections.push({ title: SECTION_TITLE[kind], groups });
+  }
+  return sections;
 }
 
 export function totalsText(p: Project, remainingOnly = false): string {
   const doors = doorsToPick(p.doors, remainingOnly);
   const word = doors.length === 1 ? "dörr" : "dörrar";
   const lines = [`${p.name || "Projekt"} – ${doors.length} ${remainingOnly ? `kvarvarande ${word}` : word}`];
-  for (const s of purchaseList(projectTotals(doors))) {
+  for (const s of purchaseList(doors)) {
     lines.push("", `${s.title.toUpperCase()}:`);
-    s.items.forEach((i) => lines.push(`${i.count}st ${i.text}`));
+    for (const g of s.groups) {
+      lines.push(`${g.title}:`);
+      g.items.forEach((i) => lines.push(`  ${i.count}st ${i.text}`));
+    }
   }
   return lines.join("\n");
 }
 
-/** Rubrik per dörr: "Dörr 1 (oval) – Dubbelcylinder". */
+/** Rubrik per dörr: "Dörr 1 (oval, enkelcylinder)" / "Dörr 2 (oval, dubbelcylinder), 18256 behör". */
 export function doorTitle(d: Door): string {
   const pair = d.sides.length > 1 && !!d.fitting && PAIR_FITTINGS.includes(d.fitting);
-  return `${d.name} (${KIND_LABEL[d.kind]})${d.sides.length > 1 ? " – Dubbelcylinder" : ""}${pair ? `, ${FITTING_LABEL[d.fitting!]}` : ""}`;
+  return `${d.name} (${KIND_LABEL[d.kind]}, ${d.sides.length > 1 ? "dubbelcylinder" : "enkelcylinder"})${pair ? `, ${FITTING_LABEL[d.fitting!]}` : ""}`;
 }
 
 export function doorsText(p: Project): string {
