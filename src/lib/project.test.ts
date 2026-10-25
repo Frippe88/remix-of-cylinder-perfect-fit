@@ -183,16 +183,16 @@ describe("iLOQ dubbelcylinder – A10.11 och innerring", () => {
 
 describe("256/2356 plocka själv", () => {
   const d = (ring: number, fitting: Fitting = "256"): Door => ({ id: String(ring), name: "Dörr 1", kind: "iloq", done: false, sides: [{ label: "Utsida", depth: 13, ring, extenders: [] }], fitting });
-  it("ring upp till 18 mm är färdig sats", () => {
-    const t = projectTotals([d(6), d(18)]);
+  it("ring upp till 21 mm är färdig sats", () => {
+    const t = projectTotals([d(6), d(21)]);
     expect(t.loose).toEqual([]);
     expect(t.fittings).toHaveLength(2);
   });
-  it("ring över 18 mm: behör plockas själv och ringen räknas lös", () => {
-    const t = projectTotals([d(27), d(21, "2356")]);
+  it("ring över 21 mm: behör plockas själv och ringen räknas lös", () => {
+    const t = projectTotals([d(27), d(30, "2356")]);
     expect(t.fittings).toEqual([]);
     expect(t.loose).toEqual([{ fitting: "256", count: 1 }, { fitting: "2356", count: 1 }]);
-    expect(t.rings.map((r) => r.size)).toEqual([21, 27]);
+    expect(t.rings.map((r) => r.size)).toEqual([27, 30]);
     const p: Project = { name: "P", doors: [d(27)] };
     expect(totalsText(p)).toContain("Behör, plocka själv:\n1st 256 behör, plocka själv");
     expect(doorsText(p)).toContain("256 behör, plocka själv med 27mm ring");
