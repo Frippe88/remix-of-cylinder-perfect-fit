@@ -21,8 +21,8 @@ export function fittingForSide(fitting: Fitting | null | undefined, label: strin
   if (fitting === "A10.11") return label === "Insida" ? fitting : null;
   return fitting;
 }
-/** Färdiga 256/2356-satser finns bara med 6–18 mm ring; högre ring = plocka själv. */
-export const FITTING_KIT_MAX_RING = 18;
+/** Färdiga 256/2356-satser finns bara med 6–21 mm ring; högre ring = plocka själv. */
+export const FITTING_KIT_MAX_RING = 21;
 export function isLooseFitting(fitting: Fitting | null | undefined, ring: number): boolean {
   return (fitting === "256" || fitting === "2356") && ring > FITTING_KIT_MAX_RING;
 }
