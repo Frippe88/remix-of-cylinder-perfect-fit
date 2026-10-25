@@ -10,6 +10,7 @@
 <!-- LOVABLE:END -->
 
 - All cylinder math lives in src/lib/cylinder.ts (pure, tested); UI only calls it. Why: deterministic, extendable, testable.
+- Optional door fittings and their eligibility live in the project model, separate from cylinder calculations. Why: selections persist per door without changing fit math or invalidating older saved projects.
 - Results presentation lives in src/components/cylinder-results.tsx, with progressive disclosure per side; keep every computed combination accessible without duplicating the recommendation in the alternatives. Why: double-cylinder results must remain scannable without changing the calculation rules.
 - Manufacturer manual PDFs are proxied via /api/public/manual/$id (fixed per-lock allowlist in src/lib/lock-cases.ts) and rendered in-app with pdfjs-dist on /manual/$id. Why: mobile webviews show blank pages for external PDFs, and the allowlist stops arbitrary URL proxying.
 - Lock-case product photos map by lock id in src/lib/lock-images.ts (CDN assets from official manufacturer sources). Why: keeps catalog data and image pointers separate.

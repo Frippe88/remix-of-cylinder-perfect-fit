@@ -1,6 +1,7 @@
 # Roadmap
 
 ## Pågående
+- [ ] Valfritt 256/2356-behör mellan spara och kopiera i Pro för enkel oval/iLOQ; behåll valet på sparad dörr.
 - [x] GA4-spårning publicerad och bekräftad live av Fredrik ("hittat nu, de verkar funka"): mät-ID G-87Y3ES5WM7, händelser syns i Realtid.
 - [x] Bildversioner sparade och samlade i "Cylinderhjälpen annonsmaterial".
 - [x] Exakt matchning av annonsbildens cylinder mot iLOQ:s officiella C10S.1.SB-bild — avbröts av Fredrik ("det blir bara fel"); v11 och v12 används ej.

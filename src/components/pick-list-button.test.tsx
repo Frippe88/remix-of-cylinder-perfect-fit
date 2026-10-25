@@ -13,6 +13,12 @@ const sides = [
 ];
 
 describe("Plocklista", () => {
+  it.each(["256", "2356"] as const)("kopierar valt %s-behör med dörren", () => {
+    const writeText = vi.fn().mockResolvedValue(undefined);
+    Object.defineProperty(navigator, "clipboard", { value: { writeText }, configurable: true });
+    render(<PickListButton sides={[sides[0]]} ext={ext} rings={rings} baseMm={31} relaxed={false} fitting={"256"} />);
+    // Each fitting must be retained in the copied single-door list.
+  });
   it("copies one clean plain-text line per side, no extra characters", async () => {
     const writeText = vi.fn().mockResolvedValue(undefined);
     Object.defineProperty(navigator, "clipboard", { value: { writeText }, configurable: true });
