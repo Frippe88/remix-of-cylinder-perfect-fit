@@ -276,6 +276,7 @@ export function ProjectPanel({ project, setProject, store, open, onOpenChange, c
               <ul className="mt-4 space-y-2 text-sm font-medium">
                 <li className="flex items-start gap-2"><Check className="mt-0.5 size-4 shrink-0 text-success" aria-hidden /><span>Idag: flera projekt, dörrar och total plocklista – utan kostnad</span></li>
                 <li className="flex items-start gap-2"><Clock className="mt-0.5 size-4 shrink-0 text-accent" aria-hidden /><span>Härnäst: inloggning och synkning mellan telefon och dator</span></li>
+                <li className="flex items-start gap-2"><Clock className="mt-0.5 size-4 shrink-0 text-accent" aria-hidden /><span>Härnäst: automatisk skruvlängd utifrån antalet förlängare</span></li>
                 <li className="flex items-start gap-2"><Clock className="mt-0.5 size-4 shrink-0 text-accent" aria-hidden /><span>Senare: prenumeration som håller funktionen igång</span></li>
               </ul>
               <Button asChild variant="outline" className="mt-5 h-11 w-full border-accent/40 font-semibold">
