@@ -2,7 +2,7 @@ import { useState, type ReactNode } from "react";
 import { AlertTriangle, ArrowDown, ArrowUp, Check, ClipboardCopy, ClipboardList, Disc3, FolderOpen, FolderPlus, Layers } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { calculate, formatMm, type Combination } from "@/lib/cylinder";
-import { FITTING_LABEL, type DoorSide, type Fitting } from "@/lib/project";
+import { fittingRingText, type DoorSide, type Fitting } from "@/lib/project";
 
 export type PickSide = { label: string | null; depth: number | null; selected: Combination | null };
 
@@ -16,11 +16,11 @@ function bestFor(depth: number, ext: number[], rings: number[], baseMm: number, 
 }
 
 /** Texten som kopieras – håll den ren, den klistras in i SMS/WhatsApp/order. */
-export function pickLine(c: Combination) {
+export function pickLine(c: Combination, fitting?: Fitting | null) {
   const counts = new Map<number, number>();
   c.extenders.forEach((e) => counts.set(e, (counts.get(e) ?? 0) + 1));
   const parts = [...counts].sort((a, b) => a[0] - b[0]).map(([s, n]) => `${n}st ${formatMm(s)} förlängare`);
-  parts.push(`${formatMm(c.ring)} ring`);
+  parts.push(fitting ? fittingRingText(fitting, c.ring) : `${formatMm(c.ring)} ring`);
   return parts.join(" + ");
 }
 
@@ -84,7 +84,7 @@ export function PickListButton({ sides, ext, rings, baseMm, insideBaseMm = baseM
     .filter((s): s is { label: string | null; depth: number; c: Combination } => !!s.c);
   if (picks.length === 0) return null;
 
-  const text = [...picks.map((p) => (p.label ? `${p.label}: ` : "") + pickLine(p.c)), ...(fitting ? [FITTING_LABEL[fitting]] : [])].join("\n");
+  const text = picks.map((p) => (p.label ? `${p.label}: ` : "") + pickLine(p.c, fitting)).join("\n");
   const parts = picks.reduce((n, p) => n + p.c.extenderCount + 1, 0);
 
   const copy = async () => {

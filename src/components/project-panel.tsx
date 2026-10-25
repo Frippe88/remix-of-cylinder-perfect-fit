@@ -4,7 +4,7 @@ import { ArrowDown, ArrowUp, Check, ChevronDown, ChevronsRight, ClipboardCopy, C
 import { InfoSheetRow } from "@/components/info-sheet-row";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from "@/components/ui/sheet";
-import { clearDoors, doorsText, doorsToPick, FITTING_LABEL, KIND_LABEL, projectText, projectTotals, RING_HAS_SIDE, setDoorSide, totalsText, type Door, type Project } from "@/lib/project";
+import { clearDoors, doorsText, doorsToPick, fittingRingText, KIND_LABEL, projectText, projectTotals, RING_HAS_SIDE, setDoorSide, totalsText, type Door, type Project } from "@/lib/project";
 import { sideChip } from "@/components/pick-list-button";
 import { CONTACT_EMAIL } from "@/components/contact-form";
 import { formatMm } from "@/lib/cylinder";
@@ -98,7 +98,6 @@ function DoorCard({ d, onToggle, onRemove, onSetSide }: { d: Door; onToggle: () 
         <div className="min-w-0 flex-1">
           <p className={`break-words text-sm font-bold ${d.done ? "text-muted-foreground line-through" : "text-foreground"}`}>{d.name}</p>
           <p className="mt-0.5 text-xs text-muted-foreground">{KIND_LABEL[d.kind]}{d.done && <span className="ml-2 font-semibold text-success">Monterad</span>}</p>
-          {d.fitting && <span className="mt-1 inline-block rounded-md border border-accent/40 bg-accent/10 px-2 py-0.5 text-xs font-semibold text-foreground">{FITTING_LABEL[d.fitting]}</span>}
         </div>
         <Button variant="ghost" size="icon" onClick={onRemove} aria-label={`Ta bort ${d.name}`} title={`Ta bort ${d.name}`} className="size-8 shrink-0 text-muted-foreground hover:bg-warning-soft hover:text-destructive"><Trash2 className="size-4" /></Button>
       </div>
@@ -121,7 +120,7 @@ function DoorCard({ d, onToggle, onRemove, onSetSide }: { d: Door; onToggle: () 
             <div className="mt-2 flex flex-wrap items-center gap-1.5">
             {s.extenders.length === 0 ? <span className="text-xs text-muted-foreground">inga förl.</span> :
               s.extenders.map((e, j) => <Chip key={j} side={s.label}>{formatMm(e)}</Chip>)}
-            <Chip accent side={s.label}>ring {formatMm(s.ring)}</Chip>
+            <Chip accent side={s.label}>{d.fitting ? fittingRingText(d.fitting, s.ring) : `ring ${formatMm(s.ring)}`}</Chip>
             </div>
           </li>
         ))}
@@ -245,14 +244,14 @@ export function ProjectPanel({ project, setProject, store, open, onOpenChange, c
                     <li key={e.kind + e.size} className="flex items-center justify-between gap-3 py-2.5 text-sm"><span className="font-semibold">{formatMm(e.size)} <span className="text-xs font-normal text-muted-foreground">({KIND_LABEL[e.kind]})</span></span><Chip accent>{e.count} st</Chip></li>
                   ))}</ul>
                 </>}
-                <p className="flex items-center gap-2 text-xs font-bold uppercase tracking-wide text-muted-foreground"><span className="size-3 rounded-full border-2 border-accent" aria-hidden />Ringar</p>
+                {totals.rings.length > 0 && <p className="flex items-center gap-2 text-xs font-bold uppercase tracking-wide text-muted-foreground"><span className="size-3 rounded-full border-2 border-accent" aria-hidden />Ringar</p>}
                 <ul className="mt-2 space-y-2">{totals.rings.map((r) => (
                   <li key={r.kind + r.side + r.size} className="flex items-center justify-between gap-3 border-b border-border/60 py-2.5 text-sm last:border-b-0"><span className="flex min-w-0 flex-wrap items-center gap-x-2 gap-y-1"><span className="font-mono font-bold">{formatMm(r.size)}</span>{r.side && <span className={`inline-flex items-center gap-1 font-semibold ${r.side === "Insida" ? "text-side-inside" : "text-side-outside"}`}>{r.side === "Insida" ? <ArrowDown className="size-3.5" aria-hidden /> : <ArrowUp className="size-3.5" aria-hidden />}{r.side}</span>} <span className="text-xs text-muted-foreground">({KIND_LABEL[r.kind]})</span></span><Chip accent>{r.count} st</Chip></li>
                 ))}</ul>
                 {totals.fittings.length > 0 && <>
-                  <p className="mt-4 text-xs font-bold uppercase tracking-wide text-muted-foreground">Behör</p>
+                  <p className="mt-4 text-xs font-bold uppercase tracking-wide text-muted-foreground">Behör med ring</p>
                   <ul className="mt-2 divide-y">{totals.fittings.map((f) => (
-                    <li key={f.fitting} className="flex items-center justify-between gap-3 py-2.5 text-sm"><span className="font-semibold">{FITTING_LABEL[f.fitting]}</span><Chip accent>{f.count} st</Chip></li>
+                    <li key={`${f.fitting}:${f.kind}:${f.side}:${f.size}`} className="flex items-center justify-between gap-3 py-2.5 text-sm"><span className="min-w-0 font-semibold">{fittingRingText(f.fitting, f.size)} <span className="text-xs font-normal text-muted-foreground">{f.side.toLowerCase()} ({KIND_LABEL[f.kind]})</span></span><Chip accent>{f.count} st</Chip></li>
                   ))}</ul>
                 </>}
               </div>

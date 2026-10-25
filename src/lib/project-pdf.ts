@@ -1,6 +1,6 @@
 // Builds an A4 PDF of a project (doors + material list) in the browser.
 import { formatMm } from "./cylinder";
-import { doorsToPick, FITTING_LABEL, KIND_LABEL, projectTotals, sideText, type Project } from "./project";
+import { doorsToPick, fittingRingText, KIND_LABEL, projectTotals, sideText, type Project } from "./project";
 
 export async function projectPdf(p: Project, remainingOnly: boolean): Promise<Blob> {
   const { jsPDF } = await import("jspdf");
@@ -28,7 +28,7 @@ export async function projectPdf(p: Project, remainingOnly: boolean): Promise<Bl
   heading("Inköpslista");
   if (t.extenders.length) { text("Förlängare", 11, true); t.extenders.forEach((e) => text(`${e.count}st  ${formatMm(e.size)} förlängare (${KIND_LABEL[e.kind]})`, 10, false, M + 4)); }
   if (t.rings.length) { y += 1; text("Ringar", 11, true); t.rings.forEach((r) => text(`${r.count}st  ${formatMm(r.size)} ring${r.side ? ` ${r.side.toLowerCase()}` : ""} (${KIND_LABEL[r.kind]})`, 10, false, M + 4)); }
-  if (t.fittings.length) { y += 1; text("Behör", 11, true); t.fittings.forEach((f) => text(`${f.count}st  ${FITTING_LABEL[f.fitting]}`, 10, false, M + 4)); }
+  if (t.fittings.length) { y += 1; text("Behör med ring", 11, true); t.fittings.forEach((f) => text(`${f.count}st  ${fittingRingText(f.fitting, f.size)}${f.side ? ` ${f.side.toLowerCase()}` : ""} (${KIND_LABEL[f.kind]})`, 10, false, M + 4)); }
   if (!t.extenders.length && !t.rings.length && !t.fittings.length) text("Inget material.", 10);
 
   heading("Dörrlista");
@@ -37,8 +37,7 @@ export async function projectPdf(p: Project, remainingOnly: boolean): Promise<Bl
     doc.setDrawColor(60); doc.setLineWidth(0.3); doc.rect(M, y - 3.6, 4, 4);
     if (d.done) { doc.setFont("helvetica", "bold"); doc.setFontSize(9); doc.text("X", M + 0.9, y - 0.4); }
     text(`${d.name} (${KIND_LABEL[d.kind]})${d.done ? " – monterad" : ""}`, 11, true, M + 7);
-    d.sides.forEach((s) => text(`${sideText(s, d.kind)} · dörrdjup ${formatMm(s.depth)}`, 10, false, M + 7));
-    if (d.fitting) text(FITTING_LABEL[d.fitting], 10, false, M + 7);
+    d.sides.forEach((s) => text(`${sideText(s, d.kind, d.fitting)} · dörrdjup ${formatMm(s.depth)}`, 10, false, M + 7));
     y += 1.5;
   });
 

@@ -3,7 +3,10 @@ import { formatMm } from "./cylinder";
 
 export type RingKind = "oval" | "rund" | "iloq";
 export type Fitting = "256" | "2356";
-export const FITTING_LABEL: Record<Fitting, string> = { "256": "256 behör (vred)", "2356": "2356 behör (täckbricka)" };
+export const FITTING_LABEL: Record<Fitting, string> = { "256": "256 behör", "2356": "2356 behör" };
+export function fittingRingText(fitting: Fitting, ring: number): string {
+  return `${FITTING_LABEL[fitting]} med ${formatMm(ring)} ring`;
+}
 export function canSelectFitting(variant: "free" | "pro", cylinder: "standard" | "round" | "iloq", type: "single" | "double"): boolean {
   return variant === "pro" && type === "single" && (cylinder === "standard" || cylinder === "iloq");
 }
@@ -32,17 +35,14 @@ export function setDoorSide(door: Door, sideIndex: number, label: string | null)
 export interface Totals {
   extenders: { size: number; kind: RingKind; count: number }[];
   rings: { size: number; kind: RingKind; side: string; count: number }[];
-  fittings: { fitting: Fitting; count: number }[];
+  fittings: { fitting: Fitting; size: number; kind: RingKind; side: string; count: number }[];
 }
 
 /** Summerar allt material för alla dörrar i projektet. */
 export function projectTotals(doors: Door[]): Totals {
   const ext = new Map<string, { size: number; kind: RingKind; count: number }>();
   const rings = new Map<string, { size: number; kind: RingKind; side: string; count: number }>();
-  const fittings = new Map<Fitting, number>();
-  for (const d of doors) {
-    if (d.fitting) fittings.set(d.fitting, (fittings.get(d.fitting) ?? 0) + 1);
-  }
+  const fittings = new Map<string, Totals["fittings"][number]>();
   const extKind = (k: RingKind): RingKind => (k === "rund" ? "rund" : "oval");
   for (const d of doors) for (const s of d.sides) {
     for (const e of s.extenders) {
@@ -51,21 +51,27 @@ export function projectTotals(doors: Door[]): Totals {
       cur.count++; ext.set(key, cur);
     }
     const side = RING_HAS_SIDE[d.kind] ? (s.label ?? "Utsida") : "";
+    if (d.fitting) {
+      const key = `${d.fitting}:${d.kind}:${side}:${s.ring}`;
+      const cur = fittings.get(key) ?? { fitting: d.fitting, size: s.ring, kind: d.kind, side, count: 0 };
+      cur.count++; fittings.set(key, cur);
+      continue;
+    }
     const key = `${d.kind}:${side}:${s.ring}`;
     const cur = rings.get(key) ?? { size: s.ring, kind: d.kind, side, count: 0 };
     cur.count++; rings.set(key, cur);
   }
   const sort = (a: { kind: string; size: number; side?: string }, b: { kind: string; size: number; side?: string }) =>
     a.kind.localeCompare(b.kind) || (b.side ?? "").localeCompare(a.side ?? "") || a.size - b.size;
-  return { extenders: [...ext.values()].sort(sort), rings: [...rings.values()].sort(sort), fittings: [...fittings].sort(([a], [b]) => Number(a) - Number(b)).map(([fitting, count]) => ({ fitting, count })) };
+  return { extenders: [...ext.values()].sort(sort), rings: [...rings.values()].sort(sort), fittings: [...fittings.values()].sort((a, b) => Number(a.fitting) - Number(b.fitting) || sort(a, b)) };
 }
 
-export function sideText(s: DoorSide, kind: RingKind): string {
+export function sideText(s: DoorSide, kind: RingKind, fitting?: Fitting): string {
   const counts = new Map<number, number>();
   s.extenders.forEach((e) => counts.set(e, (counts.get(e) ?? 0) + 1));
   const parts = [...counts].sort((a, b) => a[0] - b[0]).map(([e, n]) => `${n}st ${formatMm(e)} förlängare`);
   const side = RING_HAS_SIDE[kind] ? ` ${(s.label ?? "Utsida").toLowerCase()}` : "";
-  parts.push(`${formatMm(s.ring)} ring${side}`);
+  parts.push(fitting ? `${fittingRingText(fitting, s.ring)}${side}` : `${formatMm(s.ring)} ring${side}`);
   return (s.label ? `${s.label}: ` : "") + parts.join(" + ");
 }
 
@@ -81,17 +87,17 @@ export function totalsText(p: Project, remainingOnly = false): string {
   const lines = [`${p.name || "Projekt"} – ${doors.length} ${remainingOnly ? `kvarvarande ${word}` : word}`];
   if (t.extenders.length) { lines.push("", "Förlängare:"); t.extenders.forEach((e) => lines.push(`${e.count}st ${formatMm(e.size)} (${KIND_LABEL[e.kind]})`)); }
   if (t.rings.length) { lines.push("", "Ringar:"); t.rings.forEach((r) => lines.push(`${r.count}st ${formatMm(r.size)} ring${r.side ? ` ${r.side.toLowerCase()}` : ""} (${KIND_LABEL[r.kind]})`)); }
-  if (t.fittings.length) { lines.push("", "Behör:"); t.fittings.forEach((f) => lines.push(`${f.count}st ${FITTING_LABEL[f.fitting]}`)); }
+  if (t.fittings.length) { lines.push("", "Behör med ring:"); t.fittings.forEach((f) => lines.push(`${f.count}st ${fittingRingText(f.fitting, f.size)}${f.side ? ` ${f.side.toLowerCase()}` : ""} (${KIND_LABEL[f.kind]})`)); }
   return lines.join("\n");
 }
 
 export function doorsText(p: Project): string {
-  return p.doors.map((d) => [`${d.name} (${KIND_LABEL[d.kind]})`, ...d.sides.map((s) => "  " + sideText(s, d.kind)), ...(d.fitting ? ["  " + FITTING_LABEL[d.fitting]] : [])].join("\n")).join("\n");
+  return p.doors.map((d) => [`${d.name} (${KIND_LABEL[d.kind]})`, ...d.sides.map((s) => "  " + sideText(s, d.kind, d.fitting))].join("\n")).join("\n");
 }
 
 /** Whole project as shareable text: every door, then the full material list. */
 export function projectText(p: Project): string {
-  const doors = p.doors.map((d) => [`${d.name} (${KIND_LABEL[d.kind]})${d.done ? " – monterad" : ""}`, ...d.sides.map((s) => "  " + sideText(s, d.kind)), ...(d.fitting ? ["  " + FITTING_LABEL[d.fitting]] : [])].join("\n")).join("\n\n");
+  const doors = p.doors.map((d) => [`${d.name} (${KIND_LABEL[d.kind]})${d.done ? " – monterad" : ""}`, ...d.sides.map((s) => "  " + sideText(s, d.kind, d.fitting))].join("\n")).join("\n\n");
   return [`${p.name || "Projekt"}`, "", "Dörrar:", doors, "", "Totalt material:", totalsText(p).split("\n").slice(2).join("\n")].join("\n").trim();
 }
 
