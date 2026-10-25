@@ -6,6 +6,8 @@
 - [x] Exakt matchning av annonsbildens cylinder mot iLOQ:s officiella C10S.1.SB-bild — avbröts av Fredrik ("det blir bara fel"); v11 och v12 används ej.
 - [x] Slutgiltig annonsbild vald av Fredrik: v4 (rakna_i_huvudet_phone_swedish_cylinders_portrait_v4.jpg) — har cylinderhjalpen.se i foten, inga fler ändringar.
 
+- [x] Ny flik /pro (Projekt & behör) som kopia av kalkylatorn; Fredrik säger vad som tas bort från gratisversionen.
+
 ## Parkerat (väntar på Fredrik)
 - [ ] Skruvar + behör (256/2356) i plocklista och PDF — väntar på verifierade skruvlängder.
 - [ ] Annonser/spridning pausade tills allt på sidan är rätt.
