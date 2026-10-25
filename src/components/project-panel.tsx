@@ -66,17 +66,17 @@ function CopyButton({ text, label, small }: { text: string; label: string; small
   );
 }
 
-function PdfButton({ project, remainingOnly, onLocked }: { project: Project; remainingOnly: boolean; onLocked?: (() => void) | undefined }) {
+function PdfButton({ project, remainingOnly, onLocked, withoutDoors = false }: { project: Project; remainingOnly: boolean; onLocked?: (() => void) | undefined; withoutDoors?: boolean }) {
   const [blob, setBlob] = useState<Blob | null>(null);
   useEffect(() => {
     let live = true; setBlob(null);
-    projectPdf(project, remainingOnly).then((b) => { if (live) setBlob(b); }).catch(() => {});
+    projectPdf(project, remainingOnly, !withoutDoors).then((b) => { if (live) setBlob(b); }).catch(() => {});
     return () => { live = false; };
-  }, [project, remainingOnly]);
+  }, [project, remainingOnly, withoutDoors]);
   return (
-    <Button className="min-h-12 w-full bg-accent text-base font-bold text-accent-foreground hover:bg-accent/85" disabled={!blob}
-      onClick={() => { if (onLocked) return onLocked(); if (blob) { trackEvent("pdf_export", { dorrar: project.doors.length }); void deliverFile(blob, pdfFileName(project)); } }}>
-      <FileDown aria-hidden />{blob ? "Ladda ner PDF" : "Förbereder PDF…"}
+    <Button variant={withoutDoors ? "outline" : "default"} className={`min-h-12 w-full font-bold ${withoutDoors ? "border-accent/40" : "bg-accent text-base text-accent-foreground hover:bg-accent/85"}`} disabled={!blob}
+      onClick={() => { if (onLocked) return onLocked(); if (blob) { trackEvent("pdf_export", { dorrar: project.doors.length, dorrlista: !withoutDoors }); void deliverFile(blob, pdfFileName(project, withoutDoors)); } }}>
+      <FileDown aria-hidden className={withoutDoors ? "text-accent" : ""} />{!blob ? "Förbereder PDF…" : withoutDoors ? "PDF – bara inköpslista" : "Ladda ner PDF (med dörrlista)"}
     </Button>
   );
 }
@@ -258,6 +258,7 @@ export function ProjectPanel({ project, setProject, store, open, onOpenChange, c
           {tab === "total" && project.doors.length > 0 && (
             <div className="space-y-2 border-t border-border pt-4">
               <PdfButton project={project} remainingOnly={onlyLeft} onLocked={onLocked} />
+              <PdfButton project={project} remainingOnly={onlyLeft} onLocked={onLocked} withoutDoors />
               <CopyButton text={projectText(project)} label="Kopiera allt" />
               <div className="grid grid-cols-2 gap-2">
                 <CopyButton small text={totalsText(project, onlyLeft)} label="Bara inköpslista" />
