@@ -82,6 +82,8 @@ export interface Totals {
   loose: Totals["fittings"];
   /** Antal dörrar med dubbelcylinder. */
   doubles: number;
+  /** iLOQ dubbelcylinder: ringpar per dörr (utsida + iLOQ innerring insida), räknas inte under lösa ringar. */
+  iloqPairs: { outer: number; inner: number; count: number }[];
 }
 
 /** Behör där ringen inte ingår i satsen; ringen plockas lös. */
@@ -95,7 +97,13 @@ export function projectTotals(doors: Door[]): Totals {
   const kits = new Map<Fitting, number>();
   const loose = new Map<string, Totals["fittings"][number]>();
   const extKind = (k: RingKind): RingKind => (k === "rund" ? "rund" : "oval");
+  const pairs = new Map<string, { outer: number; inner: number; count: number }>();
   for (const d of doors) {
+    const iloqDouble = d.kind === "iloq" && d.sides.length > 1;
+    if (iloqDouble) {
+      const o = d.sides.find((s) => s.label !== "Insida"), i = d.sides.find((s) => s.label === "Insida");
+      if (o && i) { const k = `${o.ring}:${i.ring}`; const c = pairs.get(k) ?? { outer: o.ring, inner: i.ring, count: 0 }; c.count++; pairs.set(k, c); }
+    }
     if (d.fitting && KIT_FITTINGS.includes(d.fitting)) kits.set(d.fitting, (kits.get(d.fitting) ?? 0) + 1);
     for (const s of d.sides) {
     for (const e of s.extenders) {
@@ -106,6 +114,7 @@ export function projectTotals(doors: Door[]): Totals {
     const side = RING_HAS_SIDE[d.kind] ? (s.label ?? "Utsida") : "";
     const inner = isIloqInner(d.kind, s.label, d.sides.length > 1);
     const fit = fittingForSide(d.fitting, s.label);
+    if (iloqDouble) continue;
     if (fit && !KIT_FITTINGS.includes(fit)) {
       const target = isLooseFitting(fit, s.ring) ? loose : fittings;
       const key = `${fit}:${d.kind}:${side}:${s.ring}`;
@@ -121,7 +130,7 @@ export function projectTotals(doors: Door[]): Totals {
   const sort = (a: { kind: string; size: number; side?: string }, b: { kind: string; size: number; side?: string }) =>
     a.kind.localeCompare(b.kind) || (b.side ?? "").localeCompare(a.side ?? "") || a.size - b.size;
   const byName = (a: { fitting: Fitting }, b: { fitting: Fitting }) => a.fitting.localeCompare(b.fitting, "sv", { numeric: true });
-  return { extenders: [...ext.values()].sort(sort), rings: [...rings.values()].sort(sort), fittings: [...fittings.values()].sort((a, b) => byName(a, b) || sort(a, b)), kits: [...kits].map(([fitting, count]) => ({ fitting, count })), loose: [...loose.values()].sort((a, b) => byName(a, b) || sort(a, b)), doubles: doors.filter((d) => d.sides.length > 1).length };
+  return { extenders: [...ext.values()].sort(sort), rings: [...rings.values()].sort(sort), fittings: [...fittings.values()].sort((a, b) => byName(a, b) || sort(a, b)), kits: [...kits].map(([fitting, count]) => ({ fitting, count })), loose: [...loose.values()].sort((a, b) => byName(a, b) || sort(a, b)), doubles: doors.filter((d) => d.sides.length > 1).length, iloqPairs: [...pairs.values()].sort((a, b) => a.outer - b.outer || a.inner - b.inner) };
 }
 
 export function sideText(s: DoorSide, kind: RingKind, fitting?: Fitting, double = false): string {
@@ -170,8 +179,10 @@ export function purchaseList(t: Totals): PurchaseSection[] {
   const items = (m: Map<string, number>) => [...m].map(([text, count]) => ({ count, text }));
   return [
     { title: "Behörssatser", hint: "Per behör och ringhöjd", items: items(sets) },
-    { title: "Dubbelcylindrar", hint: "Dörrar med cylinder på båda sidor", items: t.doubles ? [{ count: t.doubles, text: "dubbelcylinder" }] : [] },
-    { title: "Monteringskit", hint: "", items: items(kits) },
+    { title: "iLOQ dubbelcylinder", hint: "Per dörr: ring utsida + iLOQ innerring (med skruvhål) insida", items: [
+      ...items(kits),
+      ...t.iloqPairs.map((p) => ({ count: p.count, text: `${formatMm(p.outer)} ring utsida + ${formatMm(p.inner)} iLOQ innerring insida` })),
+    ] },
     { title: "Ringar", hint: "Lösa ringar, per höjd", items: items(rings) },
     { title: "Förlängare", hint: "Alla dörrar", items: items(ext) },
   ].filter((s) => s.items.length);
