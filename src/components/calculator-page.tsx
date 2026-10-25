@@ -6,7 +6,7 @@ import { CylinderResults } from "@/components/cylinder-results";
 import { PickListButton } from "@/components/pick-list-button";
 import { ProjectBar, ProjectPanel, useProject } from "@/components/project-panel";
 import { ProDialog } from "@/components/pro-dialog";
-import { canSelectFitting, nextDoorName, type DoorSide, type Fitting } from "@/lib/project";
+import { fittingOptions, nextDoorName, type DoorSide, type Fitting } from "@/lib/project";
 import { DoorNameDialog } from "@/components/door-name-dialog";
 import { toast } from "sonner";
 import { Toaster } from "@/components/ui/sonner";
@@ -75,8 +75,9 @@ export function CalculatorPage({ variant }: { variant: "free" | "pro" }) {
   const [switchProject, setSwitchProject] = useState(false);
   const [pendingDoor, setPendingDoor] = useState<{ sides: DoorSide[]; kind: "oval" | "rund" | "iloq"; fitting?: Fitting } | null>(null);
   const [fitting, setFitting] = useState<Fitting | null>(null);
-  const fittingEnabled = canSelectFitting(variant, cyl, type);
-  const activeFitting = fittingEnabled ? fitting : null;
+  const fittingChoices = fittingOptions(variant, cyl, type, brand);
+  const fittingEnabled = fittingChoices.length > 0;
+  const activeFitting = fitting && fittingChoices.includes(fitting) ? fitting : null;
   const [singleSide, setSingleSide] = useState<"Utsida" | "Insida">("Utsida");
 
   const isRound = cyl === "round";
@@ -262,7 +263,7 @@ export function CalculatorPage({ variant }: { variant: "free" | "pro" }) {
           <PickListButton
             sides={type === "single" ? [{ label: isRound ? null : singleSide, depth: parse(outside), selected: selOut }] : [{ label: "Utsida", depth: parse(outside), selected: selOut }, { label: "Insida", depth: parse(inside), selected: selIn }]}
             ext={ext} rings={activeRings} baseMm={baseMm} insideBaseMm={insideBaseMm} relaxed={isRound}
-            fitting={activeFitting} onFittingChange={fittingEnabled ? setFitting : undefined}
+            fitting={activeFitting} onFittingChange={fittingEnabled ? setFitting : undefined} fittingChoices={fittingChoices}
             {...(pro ? { projectName: project.name, projectDoors: project.doors.length, projectCount: projectStore.list.length, onOpenProject: () => { setSwitchProject(true); setProjectOpen(true); } } : {})}
             onSave={!pro ? undefined : (sides) => { trackEvent("sparad_dorr", { cylinder: cyl }); setPendingDoor({ sides, kind: isRound ? "rund" : cyl === "iloq" ? "iloq" : "oval", ...(activeFitting ? { fitting: activeFitting } : {}) }); }}
           />

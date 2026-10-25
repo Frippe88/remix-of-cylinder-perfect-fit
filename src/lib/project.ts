@@ -2,13 +2,19 @@
 import { formatMm } from "./cylinder";
 
 export type RingKind = "oval" | "rund" | "iloq";
-export type Fitting = "256" | "2356";
-export const FITTING_LABEL: Record<Fitting, string> = { "256": "256 behör", "2356": "2356 behör" };
+export type Fitting = "256" | "2356" | "3212";
+export const FITTING_LABEL: Record<Fitting, string> = { "256": "256 behör", "2356": "2356 behör", "3212": "3212 behör" };
 export function fittingRingText(fitting: Fitting, ring: number): string {
   return `${FITTING_LABEL[fitting]} med ${formatMm(ring)} ring`;
 }
-export function canSelectFitting(variant: "free" | "pro", cylinder: "standard" | "round" | "iloq", type: "single" | "double"): boolean {
-  return variant === "pro" && type === "single" && (cylinder === "standard" || cylinder === "iloq");
+/** Vilka behör som kan väljas för given cylinder. Tom lista = inget behörsval. */
+export function fittingOptions(variant: "free" | "pro", cylinder: "standard" | "round" | "iloq", type: "single" | "double", brand?: string): Fitting[] {
+  if (variant !== "pro") return [];
+  if (cylinder === "round") return brand === "ASSA ABLOY" ? ["3212"] : [];
+  return type === "single" ? ["256", "2356"] : [];
+}
+export function canSelectFitting(variant: "free" | "pro", cylinder: "standard" | "round" | "iloq", type: "single" | "double", brand?: string): boolean {
+  return fittingOptions(variant, cylinder, type, brand).length > 0;
 }
 export interface DoorSide { label: string | null; depth: number; ring: number; extenders: number[] }
 export interface Door { id: string; name: string; kind: RingKind; done: boolean; sides: DoorSide[]; fitting?: Fitting }

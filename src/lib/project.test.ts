@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { canSelectFitting, doorsText, nextDoorName, projectText, projectTotals, setDoorSide, totalsText, type Door } from "./project";
+import { canSelectFitting, fittingOptions, doorsText, nextDoorName, projectText, projectTotals, setDoorSide, totalsText, type Door } from "./project";
 
 describe("behör i material och delning", () => {
   const door = (id: string, fitting?: "256" | "2356", done = false): Door => ({ id, name: `Dörr ${id}`, kind: "oval", done, sides: [{ label: "Utsida", depth: 36, ring: 11, extenders: [8, 8] }], ...(fitting ? { fitting } : {}) });
@@ -35,8 +35,11 @@ describe("behörsval", () => {
     expect(canSelectFitting("pro", "standard", "single")).toBe(true);
     expect(canSelectFitting("pro", "iloq", "single")).toBe(true);
   });
-  it("tillåter inte rund cylinder", () => {
-    expect(canSelectFitting("pro", "round", "single")).toBe(false);
+  it("tillåter 3212 för rund ASSA-cylinder men inte andra fabrikat", () => {
+    expect(fittingOptions("pro", "round", "double", "ASSA ABLOY")).toEqual(["3212"]);
+    expect(fittingOptions("pro", "round", "single", "ASSA ABLOY")).toEqual(["3212"]);
+    expect(canSelectFitting("pro", "round", "double", "EVVA")).toBe(false);
+    expect(canSelectFitting("free", "round", "double", "ASSA ABLOY")).toBe(false);
   });
   it("tillåter inte dubbelcylinder", () => {
     expect(canSelectFitting("pro", "standard", "double")).toBe(false);
