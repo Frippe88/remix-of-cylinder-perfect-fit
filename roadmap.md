@@ -15,3 +15,4 @@
 ## Parkerat (väntar på Fredrik)
 - [ ] Skruvlängder — väntar på verifierade skruvlängder.
 - [ ] Annonser/spridning pausade tills allt på sidan är rätt.
+- [ ] iLOQ dubbel: A10.11 som egen sektion 'Monteringskit iLOQ' i PDF, panel och kopierad inköpslista; ringar som lösa ringar
