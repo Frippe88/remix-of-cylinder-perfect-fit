@@ -1,13 +1,13 @@
 import { describe, expect, it } from "vitest";
-import { canSelectFitting, fittingOptions, doorsText, FITTING_LABEL, nextDoorName, projectText, projectTotals, setDoorSide, totalsText, type Door, type Fitting, type Project } from "./project";
+import { canSelectFitting, fittingOptions, doorsText, FITTING_LABEL, nextDoorName, projectText, projectTotals, setDoorSide, sideText, totalsText, type Door, type Fitting, type Project } from "./project";
 
 describe("behör i material och delning", () => {
   const door = (id: string, fitting?: "256" | "2356", done = false): Door => ({ id, name: `Dörr ${id}`, kind: "oval", done, sides: [{ label: "Utsida", depth: 36, ring: 11, extenders: [8, 8] }], ...(fitting ? { fitting } : {}) });
   const project = { name: "Test", doors: [door("1", "256"), door("2", "256", true), door("3", "2356"), door("4")] };
   it("summerar en vald behörssats per dörr och lämnar ovalda dörrar utan behör", () => {
-    expect(projectTotals(project.doors).fittings).toEqual([{ fitting: "256", size: 11, kind: "oval", side: "Utsida", count: 2 }, { fitting: "2356", size: 11, kind: "oval", side: "Utsida", count: 1 }]);
+    expect(projectTotals(project.doors).fittings).toEqual([{ fitting: "256", size: 11, kind: "oval", side: "Utsida", inner: false, count: 2 }, { fitting: "2356", size: 11, kind: "oval", side: "Utsida", inner: false, count: 1 }]);
     expect(projectTotals([door("4")]).fittings).toEqual([]);
-    expect(projectTotals(project.doors).rings).toEqual([{ size: 11, kind: "oval", side: "Utsida", count: 1 }]);
+    expect(projectTotals(project.doors).rings).toEqual([{ size: 11, kind: "oval", side: "Utsida", inner: false, count: 1 }]);
   });
   it("skiljer på ringhöjd och cylindertyp för samma behör", () => {
     const first = door("1", "256");
@@ -51,9 +51,9 @@ describe("behörsval", () => {
     expect(canSelectFitting("pro", "round", "double", "EVVA")).toBe(false);
     expect(canSelectFitting("free", "round", "double", "ASSA ABLOY")).toBe(false);
   });
-  it("ger 18256 för dubbel oval men inget för dubbel iLOQ", () => {
+  it("ger 18256 för dubbel oval och A10.11 för dubbel iLOQ", () => {
     expect(fittingOptions("pro", "standard", "double")).toEqual(["18256"]);
-    expect(canSelectFitting("pro", "iloq", "double")).toBe(false);
+    expect(canSelectFitting("pro", "iloq", "double")).toBe(true);
   });
   it("ger dormakaba-behör: DAK 752 rund, DAK 7200/7101 enkel oval", () => {
     expect(fittingOptions("pro", "round", "double", "dormakaba / DORMA")).toEqual(["DAK 752"]);
@@ -88,16 +88,16 @@ describe("projectTotals", () => {
     expect(t.extenders).toContainEqual({ size: 10, kind: "rund", count: 1 });
   });
   it("skiljer på utsida- och insidaring", () => {
-    expect(projectTotals(doors).rings).toContainEqual({ size: 11, kind: "oval", side: "Insida", count: 1 });
+    expect(projectTotals(doors).rings).toContainEqual({ size: 11, kind: "oval", side: "Insida", inner: false, count: 1 });
   });
   it("räknar en ring per sida och skiljer på oval och rund", () => {
     const t = projectTotals(doors);
-    expect(t.rings).toContainEqual({ size: 11, kind: "oval", side: "Utsida", count: 1 });
-    expect(t.rings).toContainEqual({ size: 13, kind: "rund", side: "", count: 1 });
+    expect(t.rings).toContainEqual({ size: 11, kind: "oval", side: "Utsida", inner: false, count: 1 });
+    expect(t.rings).toContainEqual({ size: 13, kind: "rund", side: "", inner: false, count: 1 });
   });
   it("rund cylinder har samma ring ute och inne – ringen delas inte per sida", () => {
     const t = projectTotals(roundDouble);
-    expect(t.rings).toEqual([{ size: 13, kind: "rund", side: "", count: 2 }]);
+    expect(t.rings).toEqual([{ size: 13, kind: "rund", side: "", inner: false, count: 2 }]);
     expect(totalsText({ name: "Storgatan 4", doors: roundDouble })).toContain("2st 13mm ring (rund)");
     expect(doorsText({ name: "Storgatan 4", doors: roundDouble })).toContain("Utsida: 13mm ring + 1st 10mm förlängare");
     expect(doorsText({ name: "Storgatan 4", doors: roundDouble })).not.toContain("ring utsida");
@@ -147,5 +147,32 @@ describe("hela projektet", () => {
   it("töm dörrar behåller projektnamnet", async () => {
     const { clearDoors } = await import("./project");
     expect(clearDoors({ name: "Kund A", doors })).toEqual({ name: "Kund A", doors: [] });
+  });
+});
+
+describe("iLOQ dubbelcylinder – A10.11 och innerring", () => {
+  const dbl: Door = { id: "i", name: "Dörr 1", kind: "iloq", done: false, sides: [
+    { label: "Utsida", depth: 20, ring: 11, extenders: [] },
+    { label: "Insida", depth: 20, ring: 27, extenders: [] },
+  ] };
+  it("A10.11 är enda behörsvalet för dubbel iLOQ i Pro", () => {
+    expect(fittingOptions("pro", "iloq", "double")).toEqual(["A10.11"]);
+    expect(fittingOptions("free", "iloq", "double")).toEqual([]);
+  });
+  it("insidan blir iLOQ innerring även utan behör", () => {
+    expect(sideText(dbl.sides[1]!, "iloq", undefined, true)).toBe("Insida: 27mm iLOQ innerring");
+    expect(sideText(dbl.sides[0]!, "iloq", undefined, true)).toBe("Utsida: 11mm ring");
+  });
+  it("A10.11 hamnar bara på insidan", () => {
+    const d = { ...dbl, fitting: "A10.11" as const };
+    expect(sideText(d.sides[1]!, "iloq", "A10.11", true)).toBe("Insida: A10.11 monteringskit med 27mm iLOQ innerring");
+    expect(sideText(d.sides[0]!, "iloq", "A10.11", true)).toBe("Utsida: 11mm ring");
+    const t = projectTotals([d]);
+    expect(t.fittings).toHaveLength(1);
+    expect(t.rings).toHaveLength(1);
+    expect(t.rings[0]!.size).toBe(11);
+  });
+  it("enkel iLOQ på insidan får ingen innerring", () => {
+    expect(sideText({ label: "Insida", depth: 20, ring: 27, extenders: [] }, "iloq", undefined, false)).toBe("Insida: 27mm ring");
   });
 });
