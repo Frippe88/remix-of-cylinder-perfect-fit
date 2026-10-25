@@ -102,8 +102,8 @@ describe("projectTotals", () => {
     expect(doorsText({ name: "Storgatan 4", doors: roundDouble })).toContain("Utsida: 13mm ring + 1st 10mm förlängare");
     expect(doorsText({ name: "Storgatan 4", doors: roundDouble })).not.toContain("ring utsida");
   });
-  it("oval ring märks fortfarande med sida i inköpslistan", () => {
-    expect(totalsText({ name: "Storgatan 4", doors })).toContain("1st 11mm ring");
+  it("inköpslistan slår ihop samma ring oavsett sida", () => {
+    expect(totalsText({ name: "Storgatan 4", doors })).toContain("2st 11mm ring");
   });
 });
 
