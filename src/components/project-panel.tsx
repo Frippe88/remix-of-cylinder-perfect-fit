@@ -238,13 +238,17 @@ export function ProjectPanel({ project, setProject, store, open, onOpenChange, c
                 <p className="py-6 text-center text-sm text-muted-foreground">Alla dörrar är monterade – inget kvar att plocka.</p>
               ) : <>
               <div className="space-y-5 border-y py-4">
-                {purchaseList(totals).map((s) => (
-                  <section key={s.title}>
-                    <p className="text-xs font-bold uppercase tracking-wide text-foreground">{s.title}</p>
-                    <p className="text-xs text-muted-foreground">{s.hint}</p>
-                    <ul className="mt-1 divide-y">{s.items.map((i) => (
-                      <li key={i.text} className="flex items-center justify-between gap-3 py-2.5 text-sm"><span className="min-w-0 font-semibold">{i.text}</span><Chip accent>{i.count} st</Chip></li>
-                    ))}</ul>
+                {purchaseList(pickDoors).map((s) => (
+                  <section key={s.title} className="space-y-3">
+                    <p className="text-sm font-bold text-foreground">{s.title}</p>
+                    {s.groups.map((g) => (
+                      <div key={g.title}>
+                        <p className="text-xs font-bold uppercase tracking-wide text-accent">{g.title}</p>
+                        <ul className="mt-1 divide-y">{g.items.map((i) => (
+                          <li key={i.text} className="flex items-center justify-between gap-3 py-2.5 text-sm"><span className="min-w-0 font-semibold">{i.text}</span><Chip accent>{i.count} st</Chip></li>
+                        ))}</ul>
+                      </div>
+                    ))}
                   </section>
                 ))}
               </div>

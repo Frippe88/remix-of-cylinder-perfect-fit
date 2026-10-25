@@ -1,6 +1,5 @@
 // Builds an A4 PDF of a project (doors + material list) in the browser.
-import { formatMm } from "./cylinder";
-import { doorsToPick, KIND_LABEL, doorTitle, projectTotals, purchaseList, sideText, type Project } from "./project";
+import { doorsToPick, doorTitle, purchaseList, sideText, type Project } from "./project";
 
 export async function projectPdf(p: Project, remainingOnly: boolean): Promise<Blob> {
   const { jsPDF } = await import("jspdf");
@@ -20,23 +19,27 @@ export async function projectPdf(p: Project, remainingOnly: boolean): Promise<Bl
   };
 
   const doors = doorsToPick(p.doors, remainingOnly);
-  const t = projectTotals(doors);
   doc.setTextColor(230, 120, 30); text("Cylinderhjälpen", 10, true); doc.setTextColor(0);
   y += 5; text(p.name || "Projekt", 20, true); y += 1;
   text(`${new Date().toLocaleDateString("sv-SE")} · ${doors.length} ${doors.length === 1 ? "dörr" : "dörrar"}${remainingOnly ? " kvar att montera" : ""}`, 10);
 
   heading("Inköpslista");
-  const sections = purchaseList(t);
+  const sections = purchaseList(doors);
   sections.forEach((s, si) => {
-    need(14 + s.items.length * 7);
+    need(14);
     if (si) y += 3;
-    text(s.title, 11.5, true);
-    doc.setTextColor(120); text(s.hint, 8.5); doc.setTextColor(0);
-    s.items.forEach((it, i) => {
-      if (i % 2 === 0) { doc.setFillColor(245, 245, 245); doc.rect(M, y - 4.2, W - 2 * M, 6.4, "F"); }
-      doc.setFont("helvetica", "bold"); doc.setFontSize(10.5); doc.text(`${it.count} st`, M + 2, y);
-      doc.setFont("helvetica", "normal"); doc.text(it.text, M + 20, y);
-      y += 6.4;
+    text(s.title, 12, true);
+    s.groups.forEach((g) => {
+      need(10 + g.items.length * 6.4);
+      doc.setFont("helvetica", "bold"); doc.setFontSize(9.5); doc.setTextColor(200, 90, 10);
+      doc.text(g.title.toUpperCase(), M, y); y += 4.5; doc.setTextColor(0);
+      g.items.forEach((it, i) => {
+        if (i % 2 === 0) { doc.setFillColor(245, 245, 245); doc.rect(M, y - 4.2, W - 2 * M, 6.4, "F"); }
+        doc.setFont("helvetica", "bold"); doc.setFontSize(10); doc.text(`${it.count} st`, M + 2, y);
+        doc.setFont("helvetica", "normal"); doc.text(it.text, M + 20, y);
+        y += 6.4;
+      });
+      y += 2;
     });
   });
   if (!sections.length) text("Inget material.", 10);
