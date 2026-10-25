@@ -2,7 +2,7 @@ import { useState, type ReactNode } from "react";
 import { AlertTriangle, ArrowDown, ArrowUp, Check, ClipboardCopy, ClipboardList, Disc3, FolderOpen, FolderPlus, Layers } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { calculate, formatMm, type Combination } from "@/lib/cylinder";
-import { fittingRingText, ringName, type DoorSide, type Fitting } from "@/lib/project";
+import { fittingForSide, fittingRingText, isLooseFitting, looseFittingLabel, ringName, type DoorSide, type Fitting } from "@/lib/project";
 
 export type PickSide = { label: string | null; depth: number | null; selected: Combination | null };
 
@@ -67,12 +67,23 @@ function Row({ caption, icon, children }: { caption: string; icon: ReactNode; ch
   );
 }
 
+const FITTING_MENU: Record<Fitting, string> = {
+  "256": "256 behör (ASSA vred)",
+  "2356": "2356 behör (ASSA täckbricka)",
+  "3212": "3212 behör (ASSA rund cylinder)",
+  "18256": "18256 behör (dubbel oval cylinder)",
+  "DAK 7200": "DAK 7200 behör (dormakaba vred)",
+  "DAK 7101": "DAK 7101 behör (dormakaba täckbricka)",
+  "DAK 752": "DAK 752 behör (dormakaba rund cylinder)",
+  "A10.11": "A10.11 monteringskit (iLOQ dubbelcylinder)",
+};
 
-export function PickListButton({ sides, ext, rings, insideRings = rings, insideExt = ext, baseMm, insideBaseMm = baseMm, relaxed, onSave, projectName, projectDoors = 0, projectCount = 1, onOpenProject, note = "", onNoteChange, iloqDouble = false }: {
+export function PickListButton({ sides, ext, rings, insideRings = rings, insideExt = ext, baseMm, insideBaseMm = baseMm, relaxed, onSave, projectName, projectDoors = 0, projectCount = 1, onOpenProject, fitting = null, onFittingChange, fittingChoices = ["256", "2356"], iloqDouble = false }: {
   sides: PickSide[]; ext: number[]; rings: number[]; insideRings?: number[]; insideExt?: number[]; baseMm: number; insideBaseMm?: number; relaxed: boolean;
   onSave?: ((sides: DoorSide[]) => void) | undefined;
   projectName?: string; projectDoors?: number; projectCount?: number; onOpenProject?: () => void;
-  note?: string; onNoteChange?: ((value: string) => void) | undefined; iloqDouble?: boolean;
+  fitting?: Fitting | null; onFittingChange?: ((value: Fitting | null) => void) | undefined;
+  fittingChoices?: Fitting[]; iloqDouble?: boolean;
 }) {
   const savedTo = (projectName ?? "").trim();
   const projectLabel = savedTo || "Projekt";
@@ -85,7 +96,10 @@ export function PickListButton({ sides, ext, rings, insideRings = rings, insideE
   if (picks.length === 0) return null;
 
   const isInner = (label: string | null) => iloqDouble && label === "Insida";
-  const text = picks.map((p) => (p.label ? `${p.label}: ` : "") + pickLine(p.c, null, isInner(p.label))).join("\n") + (note.trim() ? `\nBehör: ${note.trim()}` : "");
+  const text = picks.map((p) => (p.label ? `${p.label}: ` : "") + pickLine(p.c, fittingForSide(fitting, p.label), isInner(p.label))).join("\n");
+  const insidePick = picks.find((p) => isInner(p.label));
+  const menuText = (f: Fitting) => f === "A10.11" && insidePick ? `A10.11 monteringskit med ${ringName(insidePick.c.ring, true)} insida`
+    : picks.some((p) => isLooseFitting(fittingForSide(f, p.label), p.c.ring)) ? `${looseFittingLabel(f)} (${FITTING_MENU[f].split("(")[1]}` : FITTING_MENU[f];
   const parts = picks.reduce((n, p) => n + p.c.extenderCount + 1, 0);
 
   const copy = async () => {
@@ -182,11 +196,16 @@ export function PickListButton({ sides, ext, rings, insideRings = rings, insideE
             <span className="truncate">Spara i {savedTo ? `”${savedTo}”` : "projekt"}</span>
           </Button>
         )}
-        {onNoteChange && (
+        {onFittingChange && (
           <label className="block py-2 text-sm font-semibold">
             Behör <span className="text-xs font-normal text-muted-foreground">(valfritt)</span>
-            <input aria-label="Behör" value={note} onChange={(e) => onNoteChange(e.target.value)} placeholder="Skriv behör, t.ex. 256 mattkrom" maxLength={120}
-              className="mt-1.5 min-h-11 w-full rounded-md border border-input bg-card px-3 py-2 text-base font-normal text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring" />
+            <select aria-label="Behör" value={fitting ?? ""} onChange={(e) => onFittingChange(fittingChoices.includes(e.target.value as Fitting) ? (e.target.value as Fitting) : null)}
+              className="mt-1.5 min-h-11 w-full rounded-md border border-input bg-card px-3 py-2 text-base font-normal text-foreground focus:outline-none focus:ring-2 focus:ring-ring">
+              <option value="">Inget behör valt</option>
+              {fittingChoices.map((f) => (
+                <option key={f} value={f}>{menuText(f)}</option>
+              ))}
+            </select>
           </label>
         )}
         <Button onClick={copy} variant={copied ? "outline" : "default"} className={`min-h-11 w-full font-semibold ${copied ? "border-success text-success" : ""}`}>
