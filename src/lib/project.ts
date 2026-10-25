@@ -71,8 +71,8 @@ export interface Totals {
   fittings: { fitting: Fitting; size: number; kind: RingKind; side: string; inner: boolean; count: number }[];
   /** Monteringskit utan ring i satsen (A10.11) – ringarna räknas som lösa ringar. */
   kits: { fitting: Fitting; count: number }[];
-  /** 256/2356 med ring över 18 mm: behöret plockas själv, ringen räknas under ringar. */
-  loose: { fitting: Fitting; count: number }[];
+  /** 256/2356 med ring högre än färdig sats: plockas själv, ringen står på samma rad. */
+  loose: Totals["fittings"];
 }
 
 /** Behör där ringen inte ingår i satsen; ringen plockas lös. */
@@ -84,7 +84,7 @@ export function projectTotals(doors: Door[]): Totals {
   const rings = new Map<string, Totals["rings"][number]>();
   const fittings = new Map<string, Totals["fittings"][number]>();
   const kits = new Map<Fitting, number>();
-  const loose = new Map<Fitting, number>();
+  const loose = new Map<string, Totals["fittings"][number]>();
   const extKind = (k: RingKind): RingKind => (k === "rund" ? "rund" : "oval");
   for (const d of doors) {
     if (d.fitting && KIT_FITTINGS.includes(d.fitting)) kits.set(d.fitting, (kits.get(d.fitting) ?? 0) + 1);
@@ -97,11 +97,11 @@ export function projectTotals(doors: Door[]): Totals {
     const side = RING_HAS_SIDE[d.kind] ? (s.label ?? "Utsida") : "";
     const inner = isIloqInner(d.kind, s.label, d.sides.length > 1);
     const fit = fittingForSide(d.fitting, s.label);
-    if (fit && isLooseFitting(fit, s.ring)) loose.set(fit, (loose.get(fit) ?? 0) + 1);
-    else if (fit && !KIT_FITTINGS.includes(fit)) {
+    if (fit && !KIT_FITTINGS.includes(fit)) {
+      const target = isLooseFitting(fit, s.ring) ? loose : fittings;
       const key = `${fit}:${d.kind}:${side}:${s.ring}`;
-      const cur = fittings.get(key) ?? { fitting: fit, size: s.ring, kind: d.kind, side, inner, count: 0 };
-      cur.count++; fittings.set(key, cur);
+      const cur = target.get(key) ?? { fitting: fit, size: s.ring, kind: d.kind, side, inner, count: 0 };
+      cur.count++; target.set(key, cur);
       continue;
     }
     const key = `${d.kind}:${side}:${inner}:${s.ring}`;
@@ -112,7 +112,7 @@ export function projectTotals(doors: Door[]): Totals {
   const sort = (a: { kind: string; size: number; side?: string }, b: { kind: string; size: number; side?: string }) =>
     a.kind.localeCompare(b.kind) || (b.side ?? "").localeCompare(a.side ?? "") || a.size - b.size;
   const byName = (a: { fitting: Fitting }, b: { fitting: Fitting }) => a.fitting.localeCompare(b.fitting, "sv", { numeric: true });
-  return { extenders: [...ext.values()].sort(sort), rings: [...rings.values()].sort(sort), fittings: [...fittings.values()].sort((a, b) => byName(a, b) || sort(a, b)), kits: [...kits].map(([fitting, count]) => ({ fitting, count })), loose: [...loose].map(([fitting, count]) => ({ fitting, count })).sort(byName) };
+  return { extenders: [...ext.values()].sort(sort), rings: [...rings.values()].sort(sort), fittings: [...fittings.values()].sort((a, b) => byName(a, b) || sort(a, b)), kits: [...kits].map(([fitting, count]) => ({ fitting, count })), loose: [...loose.values()].sort((a, b) => byName(a, b) || sort(a, b)) };
 }
 
 export function sideText(s: DoorSide, kind: RingKind, fitting?: Fitting, double = false): string {
@@ -147,7 +147,7 @@ export function totalsText(p: Project, remainingOnly = false): string {
   if (t.extenders.length) { lines.push("", "Förlängare:"); t.extenders.forEach((e) => lines.push(`${e.count}st ${formatMm(e.size)} (${KIND_LABEL[e.kind]})`)); }
   if (t.rings.length) { lines.push("", "Ringar:"); t.rings.forEach((r) => lines.push(`${r.count}st ${totalRingText(r)}`)); }
   if (t.fittings.length) { lines.push("", "Behör med ring:"); t.fittings.forEach((f) => lines.push(`${f.count}st ${totalRingText(f)}`)); }
-  if (t.loose.length) { lines.push("", "Behör, plocka själv:"); t.loose.forEach((f) => lines.push(`${f.count}st ${looseFittingLabel(f.fitting)}`)); }
+  if (t.loose.length) { lines.push("", "Behör, plocka själv:"); t.loose.forEach((f) => lines.push(`${f.count}st ${totalRingText(f)}`)); }
   return lines.join("\n");
 }
 
