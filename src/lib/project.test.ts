@@ -167,10 +167,14 @@ describe("iLOQ dubbelcylinder – A10.11 och innerring", () => {
     const d = { ...dbl, fitting: "A10.11" as const };
     expect(sideText(d.sides[1]!, "iloq", "A10.11", true)).toBe("Insida: A10.11 monteringskit med 27mm iLOQ innerring");
     expect(sideText(d.sides[0]!, "iloq", "A10.11", true)).toBe("Utsida: 11mm ring");
-    const t = projectTotals([d]);
-    expect(t.fittings).toHaveLength(1);
-    expect(t.rings).toHaveLength(1);
-    expect(t.rings[0]!.size).toBe(11);
+    const t = projectTotals([d, { ...d, id: "j" }]);
+    expect(t.fittings).toEqual([]);
+    expect(t.kits).toEqual([{ fitting: "A10.11", count: 2 }]);
+    expect(t.rings.map((r) => [r.size, r.side, r.inner, r.count])).toEqual([[11, "Utsida", false, 2], [27, "Insida", true, 2]]);
+    const txt = totalsText({ name: "P", doors: [d] });
+    expect(txt).toContain("Monteringskit iLOQ:\n1st A10.11 monteringskit");
+    expect(txt).toContain("1st 27mm iLOQ innerring insida (iLOQ)");
+    expect(txt).not.toContain("Behör med ring");
   });
   it("enkel iLOQ på insidan får ingen innerring", () => {
     expect(sideText({ label: "Insida", depth: 20, ring: 27, extenders: [] }, "iloq", undefined, false)).toBe("Insida: 27mm ring");

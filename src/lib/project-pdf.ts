@@ -1,6 +1,6 @@
 // Builds an A4 PDF of a project (doors + material list) in the browser.
 import { formatMm } from "./cylinder";
-import { doorsToPick, KIND_LABEL, projectTotals, sideText, totalRingText, type Project } from "./project";
+import { doorsToPick, FITTING_LABEL, KIND_LABEL, projectTotals, sideText, totalRingText, type Project } from "./project";
 
 export async function projectPdf(p: Project, remainingOnly: boolean): Promise<Blob> {
   const { jsPDF } = await import("jspdf");
@@ -26,10 +26,11 @@ export async function projectPdf(p: Project, remainingOnly: boolean): Promise<Bl
   text(`${new Date().toLocaleDateString("sv-SE")} · ${doors.length} ${doors.length === 1 ? "dörr" : "dörrar"}${remainingOnly ? " kvar att montera" : ""}`, 10);
 
   heading("Inköpslista");
+  if (t.kits.length) { text("Monteringskit iLOQ", 11, true); t.kits.forEach((k) => text(`${k.count}st  ${FITTING_LABEL[k.fitting]}`, 10, false, M + 4)); y += 1; }
   if (t.extenders.length) { text("Förlängare", 11, true); t.extenders.forEach((e) => text(`${e.count}st  ${formatMm(e.size)} förlängare (${KIND_LABEL[e.kind]})`, 10, false, M + 4)); }
   if (t.rings.length) { y += 1; text("Ringar", 11, true); t.rings.forEach((r) => text(`${r.count}st  ${totalRingText(r)}`, 10, false, M + 4)); }
   if (t.fittings.length) { y += 1; text("Behör med ring", 11, true); t.fittings.forEach((f) => text(`${f.count}st  ${totalRingText(f)}`, 10, false, M + 4)); }
-  if (!t.extenders.length && !t.rings.length && !t.fittings.length) text("Inget material.", 10);
+  if (!t.extenders.length && !t.rings.length && !t.fittings.length && !t.kits.length) text("Inget material.", 10);
 
   heading("Dörrlista");
   doors.forEach((d) => {
