@@ -13,19 +13,12 @@ const sides = [
 ];
 
 describe("Plocklista", () => {
-  it("kopierar fritt skrivet behör på egen rad", () => {
+  it.each(["256", "2356"] as const)("kopierar valt %s-behör med dörren", (fitting) => {
     const writeText = vi.fn().mockResolvedValue(undefined);
     Object.defineProperty(navigator, "clipboard", { value: { writeText }, configurable: true });
-    render(<PickListButton sides={[{ label: "Utsida", depth: 36, selected: null }]} ext={ext} rings={rings} baseMm={31} relaxed={false} note=" 256 mattkrom " />);
+    render(<PickListButton sides={[{ label: "Utsida", depth: 36, selected: null }]} ext={ext} rings={rings} baseMm={31} relaxed={false} fitting={fitting} />);
     fireEvent.click(screen.getByRole("button", { name: /Kopiera plocklista/ }));
-    expect(writeText).toHaveBeenCalledWith("Utsida: 11mm ring + 2st 8mm förlängare\nBehör: 256 mattkrom");
-  });
-  it("kopierar ingen behörsrad när fältet är tomt", () => {
-    const writeText = vi.fn().mockResolvedValue(undefined);
-    Object.defineProperty(navigator, "clipboard", { value: { writeText }, configurable: true });
-    render(<PickListButton sides={[{ label: "Utsida", depth: 36, selected: null }]} ext={ext} rings={rings} baseMm={31} relaxed={false} note="" />);
-    fireEvent.click(screen.getByRole("button", { name: /Kopiera plocklista/ }));
-    expect(writeText).toHaveBeenCalledWith("Utsida: 11mm ring + 2st 8mm förlängare");
+    expect(writeText).toHaveBeenCalledWith(`Utsida: ${fitting} behör med 11mm ring + 2st 8mm förlängare`);
   });
   it("copies one clean plain-text line per side, no extra characters", async () => {
     const writeText = vi.fn().mockResolvedValue(undefined);

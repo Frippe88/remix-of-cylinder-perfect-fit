@@ -6,7 +6,7 @@ import { CylinderResults } from "@/components/cylinder-results";
 import { PickListButton } from "@/components/pick-list-button";
 import { ProjectBar, ProjectPanel, useProject } from "@/components/project-panel";
 import { ProDialog } from "@/components/pro-dialog";
-import { nextDoorName, type DoorSide } from "@/lib/project";
+import { fittingOptions, nextDoorName, type DoorSide, type Fitting } from "@/lib/project";
 import { DoorNameDialog } from "@/components/door-name-dialog";
 import { toast } from "sonner";
 import { Toaster } from "@/components/ui/sonner";
@@ -73,8 +73,13 @@ export function CalculatorPage({ variant }: { variant: "free" | "pro" }) {
   useEffect(() => { if (pro) setProOpen(true); }, [pro]);
   const [projectOpen, setProjectOpen] = useState(false);
   const [switchProject, setSwitchProject] = useState(false);
-  const [pendingDoor, setPendingDoor] = useState<{ sides: DoorSide[]; kind: "oval" | "rund" | "iloq"; note?: string } | null>(null);
-  const [fitting, setFitting] = useState<string>("");
+  const [pendingDoor, setPendingDoor] = useState<{ sides: DoorSide[]; kind: "oval" | "rund" | "iloq"; fitting?: Fitting } | null>(null);
+  const [fitting, setFitting] = useState<Fitting | null>(null);
+  const fittingChoices = fittingOptions(variant, cyl, type, brand);
+  const fittingEnabled = fittingChoices.length > 0;
+  // Dubbel iLOQ kräver alltid A10.11-kitet: förvalt automatiskt.
+  const activeFitting = fitting && fittingChoices.includes(fitting) ? fitting
+    : cyl === "iloq" && type === "double" && fittingChoices.includes("A10.11") ? "A10.11" : null;
   const [singleSide, setSingleSide] = useState<"Utsida" | "Insida">("Utsida");
 
   const isRound = cyl === "round";
@@ -108,7 +113,7 @@ export function CalculatorPage({ variant }: { variant: "free" | "pro" }) {
     set(list.includes(v) ? list.filter((x) => x !== v) : [...list, v]);
 
   const switchCyl = (c: Cyl) => {
-    setFitting("");
+    setFitting(null);
     setCyl(c);
     if (c === "standard") setRings((r) => r.filter((v) => !(ILOQ_RING_HEIGHTS as readonly number[]).includes(v)));
     else if (c === "iloq") setRings((r) => [...new Set([...r, ...ILOQ_RING_HEIGHTS])]);
@@ -212,7 +217,7 @@ export function CalculatorPage({ variant }: { variant: "free" | "pro" }) {
               {(["single", "double"] as const).map((t) => (
                 <button
                   key={t}
-                  onClick={() => { setType(t); setFitting(""); }}
+                  onClick={() => { setType(t); setFitting(null); }}
                   className={`rounded-md py-2 text-sm font-semibold transition ${type === t ? "bg-card shadow-card ring-1 ring-border" : "text-muted-foreground"}`}
                 >
                   {t === "single" ? "Enkelcylinder" : "Dubbelcylinder"}
@@ -263,9 +268,9 @@ export function CalculatorPage({ variant }: { variant: "free" | "pro" }) {
           <PickListButton
             sides={type === "single" ? [{ label: isRound ? null : singleSide, depth: parse(outside), selected: selOut }] : [{ label: "Utsida", depth: parse(outside), selected: selOut }, { label: "Insida", depth: parse(inside), selected: selIn }]}
             ext={ext} rings={activeRings} insideRings={insideRings} insideExt={insideExt} baseMm={baseMm} insideBaseMm={insideBaseMm} relaxed={isRound}
-            note={fitting} onNoteChange={pro ? setFitting : undefined} iloqDouble={iloqDouble}
+            fitting={activeFitting} onFittingChange={fittingEnabled ? setFitting : undefined} fittingChoices={fittingChoices} iloqDouble={iloqDouble}
             {...(pro ? { projectName: project.name, projectDoors: project.doors.length, projectCount: projectStore.list.length, onOpenProject: () => { setSwitchProject(true); setProjectOpen(true); } } : {})}
-            onSave={!pro ? undefined : (sides) => { trackEvent("sparad_dorr", { cylinder: cyl }); setPendingDoor({ sides, kind: isRound ? "rund" : cyl === "iloq" ? "iloq" : "oval", ...(fitting.trim() ? { note: fitting.trim() } : {}) }); }}
+            onSave={!pro ? undefined : (sides) => { trackEvent("sparad_dorr", { cylinder: cyl }); setPendingDoor({ sides, kind: isRound ? "rund" : cyl === "iloq" ? "iloq" : "oval", ...(activeFitting ? { fitting: activeFitting } : {}) }); }}
           />
           <CylinderResults title={type === "single" ? null : "Utsida"} depth={parse(outside)} ext={ext} rings={activeRings} baseMm={baseMm} relaxed={isRound} selected={selOut} onSelect={(c) => setSel({ key: selKey, out: c, in: selIn })} />
           {type === "double" && <CylinderResults title="Insida" depth={parse(inside)} ext={insideExt} rings={insideRings} baseMm={insideBaseMm} relaxed={isRound} selected={selIn} onSelect={(c) => setSel({ key: selKey, out: selOut, in: c })} />}
@@ -275,8 +280,8 @@ export function CalculatorPage({ variant }: { variant: "free" | "pro" }) {
       <DoorNameDialog open={!!pendingDoor} defaultName={nextDoorName(project.doors)} projectName={project.name} onCancel={() => setPendingDoor(null)}
         onConfirm={(name) => {
           if (!pendingDoor) return;
-          const { sides, kind, note } = pendingDoor;
-          setProject((p) => ({ ...p, doors: [...p.doors, { id: `${Date.now()}`, name, kind, done: false, sides, ...(note ? { note } : {}) }] }));
+          const { sides, kind, fitting } = pendingDoor;
+          setProject((p) => ({ ...p, doors: [...p.doors, { id: `${Date.now()}`, name, kind, done: false, sides, ...(fitting ? { fitting } : {}) }] }));
           setPendingDoor(null);
           toast.success(`${name} tillagd i ${project.name.trim() ? `”${project.name.trim()}”` : "projektet"}`);
         }} />

@@ -43,12 +43,11 @@ export async function projectPdf(p: Project, remainingOnly: boolean): Promise<Bl
 
   heading("Dörrlista");
   doors.forEach((d) => {
-    need(8 + d.sides.length * 6 + (d.fitting || d.note?.trim() ? 6 : 0));
+    need(8 + d.sides.length * 6 + (d.fitting ? 6 : 0));
     doc.setDrawColor(60); doc.setLineWidth(0.3); doc.rect(M, y - 3.6, 4, 4);
     if (d.done) { doc.setFont("helvetica", "bold"); doc.setFontSize(9); doc.text("X", M + 0.9, y - 0.4); }
     text(`${d.name} (${KIND_LABEL[d.kind]})${d.done ? " – monterad" : ""}`, 11, true, M + 7);
     d.sides.forEach((s) => text(sideText(s, d.kind, d.fitting, d.sides.length > 1), 10, false, M + 7));
-    if (d.note?.trim()) text(`Behör: ${d.note.trim()}`, 10, false, M + 7);
     y += 1.5;
   });
 
