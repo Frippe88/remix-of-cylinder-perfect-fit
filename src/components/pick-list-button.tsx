@@ -219,6 +219,7 @@ export function PickListButton({ sides, ext, rings, insideRings = rings, insideE
                 <option key={f} value={f}>{menuText(f)}</option>
               ))}
             </select>
+            <span className="mt-1.5 block text-xs font-normal text-muted-foreground">Vi räknar med ASSA ABLOY:s behör (256, 2356, 18256). Annat fabrikat? Byt bara ut behöret mot motsvarande – ringhöjden är densamma.</span>
           </label>
         )}
         <Button onClick={copy} variant={copied ? "outline" : "default"} className={`min-h-11 w-full font-semibold ${copied ? "border-success text-success" : ""}`}>

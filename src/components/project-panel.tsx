@@ -9,7 +9,7 @@ import { sideChip } from "@/components/pick-list-button";
 import { CONTACT_EMAIL } from "@/components/contact-form";
 import { formatMm } from "@/lib/cylinder";
 import { FileDown } from "lucide-react";
-import { deliverFile, pdfFileName, projectPdf } from "@/lib/project-pdf";
+import { deliverFile, FITTING_NOTE, pdfFileName, projectPdf } from "@/lib/project-pdf";
 
 const OLD_KEY = "cylinderhjalpen.project.v1";
 const KEY = "cylinderhjalpen.projects.v2";
@@ -251,6 +251,7 @@ export function ProjectPanel({ project, setProject, store, open, onOpenChange, c
                     ))}
                   </section>
                 ))}
+                <p className="text-xs text-muted-foreground">{FITTING_NOTE}</p>
               </div>
               </>}
             </>
