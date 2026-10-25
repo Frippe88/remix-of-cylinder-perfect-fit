@@ -30,7 +30,7 @@ describe("behör i material och delning", () => {
   });
   it("sparade listor visar bara behörets namn – inget fabrikat eller vred/täckbricka", () => {
     const withFitting = (fitting: Fitting): Door => ({ id: "7", name: "Dörr 7", kind: fitting === "DAK 752" ? "rund" : "oval", done: false, sides: [{ label: "Utsida", depth: 36, ring: 11, extenders: [] }], fitting });
-    const all: Project = { name: "Kund B", doors: (Object.keys(FITTING_LABEL) as Fitting[]).map(withFitting) };
+    const all: Project = { name: "Kund B", doors: (Object.keys(FITTING_LABEL) as Fitting[]).filter((f) => f !== "vred" && f !== "tackbricka").map(withFitting) };
     for (const text of [totalsText(all), doorsText(all), projectText(all)]) {
       for (const forbidden of ["ASSA", "dormakaba", "DORMA", "vred", "täckbricka", "Täckbricka"]) expect(text).not.toContain(forbidden);
     }
@@ -55,10 +55,19 @@ describe("behörsval", () => {
     expect(fittingOptions("pro", "standard", "double")).toEqual(["18256"]);
     expect(canSelectFitting("pro", "iloq", "double")).toBe(true);
   });
-  it("ger dormakaba-behör: DAK 752 rund, DAK 7200/7101 enkel oval", () => {
+  it("ger DAK 752 för rund dormakaba och Vred/Täckbricka-Cylinder för enkelcylinder", () => {
     expect(fittingOptions("pro", "round", "double", "dormakaba / DORMA")).toEqual(["DAK 752"]);
-    expect(fittingOptions("pro", "standard", "single")).toEqual(["256", "2356", "DAK 7200", "DAK 7101"]);
-    expect(fittingOptions("pro", "iloq", "single")).toEqual(["256", "2356"]);
+    expect(fittingOptions("pro", "standard", "single")).toEqual(["vred", "tackbricka"]);
+    expect(fittingOptions("pro", "iloq", "single")).toEqual(["vred", "tackbricka"]);
+  });
+  it("räknar ihop samma ring med vred och summerar alla förlängare", () => {
+    const d = (i: number, fitting: Fitting, ring: number, ext: number[]): Door => ({ id: `${i}`, name: `Dörr ${i}`, kind: "oval", done: false, sides: [{ label: "Utsida", depth: 50, ring, extenders: ext }], fitting });
+    const p: Project = { name: "P", doors: [1, 2, 3, 4, 5].map((i) => d(i, "vred", 21, [10])).concat(d(6, "tackbricka", 13, [8, 10])) };
+    const t = totalsText(p);
+    expect(t).toContain("5st Vred-Cylinder med 21mm ring");
+    expect(t).toContain("1st Täckbricka-Cylinder med 13mm ring");
+    expect(t).toContain("7st förlängare totalt");
+    expect(doorsText(p)).toContain("Utsida: Vred-Cylinder med 21mm ring + 1st 10mm förlängare");
   });
   it("tillåter inte behörsval i gratisversionen", () => {
     expect(canSelectFitting("free", "standard", "single")).toBe(false);
