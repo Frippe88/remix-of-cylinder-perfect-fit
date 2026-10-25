@@ -2,9 +2,6 @@ import { Check, Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 
-
-
-
 const FEATURES = [
   "Spara obegränsat antal egna projekt med alla dörrar",
   "Behörsval – 256 (vred), 2356 (täckbricka) och skruvlängder",
@@ -25,7 +22,6 @@ export function ProDialog({ open, onOpenChange }: { open: boolean; onOpenChange:
         </ul>
         <p className="rounded-lg border border-accent/30 bg-accent/5 p-3 text-sm">Senare blir Pro en prenumeration.</p>
         <Button className="min-h-11 bg-accent font-bold text-accent-foreground hover:bg-accent/85" onClick={() => onOpenChange(false)}>Börja använda Pro gratis</Button>
-
       </DialogContent>
     </Dialog>
   );
