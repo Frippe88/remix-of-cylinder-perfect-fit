@@ -4,10 +4,7 @@ import { ArrowRight, BookOpen, Check, FolderOpen, Info, KeyRound, Minus, Moon, P
 import { useEffect, useState } from "react";
 import { CylinderResults } from "@/components/cylinder-results";
 import { PickListButton } from "@/components/pick-list-button";
-import { ProjectBar, ProjectPanel, type ProjectStore } from "@/components/project-panel";
-import { ProDialog } from "@/components/pro-dialog";
-import { DEMO_PROJECT } from "@/lib/demo-project";
-import type { Project } from "@/lib/project";
+import { ProjectBar, ProjectPanel, useProject } from "@/components/project-panel";
 import { nextDoorName, type DoorSide } from "@/lib/project";
 import { DoorNameDialog } from "@/components/door-name-dialog";
 import { toast } from "sonner";
@@ -70,10 +67,7 @@ export function CalculatorPage({ variant }: { variant: "free" | "pro" }) {
   const [roundExt, setRoundExt] = useState<number[]>([...ROUND_EXTENDER_SIZES]);
   const [roundRings, setRoundRings] = useState<number[]>([...ROUND_RING_HEIGHTS]);
   const pro = variant === "pro";
-  const [demo, setDemo] = useState<Project>(DEMO_PROJECT);
-  const [proOpen, setProOpen] = useState(false);
-  const project = demo, setProject = (fn: (p: Project) => Project) => setDemo(fn);
-  const projectStore: ProjectStore = { list: [{ id: "demo", project: demo }], active: "demo", select: () => {}, create: () => setProOpen(true), remove: () => setProOpen(true) };
+  const [project, setProject, projectStore] = useProject();
   const [projectOpen, setProjectOpen] = useState(false);
   const [switchProject, setSwitchProject] = useState(false);
   const [pendingDoor, setPendingDoor] = useState<{ sides: DoorSide[]; kind: "oval" | "rund" | "iloq" } | null>(null);
@@ -262,7 +256,7 @@ export function CalculatorPage({ variant }: { variant: "free" | "pro" }) {
             sides={type === "single" ? [{ label: isRound ? null : singleSide, depth: parse(outside), selected: selOut }] : [{ label: "Utsida", depth: parse(outside), selected: selOut }, { label: "Insida", depth: parse(inside), selected: selIn }]}
             ext={ext} rings={activeRings} baseMm={baseMm} insideBaseMm={insideBaseMm} relaxed={isRound}
             {...(pro ? { projectName: project.name, projectDoors: project.doors.length, projectCount: projectStore.list.length, onOpenProject: () => { setSwitchProject(true); setProjectOpen(true); } } : {})}
-            onSave={!pro ? undefined : () => { trackEvent("pro_las", { atgard: "spara_dorr" }); setProOpen(true); }}
+            onSave={!pro ? undefined : (sides) => { trackEvent("sparad_dorr", { cylinder: cyl }); setPendingDoor({ sides, kind: isRound ? "rund" : cyl === "iloq" ? "iloq" : "oval" }); }}
           />
           <CylinderResults title={type === "single" ? null : "Utsida"} depth={parse(outside)} ext={ext} rings={activeRings} baseMm={baseMm} relaxed={isRound} selected={selOut} onSelect={(c) => setSel({ key: selKey, out: c, in: selIn })} />
           {type === "double" && <CylinderResults title="Insida" depth={parse(inside)} ext={ext} rings={activeRings} baseMm={insideBaseMm} relaxed={isRound} selected={selIn} onSelect={(c) => setSel({ key: selKey, out: selOut, in: c })} />}
@@ -277,9 +271,8 @@ export function CalculatorPage({ variant }: { variant: "free" | "pro" }) {
           setPendingDoor(null);
           toast.success(`${name} tillagd i ${project.name.trim() ? `”${project.name.trim()}”` : "projektet"}`);
         }} />
-      <ProjectBar demo project={project} projects={projectStore.list.length} onOpen={() => { setSwitchProject(false); setProjectOpen(true); }} />
-      <ProjectPanel project={project} setProject={setProject} store={projectStore} open={projectOpen} onOpenChange={(v) => { setProjectOpen(v); if (!v) setSwitchProject(false); }} closeOnSelect={switchProject} onLocked={() => setProOpen(true)} />
-      <ProDialog open={proOpen} onOpenChange={setProOpen} />
+      <ProjectBar project={project} projects={projectStore.list.length} onOpen={() => { setSwitchProject(false); setProjectOpen(true); }} />
+      <ProjectPanel project={project} setProject={setProject} store={projectStore} open={projectOpen} onOpenChange={(v) => { setProjectOpen(v); if (!v) setSwitchProject(false); }} closeOnSelect={switchProject} />
       </>}
       <Toaster position="top-center" />
       <section className="mx-auto mt-10 w-full max-w-5xl px-4">
