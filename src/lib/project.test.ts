@@ -41,9 +41,14 @@ describe("behörsval", () => {
     expect(canSelectFitting("pro", "round", "double", "EVVA")).toBe(false);
     expect(canSelectFitting("free", "round", "double", "ASSA ABLOY")).toBe(false);
   });
-  it("tillåter inte dubbelcylinder", () => {
-    expect(canSelectFitting("pro", "standard", "double")).toBe(false);
+  it("ger 18256 för dubbel oval men inget för dubbel iLOQ", () => {
+    expect(fittingOptions("pro", "standard", "double")).toEqual(["18256"]);
     expect(canSelectFitting("pro", "iloq", "double")).toBe(false);
+  });
+  it("ger dormakaba-behör: DAK 752 rund, DAK 7200/7101 enkel oval", () => {
+    expect(fittingOptions("pro", "round", "double", "dormakaba / DORMA")).toEqual(["DAK 752"]);
+    expect(fittingOptions("pro", "standard", "single")).toEqual(["256", "2356", "DAK 7200", "DAK 7101"]);
+    expect(fittingOptions("pro", "iloq", "single")).toEqual(["256", "2356"]);
   });
   it("tillåter inte behörsval i gratisversionen", () => {
     expect(canSelectFitting("free", "standard", "single")).toBe(false);
