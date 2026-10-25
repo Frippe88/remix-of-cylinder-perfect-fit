@@ -4,7 +4,7 @@ import { formatMm } from "./cylinder";
 export type RingKind = "oval" | "rund" | "iloq";
 export type Fitting = "vred" | "tackbricka" | "256" | "2356" | "3212" | "18256" | "DAK 7200" | "DAK 7101" | "DAK 752" | "A10.11";
 export const FITTING_LABEL: Record<Fitting, string> = {
-  vred: "Vred-Cylinder", tackbricka: "Täckbricka-Cylinder",
+  vred: "Vred med cylinder", tackbricka: "Täckbricka med cylinder",
   "256": "256 behör", "2356": "2356 behör", "3212": "3212 behör", "18256": "18256 behör",
   "DAK 7200": "DAK 7200 behör", "DAK 7101": "DAK 7101 behör", "DAK 752": "DAK 752 behör",
   "A10.11": "A10.11 monteringskit",
