@@ -10,14 +10,15 @@ export function DoorNameDialog({ open, defaultName, projectName, onCancel, onCon
   useEffect(() => { if (open) setName(defaultName); }, [open, defaultName]);
   return (
     <Dialog open={open} onOpenChange={(v) => { if (!v) onCancel(); }}>
-      <DialogContent className="max-w-sm rounded-xl">
+      <DialogContent className="top-4 max-w-[calc(100%-2rem)] translate-y-0 rounded-xl data-[state=closed]:slide-out-to-top-0 sm:top-[50%] sm:max-w-sm sm:translate-y-[-50%]">
         <DialogHeader className="text-left">
           <DialogTitle className="flex items-center gap-2"><DoorOpen className="size-5 text-accent" aria-hidden />Spara dörr</DialogTitle>
           <DialogDescription>Läggs till i {projectName.trim() ? `”${projectName.trim()}”` : "projektet"}.</DialogDescription>
         </DialogHeader>
-        <form onSubmit={(e) => { e.preventDefault(); onConfirm(name.trim() || defaultName); }} className="space-y-4">
+        <form onSubmit={(e) => { e.preventDefault(); onConfirm(name.trim() || defaultName); }} className="space-y-4" autoComplete="off">
           <input autoFocus value={name} onChange={(e) => setName(e.target.value)} onFocus={(e) => e.currentTarget.select()} enterKeyHint="done"
-            aria-label="Namn på dörren" placeholder="t.ex. Entrédörr"
+            name="dorrbeteckning" autoComplete="off" autoCorrect="off" autoCapitalize="sentences" spellCheck={false} data-1p-ignore data-lpignore="true"
+            aria-label="Dörrens beteckning" placeholder="t.ex. Entrédörr"
             className="h-11 w-full rounded-lg border border-input bg-background px-3 text-base" />
           <DialogFooter className="flex-row gap-2 sm:justify-end">
             <Button type="button" variant="outline" className="h-11 flex-1 sm:flex-none" onClick={onCancel}>Avbryt</Button>
