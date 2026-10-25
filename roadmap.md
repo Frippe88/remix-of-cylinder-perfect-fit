@@ -1,6 +1,7 @@
 # Roadmap
 
 ## Pågående
+- [x] Sparade listor och PDF visar bara behörets namn (256, 2356, DAK 7200 …) utan fabrikat eller vred/täckbricka; förklaringarna står bara i valmenyn. Verifierat med test, kopiering, projektvy, total plocklista och nedladdad PDF.
 - [x] Gemensamma behör/ring-rader i kopiering, projekt och PDF utan dubbelräkning; vred/täckbricka endast i menyn. Verifierat med tester, kopiering och nedladdad PDF.
 - [x] Valt behör i alla projektets kopierade listor och PDF, per dörr och summerat; testat genom kopiering och nedladdad PDF med 256 och 2356.
 - [x] Valfritt 256/2356-behör mellan spara och kopiera i Pro för enkel oval/iLOQ; sparad dörr och enstaka kopiering behåller valet, verifierat efter omladdning.
