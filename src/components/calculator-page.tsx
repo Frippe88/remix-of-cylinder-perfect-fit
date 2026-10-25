@@ -1,6 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { GUIDES } from "@/lib/guides";
-import { ArrowRight, BookOpen, Check, FolderOpen, Info, KeyRound, Minus, Moon, Plus, ShieldCheck, Sun } from "lucide-react";
+import { ArrowRight, BookOpen, Check, FolderOpen, Info, KeyRound, Minus, Moon, Package, Plus, ShieldCheck, Sun } from "lucide-react";
+import { Dialog, DialogClose, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { useEffect, useState } from "react";
 import { CylinderResults, ModePicker } from "@/components/cylinder-results";
 import type { ViewMode } from "@/lib/cylinder";
@@ -167,27 +168,20 @@ export function CalculatorPage({ variant }: { variant: "free" | "pro" }) {
       <main className="mx-auto grid max-w-5xl gap-6 px-4 py-6 lg:grid-cols-[340px_1fr]">
         <section className="contents lg:block">
           <Panel title="Mätning">
-            <p className="text-xs text-muted-foreground">
-              Välj den cylinder du ska sätta in. Oval cylinder är vanligast – rund cylinder har rund profil och egna ringar och förlängare, medan iLOQ gäller bara om cylindern eller låset är märkt iLOQ.
-            </p>
-            <div className="space-y-2">
+            <div className="grid grid-cols-3 gap-1 rounded-lg bg-muted p-1" role="group" aria-label="Cylindertyp">
               {CYLINDER_OPTIONS.map((o) => (
                 <button
                   key={o.id}
                   onClick={() => switchCyl(o.id)}
                   aria-pressed={cyl === o.id}
-                  className={`w-full rounded-lg border p-3 text-left transition ${cyl === o.id ? "border-accent bg-accent/10 shadow-card ring-1 ring-accent" : "border-input bg-card hover:border-foreground/30 hover:bg-muted"}`}
+                  className={`rounded-md px-1 py-2 text-center text-xs font-bold leading-tight transition sm:text-sm ${cyl === o.id ? "bg-accent text-accent-foreground shadow-card" : "text-muted-foreground hover:bg-card"}`}
                 >
-                  <span className="flex items-center justify-between gap-3">
-                    <span className="text-sm font-bold">{o.name}</span>
-                    <span className={`shrink-0 rounded-md px-2 py-0.5 font-mono text-xs font-bold ${cyl === o.id ? "bg-accent text-accent-foreground" : "bg-muted text-muted-foreground"}`}>
-                      {o.id === "round" ? baseMm : o.mm}mm
-                    </span>
-                  </span>
-                  <span className="mt-1 block text-xs leading-snug text-muted-foreground">{o.hint}</span>
+                  {o.name}
+                  <span className="block font-mono text-[10px] font-semibold opacity-80">{o.id === "round" ? baseMm : o.mm}mm</span>
                 </button>
               ))}
             </div>
+            <p className="text-xs leading-snug text-muted-foreground">{CYLINDER_OPTIONS.find((o) => o.id === cyl)?.hint}</p>
             {isRound && (
               <label className="block text-sm font-semibold text-foreground">
                 Fabrikat
@@ -256,13 +250,39 @@ export function CalculatorPage({ variant }: { variant: "free" | "pro" }) {
             {type === "double" && <DepthInput label="Dörrdjup insida" value={inside} onChange={setInside} />}
           </Panel>
 
-          <div className="order-3 space-y-5 lg:order-none lg:mt-5">
-            <Panel title="Förlängare i lager">
-              <ChipGroup values={extValues} selected={ext} onToggle={(v) => toggle(ext, setExt, v)} />
-            </Panel>
-            <Panel title="Ringhöjder i lager">
-              <ChipGroup values={ringValues} selected={activeRings} onToggle={(v) => toggle(activeRings, setActiveRings, v)} />
-            </Panel>
+          <div className="order-3 lg:order-none lg:mt-5">
+            <Dialog>
+              <DialogTrigger asChild>
+                <button type="button" className="flex w-full items-center justify-between gap-3 rounded-xl border bg-card p-4 text-left shadow-card transition hover:bg-muted">
+                  <span className="flex items-center gap-3">
+                    <Package className="size-5 shrink-0 text-accent" aria-hidden />
+                    <span>
+                      <span className="block text-sm font-bold">Lager i bilen</span>
+                      <span className="block text-xs text-muted-foreground">{activeRings.length} ringhöjder · {ext.length} förlängare</span>
+                    </span>
+                  </span>
+                  <ArrowRight className="size-4 shrink-0 text-muted-foreground" aria-hidden />
+                </button>
+              </DialogTrigger>
+              <DialogContent className="max-h-[85vh] overflow-y-auto">
+                <DialogHeader>
+                  <DialogTitle>Lager i bilen</DialogTitle>
+                </DialogHeader>
+                <div className="space-y-5">
+                  <div className="space-y-2">
+                    <h3 className="text-sm font-bold">Förlängare i lager</h3>
+                    <ChipGroup values={extValues} selected={ext} onToggle={(v) => toggle(ext, setExt, v)} />
+                  </div>
+                  <div className="space-y-2">
+                    <h3 className="text-sm font-bold">Ringhöjder i lager</h3>
+                    <ChipGroup values={ringValues} selected={activeRings} onToggle={(v) => toggle(activeRings, setActiveRings, v)} />
+                  </div>
+                </div>
+                <DialogClose asChild>
+                  <button type="button" className="mt-2 min-h-11 w-full rounded-lg bg-accent text-sm font-bold text-accent-foreground">Klar</button>
+                </DialogClose>
+              </DialogContent>
+            </Dialog>
           </div>
         </section>
 
