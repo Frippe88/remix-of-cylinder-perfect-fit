@@ -3,10 +3,12 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 
 const FEATURES = [
-  "Spara obegränsat antal egna projekt med alla dörrar",
-  "Behörsval för oval, rund och iLOQ-cylinder – med rätt skruvlängd",
-  "Total plocklista för hela bygget",
-  "PDF-arbetsorder att skicka till grossist eller kollega",
+  "Mät och spara dörr för dörr – samla hela bygget i ett projekt",
+  "Behörsval (256, 2356, 18256) – visar direkt om det är färdig sats eller lös ring",
+  "Automatisk inköpslista för chefen – per cylindertyp med satser, ringpar och förlängare",
+  "PDF med ett klick – komplett arbetsorder eller bara inköpslista",
+  "Kopiera till mejl/SMS – klistra in beställningen direkt",
+  "Flera projekt samtidigt – växla mellan olika byggen och kunder",
 ];
 
 export function ProDialog({ open, onOpenChange }: { open: boolean; onOpenChange: (v: boolean) => void }) {
