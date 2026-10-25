@@ -84,6 +84,8 @@ export interface Totals {
   doubles: number;
   /** iLOQ dubbelcylinder: ringpar per dörr (utsida + iLOQ innerring insida), räknas inte under lösa ringar. */
   iloqPairs: { outer: number; inner: number; count: number }[];
+  /** Kompletta dubbelpaket (18256): ett paket per dörr med ring utsida + insida. */
+  setPairs: { fitting: Fitting; outer: number; inner: number; count: number }[];
 }
 
 /** Behör där ringen inte ingår i satsen; ringen plockas lös. */
@@ -98,11 +100,14 @@ export function projectTotals(doors: Door[]): Totals {
   const loose = new Map<string, Totals["fittings"][number]>();
   const extKind = (k: RingKind): RingKind => (k === "rund" ? "rund" : "oval");
   const pairs = new Map<string, { outer: number; inner: number; count: number }>();
+  const setPairs = new Map<string, Totals["setPairs"][number]>();
   for (const d of doors) {
     const iloqDouble = d.kind === "iloq" && d.sides.length > 1;
-    if (iloqDouble) {
+    const pairSet = !!d.fitting && PAIR_FITTINGS.includes(d.fitting) && d.sides.length > 1;
+    if (iloqDouble || pairSet) {
       const o = d.sides.find((s) => s.label !== "Insida"), i = d.sides.find((s) => s.label === "Insida");
-      if (o && i) { const k = `${o.ring}:${i.ring}`; const c = pairs.get(k) ?? { outer: o.ring, inner: i.ring, count: 0 }; c.count++; pairs.set(k, c); }
+      if (o && i && iloqDouble) { const k = `${o.ring}:${i.ring}`; const c = pairs.get(k) ?? { outer: o.ring, inner: i.ring, count: 0 }; c.count++; pairs.set(k, c); }
+      if (o && i && pairSet) { const k = `${d.fitting}:${o.ring}:${i.ring}`; const c = setPairs.get(k) ?? { fitting: d.fitting!, outer: o.ring, inner: i.ring, count: 0 }; c.count++; setPairs.set(k, c); }
     }
     if (d.fitting && KIT_FITTINGS.includes(d.fitting)) kits.set(d.fitting, (kits.get(d.fitting) ?? 0) + 1);
     for (const s of d.sides) {
@@ -114,7 +119,7 @@ export function projectTotals(doors: Door[]): Totals {
     const side = RING_HAS_SIDE[d.kind] ? (s.label ?? "Utsida") : "";
     const inner = isIloqInner(d.kind, s.label, d.sides.length > 1);
     const fit = fittingForSide(d.fitting, s.label);
-    if (iloqDouble) continue;
+    if (iloqDouble || pairSet) continue;
     if (fit && !KIT_FITTINGS.includes(fit)) {
       const target = isLooseFitting(fit, s.ring) ? loose : fittings;
       const key = `${fit}:${d.kind}:${side}:${s.ring}`;
