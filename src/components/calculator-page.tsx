@@ -190,11 +190,10 @@ export function CalculatorPage({ variant }: { variant: "free" | "pro" }) {
                   className={`rounded-md px-0.5 py-2 text-center text-[11px] font-bold leading-tight whitespace-nowrap transition sm:px-1 sm:text-[13px] ${cyl === o.id ? "bg-accent text-accent-foreground shadow-card" : "text-muted-foreground hover:bg-card"}`}
                 >
                   {o.name}
-                  <span className="block font-mono text-[10px] font-semibold opacity-80">{o.id === "round" ? baseMm : o.mm}mm</span>
+                  <span className="mt-0.5 block font-mono text-[13px] font-bold">{o.id === "round" ? baseMm : o.mm}mm</span>
                 </button>
               ))}
             </div>
-            <p className="text-xs leading-snug text-muted-foreground">{CYLINDER_OPTIONS.find((o) => o.id === cyl)?.hint}</p>
             {isRound && (
               <label className="block text-sm font-semibold text-foreground">
                 Fabrikat

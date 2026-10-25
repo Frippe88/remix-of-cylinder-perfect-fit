@@ -203,14 +203,8 @@ export function PickListButton({ sides, ext, rings, insideRings = rings, insideE
       </ul>
 
       <div className="space-y-2 border-t bg-muted/30 px-4 py-3">
-        {onSave && (
-          <Button variant="outline" className="min-h-11 w-full justify-start gap-2 font-semibold" onClick={() => onSave(picks.map((p) => ({ label: p.label, depth: p.depth, ring: p.c.ring, extenders: [...p.c.extenders] })))}>
-            <FolderPlus aria-hidden className="shrink-0" />
-            <span className="truncate">Spara i {savedTo ? `”${savedTo}”` : "projekt"}</span>
-          </Button>
-        )}
         {onFittingChange && (
-          <label className="block py-2 text-sm font-semibold">
+          <label className="block pb-2 text-sm font-semibold">
             Behör <span className="text-xs font-normal text-muted-foreground">(valfritt)</span>
             <select aria-label="Behör" value={fitting ?? ""} onChange={(e) => onFittingChange(fittingChoices.includes(e.target.value as Fitting) ? (e.target.value as Fitting) : null)}
               className="mt-1.5 min-h-11 w-full rounded-md border border-input bg-card px-3 py-2 text-base font-normal text-foreground focus:outline-none focus:ring-2 focus:ring-ring">
@@ -221,6 +215,12 @@ export function PickListButton({ sides, ext, rings, insideRings = rings, insideE
             </select>
             <span className="mt-1.5 block text-xs font-normal text-muted-foreground">Vi räknar med ASSA ABLOY:s behör (256, 2356, 18256). Annat fabrikat? Byt bara ut behöret mot motsvarande – ringhöjden är densamma.</span>
           </label>
+        )}
+        {onSave && (
+          <Button variant="outline" className="min-h-11 w-full justify-start gap-2 font-semibold" onClick={() => onSave(picks.map((p) => ({ label: p.label, depth: p.depth, ring: p.c.ring, extenders: [...p.c.extenders] })))}>
+            <FolderPlus aria-hidden className="shrink-0" />
+            <span className="truncate">Spara i {savedTo ? `”${savedTo}”` : "projekt"}</span>
+          </Button>
         )}
         <Button onClick={copy} variant={copied ? "outline" : "default"} className={`min-h-11 w-full font-semibold ${copied ? "border-success text-success" : ""}`}>
           {copied ? <Check aria-hidden /> : <ClipboardCopy aria-hidden />}
