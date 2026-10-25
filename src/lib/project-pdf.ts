@@ -1,6 +1,6 @@
 // Builds an A4 PDF of a project (doors + material list) in the browser.
 import { formatMm } from "./cylinder";
-import { doorsToPick, KIND_LABEL, projectTotals, purchaseList, sideText, type Project } from "./project";
+import { doorsToPick, KIND_LABEL, doorTitle, projectTotals, purchaseList, sideText, type Project } from "./project";
 
 export async function projectPdf(p: Project, remainingOnly: boolean): Promise<Blob> {
   const { jsPDF } = await import("jspdf");
@@ -46,7 +46,7 @@ export async function projectPdf(p: Project, remainingOnly: boolean): Promise<Bl
     need(8 + d.sides.length * 6 + (d.fitting ? 6 : 0));
     doc.setDrawColor(60); doc.setLineWidth(0.3); doc.rect(M, y - 3.6, 4, 4);
     if (d.done) { doc.setFont("helvetica", "bold"); doc.setFontSize(9); doc.text("X", M + 0.9, y - 0.4); }
-    text(`${d.name} (${KIND_LABEL[d.kind]})${d.done ? " – monterad" : ""}`, 11, true, M + 7);
+    text(`${doorTitle(d)}${d.done ? " – monterad" : ""}`, 11, true, M + 7);
     d.sides.forEach((s) => text(sideText(s, d.kind, d.fitting, d.sides.length > 1), 10, false, M + 7));
     y += 1.5;
   });

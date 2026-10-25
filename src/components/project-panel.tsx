@@ -97,7 +97,7 @@ function DoorCard({ d, onToggle, onRemove, onSetSide }: { d: Door; onToggle: () 
         </Button>
         <div className="min-w-0 flex-1">
           <p className={`break-words text-sm font-bold ${d.done ? "text-muted-foreground line-through" : "text-foreground"}`}>{d.name}</p>
-          <p className="mt-0.5 text-xs text-muted-foreground">{KIND_LABEL[d.kind]}{d.done && <span className="ml-2 font-semibold text-success">Monterad</span>}</p>
+          <p className="mt-0.5 text-xs text-muted-foreground">{KIND_LABEL[d.kind]}{d.sides.length > 1 && " · Dubbelcylinder"}{d.done && <span className="ml-2 font-semibold text-success">Monterad</span>}</p>
         </div>
         <Button variant="ghost" size="icon" onClick={onRemove} aria-label={`Ta bort ${d.name}`} title={`Ta bort ${d.name}`} className="size-8 shrink-0 text-muted-foreground hover:bg-warning-soft hover:text-destructive"><Trash2 className="size-4" /></Button>
       </div>

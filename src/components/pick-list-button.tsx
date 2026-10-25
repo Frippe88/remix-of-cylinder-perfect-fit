@@ -2,7 +2,7 @@ import { useState, type ReactNode } from "react";
 import { AlertTriangle, ArrowDown, ArrowUp, Check, ClipboardCopy, ClipboardList, Disc3, FolderOpen, FolderPlus, Layers } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { calculate, formatMm, type Combination } from "@/lib/cylinder";
-import { fittingForSide, fittingRingText, isLooseFitting, looseFittingLabel, ringName, type DoorSide, type Fitting } from "@/lib/project";
+import { fittingForSide, fittingRingText, isLooseFitting, ringName, type DoorSide, type Fitting } from "@/lib/project";
 
 export type PickSide = { label: string | null; depth: number | null; selected: Combination | null };
 
@@ -70,8 +70,8 @@ function Row({ caption, icon, children }: { caption: string; icon: ReactNode; ch
 const FITTING_MENU: Record<Fitting, string> = {
   vred: "Vred med cylinder",
   tackbricka: "Täckbricka med cylinder",
-  "256": "256 behör (ASSA vred)",
-  "2356": "2356 behör (ASSA täckbricka)",
+  "256": "256 behör (vred)",
+  "2356": "2356 behör (täckbricka)",
   "3212": "3212 behör (ASSA rund cylinder)",
   "18256": "18256 behör (dubbel oval cylinder)",
   "DAK 7200": "DAK 7200 behör (dormakaba vred)",
@@ -101,8 +101,8 @@ export function PickListButton({ sides, ext, rings, insideRings = rings, insideE
   const text = picks.map((p) => (p.label ? `${p.label}: ` : "") + pickLine(p.c, fittingForSide(fitting, p.label), isInner(p.label))).join("\n");
   const insidePick = picks.find((p) => isInner(p.label));
   const menuText = (f: Fitting) => (f === "vred" || f === "tackbricka") && picks[0] ? fittingRingText(f, picks[0].c.ring)
-    : f === "A10.11" && insidePick ? `A10.11 monteringskit med ${ringName(insidePick.c.ring, true)} insida`
-    : picks.some((p) => isLooseFitting(fittingForSide(f, p.label), p.c.ring)) ? `${looseFittingLabel(f)} (${FITTING_MENU[f].split("(")[1]}` : FITTING_MENU[f];
+    : f === "A10.11" && insidePick ? `A10.11 monteringskit (${ringName(insidePick.c.ring, true)} insida)`
+    : (f === "256" || f === "2356") && picks[0] ? `${FITTING_MENU[f]} – ${isLooseFitting(f, picks[0].c.ring) ? `lös ring ${formatMm(picks[0].c.ring)}` : ringName(picks[0].c.ring)}` : FITTING_MENU[f];
   const parts = picks.reduce((n, p) => n + p.c.extenderCount + 1, 0);
 
   const copy = async () => {

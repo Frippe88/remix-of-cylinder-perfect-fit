@@ -20,18 +20,18 @@ const project: Project = { name: "Test", doors: [
 describe("behör i PDF", () => {
   it("exporterar 256 och 2356 i inköpslistan och på respektive dörr", async () => {
     await projectPdf(project, false);
-    expect(printed).toContain("256 behör med 11mm ring");
-    expect(printed).toContain("2356 behör med 11mm ring");
-    expect(printed).toContain("Färdiga behör");
-    expect(printed.some((line) => line.startsWith("Utsida: 256 behör med 11mm ring"))).toBe(true);
-    expect(printed.some((line) => line.startsWith("Utsida: 2356 behör med 11mm ring"))).toBe(true);
+    expect(printed).toContain("256 behör (11mm ring)");
+    expect(printed).toContain("2356 behör (11mm ring)");
+    expect(printed).toContain("Behörssatser");
+    expect(printed.some((line) => line.startsWith("Utsida: 256 behör (11mm ring)"))).toBe(true);
+    expect(printed.some((line) => line.startsWith("Utsida: 2356 behör (11mm ring)"))).toBe(true);
     expect(printed.some((line) => line.includes("dörrdjup"))).toBe(false);
     expect(printed.some((line) => line.includes("vred") || line.includes("täckbricka"))).toBe(false);
     expect(printed).not.toContain("Ringar");
   });
   it("räknar bort monterade dörrars behör i kvarvarande material", async () => {
     await projectPdf(project, true);
-    expect(printed).toContain("256 behör med 11mm ring");
+    expect(printed).toContain("256 behör (11mm ring)");
     expect(printed.some((line) => line.includes("2356"))).toBe(false);
   });
   it("lägger inte till behör om inget valts", async () => {
