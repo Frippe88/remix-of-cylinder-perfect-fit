@@ -2,16 +2,20 @@
 import { formatMm } from "./cylinder";
 
 export type RingKind = "oval" | "rund" | "iloq";
-export type Fitting = "256" | "2356" | "3212";
-export const FITTING_LABEL: Record<Fitting, string> = { "256": "256 behör", "2356": "2356 behör", "3212": "3212 behör" };
+export type Fitting = "256" | "2356" | "3212" | "18256" | "DAK 7200" | "DAK 7101" | "DAK 752";
+export const FITTING_LABEL: Record<Fitting, string> = {
+  "256": "256 behör", "2356": "2356 behör", "3212": "3212 behör", "18256": "18256 behör",
+  "DAK 7200": "DAK 7200 behör", "DAK 7101": "DAK 7101 behör", "DAK 752": "DAK 752 behör",
+};
 export function fittingRingText(fitting: Fitting, ring: number): string {
   return `${FITTING_LABEL[fitting]} med ${formatMm(ring)} ring`;
 }
 /** Vilka behör som kan väljas för given cylinder. Tom lista = inget behörsval. */
 export function fittingOptions(variant: "free" | "pro", cylinder: "standard" | "round" | "iloq", type: "single" | "double", brand?: string): Fitting[] {
   if (variant !== "pro") return [];
-  if (cylinder === "round") return brand === "ASSA ABLOY" ? ["3212"] : [];
-  return type === "single" ? ["256", "2356"] : [];
+  if (cylinder === "round") return brand === "ASSA ABLOY" ? ["3212"] : brand === "dormakaba / DORMA" ? ["DAK 752"] : [];
+  if (type === "double") return cylinder === "standard" ? ["18256"] : [];
+  return cylinder === "standard" ? ["256", "2356", "DAK 7200", "DAK 7101"] : ["256", "2356"];
 }
 export function canSelectFitting(variant: "free" | "pro", cylinder: "standard" | "round" | "iloq", type: "single" | "double", brand?: string): boolean {
   return fittingOptions(variant, cylinder, type, brand).length > 0;
@@ -69,7 +73,7 @@ export function projectTotals(doors: Door[]): Totals {
   }
   const sort = (a: { kind: string; size: number; side?: string }, b: { kind: string; size: number; side?: string }) =>
     a.kind.localeCompare(b.kind) || (b.side ?? "").localeCompare(a.side ?? "") || a.size - b.size;
-  return { extenders: [...ext.values()].sort(sort), rings: [...rings.values()].sort(sort), fittings: [...fittings.values()].sort((a, b) => Number(a.fitting) - Number(b.fitting) || sort(a, b)) };
+  return { extenders: [...ext.values()].sort(sort), rings: [...rings.values()].sort(sort), fittings: [...fittings.values()].sort((a, b) => a.fitting.localeCompare(b.fitting, "sv", { numeric: true }) || sort(a, b)) };
 }
 
 export function sideText(s: DoorSide, kind: RingKind, fitting?: Fitting): string {
