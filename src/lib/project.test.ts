@@ -5,9 +5,9 @@ describe("behör i material och delning", () => {
   const door = (id: string, fitting?: "256" | "2356", done = false): Door => ({ id, name: `Dörr ${id}`, kind: "oval", done, sides: [{ label: "Utsida", depth: 36, ring: 11, extenders: [8, 8] }], ...(fitting ? { fitting } : {}) });
   const project = { name: "Test", doors: [door("1", "256"), door("2", "256", true), door("3", "2356"), door("4")] };
   it("summerar en vald behörssats per dörr och lämnar ovalda dörrar utan behör", () => {
-    expect(projectTotals(project.doors).fittings).toEqual([{ fitting: "256", size: 11, kind: "oval", side: "Utsida", count: 2 }, { fitting: "2356", size: 11, kind: "oval", side: "Utsida", count: 1 }]);
+    expect(projectTotals(project.doors).fittings).toEqual([{ fitting: "256", size: 11, kind: "oval", side: "Utsida", inner: false, count: 2 }, { fitting: "2356", size: 11, kind: "oval", side: "Utsida", inner: false, count: 1 }]);
     expect(projectTotals([door("4")]).fittings).toEqual([]);
-    expect(projectTotals(project.doors).rings).toEqual([{ size: 11, kind: "oval", side: "Utsida", count: 1 }]);
+    expect(projectTotals(project.doors).rings).toEqual([{ size: 11, kind: "oval", side: "Utsida", inner: false, count: 1 }]);
   });
   it("skiljer på ringhöjd och cylindertyp för samma behör", () => {
     const first = door("1", "256");
@@ -51,9 +51,9 @@ describe("behörsval", () => {
     expect(canSelectFitting("pro", "round", "double", "EVVA")).toBe(false);
     expect(canSelectFitting("free", "round", "double", "ASSA ABLOY")).toBe(false);
   });
-  it("ger 18256 för dubbel oval men inget för dubbel iLOQ", () => {
+  it("ger 18256 för dubbel oval och A10.11 för dubbel iLOQ", () => {
     expect(fittingOptions("pro", "standard", "double")).toEqual(["18256"]);
-    expect(canSelectFitting("pro", "iloq", "double")).toBe(false);
+    expect(canSelectFitting("pro", "iloq", "double")).toBe(true);
   });
   it("ger dormakaba-behör: DAK 752 rund, DAK 7200/7101 enkel oval", () => {
     expect(fittingOptions("pro", "round", "double", "dormakaba / DORMA")).toEqual(["DAK 752"]);
@@ -88,16 +88,16 @@ describe("projectTotals", () => {
     expect(t.extenders).toContainEqual({ size: 10, kind: "rund", count: 1 });
   });
   it("skiljer på utsida- och insidaring", () => {
-    expect(projectTotals(doors).rings).toContainEqual({ size: 11, kind: "oval", side: "Insida", count: 1 });
+    expect(projectTotals(doors).rings).toContainEqual({ size: 11, kind: "oval", side: "Insida", inner: false, count: 1 });
   });
   it("räknar en ring per sida och skiljer på oval och rund", () => {
     const t = projectTotals(doors);
-    expect(t.rings).toContainEqual({ size: 11, kind: "oval", side: "Utsida", count: 1 });
-    expect(t.rings).toContainEqual({ size: 13, kind: "rund", side: "", count: 1 });
+    expect(t.rings).toContainEqual({ size: 11, kind: "oval", side: "Utsida", inner: false, count: 1 });
+    expect(t.rings).toContainEqual({ size: 13, kind: "rund", side: "", inner: false, count: 1 });
   });
   it("rund cylinder har samma ring ute och inne – ringen delas inte per sida", () => {
     const t = projectTotals(roundDouble);
-    expect(t.rings).toEqual([{ size: 13, kind: "rund", side: "", count: 2 }]);
+    expect(t.rings).toEqual([{ size: 13, kind: "rund", side: "", inner: false, count: 2 }]);
     expect(totalsText({ name: "Storgatan 4", doors: roundDouble })).toContain("2st 13mm ring (rund)");
     expect(doorsText({ name: "Storgatan 4", doors: roundDouble })).toContain("Utsida: 13mm ring + 1st 10mm förlängare");
     expect(doorsText({ name: "Storgatan 4", doors: roundDouble })).not.toContain("ring utsida");
