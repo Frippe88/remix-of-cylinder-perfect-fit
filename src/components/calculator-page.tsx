@@ -175,7 +175,7 @@ export function CalculatorPage({ variant }: { variant: "free" | "pro" }) {
                 <li><span className="font-bold">2. Välj enkel- eller dubbelcylinder.</span> Dubbel = cylinder på både utsida och insida, måtten räknas separat.</li>
                 <li><span className="font-bold">3. Mät dörrdjupet.</span> Avstånd från låshusets referenspunkt till dörrbladets yta.</li>
                 <li><span className="font-bold">4. Kolla toleransen.</span> Oval och iLOQ: −2 till +2mm. Rund: ingen fast regel, kalkylatorn tar närmaste möjliga.</li>
-                <li><span className="font-bold">5. Ställ in lagret.</span> Under Lager i bilen bockar du av vilka ringhöjder och förlängare du har med dig.</li>
+                <li><span className="font-bold">5. Ställ in lagret.</span> Under Mitt lager bockar du av vilka ringhöjder och förlängare du har med dig.</li>
                 <li><span className="font-bold">6. Tryck på förslaget.</span> Då hamnar ringar, förlängare och behör i plocklistan.{pro ? " Spara dörren i projektet för inköpslista och PDF." : ""}</li>
               </ol>
             </InfoSheetRow>
@@ -259,7 +259,7 @@ export function CalculatorPage({ variant }: { variant: "free" | "pro" }) {
                 <button type="button" className="flex min-h-11 w-full items-center justify-between gap-3 rounded-lg border border-input bg-muted/40 px-3 py-2 text-left transition hover:bg-muted">
                   <span className="flex items-center gap-2.5">
                     <Package className="size-4 shrink-0 text-accent" aria-hidden />
-                    <span className="text-sm font-bold">Lager i bilen</span>
+                    <span className="text-sm font-bold">Mitt lager</span>
                   </span>
                   <span className="flex items-center gap-2 text-xs text-muted-foreground">
                     {activeRings.length} ringhöjder · {ext.length} förlängare
@@ -269,7 +269,7 @@ export function CalculatorPage({ variant }: { variant: "free" | "pro" }) {
               </DialogTrigger>
               <DialogContent className="max-h-[85vh] overflow-y-auto">
                 <DialogHeader>
-                  <DialogTitle>Lager i bilen</DialogTitle>
+                  <DialogTitle>Mitt lager</DialogTitle>
                 </DialogHeader>
                 <div className="space-y-5">
                   <div className="space-y-2">
