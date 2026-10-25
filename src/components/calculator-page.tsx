@@ -256,20 +256,17 @@ export function CalculatorPage({ variant }: { variant: "free" | "pro" }) {
             )}
             <DepthInput label={type === "single" ? "Dörrdjup" : "Dörrdjup utsida"} value={outside} onChange={setOutside} />
             {type === "double" && <DepthInput label="Dörrdjup insida" value={inside} onChange={setInside} />}
-          </Panel>
-
-          <div className="order-3 lg:order-none lg:mt-5">
             <Dialog>
               <DialogTrigger asChild>
-                <button type="button" className="flex w-full items-center justify-between gap-3 rounded-xl border bg-card p-4 text-left shadow-card transition hover:bg-muted">
-                  <span className="flex items-center gap-3">
-                    <Package className="size-5 shrink-0 text-accent" aria-hidden />
-                    <span>
-                      <span className="block text-sm font-bold">Lager i bilen</span>
-                      <span className="block text-xs text-muted-foreground">{activeRings.length} ringhöjder · {ext.length} förlängare</span>
-                    </span>
+                <button type="button" className="flex min-h-11 w-full items-center justify-between gap-3 rounded-lg border border-input bg-muted/40 px-3 py-2 text-left transition hover:bg-muted">
+                  <span className="flex items-center gap-2.5">
+                    <Package className="size-4 shrink-0 text-accent" aria-hidden />
+                    <span className="text-sm font-bold">Lager i bilen</span>
                   </span>
-                  <ArrowRight className="size-4 shrink-0 text-muted-foreground" aria-hidden />
+                  <span className="flex items-center gap-2 text-xs text-muted-foreground">
+                    {activeRings.length} ringhöjder · {ext.length} förlängare
+                    <ArrowRight className="size-4 shrink-0 text-muted-foreground" aria-hidden />
+                  </span>
                 </button>
               </DialogTrigger>
               <DialogContent className="max-h-[85vh] overflow-y-auto">
@@ -291,7 +288,7 @@ export function CalculatorPage({ variant }: { variant: "free" | "pro" }) {
                 </DialogClose>
               </DialogContent>
             </Dialog>
-          </div>
+          </Panel>
         </section>
 
         <section className="order-2 min-w-0 space-y-7 lg:order-none">
