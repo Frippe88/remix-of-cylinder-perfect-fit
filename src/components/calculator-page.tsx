@@ -66,6 +66,7 @@ export function CalculatorPage({ variant }: { variant: "free" | "pro" }) {
   const [rings, setRings] = useState<number[]>([...RING_HEIGHTS]);
   const [roundExt, setRoundExt] = useState<number[]>([...ROUND_EXTENDER_SIZES]);
   const [roundRings, setRoundRings] = useState<number[]>([...ROUND_RING_HEIGHTS]);
+  const pro = variant === "pro";
   const [project, setProject, projectStore] = useProject();
   const [projectOpen, setProjectOpen] = useState(false);
   const [switchProject, setSwitchProject] = useState(false);
@@ -122,12 +123,12 @@ export function CalculatorPage({ variant }: { variant: "free" | "pro" }) {
           </div>
           <div className="flex shrink-0 items-center gap-2">
             <ThemeToggle />
-            <button type="button" onClick={() => { setSwitchProject(false); setProjectOpen(true); }} aria-label="Öppna projekt"
+            {pro && <button type="button" onClick={() => { setSwitchProject(false); setProjectOpen(true); }} aria-label="Öppna projekt"
               className="inline-flex h-9 items-center gap-1 rounded-lg bg-primary-foreground/10 px-2 text-sm font-semibold ring-1 ring-primary-foreground/25 hover:bg-primary-foreground/20 sm:h-10 sm:gap-1.5 sm:px-3">
               <FolderOpen className="size-4 text-accent" aria-hidden /><span className="hidden sm:inline">Projekt</span>
               <span className="hidden rounded-full border border-accent/50 bg-accent/15 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-accent sm:inline">Beta</span>
               <span className="rounded-full bg-accent px-1.5 text-xs font-bold text-accent-foreground">{projectStore.list.length}</span>
-            </button>
+            </button>}
           </div>
         </div>
         <div className="relative mx-auto flex max-w-5xl flex-wrap gap-1.5 px-4 pb-3 sm:pb-6" aria-label="Regler">
@@ -254,13 +255,14 @@ export function CalculatorPage({ variant }: { variant: "free" | "pro" }) {
           <PickListButton
             sides={type === "single" ? [{ label: isRound ? null : singleSide, depth: parse(outside), selected: selOut }] : [{ label: "Utsida", depth: parse(outside), selected: selOut }, { label: "Insida", depth: parse(inside), selected: selIn }]}
             ext={ext} rings={activeRings} baseMm={baseMm} insideBaseMm={insideBaseMm} relaxed={isRound}
-            projectName={project.name} projectDoors={project.doors.length} projectCount={projectStore.list.length} onOpenProject={() => { setSwitchProject(true); setProjectOpen(true); }}
-            onSave={(sides) => { trackEvent("sparad_dorr", { cylinder: cyl }); setPendingDoor({ sides, kind: isRound ? "rund" : cyl === "iloq" ? "iloq" : "oval" }); }}
+            {...(pro ? { projectName: project.name, projectDoors: project.doors.length, projectCount: projectStore.list.length, onOpenProject: () => { setSwitchProject(true); setProjectOpen(true); } } : {})}
+            onSave={!pro ? undefined : (sides) => { trackEvent("sparad_dorr", { cylinder: cyl }); setPendingDoor({ sides, kind: isRound ? "rund" : cyl === "iloq" ? "iloq" : "oval" }); }}
           />
           <CylinderResults title={type === "single" ? null : "Utsida"} depth={parse(outside)} ext={ext} rings={activeRings} baseMm={baseMm} relaxed={isRound} selected={selOut} onSelect={(c) => setSel({ key: selKey, out: c, in: selIn })} />
           {type === "double" && <CylinderResults title="Insida" depth={parse(inside)} ext={ext} rings={activeRings} baseMm={insideBaseMm} relaxed={isRound} selected={selIn} onSelect={(c) => setSel({ key: selKey, out: selOut, in: c })} />}
         </section>
       </main>
+      {pro && <>
       <DoorNameDialog open={!!pendingDoor} defaultName={nextDoorName(project.doors)} projectName={project.name} onCancel={() => setPendingDoor(null)}
         onConfirm={(name) => {
           if (!pendingDoor) return;
@@ -271,6 +273,7 @@ export function CalculatorPage({ variant }: { variant: "free" | "pro" }) {
         }} />
       <ProjectBar project={project} projects={projectStore.list.length} onOpen={() => { setSwitchProject(false); setProjectOpen(true); }} />
       <ProjectPanel project={project} setProject={setProject} store={projectStore} open={projectOpen} onOpenChange={(v) => { setProjectOpen(v); if (!v) setSwitchProject(false); }} closeOnSelect={switchProject} />
+      </>}
       <Toaster position="top-center" />
       <section className="mx-auto mt-10 w-full max-w-5xl px-4">
         <h2 className="mt-1 text-2xl font-extrabold tracking-tight">Guider om cylindermontage</h2>

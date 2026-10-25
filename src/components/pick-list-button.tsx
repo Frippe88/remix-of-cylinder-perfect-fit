@@ -70,7 +70,7 @@ function Row({ caption, icon, children }: { caption: string; icon: ReactNode; ch
 
 export function PickListButton({ sides, ext, rings, baseMm, insideBaseMm = baseMm, relaxed, onSave, projectName, projectDoors = 0, projectCount = 1, onOpenProject }: {
   sides: PickSide[]; ext: number[]; rings: number[]; baseMm: number; insideBaseMm?: number; relaxed: boolean;
-  onSave?: (sides: DoorSide[]) => void;
+  onSave?: ((sides: DoorSide[]) => void) | undefined;
   projectName?: string; projectDoors?: number; projectCount?: number; onOpenProject?: () => void;
 }) {
   const savedTo = (projectName ?? "").trim();
