@@ -4,7 +4,7 @@ import { ArrowDown, ArrowUp, Check, ChevronDown, ChevronsRight, ClipboardCopy, C
 import { InfoSheetRow } from "@/components/info-sheet-row";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from "@/components/ui/sheet";
-import { clearDoors, doorsText, doorsToPick, fittingRingText, KIND_LABEL, projectText, projectTotals, RING_HAS_SIDE, setDoorSide, totalsText, type Door, type Project } from "@/lib/project";
+import { clearDoors, doorsText, doorsToPick, fittingForSide, fittingRingText, isIloqInner, ringName, KIND_LABEL, projectText, projectTotals, RING_HAS_SIDE, setDoorSide, totalsText, type Door, type Project } from "@/lib/project";
 import { sideChip } from "@/components/pick-list-button";
 import { CONTACT_EMAIL } from "@/components/contact-form";
 import { formatMm } from "@/lib/cylinder";
@@ -251,7 +251,7 @@ export function ProjectPanel({ project, setProject, store, open, onOpenChange, c
                 {totals.fittings.length > 0 && <>
                   <p className="mt-4 text-xs font-bold uppercase tracking-wide text-muted-foreground">Behör med ring</p>
                   <ul className="mt-2 divide-y">{totals.fittings.map((f) => (
-                    <li key={`${f.fitting}:${f.kind}:${f.side}:${f.size}`} className="flex items-center justify-between gap-3 py-2.5 text-sm"><span className="min-w-0 font-semibold">{fittingRingText(f.fitting, f.size)} <span className="text-xs font-normal text-muted-foreground">{f.side.toLowerCase()} ({KIND_LABEL[f.kind]})</span></span><Chip accent>{f.count} st</Chip></li>
+                    <li key={`${f.fitting}:${f.kind}:${f.side}:${f.size}`} className="flex items-center justify-between gap-3 py-2.5 text-sm"><span className="min-w-0 font-semibold">{fittingRingText(f.fitting, f.size, f.kind, f.side)} <span className="text-xs font-normal text-muted-foreground">{f.side.toLowerCase()} ({KIND_LABEL[f.kind]})</span></span><Chip accent>{f.count} st</Chip></li>
                   ))}</ul>
                 </>}
               </div>
