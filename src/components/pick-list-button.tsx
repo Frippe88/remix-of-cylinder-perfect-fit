@@ -1,8 +1,8 @@
 import { useState, type ReactNode } from "react";
-import { AlertTriangle, ArrowDown, ArrowUp, Check, ClipboardCopy, ClipboardList, Disc3, FolderOpen, FolderPlus, Layers } from "lucide-react";
+import { AlertTriangle, ArrowDown, ArrowUp, Check, ClipboardCopy, ClipboardList, Disc3, FolderOpen, FolderPlus, Layers, Wrench } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { calculate, formatMm, type Combination } from "@/lib/cylinder";
-import { fittingForSide, fittingRingText, isLooseFitting, ringName, type DoorSide, type Fitting } from "@/lib/project";
+import { FITTING_LABEL, fittingForSide, fittingRingText, isLooseFitting, ringName, type DoorSide, type Fitting } from "@/lib/project";
 
 export type PickSide = { label: string | null; depth: number | null; selected: Combination | null };
 
@@ -188,6 +188,16 @@ export function PickListButton({ sides, ext, rings, insideRings = rings, insideE
               </span>
               {isInner(p.label) && <span className="text-xs font-semibold text-foreground">iLOQ innerring (med skruvhål)</span>}
             </Row>
+            {(() => {
+              const sideFit = fittingForSide(fitting, p.label);
+              return sideFit ? (
+                <Row caption="Behör" icon={<Wrench className="size-3.5" />}>
+                  <span className="inline-flex items-center rounded-md border border-accent/50 bg-accent/10 px-2.5 py-1 text-sm font-bold text-foreground">
+                    {FITTING_LABEL[sideFit]}
+                  </span>
+                </Row>
+              ) : null;
+            })()}
           </li>
         ))}
       </ul>
