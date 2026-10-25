@@ -19,9 +19,8 @@ function bestFor(depth: number, ext: number[], rings: number[], baseMm: number, 
 export function pickLine(c: Combination, fitting?: Fitting | null) {
   const counts = new Map<number, number>();
   c.extenders.forEach((e) => counts.set(e, (counts.get(e) ?? 0) + 1));
-  const parts = [...counts].sort((a, b) => a[0] - b[0]).map(([s, n]) => `${n}st ${formatMm(s)} förlängare`);
-  parts.push(fitting ? fittingRingText(fitting, c.ring) : `${formatMm(c.ring)} ring`);
-  return parts.join(" + ");
+  const ext = [...counts].sort((a, b) => a[0] - b[0]).map(([s, n]) => `${n}st ${formatMm(s)} förlängare`);
+  return [fitting ? fittingRingText(fitting, c.ring) : `${formatMm(c.ring)} ring`, ...ext].join(" + ");
 }
 
 function grouped(c: Combination) {
