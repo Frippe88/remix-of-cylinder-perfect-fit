@@ -195,38 +195,6 @@ export function CalculatorPage({ variant }: { variant: "free" | "pro" }) {
               ))}
             </div>
             <p className="text-xs leading-snug text-muted-foreground">{CYLINDER_OPTIONS.find((o) => o.id === cyl)?.hint}</p>
-            <Dialog>
-              <DialogTrigger asChild>
-                <button type="button" className="flex min-h-11 w-full items-center justify-between gap-3 rounded-lg border border-input bg-muted/40 px-3 py-2 text-left transition hover:bg-muted">
-                  <span className="flex items-center gap-2.5">
-                    <Package className="size-4 shrink-0 text-accent" aria-hidden />
-                    <span className="text-sm font-bold">Lager i bilen</span>
-                  </span>
-                  <span className="flex items-center gap-2 text-xs text-muted-foreground">
-                    {activeRings.length} ringhöjder · {ext.length} förlängare
-                    <ArrowRight className="size-4 shrink-0 text-muted-foreground" aria-hidden />
-                  </span>
-                </button>
-              </DialogTrigger>
-              <DialogContent className="max-h-[85vh] overflow-y-auto">
-                <DialogHeader>
-                  <DialogTitle>Lager i bilen</DialogTitle>
-                </DialogHeader>
-                <div className="space-y-5">
-                  <div className="space-y-2">
-                    <h3 className="text-sm font-bold">Förlängare i lager</h3>
-                    <ChipGroup values={extValues} selected={ext} onToggle={(v) => toggle(ext, setExt, v)} />
-                  </div>
-                  <div className="space-y-2">
-                    <h3 className="text-sm font-bold">Ringhöjder i lager</h3>
-                    <ChipGroup values={ringValues} selected={activeRings} onToggle={(v) => toggle(activeRings, setActiveRings, v)} />
-                  </div>
-                </div>
-                <DialogClose asChild>
-                  <button type="button" className="mt-2 min-h-11 w-full rounded-lg bg-accent text-sm font-bold text-accent-foreground">Klar</button>
-                </DialogClose>
-              </DialogContent>
-            </Dialog>
             {isRound && (
               <label className="block text-sm font-semibold text-foreground">
                 Fabrikat
@@ -286,6 +254,38 @@ export function CalculatorPage({ variant }: { variant: "free" | "pro" }) {
                 </p>
               </div>
             )}
+            <Dialog>
+              <DialogTrigger asChild>
+                <button type="button" className="flex min-h-11 w-full items-center justify-between gap-3 rounded-lg border border-input bg-muted/40 px-3 py-2 text-left transition hover:bg-muted">
+                  <span className="flex items-center gap-2.5">
+                    <Package className="size-4 shrink-0 text-accent" aria-hidden />
+                    <span className="text-sm font-bold">Lager i bilen</span>
+                  </span>
+                  <span className="flex items-center gap-2 text-xs text-muted-foreground">
+                    {activeRings.length} ringhöjder · {ext.length} förlängare
+                    <ArrowRight className="size-4 shrink-0 text-muted-foreground" aria-hidden />
+                  </span>
+                </button>
+              </DialogTrigger>
+              <DialogContent className="max-h-[85vh] overflow-y-auto">
+                <DialogHeader>
+                  <DialogTitle>Lager i bilen</DialogTitle>
+                </DialogHeader>
+                <div className="space-y-5">
+                  <div className="space-y-2">
+                    <h3 className="text-sm font-bold">Förlängare i lager</h3>
+                    <ChipGroup values={extValues} selected={ext} onToggle={(v) => toggle(ext, setExt, v)} />
+                  </div>
+                  <div className="space-y-2">
+                    <h3 className="text-sm font-bold">Ringhöjder i lager</h3>
+                    <ChipGroup values={ringValues} selected={activeRings} onToggle={(v) => toggle(activeRings, setActiveRings, v)} />
+                  </div>
+                </div>
+                <DialogClose asChild>
+                  <button type="button" className="mt-2 min-h-11 w-full rounded-lg bg-accent text-sm font-bold text-accent-foreground">Klar</button>
+                </DialogClose>
+              </DialogContent>
+            </Dialog>
             <DepthInput label={type === "single" ? "Dörrdjup" : "Dörrdjup utsida"} value={outside} onChange={setOutside} />
             {type === "double" && <DepthInput label="Dörrdjup insida" value={inside} onChange={setInside} />}
           </Panel>
