@@ -4,7 +4,7 @@ import { ArrowDown, ArrowUp, Check, ChevronDown, ChevronsRight, ClipboardCopy, C
 import { InfoSheetRow } from "@/components/info-sheet-row";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from "@/components/ui/sheet";
-import { clearDoors, doorsText, doorsToPick, FITTING_LABEL, fittingForSide, fittingRingText, isIloqInner, ringName, KIND_LABEL, projectText, projectTotals, purchaseList, RING_HAS_SIDE, setDoorSide, totalsText, type Door, type Project } from "@/lib/project";
+import { clearDoors, doorsText, doorsToPick, FITTING_LABEL, fittingForSide, fittingRingText, isIloqInner, ringName, KIND_LABEL, PAIR_FITTINGS, projectText, projectTotals, purchaseList, RING_HAS_SIDE, setDoorSide, totalsText, type Door, type Project } from "@/lib/project";
 import { sideChip } from "@/components/pick-list-button";
 import { CONTACT_EMAIL } from "@/components/contact-form";
 import { formatMm } from "@/lib/cylinder";
@@ -120,7 +120,7 @@ function DoorCard({ d, onToggle, onRemove, onSetSide }: { d: Door; onToggle: () 
             <div className="mt-2 flex flex-wrap items-center gap-1.5">
             {s.extenders.length === 0 ? <span className="text-xs text-muted-foreground">inga förl.</span> :
               s.extenders.map((e, j) => <Chip key={j} side={s.label}>{formatMm(e)}</Chip>)}
-            <Chip accent side={s.label}>{(() => { const f = fittingForSide(d.fitting, s.label); const inner = isIloqInner(d.kind, s.label, d.sides.length > 1); return f ? fittingRingText(f, s.ring, inner) : inner ? ringName(s.ring, true) : `ring ${formatMm(s.ring)}`; })()}</Chip>
+            <Chip accent side={s.label}>{(() => { const f = d.sides.length > 1 && d.fitting && PAIR_FITTINGS.includes(d.fitting) ? null : fittingForSide(d.fitting, s.label); const inner = isIloqInner(d.kind, s.label, d.sides.length > 1); return f ? fittingRingText(f, s.ring, inner) : inner ? ringName(s.ring, true) : `ring ${formatMm(s.ring)}`; })()}</Chip>
             </div>
           </li>
         ))}

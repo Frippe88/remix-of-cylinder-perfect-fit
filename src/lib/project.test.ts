@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { canSelectFitting, fittingOptions, doorsText, FITTING_LABEL, nextDoorName, projectText, projectTotals, setDoorSide, sideText, totalsText, type Door, type Fitting, type Project } from "./project";
+import { canSelectFitting, fittingOptions, doorsText, FITTING_LABEL, nextDoorName, projectText, projectTotals, purchaseList, setDoorSide, sideText, totalsText, type Door, type Fitting, type Project } from "./project";
 
 describe("behör i material och delning", () => {
   const door = (id: string, fitting?: "256" | "2356", done = false): Door => ({ id, name: `Dörr ${id}`, kind: "oval", done, sides: [{ label: "Utsida", depth: 36, ring: 11, extenders: [8, 8] }], ...(fitting ? { fitting } : {}) });
@@ -209,3 +209,12 @@ describe("256/2356 plocka själv", () => {
   });
 });
 
+describe("18256 som komplett paket", () => {
+  it("räknar ett paket per dörr med båda ringarna på samma rad", () => {
+    const door = (id: string, o: number, i: number): Door => ({ id, name: id, kind: "oval", done: false, fitting: "18256",
+      sides: [{ label: "Utsida", depth: 0, ring: o, extenders: [] }, { label: "Insida", depth: 0, ring: i, extenders: [] }] });
+    const t = projectTotals([door("a", 21, 13), door("b", 21, 13)]);
+    const items = purchaseList(t).flatMap((s) => s.items);
+    expect(items).toEqual([{ count: 2, text: "18256 behör (21mm ring utsida + 13mm ring insida)" }]);
+  });
+});
