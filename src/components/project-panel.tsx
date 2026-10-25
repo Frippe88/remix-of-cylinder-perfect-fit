@@ -66,7 +66,7 @@ function CopyButton({ text, label, small }: { text: string; label: string; small
   );
 }
 
-function PdfButton({ project, remainingOnly, onLocked }: { project: Project; remainingOnly: boolean; onLocked?: () => void }) {
+function PdfButton({ project, remainingOnly, onLocked }: { project: Project; remainingOnly: boolean; onLocked?: (() => void) | undefined }) {
   const [blob, setBlob] = useState<Blob | null>(null);
   useEffect(() => {
     let live = true; setBlob(null);
