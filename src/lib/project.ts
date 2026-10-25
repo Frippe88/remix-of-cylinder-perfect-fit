@@ -21,8 +21,17 @@ export function fittingForSide(fitting: Fitting | null | undefined, label: strin
   if (fitting === "A10.11") return label === "Insida" ? fitting : null;
   return fitting;
 }
+/** Färdiga 256/2356-satser finns bara med 6–18 mm ring; högre ring = plocka själv. */
+export const FITTING_KIT_MAX_RING = 18;
+export function isLooseFitting(fitting: Fitting | null | undefined, ring: number): boolean {
+  return (fitting === "256" || fitting === "2356") && ring > FITTING_KIT_MAX_RING;
+}
+export function looseFittingLabel(fitting: Fitting): string {
+  return `${FITTING_LABEL[fitting]}, plocka själv`;
+}
 export function fittingRingText(fitting: Fitting, ring: number, inner = false): string {
-  return `${FITTING_LABEL[fitting]} med ${ringName(ring, inner || fitting === "A10.11")}`;
+  const name = isLooseFitting(fitting, ring) ? looseFittingLabel(fitting) : FITTING_LABEL[fitting];
+  return `${name} med ${ringName(ring, inner || fitting === "A10.11")}`;
 }
 /** Vilka behör som kan väljas för given cylinder. Tom lista = inget behörsval. */
 export function fittingOptions(variant: "free" | "pro", cylinder: "standard" | "round" | "iloq", type: "single" | "double", brand?: string): Fitting[] {
@@ -62,6 +71,8 @@ export interface Totals {
   fittings: { fitting: Fitting; size: number; kind: RingKind; side: string; inner: boolean; count: number }[];
   /** Monteringskit utan ring i satsen (A10.11) – ringarna räknas som lösa ringar. */
   kits: { fitting: Fitting; count: number }[];
+  /** 256/2356 med ring över 18 mm: behöret plockas själv, ringen räknas under ringar. */
+  loose: { fitting: Fitting; count: number }[];
 }
 
 /** Behör där ringen inte ingår i satsen; ringen plockas lös. */
