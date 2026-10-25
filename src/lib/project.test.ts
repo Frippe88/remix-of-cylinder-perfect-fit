@@ -17,15 +17,15 @@ describe("behör i material och delning", () => {
     expect(projectTotals([first, taller, iloq]).rings).toEqual([]);
   });
   it("kopierade inköpslistor inkluderar valda behör och räknar bort monterade dörrar", () => {
-    expect(totalsText(project)).toContain("2st 256 behör med 11mm ring");
-    expect(totalsText(project)).toContain("1st 2356 behör med 11mm ring");
-    expect(totalsText(project, true)).toContain("1st 256 behör med 11mm ring");
+    expect(totalsText(project)).toContain("2st 256 behör (11mm ring)");
+    expect(totalsText(project)).toContain("1st 2356 behör (11mm ring)");
+    expect(totalsText(project, true)).toContain("1st 256 behör (11mm ring)");
   });
   it("kopierade dörrlistor och hela projektet behåller valt behör per dörr", () => {
-    expect(doorsText(project)).toContain("256 behör med 11mm ring");
-    expect(doorsText(project)).toContain("2356 behör med 11mm ring");
-    expect(projectText(project)).toContain("2st 256 behör med 11mm ring");
-    expect(projectText(project)).toContain("2356 behör med 11mm ring");
+    expect(doorsText(project)).toContain("256 behör (11mm ring)");
+    expect(doorsText(project)).toContain("2356 behör (11mm ring)");
+    expect(projectText(project)).toContain("2st 256 behör (11mm ring)");
+    expect(projectText(project)).toContain("2356 behör (11mm ring)");
     expect(doorsText({ name: "Test", doors: [door("4")] })).not.toContain("behör");
   });
   it("sparade listor visar bara behörets namn – inget fabrikat eller vred/täckbricka", () => {
@@ -34,9 +34,9 @@ describe("behör i material och delning", () => {
     for (const text of [totalsText(all), doorsText(all), projectText(all)]) {
       for (const forbidden of ["ASSA", "dormakaba", "DORMA", "vred", "täckbricka", "Täckbricka"]) expect(text).not.toContain(forbidden);
     }
-    expect(totalsText(all)).toContain("1st DAK 7200 behör med 11mm ring");
-    expect(totalsText(all)).toContain("1st DAK 752 behör med 11mm ring");
-    expect(doorsText(all)).toContain("Utsida: 256 behör med 11mm ring");
+    expect(totalsText(all)).toContain("1st DAK 7200 behör (11mm ring)");
+    expect(totalsText(all)).toContain("1st DAK 752 behör (11mm ring)");
+    expect(doorsText(all)).toContain("Utsida: 256 behör (11mm ring)");
   });
 });
 
@@ -57,17 +57,17 @@ describe("behörsval", () => {
   });
   it("ger DAK 752 för rund dormakaba och Vred/Täckbricka-Cylinder för enkelcylinder", () => {
     expect(fittingOptions("pro", "round", "double", "dormakaba / DORMA")).toEqual(["DAK 752"]);
-    expect(fittingOptions("pro", "standard", "single")).toEqual(["vred", "tackbricka"]);
-    expect(fittingOptions("pro", "iloq", "single")).toEqual(["vred", "tackbricka"]);
+    expect(fittingOptions("pro", "standard", "single")).toEqual(["256", "2356"]);
+    expect(fittingOptions("pro", "iloq", "single")).toEqual(["256", "2356"]);
   });
   it("räknar ihop samma ring med vred och summerar alla förlängare", () => {
     const d = (i: number, fitting: Fitting, ring: number, ext: number[]): Door => ({ id: `${i}`, name: `Dörr ${i}`, kind: "oval", done: false, sides: [{ label: "Utsida", depth: 50, ring, extenders: ext }], fitting });
     const p: Project = { name: "P", doors: [1, 2, 3, 4, 5].map((i) => d(i, "vred", 21, [10])).concat(d(6, "tackbricka", 13, [8, 10])) };
     const t = totalsText(p);
-    expect(t).toContain("5st Vred med cylinder 21mm ring");
-    expect(t).toContain("1st Täckbricka med cylinder 13mm ring");
+    expect(t).toContain("5st Vred med cylinder (21mm ring)");
+    expect(t).toContain("1st Täckbricka med cylinder (13mm ring)");
     expect(t).toContain("7st förlängare totalt");
-    expect(doorsText(p)).toContain("Utsida: Vred med cylinder 21mm ring + 1st 10mm förlängare");
+    expect(doorsText(p)).toContain("Utsida: Vred med cylinder (21mm ring) + 1st 10mm förlängare");
   });
   it("tillåter inte behörsval i gratisversionen", () => {
     expect(canSelectFitting("free", "standard", "single")).toBe(false);
@@ -174,7 +174,7 @@ describe("iLOQ dubbelcylinder – A10.11 och innerring", () => {
   });
   it("A10.11 hamnar bara på insidan", () => {
     const d = { ...dbl, fitting: "A10.11" as const };
-    expect(sideText(d.sides[1]!, "iloq", "A10.11", true)).toBe("Insida: A10.11 monteringskit med 27mm iLOQ innerring");
+    expect(sideText(d.sides[1]!, "iloq", "A10.11", true)).toBe("Insida: A10.11 monteringskit (27mm iLOQ innerring)");
     expect(sideText(d.sides[0]!, "iloq", "A10.11", true)).toBe("Utsida: 11mm ring");
     const t = projectTotals([d, { ...d, id: "j" }]);
     expect(t.fittings).toEqual([]);
@@ -204,7 +204,7 @@ describe("256/2356 plocka själv", () => {
     expect(t.loose.map((f) => [f.fitting, f.size, f.count])).toEqual([["256", 27, 2], ["256", 30, 1], ["2356", 30, 1]]);
     const p: Project = { name: "P", doors: [d(27), d(27), d(30)] };
     expect(totalsText(p)).toContain("BEHÖR, PLOCKA SJÄLV:\n3st 256 behör (utan ring)\n\nLÖSA DELAR:\n2st 27mm ring\n1st 30mm ring");
-    expect(doorsText(p)).toContain("256 behör, plocka själv med 27mm ring");
+    expect(doorsText(p)).toContain("256 behör (lös ring 27mm)");
   });
 });
 

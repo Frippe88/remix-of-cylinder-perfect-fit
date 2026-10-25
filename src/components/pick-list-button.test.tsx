@@ -18,7 +18,7 @@ describe("Plocklista", () => {
     Object.defineProperty(navigator, "clipboard", { value: { writeText }, configurable: true });
     render(<PickListButton sides={[{ label: "Utsida", depth: 36, selected: null }]} ext={ext} rings={rings} baseMm={31} relaxed={false} fitting={fitting} />);
     fireEvent.click(screen.getByRole("button", { name: /Kopiera plocklista/ }));
-    expect(writeText).toHaveBeenCalledWith(`Utsida: ${fitting} behör med 11mm ring + 2st 8mm förlängare`);
+    expect(writeText).toHaveBeenCalledWith(`Utsida: ${fitting} behör (11mm ring) + 2st 8mm förlängare`);
   });
   it("copies one clean plain-text line per side, no extra characters", async () => {
     const writeText = vi.fn().mockResolvedValue(undefined);
@@ -47,7 +47,7 @@ describe("Plocklista", () => {
     expect(writeText).toHaveBeenCalledWith("8mm ring + 2st 10mm förlängare");
   });
 
-  it("behörsmenyn säger 'Täckbricka med cylinder 18mm ring' – utan dubbel-t 'med'", () => {
+  it("behörsmenyn säger 'Täckbricka med cylinder (18mm ring)' – utan dubbel-t 'med'", () => {
     render(
       <PickListButton
         sides={[{ label: "Utsida", depth: 49, selected: { ring: 18, extenders: [], extenderCount: 0, totalExtension: 18, deviation: 0 } }]}
@@ -61,7 +61,7 @@ describe("Plocklista", () => {
       />,
     );
     const opt = screen.getByRole("option", { name: /Täckbricka/ });
-    expect(opt.textContent).toBe("Täckbricka med cylinder 18mm ring");
+    expect(opt.textContent).toBe("Täckbricka med cylinder (18mm ring)");
     expect(opt.textContent).not.toContain("cylinder med 18mm");
   });
 });
