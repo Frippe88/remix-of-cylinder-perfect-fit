@@ -75,9 +75,10 @@ export function projectTotals(doors: Door[]): Totals {
       cur.count++; ext.set(key, cur);
     }
     const side = RING_HAS_SIDE[d.kind] ? (s.label ?? "Utsida") : "";
-    if (d.fitting) {
-      const key = `${d.fitting}:${d.kind}:${side}:${s.ring}`;
-      const cur = fittings.get(key) ?? { fitting: d.fitting, size: s.ring, kind: d.kind, side, count: 0 };
+    const fit = fittingForSide(d.fitting, s.label);
+    if (fit) {
+      const key = `${fit}:${d.kind}:${side}:${s.ring}`;
+      const cur = fittings.get(key) ?? { fitting: fit, size: s.ring, kind: d.kind, side, count: 0 };
       cur.count++; fittings.set(key, cur);
       continue;
     }
@@ -96,7 +97,8 @@ export function sideText(s: DoorSide, kind: RingKind, fitting?: Fitting): string
   const ext = [...counts].sort((a, b) => a[0] - b[0]).map(([e, n]) => `${n}st ${formatMm(e)} förlängare`);
   const side = RING_HAS_SIDE[kind] && !s.label ? ` ${"utsida"}` : "";
   // Ordning: sida, behör med ring (eller ring), sist förlängare.
-  const ring = fitting ? `${fittingRingText(fitting, s.ring)}${side}` : `${formatMm(s.ring)} ring${side}`;
+  const fit = fittingForSide(fitting, s.label);
+  const ring = fit ? `${fittingRingText(fit, s.ring, kind, s.label)}${side}` : `${ringName(s.ring, kind, s.label)}${side}`;
   return (s.label ? `${s.label}: ` : "") + [ring, ...ext].join(" + ");
 }
 
@@ -105,14 +107,20 @@ export function doorsToPick(doors: Door[], remainingOnly: boolean): Door[] {
   return remainingOnly ? doors.filter((d) => !d.done) : doors;
 }
 
+/** Totalrad för ring/behör: "27mm iLOQ innerring insida (iLOQ)". */
+export function totalRingText(r: { size: number; kind: RingKind; side: string; fitting?: Fitting }): string {
+  const base = r.fitting ? fittingRingText(r.fitting, r.size, r.kind, r.side) : ringName(r.size, r.kind, r.side);
+  return `${base}${r.side ? ` ${r.side.toLowerCase()}` : ""} (${KIND_LABEL[r.kind]})`;
+}
+
 export function totalsText(p: Project, remainingOnly = false): string {
   const doors = doorsToPick(p.doors, remainingOnly);
   const t = projectTotals(doors);
   const word = doors.length === 1 ? "dörr" : "dörrar";
   const lines = [`${p.name || "Projekt"} – ${doors.length} ${remainingOnly ? `kvarvarande ${word}` : word}`];
   if (t.extenders.length) { lines.push("", "Förlängare:"); t.extenders.forEach((e) => lines.push(`${e.count}st ${formatMm(e.size)} (${KIND_LABEL[e.kind]})`)); }
-  if (t.rings.length) { lines.push("", "Ringar:"); t.rings.forEach((r) => lines.push(`${r.count}st ${formatMm(r.size)} ring${r.side ? ` ${r.side.toLowerCase()}` : ""} (${KIND_LABEL[r.kind]})`)); }
-  if (t.fittings.length) { lines.push("", "Behör med ring:"); t.fittings.forEach((f) => lines.push(`${f.count}st ${fittingRingText(f.fitting, f.size)}${f.side ? ` ${f.side.toLowerCase()}` : ""} (${KIND_LABEL[f.kind]})`)); }
+  if (t.rings.length) { lines.push("", "Ringar:"); t.rings.forEach((r) => lines.push(`${r.count}st ${totalRingText(r)}`)); }
+  if (t.fittings.length) { lines.push("", "Behör med ring:"); t.fittings.forEach((f) => lines.push(`${f.count}st ${totalRingText(f)}`)); }
   return lines.join("\n");
 }
 
