@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { canSelectFitting, fittingOptions, doorsText, FITTING_LABEL, nextDoorName, projectText, projectTotals, setDoorSide, totalsText, type Door, type Fitting, type Project } from "./project";
+import { canSelectFitting, fittingOptions, doorsText, FITTING_LABEL, nextDoorName, projectText, projectTotals, setDoorSide, sideText, totalsText, type Door, type Fitting, type Project } from "./project";
 
 describe("behör i material och delning", () => {
   const door = (id: string, fitting?: "256" | "2356", done = false): Door => ({ id, name: `Dörr ${id}`, kind: "oval", done, sides: [{ label: "Utsida", depth: 36, ring: 11, extenders: [8, 8] }], ...(fitting ? { fitting } : {}) });
