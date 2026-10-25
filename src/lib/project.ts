@@ -40,7 +40,7 @@ export function fittingRingText(fitting: Fitting, ring: number, inner = false): 
   return `${FITTING_LABEL[fitting]} (${ringName(ring, inner || fitting === "A10.11")})`;
 }
 /** Vilka behör som kan väljas för given cylinder. Tom lista = inget behörsval. */
-export function fittingOptions(variant: "free" | "pro", cylinder: "standard" | "round" | "iloq", type: "single" | "double", brand?: string): Fitting[] {
+export function fittingOptions(variant: "free" | "pro", cylinder: "standard" | "round" | "iloq", type: "single" | "double", _brand?: string): Fitting[] {
   if (variant !== "pro") return [];
   // Runda cylindrar: inget behörsval – bara ringar och förlängare per sida.
   if (cylinder === "round") return [];
