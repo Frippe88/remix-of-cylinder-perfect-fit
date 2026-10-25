@@ -141,7 +141,7 @@ export function CalculatorPage({ variant }: { variant: "free" | "pro" }) {
         </div>
       </header>
       <nav aria-label="Version" className="mx-auto flex max-w-5xl gap-2 px-4 pt-4">
-        {([["free", "/", "Snabbkalkyl", "Gratis"], ["pro", "/pro", "Projekt & behör", "Pro"]] as const).map(([v, to, label, tag]) => (
+        {([["free", "/", "Cylinderkalkyl", "Gratis"], ["pro", "/pro", "Projekt & behör", "Pro"]] as const).map(([v, to, label, tag]) => (
           <Link key={v} to={to} aria-current={variant === v ? "page" : undefined}
             className={`flex flex-1 items-center justify-center gap-2 rounded-lg border px-3 py-2.5 text-sm font-semibold transition ${variant === v ? "border-accent bg-accent/10 ring-1 ring-accent" : "border-input bg-card hover:bg-muted"}`}>
             {label}<span className="rounded-full border border-accent/50 bg-accent/15 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-accent">{tag}</span>
