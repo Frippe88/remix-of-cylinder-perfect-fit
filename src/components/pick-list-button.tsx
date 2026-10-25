@@ -2,7 +2,7 @@ import { useState, type ReactNode } from "react";
 import { AlertTriangle, ArrowDown, ArrowUp, Check, ClipboardCopy, ClipboardList, Disc3, FolderOpen, FolderPlus, Layers } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { calculate, formatMm, type Combination } from "@/lib/cylinder";
-import { fittingRingText, type DoorSide, type Fitting } from "@/lib/project";
+import { fittingForSide, fittingRingText, ringName, type DoorSide, type Fitting } from "@/lib/project";
 
 export type PickSide = { label: string | null; depth: number | null; selected: Combination | null };
 
@@ -16,11 +16,11 @@ function bestFor(depth: number, ext: number[], rings: number[], baseMm: number, 
 }
 
 /** Texten som kopieras – håll den ren, den klistras in i SMS/WhatsApp/order. */
-export function pickLine(c: Combination, fitting?: Fitting | null) {
+export function pickLine(c: Combination, fitting?: Fitting | null, inner = false) {
   const counts = new Map<number, number>();
   c.extenders.forEach((e) => counts.set(e, (counts.get(e) ?? 0) + 1));
   const ext = [...counts].sort((a, b) => a[0] - b[0]).map(([s, n]) => `${n}st ${formatMm(s)} förlängare`);
-  return [fitting ? fittingRingText(fitting, c.ring) : `${formatMm(c.ring)} ring`, ...ext].join(" + ");
+  return [fitting ? fittingRingText(fitting, c.ring, inner) : ringName(c.ring, inner), ...ext].join(" + ");
 }
 
 function grouped(c: Combination) {
@@ -75,14 +75,15 @@ const FITTING_MENU: Record<Fitting, string> = {
   "DAK 7200": "DAK 7200 behör (dormakaba vred)",
   "DAK 7101": "DAK 7101 behör (dormakaba täckbricka)",
   "DAK 752": "DAK 752 behör (dormakaba rund cylinder)",
+  "A10.11": "A10.11 monteringskit (iLOQ dubbelcylinder)",
 };
 
-export function PickListButton({ sides, ext, rings, baseMm, insideBaseMm = baseMm, relaxed, onSave, projectName, projectDoors = 0, projectCount = 1, onOpenProject, fitting = null, onFittingChange, fittingChoices = ["256", "2356"] }: {
+export function PickListButton({ sides, ext, rings, baseMm, insideBaseMm = baseMm, relaxed, onSave, projectName, projectDoors = 0, projectCount = 1, onOpenProject, fitting = null, onFittingChange, fittingChoices = ["256", "2356"], iloqDouble = false }: {
   sides: PickSide[]; ext: number[]; rings: number[]; baseMm: number; insideBaseMm?: number; relaxed: boolean;
   onSave?: ((sides: DoorSide[]) => void) | undefined;
   projectName?: string; projectDoors?: number; projectCount?: number; onOpenProject?: () => void;
   fitting?: Fitting | null; onFittingChange?: ((value: Fitting | null) => void) | undefined;
-  fittingChoices?: Fitting[];
+  fittingChoices?: Fitting[]; iloqDouble?: boolean;
 }) {
   const savedTo = (projectName ?? "").trim();
   const projectLabel = savedTo || "Projekt";
@@ -94,7 +95,10 @@ export function PickListButton({ sides, ext, rings, baseMm, insideBaseMm = baseM
     .filter((s): s is { label: string | null; depth: number; c: Combination } => !!s.c);
   if (picks.length === 0) return null;
 
-  const text = picks.map((p) => (p.label ? `${p.label}: ` : "") + pickLine(p.c, fitting)).join("\n");
+  const isInner = (label: string | null) => iloqDouble && label === "Insida";
+  const text = picks.map((p) => (p.label ? `${p.label}: ` : "") + pickLine(p.c, fittingForSide(fitting, p.label), isInner(p.label))).join("\n");
+  const insidePick = picks.find((p) => isInner(p.label));
+  const menuText = (f: Fitting) => f === "A10.11" && insidePick ? `A10.11 monteringskit med ${ringName(insidePick.c.ring, true)} insida` : FITTING_MENU[f];
   const parts = picks.reduce((n, p) => n + p.c.extenderCount + 1, 0);
 
   const copy = async () => {
@@ -197,7 +201,7 @@ export function PickListButton({ sides, ext, rings, baseMm, insideBaseMm = baseM
               className="mt-1.5 min-h-11 w-full rounded-md border border-input bg-card px-3 py-2 text-base font-normal text-foreground focus:outline-none focus:ring-2 focus:ring-ring">
               <option value="">Inget behör valt</option>
               {fittingChoices.map((f) => (
-                <option key={f} value={f}>{FITTING_MENU[f]}</option>
+                <option key={f} value={f}>{menuText(f)}</option>
               ))}
             </select>
           </label>
