@@ -4,7 +4,7 @@ import { ArrowDown, ArrowUp, Check, ChevronDown, ChevronsRight, ClipboardCopy, C
 import { InfoSheetRow } from "@/components/info-sheet-row";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from "@/components/ui/sheet";
-import { clearDoors, doorsText, doorsToPick, fittingForSide, fittingRingText, isIloqInner, ringName, KIND_LABEL, projectText, projectTotals, RING_HAS_SIDE, setDoorSide, totalsText, type Door, type Project } from "@/lib/project";
+import { clearDoors, doorsText, doorsToPick, FITTING_LABEL, fittingForSide, fittingRingText, isIloqInner, ringName, KIND_LABEL, projectText, projectTotals, RING_HAS_SIDE, setDoorSide, totalsText, type Door, type Project } from "@/lib/project";
 import { sideChip } from "@/components/pick-list-button";
 import { CONTACT_EMAIL } from "@/components/contact-form";
 import { formatMm } from "@/lib/cylinder";
@@ -238,6 +238,12 @@ export function ProjectPanel({ project, setProject, store, open, onOpenChange, c
                 <p className="py-6 text-center text-sm text-muted-foreground">Alla dörrar är monterade – inget kvar att plocka.</p>
               ) : <>
               <div className="border-y py-4">
+                {totals.kits.length > 0 && <>
+                  <p className="text-xs font-bold uppercase tracking-wide text-muted-foreground">Monteringskit iLOQ</p>
+                  <ul className="mb-3 mt-1 divide-y">{totals.kits.map((k) => (
+                    <li key={k.fitting} className="flex items-center justify-between gap-3 py-2.5 text-sm"><span className="font-semibold">{FITTING_LABEL[k.fitting]}</span><Chip accent>{k.count} st</Chip></li>
+                  ))}</ul>
+                </>}
                 {totals.extenders.length > 0 && <>
                   <p className="flex items-center gap-2 text-xs font-bold uppercase tracking-wide text-muted-foreground"><Layers className="size-4 text-accent" aria-hidden />Förlängare</p>
                   <ul className="mb-3 mt-1 divide-y">{totals.extenders.map((e) => (
