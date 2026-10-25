@@ -188,13 +188,13 @@ describe("256/2356 plocka själv", () => {
     expect(t.loose).toEqual([]);
     expect(t.fittings).toHaveLength(2);
   });
-  it("ring över 21 mm: behör plockas själv och ringen räknas lös", () => {
-    const t = projectTotals([d(27), d(30, "2356")]);
+  it("ring över 21 mm: plocka själv med ringen på samma rad, per ringhöjd", () => {
+    const t = projectTotals([d(27), d(27), d(30), d(30, "2356")]);
     expect(t.fittings).toEqual([]);
-    expect(t.loose).toEqual([{ fitting: "256", count: 1 }, { fitting: "2356", count: 1 }]);
-    expect(t.rings.map((r) => r.size)).toEqual([27, 30]);
-    const p: Project = { name: "P", doors: [d(27)] };
-    expect(totalsText(p)).toContain("Behör, plocka själv:\n1st 256 behör, plocka själv");
+    expect(t.rings).toEqual([]);
+    expect(t.loose.map((f) => [f.fitting, f.size, f.count])).toEqual([["256", 27, 2], ["256", 30, 1], ["2356", 30, 1]]);
+    const p: Project = { name: "P", doors: [d(27), d(27), d(30)] };
+    expect(totalsText(p)).toContain("Behör, plocka själv:\n2st 256 behör, plocka själv med 27mm ring utsida (iLOQ)\n1st 256 behör, plocka själv med 30mm ring utsida (iLOQ)");
     expect(doorsText(p)).toContain("256 behör, plocka själv med 27mm ring");
   });
 });
