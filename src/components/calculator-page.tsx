@@ -2,7 +2,8 @@ import { Link } from "@tanstack/react-router";
 import { GUIDES } from "@/lib/guides";
 import { ArrowRight, BookOpen, Check, FolderOpen, Info, KeyRound, Minus, Moon, Plus, ShieldCheck, Sun } from "lucide-react";
 import { useEffect, useState } from "react";
-import { CylinderResults } from "@/components/cylinder-results";
+import { CylinderResults, ModePicker } from "@/components/cylinder-results";
+import type { ViewMode } from "@/lib/cylinder";
 import { PickListButton } from "@/components/pick-list-button";
 import { ProjectBar, ProjectPanel, useProject } from "@/components/project-panel";
 import { ProDialog } from "@/components/pro-dialog";
@@ -81,6 +82,7 @@ export function CalculatorPage({ variant }: { variant: "free" | "pro" }) {
   const activeFitting = fitting && fittingChoices.includes(fitting) ? fitting
     : cyl === "iloq" && type === "double" && fittingChoices.includes("A10.11") ? "A10.11" : null;
   const [singleSide, setSingleSide] = useState<"Utsida" | "Insida">("Utsida");
+  const [mode, setMode] = useState<ViewMode>("all");
 
   const isRound = cyl === "round";
   const baseMm = cylinderBaseMm(cyl, "outside", type === "double", brand);
@@ -272,8 +274,9 @@ export function CalculatorPage({ variant }: { variant: "free" | "pro" }) {
             {...(pro ? { projectName: project.name, projectDoors: project.doors.length, projectCount: projectStore.list.length, onOpenProject: () => { setSwitchProject(true); setProjectOpen(true); } } : {})}
             onSave={!pro ? undefined : (sides) => { trackEvent("sparad_dorr", { cylinder: cyl }); setPendingDoor({ sides, kind: isRound ? "rund" : cyl === "iloq" ? "iloq" : "oval", ...(activeFitting ? { fitting: activeFitting } : {}) }); }}
           />
-          <CylinderResults title={type === "single" ? null : "Utsida"} depth={parse(outside)} ext={ext} rings={activeRings} baseMm={baseMm} relaxed={isRound} selected={selOut} onSelect={(c) => setSel({ key: selKey, out: c, in: selIn })} />
-          {type === "double" && <CylinderResults title="Insida" depth={parse(inside)} ext={insideExt} rings={insideRings} baseMm={insideBaseMm} relaxed={isRound} selected={selIn} onSelect={(c) => setSel({ key: selKey, out: selOut, in: c })} />}
+          <ModePicker mode={mode} onChange={(m) => { setMode(m); setSel({ key: "", out: null, in: null }); }} />
+          <CylinderResults mode={mode} title={type === "single" ? null : "Utsida"} depth={parse(outside)} ext={ext} rings={activeRings} baseMm={baseMm} relaxed={isRound} selected={selOut} onSelect={(c) => setSel((s) => ({ key: selKey, out: c, in: s.key === selKey ? s.in : null }))} />
+          {type === "double" && <CylinderResults mode={mode} title="Insida" depth={parse(inside)} ext={insideExt} rings={insideRings} baseMm={insideBaseMm} relaxed={isRound} selected={selIn} onSelect={(c) => setSel((s) => ({ key: selKey, out: s.key === selKey ? s.out : null, in: c }))} />}
         </section>
       </main>
       {pro && <>
