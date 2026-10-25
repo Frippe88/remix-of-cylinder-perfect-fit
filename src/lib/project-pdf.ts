@@ -1,6 +1,5 @@
 // Builds an A4 PDF of a project (doors + material list) in the browser.
-import { formatMm } from "./cylinder";
-import { doorsToPick, KIND_LABEL, doorTitle, projectTotals, purchaseList, sideText, type Project } from "./project";
+import { doorsToPick, doorTitle, purchaseList, sideText, type Project } from "./project";
 
 export async function projectPdf(p: Project, remainingOnly: boolean): Promise<Blob> {
   const { jsPDF } = await import("jspdf");
