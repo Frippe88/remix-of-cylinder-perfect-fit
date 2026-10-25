@@ -125,6 +125,7 @@ function DoorCard({ d, onToggle, onRemove, onSetSide }: { d: Door; onToggle: () 
           </li>
         ))}
       </ul>
+      {d.note?.trim() && <p className="px-3 pb-3 text-sm"><span className="font-semibold">Behör:</span> {d.note.trim()}</p>}
     </li>
   );
 }
