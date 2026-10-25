@@ -66,7 +66,7 @@ function CopyButton({ text, label, small }: { text: string; label: string; small
   );
 }
 
-function PdfButton({ project, remainingOnly }: { project: Project; remainingOnly: boolean }) {
+function PdfButton({ project, remainingOnly, onLocked }: { project: Project; remainingOnly: boolean; onLocked?: () => void }) {
   const [blob, setBlob] = useState<Blob | null>(null);
   useEffect(() => {
     let live = true; setBlob(null);
@@ -75,7 +75,7 @@ function PdfButton({ project, remainingOnly }: { project: Project; remainingOnly
   }, [project, remainingOnly]);
   return (
     <Button className="min-h-12 w-full bg-accent text-base font-bold text-accent-foreground hover:bg-accent/85" disabled={!blob}
-      onClick={() => { if (blob) { trackEvent("pdf_export", { dorrar: project.doors.length }); void deliverFile(blob, pdfFileName(project)); } }}>
+      onClick={() => { if (onLocked) return onLocked(); if (blob) { trackEvent("pdf_export", { dorrar: project.doors.length }); void deliverFile(blob, pdfFileName(project)); } }}>
       <FileDown aria-hidden />{blob ? "Ladda ner PDF" : "Förbereder PDF…"}
     </Button>
   );
@@ -151,8 +151,8 @@ function NameField({ name, onSave }: { name: string; onSave: (name: string) => v
   );
 }
 
-export function ProjectPanel({ project, setProject, store, open, onOpenChange, closeOnSelect }: {
-  project: Project; setProject: (fn: (p: Project) => Project) => void; store: ProjectStore; open: boolean; onOpenChange: (v: boolean) => void; closeOnSelect?: boolean;
+export function ProjectPanel({ project, setProject, store, open, onOpenChange, closeOnSelect, onLocked }: {
+  project: Project; setProject: (fn: (p: Project) => Project) => void; store: ProjectStore; open: boolean; onOpenChange: (v: boolean) => void; closeOnSelect?: boolean; onLocked?: () => void;
 }) {
   const [tab, setTab] = useState<"doors" | "total">("doors");
   const [remainingOnly, setRemainingOnly] = useState(true);
@@ -173,9 +173,10 @@ export function ProjectPanel({ project, setProject, store, open, onOpenChange, c
           </div>
         </SheetHeader>
         <div className="space-y-4 px-4 py-5 sm:px-6">
+          {onLocked && <button type="button" onClick={onLocked} className="w-full rounded-lg border border-accent/50 bg-accent/10 p-3 text-left text-sm"><span className="font-bold">Visningsläge – exempelprojekt.</span> <span className="text-muted-foreground">Klicka runt fritt. Egna projekt och PDF ingår i Pro →</span></button>}
           <div className="flex gap-2">
-            <NameField key={store.active} name={project.name} onSave={(name) => setProject((p) => ({ ...p, name }))} />
-            <Button variant="outline" className="h-11 shrink-0 border-accent/40 font-semibold" onClick={() => { store.create(); setTab("doors"); }}>
+            {onLocked ? <p className="flex h-11 min-w-0 flex-1 items-center truncate rounded-lg border border-input bg-muted/40 px-3 font-semibold">{project.name}</p> : <NameField key={store.active} name={project.name} onSave={(name) => setProject((p) => ({ ...p, name }))} />}
+            <Button variant="outline" className="h-11 shrink-0 border-accent/40 font-semibold" onClick={() => { if (onLocked) return onLocked(); store.create(); setTab("doors"); }}>
               <Plus aria-hidden /> Nytt
             </Button>
           </div>
@@ -253,7 +254,7 @@ export function ProjectPanel({ project, setProject, store, open, onOpenChange, c
           )}
           {tab === "total" && project.doors.length > 0 && (
             <div className="space-y-2 border-t border-border pt-4">
-              <PdfButton project={project} remainingOnly={onlyLeft} />
+              <PdfButton project={project} remainingOnly={onlyLeft} onLocked={onLocked} />
               <CopyButton text={projectText(project)} label="Kopiera allt" />
               <div className="grid grid-cols-2 gap-2">
                 <CopyButton small text={totalsText(project, onlyLeft)} label="Bara inköpslista" />
@@ -283,7 +284,7 @@ export function ProjectPanel({ project, setProject, store, open, onOpenChange, c
             </InfoSheetRow>
           </div>
           {(project.doors.length > 0 || store.list.length > 1) && (
-            <Button variant="ghost" className="w-full text-destructive" onClick={() => { if (confirm(`Ta bort ${project.name || "projektet"}?`)) store.remove(); }}>
+            <Button variant="ghost" className="w-full text-destructive" onClick={() => { if (onLocked) return onLocked(); if (confirm(`Ta bort ${project.name || "projektet"}?`)) store.remove(); }}>
               <X aria-hidden /> Ta bort projekt
             </Button>
           )}
@@ -296,7 +297,7 @@ export function ProjectPanel({ project, setProject, store, open, onOpenChange, c
 
 const MIN_KEY = "cylinderhjalpen.projectbar.min";
 
-export function ProjectBar({ project, projects = 1, onOpen }: { project: Project; projects?: number; onOpen: () => void }) {
+export function ProjectBar({ project, projects = 1, onOpen, demo }: { project: Project; projects?: number; onOpen: () => void; demo?: boolean }) {
   const [min, setMin] = useState(false);
   const [ready, setReady] = useState(false);
   const doors = project.doors.length;
@@ -330,7 +331,7 @@ export function ProjectBar({ project, projects = 1, onOpen }: { project: Project
       <button onClick={onOpen} className="flex min-w-0 flex-1 items-center gap-3 py-3 pl-4 pr-2 text-left">
         <FolderOpen className="size-5 shrink-0 text-accent" aria-hidden />
         <span className="flex-1 truncate text-sm font-semibold">{project.name || "Projekt"} · {doors} {doors === 1 ? "dörr" : "dörrar"}</span>
-        <span className="shrink-0 rounded-full border border-accent/50 bg-accent/15 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-accent">Beta</span>
+        <span className="shrink-0 rounded-full border border-accent/50 bg-accent/15 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-accent">{demo ? "Exempel" : "Beta"}</span>
         <span className="text-sm font-bold text-accent">Visa →</span>
       </button>
       <button type="button" aria-label="Minimera projektlisten" onClick={() => set(true)} title="Minimera"
