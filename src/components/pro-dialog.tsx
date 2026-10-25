@@ -4,7 +4,7 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } f
 
 const FEATURES = [
   "Spara obegränsat antal egna projekt med alla dörrar",
-  "Behörsval – 256 (vred), 2356 (täckbricka) och skruvlängder",
+  "Behörsval för oval, rund och iLOQ-cylinder – med rätt skruvlängd",
   "Total plocklista för hela bygget",
   "PDF-arbetsorder att skicka till grossist eller kollega",
 ];
