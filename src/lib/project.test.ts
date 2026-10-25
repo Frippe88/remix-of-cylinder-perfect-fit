@@ -28,6 +28,16 @@ describe("behör i material och delning", () => {
     expect(projectText(project)).toContain("2356 behör med 11mm ring");
     expect(doorsText({ name: "Test", doors: [door("4")] })).not.toContain("behör");
   });
+  it("sparade listor visar bara behörets namn – inget fabrikat eller vred/täckbricka", () => {
+    const withFitting = (fitting: Fitting): Door => ({ id: "7", name: "Dörr 7", kind: fitting.startsWith("DAK") && fitting === "DAK 752" ? "rund" : "oval", done: false, sides: [{ label: "Utsida", depth: 36, ring: 11, extenders: [] }], fitting });
+    const all: Project = { name: "Kund B", doors: (Object.keys(FITTING_LABEL) as Fitting[]).map(withFitting) };
+    for (const text of [totalsText(all), doorsText(all), projectText(all)]) {
+      for (const forbidden of ["ASSA", "dormakaba", "DORMA", "vred", "täckbricka", "Täckbricka"]) expect(text).not.toContain(forbidden);
+    }
+    expect(totalsText(all)).toContain("1st DAK 7200 behör med 11mm ring");
+    expect(totalsText(all)).toContain("1st DAK 752 behör med 11mm ring");
+    expect(doorsText(all)).toContain("Utsida: 256 behör med 11mm ring");
+  });
 });
 
 describe("behörsval", () => {
