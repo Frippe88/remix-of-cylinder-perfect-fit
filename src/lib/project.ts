@@ -138,16 +138,41 @@ export function totalRingText(r: { size: number; kind: RingKind; side: string; i
   return `${base}${r.side ? ` ${r.side.toLowerCase()}` : ""} (${KIND_LABEL[r.kind]})`;
 }
 
+export interface PurchaseSection { title: string; hint: string; items: { count: number; text: string }[] }
+
+/**
+ * Inköpslista i tre tydliga grupper: färdiga satser, behör att plocka själv, lösa delar.
+ * Ingen sida (utsida/insida) – på hyllan plockar man bara rätt artikel och millimeter.
+ */
+export function purchaseList(t: Totals): PurchaseSection[] {
+  const add = (m: Map<string, number>, k: string, n: number) => m.set(k, (m.get(k) ?? 0) + n);
+  const ready = new Map<string, number>();
+  t.fittings.forEach((f) => add(ready, `${FITTING_LABEL[f.fitting]} med ${formatMm(f.size)} ring`, f.count));
+  t.kits.forEach((k) => add(ready, FITTING_LABEL[k.fitting], k.count));
+  const loose = new Map<string, number>();
+  t.loose.forEach((f) => add(loose, `${FITTING_LABEL[f.fitting]} (utan ring)`, f.count));
+  const parts = new Map<string, number>();
+  const ringLabel = (r: { size: number; kind: RingKind; inner: boolean }) =>
+    r.inner ? `${formatMm(r.size)} iLOQ innerring` : r.kind === "rund" ? `${formatMm(r.size)} rund ring` : `${formatMm(r.size)} ring`;
+  const ringEntries = [...t.rings, ...t.loose].sort((a, b) => Number(a.inner) - Number(b.inner) || a.kind.localeCompare(b.kind) || a.size - b.size);
+  ringEntries.forEach((r) => add(parts, ringLabel(r), r.count));
+  t.extenders.forEach((e) => add(parts, `${formatMm(e.size)} förlängare${e.kind === "rund" ? " rund" : ""}`, e.count));
+  const items = (m: Map<string, number>) => [...m].map(([text, count]) => ({ count, text }));
+  return [
+    { title: "Färdiga behör", hint: "Hela satser – ringen ingår", items: items(ready) },
+    { title: "Behör, plocka själv", hint: "Ringen ingår inte – ta ringen under Lösa delar", items: items(loose) },
+    { title: "Lösa delar", hint: "Ringar och förlängare", items: items(parts) },
+  ].filter((s) => s.items.length);
+}
+
 export function totalsText(p: Project, remainingOnly = false): string {
   const doors = doorsToPick(p.doors, remainingOnly);
-  const t = projectTotals(doors);
   const word = doors.length === 1 ? "dörr" : "dörrar";
   const lines = [`${p.name || "Projekt"} – ${doors.length} ${remainingOnly ? `kvarvarande ${word}` : word}`];
-  if (t.kits.length) { lines.push("", "Monteringskit iLOQ:"); t.kits.forEach((k) => lines.push(`${k.count}st ${FITTING_LABEL[k.fitting]}`)); }
-  if (t.extenders.length) { lines.push("", "Förlängare:"); t.extenders.forEach((e) => lines.push(`${e.count}st ${formatMm(e.size)} (${KIND_LABEL[e.kind]})`)); }
-  if (t.rings.length) { lines.push("", "Ringar:"); t.rings.forEach((r) => lines.push(`${r.count}st ${totalRingText(r)}`)); }
-  if (t.fittings.length) { lines.push("", "Behör med ring:"); t.fittings.forEach((f) => lines.push(`${f.count}st ${totalRingText(f)}`)); }
-  if (t.loose.length) { lines.push("", "Behör, plocka själv:"); t.loose.forEach((f) => lines.push(`${f.count}st ${totalRingText(f)}`)); }
+  for (const s of purchaseList(projectTotals(doors))) {
+    lines.push("", `${s.title.toUpperCase()}:`);
+    s.items.forEach((i) => lines.push(`${i.count}st ${i.text}`));
+  }
   return lines.join("\n");
 }
 

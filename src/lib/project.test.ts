@@ -98,12 +98,12 @@ describe("projectTotals", () => {
   it("rund cylinder har samma ring ute och inne – ringen delas inte per sida", () => {
     const t = projectTotals(roundDouble);
     expect(t.rings).toEqual([{ size: 13, kind: "rund", side: "", inner: false, count: 2 }]);
-    expect(totalsText({ name: "Storgatan 4", doors: roundDouble })).toContain("2st 13mm ring (rund)");
+    expect(totalsText({ name: "Storgatan 4", doors: roundDouble })).toContain("2st 13mm rund ring");
     expect(doorsText({ name: "Storgatan 4", doors: roundDouble })).toContain("Utsida: 13mm ring + 1st 10mm förlängare");
     expect(doorsText({ name: "Storgatan 4", doors: roundDouble })).not.toContain("ring utsida");
   });
-  it("oval ring märks fortfarande med sida i inköpslistan", () => {
-    expect(totalsText({ name: "Storgatan 4", doors })).toContain("1st 11mm ring insida (oval)");
+  it("inköpslistan slår ihop samma ring oavsett sida", () => {
+    expect(totalsText({ name: "Storgatan 4", doors })).toContain("2st 11mm ring");
   });
 });
 
@@ -172,9 +172,9 @@ describe("iLOQ dubbelcylinder – A10.11 och innerring", () => {
     expect(t.kits).toEqual([{ fitting: "A10.11", count: 2 }]);
     expect(t.rings.map((r) => [r.size, r.side, r.inner, r.count])).toEqual([[11, "Utsida", false, 2], [27, "Insida", true, 2]]);
     const txt = totalsText({ name: "P", doors: [d] });
-    expect(txt).toContain("Monteringskit iLOQ:\n1st A10.11 monteringskit");
-    expect(txt).toContain("1st 27mm iLOQ innerring insida (iLOQ)");
-    expect(txt).not.toContain("Behör med ring");
+    expect(txt).toContain("FÄRDIGA BEHÖR:\n1st A10.11 monteringskit");
+    expect(txt).toContain("LÖSA DELAR:\n1st 11mm ring\n1st 27mm iLOQ innerring");
+    expect(txt).not.toContain("insida");
   });
   it("enkel iLOQ på insidan får ingen innerring", () => {
     expect(sideText({ label: "Insida", depth: 20, ring: 27, extenders: [] }, "iloq", undefined, false)).toBe("Insida: 27mm ring");
@@ -194,7 +194,7 @@ describe("256/2356 plocka själv", () => {
     expect(t.rings).toEqual([]);
     expect(t.loose.map((f) => [f.fitting, f.size, f.count])).toEqual([["256", 27, 2], ["256", 30, 1], ["2356", 30, 1]]);
     const p: Project = { name: "P", doors: [d(27), d(27), d(30)] };
-    expect(totalsText(p)).toContain("Behör, plocka själv:\n2st 256 behör, plocka själv med 27mm ring utsida (iLOQ)\n1st 256 behör, plocka själv med 30mm ring utsida (iLOQ)");
+    expect(totalsText(p)).toContain("BEHÖR, PLOCKA SJÄLV:\n3st 256 behör (utan ring)\n\nLÖSA DELAR:\n2st 27mm ring\n1st 30mm ring");
     expect(doorsText(p)).toContain("256 behör, plocka själv med 27mm ring");
   });
 });
