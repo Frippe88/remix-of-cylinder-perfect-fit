@@ -237,35 +237,16 @@ export function ProjectPanel({ project, setProject, store, open, onOpenChange, c
               {pickDoors.length === 0 ? (
                 <p className="py-6 text-center text-sm text-muted-foreground">Alla dörrar är monterade – inget kvar att plocka.</p>
               ) : <>
-              <div className="border-y py-4">
-                {totals.kits.length > 0 && <>
-                  <p className="text-xs font-bold uppercase tracking-wide text-muted-foreground">Monteringskit iLOQ</p>
-                  <ul className="mb-3 mt-1 divide-y">{totals.kits.map((k) => (
-                    <li key={k.fitting} className="flex items-center justify-between gap-3 py-2.5 text-sm"><span className="font-semibold">{FITTING_LABEL[k.fitting]}</span><Chip accent>{k.count} st</Chip></li>
-                  ))}</ul>
-                </>}
-                {totals.extenders.length > 0 && <>
-                  <p className="flex items-center gap-2 text-xs font-bold uppercase tracking-wide text-muted-foreground"><Layers className="size-4 text-accent" aria-hidden />Förlängare</p>
-                  <ul className="mb-3 mt-1 divide-y">{totals.extenders.map((e) => (
-                    <li key={e.kind + e.size} className="flex items-center justify-between gap-3 py-2.5 text-sm"><span className="font-semibold">{formatMm(e.size)} <span className="text-xs font-normal text-muted-foreground">({KIND_LABEL[e.kind]})</span></span><Chip accent>{e.count} st</Chip></li>
-                  ))}</ul>
-                </>}
-                {totals.rings.length > 0 && <p className="flex items-center gap-2 text-xs font-bold uppercase tracking-wide text-muted-foreground"><span className="size-3 rounded-full border-2 border-accent" aria-hidden />Ringar</p>}
-                <ul className="mt-2 space-y-2">{totals.rings.map((r) => (
-                  <li key={r.kind + r.side + r.size} className="flex items-center justify-between gap-3 border-b border-border/60 py-2.5 text-sm last:border-b-0"><span className="flex min-w-0 flex-wrap items-center gap-x-2 gap-y-1"><span className="font-mono font-bold">{formatMm(r.size)}</span>{r.inner && <span className="font-semibold">iLOQ innerring</span>}{r.side && <span className={`inline-flex items-center gap-1 font-semibold ${r.side === "Insida" ? "text-side-inside" : "text-side-outside"}`}>{r.side === "Insida" ? <ArrowDown className="size-3.5" aria-hidden /> : <ArrowUp className="size-3.5" aria-hidden />}{r.side}</span>} <span className="text-xs text-muted-foreground">({KIND_LABEL[r.kind]})</span></span><Chip accent>{r.count} st</Chip></li>
-                ))}</ul>
-                {totals.fittings.length > 0 && <>
-                  <p className="mt-4 text-xs font-bold uppercase tracking-wide text-muted-foreground">Behör med ring</p>
-                  <ul className="mt-2 divide-y">{totals.fittings.map((f) => (
-                    <li key={`${f.fitting}:${f.kind}:${f.side}:${f.size}`} className="flex items-center justify-between gap-3 py-2.5 text-sm"><span className="min-w-0 font-semibold">{fittingRingText(f.fitting, f.size, f.inner)} <span className="text-xs font-normal text-muted-foreground">{f.side.toLowerCase()} ({KIND_LABEL[f.kind]})</span></span><Chip accent>{f.count} st</Chip></li>
-                  ))}</ul>
-                </>}
-                {totals.loose.length > 0 && <>
-                  <p className="mt-4 text-xs font-bold uppercase tracking-wide text-muted-foreground">Behör, plocka själv</p>
-                  <ul className="mt-2 divide-y">{totals.loose.map((f) => (
-                    <li key={`${f.fitting}:${f.kind}:${f.side}:${f.size}`} className="flex items-center justify-between gap-3 py-2.5 text-sm"><span className="min-w-0 font-semibold">{fittingRingText(f.fitting, f.size, f.inner)} <span className="text-xs font-normal text-muted-foreground">{f.side.toLowerCase()} ({KIND_LABEL[f.kind]})</span></span><Chip accent>{f.count} st</Chip></li>
-                  ))}</ul>
-                </>}
+              <div className="space-y-5 border-y py-4">
+                {purchaseList(totals).map((s) => (
+                  <section key={s.title}>
+                    <p className="text-xs font-bold uppercase tracking-wide text-foreground">{s.title}</p>
+                    <p className="text-xs text-muted-foreground">{s.hint}</p>
+                    <ul className="mt-1 divide-y">{s.items.map((i) => (
+                      <li key={i.text} className="flex items-center justify-between gap-3 py-2.5 text-sm"><span className="min-w-0 font-semibold">{i.text}</span><Chip accent>{i.count} st</Chip></li>
+                    ))}</ul>
+                  </section>
+                ))}
               </div>
               </>}
             </>

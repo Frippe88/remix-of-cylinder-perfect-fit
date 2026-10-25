@@ -1,6 +1,6 @@
 // Builds an A4 PDF of a project (doors + material list) in the browser.
 import { formatMm } from "./cylinder";
-import { doorsToPick, FITTING_LABEL, KIND_LABEL, projectTotals, sideText, totalRingText, type Project } from "./project";
+import { doorsToPick, KIND_LABEL, projectTotals, purchaseList, sideText, type Project } from "./project";
 
 export async function projectPdf(p: Project, remainingOnly: boolean): Promise<Blob> {
   const { jsPDF } = await import("jspdf");
@@ -26,12 +26,20 @@ export async function projectPdf(p: Project, remainingOnly: boolean): Promise<Bl
   text(`${new Date().toLocaleDateString("sv-SE")} · ${doors.length} ${doors.length === 1 ? "dörr" : "dörrar"}${remainingOnly ? " kvar att montera" : ""}`, 10);
 
   heading("Inköpslista");
-  if (t.kits.length) { text("Monteringskit iLOQ", 11, true); t.kits.forEach((k) => text(`${k.count}st  ${FITTING_LABEL[k.fitting]}`, 10, false, M + 4)); y += 1; }
-  if (t.extenders.length) { text("Förlängare", 11, true); t.extenders.forEach((e) => text(`${e.count}st  ${formatMm(e.size)} förlängare (${KIND_LABEL[e.kind]})`, 10, false, M + 4)); }
-  if (t.rings.length) { y += 1; text("Ringar", 11, true); t.rings.forEach((r) => text(`${r.count}st  ${totalRingText(r)}`, 10, false, M + 4)); }
-  if (t.fittings.length) { y += 1; text("Behör med ring", 11, true); t.fittings.forEach((f) => text(`${f.count}st  ${totalRingText(f)}`, 10, false, M + 4)); }
-  if (t.loose.length) { y += 1; text("Behör, plocka själv", 11, true); t.loose.forEach((f) => text(`${f.count}st  ${totalRingText(f)}`, 10, false, M + 4)); }
-  if (!t.extenders.length && !t.rings.length && !t.fittings.length && !t.kits.length && !t.loose.length) text("Inget material.", 10);
+  const sections = purchaseList(t);
+  sections.forEach((s, si) => {
+    need(14 + s.items.length * 7);
+    if (si) y += 3;
+    text(s.title, 11.5, true);
+    doc.setTextColor(120); text(s.hint, 8.5); doc.setTextColor(0);
+    s.items.forEach((it, i) => {
+      if (i % 2 === 0) { doc.setFillColor(245, 245, 245); doc.rect(M, y - 4.2, W - 2 * M, 6.4, "F"); }
+      doc.setFont("helvetica", "bold"); doc.setFontSize(10.5); doc.text(`${it.count} st`, M + 2, y);
+      doc.setFont("helvetica", "normal"); doc.text(it.text, M + 20, y);
+      y += 6.4;
+    });
+  });
+  if (!sections.length) text("Inget material.", 10);
 
   heading("Dörrlista");
   doors.forEach((d) => {
