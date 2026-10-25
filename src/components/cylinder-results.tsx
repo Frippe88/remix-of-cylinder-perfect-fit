@@ -33,7 +33,7 @@ export function ModePicker({ mode, onChange }: { mode: ViewMode; onChange: (m: V
       <div role="group" aria-label="Prioritering" className="grid grid-cols-3 gap-1 rounded-md bg-muted p-1">
         {MODES.map(m => <Button key={m.id} variant="ghost" size="sm" aria-pressed={mode === m.id} onClick={() => onChange(m.id)} className={`min-h-10 px-1 text-xs hover:bg-card ${mode === m.id ? "bg-card text-foreground shadow-card" : "text-muted-foreground"}`}>{m.id === "all" ? "Bästa passform" : m.label}</Button>)}
       </div>
-      <p className="mt-1.5 text-xs text-muted-foreground">{mode === "all" ? "Närmast 0mm först." : mode === "exact" ? "Bara kombinationer exakt i liv med ringen." : "Minst antal förlängare inom −2 till +2mm – sparar material."}</p>
+      {mode !== "fewer" && <p className="mt-1.5 text-xs text-muted-foreground">{mode === "all" ? "Närmast 0mm först." : "Bara kombinationer exakt i liv med ringen."}</p>}
     </div>
   );
 }
