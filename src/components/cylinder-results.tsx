@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { AlertTriangle, ArrowDown, ArrowUp, Check, ChevronDown, ChevronUp, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -26,8 +26,20 @@ function SideBadge({ side }: { side: string | null }) {
 
 type Sel = { selected?: Combination | null; onSelect?: (c: Combination) => void };
 
-export function CylinderResults({ title, depth, ext, rings, baseMm, relaxed = false, selected = null, onSelect }: {
-  title: string | null; depth: number | null; ext: number[]; rings: number[]; baseMm: number; relaxed?: boolean;
+export function ModePicker({ mode, onChange }: { mode: ViewMode; onChange: (m: ViewMode) => void }) {
+  return (
+    <div>
+      <p className="mb-1.5 text-xs font-semibold text-muted-foreground">Vad ska prioriteras?</p>
+      <div role="group" aria-label="Prioritering" className="grid grid-cols-3 gap-1 rounded-md bg-muted p-1">
+        {MODES.map(m => <Button key={m.id} variant="ghost" size="sm" aria-pressed={mode === m.id} onClick={() => onChange(m.id)} className={`min-h-10 px-1 text-xs hover:bg-card ${mode === m.id ? "bg-card text-foreground shadow-card" : "text-muted-foreground"}`}>{m.id === "all" ? "Bästa passform" : m.label}</Button>)}
+      </div>
+      <p className="mt-1.5 text-xs text-muted-foreground">{mode === "all" ? "Närmast 0mm först." : mode === "exact" ? "Bara kombinationer exakt i liv med ringen." : "Minst antal förlängare inom −2 till +2mm – sparar material."}</p>
+    </div>
+  );
+}
+
+export function CylinderResults({ title, depth, ext, rings, baseMm, relaxed = false, selected = null, onSelect, mode = "all" }: {
+  title: string | null; depth: number | null; ext: number[]; rings: number[]; baseMm: number; relaxed?: boolean; mode?: ViewMode;
 } & Sel) {
   const results = useMemo(() => {
     if (depth === null) return [];
@@ -36,7 +48,10 @@ export function CylinderResults({ title, depth, ext, rings, baseMm, relaxed = fa
     if (strict.length === 0 && !relaxed) return calculate({ depth, extenders: ext, rings, baseMm, relaxed: true });
     return strict;
   }, [depth, ext, rings, baseMm, relaxed]);
-  const best = results[0];
+  const best = filterByMode(results, mode)[0] ?? results[0];
+  useEffect(() => {
+    if (mode !== "all" && best && !selected && onSelect) onSelect(best);
+  }, [mode, best, selected, onSelect]);
   const chosen = selected ?? best;
   const sel = { chosen, onSelect };
   return (
