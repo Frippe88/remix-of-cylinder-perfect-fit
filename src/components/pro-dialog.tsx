@@ -1,4 +1,4 @@
-import { Check, Star } from "lucide-react";
+import { Check, Clock, Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 
@@ -7,6 +7,13 @@ const FEATURES = [
   "Behörsval (256, 2356, 18256) – visar direkt om det är färdig sats eller lös ring",
   "Automatisk inköpslista för chefen – per cylindertyp med satser, ringpar och förlängare",
   "PDF med ett klick – komplett arbetsorder eller bara inköpslista",
+  "Kopiera till mejl/SMS – klistra in beställningen direkt",
+  "Flera projekt samtidigt – växla mellan olika byggen och kunder",
+];
+
+const COMING = [
+  "Automatisk skruvlängd – räknas ut efter hur många förlängare dörren har",
+];
   "Kopiera till mejl/SMS – klistra in beställningen direkt",
   "Flera projekt samtidigt – växla mellan olika byggen och kunder",
 ];
