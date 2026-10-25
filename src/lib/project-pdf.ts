@@ -1,7 +1,9 @@
 // Builds an A4 PDF of a project (doors + material list) in the browser.
 import { doorsToPick, doorTitle, purchaseList, sideText, type Project } from "./project";
 
-export async function projectPdf(p: Project, remainingOnly: boolean): Promise<Blob> {
+export const FITTING_NOTE = "Behören 256, 2356 och 18256 är ASSA ABLOY:s. Har ni ett annat fabrikat byter ni bara ut behöret mot motsvarande – ringhöjderna är desamma.";
+
+export async function projectPdf(p: Project, remainingOnly: boolean, includeDoors = true): Promise<Blob> {
   const { jsPDF } = await import("jspdf");
   const doc = new jsPDF({ unit: "mm", format: "a4" });
   const W = 210, M = 16, BOTTOM = 280;
@@ -43,7 +45,11 @@ export async function projectPdf(p: Project, remainingOnly: boolean): Promise<Bl
     });
   });
   if (!sections.length) text("Inget material.", 10);
+  y += 2; doc.setTextColor(110);
+  text(FITTING_NOTE, 8.5);
+  doc.setTextColor(0);
 
+  if (includeDoors) {
   heading("Dörrlista");
   doors.forEach((d) => {
     need(8 + d.sides.length * 6 + (d.fitting ? 6 : 0));
@@ -53,15 +59,16 @@ export async function projectPdf(p: Project, remainingOnly: boolean): Promise<Bl
     d.sides.forEach((s) => text(sideText(s, d.kind, d.fitting, d.sides.length > 1), 10, false, M + 7));
     y += 1.5;
   });
+  }
 
   const pages = doc.getNumberOfPages();
   for (let i = 1; i <= pages; i++) { doc.setPage(i); doc.setFont("helvetica", "normal"); doc.setFontSize(8); doc.setTextColor(120); doc.text(`cylinderhjalpen.se · sida ${i} av ${pages}`, M, 290); }
   return doc.output("blob");
 }
 
-export function pdfFileName(p: Project): string {
+export function pdfFileName(p: Project, purchaseOnly = false): string {
   const n = (p.name || "Projekt").normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^\w-]+/g, "_");
-  return `Cylinderhjalpen_${n}.pdf`;
+  return `Cylinderhjalpen_${n}${purchaseOnly ? "_inkopslista" : ""}.pdf`;
 }
 
 export async function deliverFile(blob: Blob, filename: string) {
