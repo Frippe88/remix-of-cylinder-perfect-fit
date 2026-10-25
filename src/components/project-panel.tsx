@@ -4,7 +4,7 @@ import { ArrowDown, ArrowUp, Check, ChevronDown, ChevronsRight, ClipboardCopy, C
 import { InfoSheetRow } from "@/components/info-sheet-row";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from "@/components/ui/sheet";
-import { clearDoors, doorsText, doorsToPick, KIND_LABEL, projectText, projectTotals, RING_HAS_SIDE, setDoorSide, totalsText, type Door, type Project } from "@/lib/project";
+import { clearDoors, doorsText, doorsToPick, FITTING_LABEL, KIND_LABEL, projectText, projectTotals, RING_HAS_SIDE, setDoorSide, totalsText, type Door, type Project } from "@/lib/project";
 import { sideChip } from "@/components/pick-list-button";
 import { CONTACT_EMAIL } from "@/components/contact-form";
 import { formatMm } from "@/lib/cylinder";
@@ -98,6 +98,7 @@ function DoorCard({ d, onToggle, onRemove, onSetSide }: { d: Door; onToggle: () 
         <div className="min-w-0 flex-1">
           <p className={`break-words text-sm font-bold ${d.done ? "text-muted-foreground line-through" : "text-foreground"}`}>{d.name}</p>
           <p className="mt-0.5 text-xs text-muted-foreground">{KIND_LABEL[d.kind]}{d.done && <span className="ml-2 font-semibold text-success">Monterad</span>}</p>
+          {d.fitting && <span className="mt-1 inline-block rounded-md border border-accent/40 bg-accent/10 px-2 py-0.5 text-xs font-semibold text-foreground">{FITTING_LABEL[d.fitting]}</span>}
         </div>
         <Button variant="ghost" size="icon" onClick={onRemove} aria-label={`Ta bort ${d.name}`} title={`Ta bort ${d.name}`} className="size-8 shrink-0 text-muted-foreground hover:bg-warning-soft hover:text-destructive"><Trash2 className="size-4" /></Button>
       </div>

@@ -2,8 +2,13 @@
 import { formatMm } from "./cylinder";
 
 export type RingKind = "oval" | "rund" | "iloq";
+export type Fitting = "256" | "2356";
+export const FITTING_LABEL: Record<Fitting, string> = { "256": "256 behör (vred)", "2356": "2356 behör (täckbricka)" };
+export function canSelectFitting(variant: "free" | "pro", cylinder: "standard" | "round" | "iloq", type: "single" | "double"): boolean {
+  return variant === "pro" && type === "single" && (cylinder === "standard" || cylinder === "iloq");
+}
 export interface DoorSide { label: string | null; depth: number; ring: number; extenders: number[] }
-export interface Door { id: string; name: string; kind: RingKind; done: boolean; sides: DoorSide[] }
+export interface Door { id: string; name: string; kind: RingKind; done: boolean; sides: DoorSide[]; fitting?: Fitting }
 export interface Project { name: string; doors: Door[] }
 
 export const KIND_LABEL: Record<RingKind, string> = { oval: "oval", rund: "rund", iloq: "iLOQ" };

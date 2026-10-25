@@ -1,5 +1,23 @@
 import { describe, expect, it } from "vitest";
-import { doorsText, nextDoorName, projectTotals, setDoorSide, totalsText, type Door } from "./project";
+import { canSelectFitting, doorsText, nextDoorName, projectTotals, setDoorSide, totalsText, type Door } from "./project";
+
+describe("behörsval", () => {
+  it("tillåter enkel oval och iLOQ i Pro", () => {
+    expect(canSelectFitting("pro", "standard", "single")).toBe(true);
+    expect(canSelectFitting("pro", "iloq", "single")).toBe(true);
+  });
+  it("tillåter inte rund cylinder", () => {
+    expect(canSelectFitting("pro", "round", "single")).toBe(false);
+  });
+  it("tillåter inte dubbelcylinder", () => {
+    expect(canSelectFitting("pro", "standard", "double")).toBe(false);
+    expect(canSelectFitting("pro", "iloq", "double")).toBe(false);
+  });
+  it("tillåter inte behörsval i gratisversionen", () => {
+    expect(canSelectFitting("free", "standard", "single")).toBe(false);
+    expect(canSelectFitting("free", "iloq", "single")).toBe(false);
+  });
+});
 
 const doors: Door[] = [
   { id: "1", name: "Dörr 1", kind: "oval", done: false, sides: [

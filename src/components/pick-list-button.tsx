@@ -2,7 +2,7 @@ import { useState, type ReactNode } from "react";
 import { AlertTriangle, ArrowDown, ArrowUp, Check, ClipboardCopy, ClipboardList, Disc3, FolderOpen, FolderPlus, Layers } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { calculate, formatMm, type Combination } from "@/lib/cylinder";
-import type { DoorSide } from "@/lib/project";
+import { FITTING_LABEL, type DoorSide, type Fitting } from "@/lib/project";
 
 export type PickSide = { label: string | null; depth: number | null; selected: Combination | null };
 
@@ -68,10 +68,11 @@ function Row({ caption, icon, children }: { caption: string; icon: ReactNode; ch
   );
 }
 
-export function PickListButton({ sides, ext, rings, baseMm, insideBaseMm = baseMm, relaxed, onSave, projectName, projectDoors = 0, projectCount = 1, onOpenProject }: {
+export function PickListButton({ sides, ext, rings, baseMm, insideBaseMm = baseMm, relaxed, onSave, projectName, projectDoors = 0, projectCount = 1, onOpenProject, fitting = null, onFittingChange }: {
   sides: PickSide[]; ext: number[]; rings: number[]; baseMm: number; insideBaseMm?: number; relaxed: boolean;
   onSave?: ((sides: DoorSide[]) => void) | undefined;
   projectName?: string; projectDoors?: number; projectCount?: number; onOpenProject?: () => void;
+  fitting?: Fitting | null; onFittingChange?: ((value: Fitting | null) => void) | undefined;
 }) {
   const savedTo = (projectName ?? "").trim();
   const projectLabel = savedTo || "Projekt";
@@ -83,7 +84,7 @@ export function PickListButton({ sides, ext, rings, baseMm, insideBaseMm = baseM
     .filter((s): s is { label: string | null; depth: number; c: Combination } => !!s.c);
   if (picks.length === 0) return null;
 
-  const text = picks.map((p) => (p.label ? `${p.label}: ` : "") + pickLine(p.c)).join("\n");
+  const text = [...picks.map((p) => (p.label ? `${p.label}: ` : "") + pickLine(p.c)), ...(fitting ? [FITTING_LABEL[fitting]] : [])].join("\n");
   const parts = picks.reduce((n, p) => n + p.c.extenderCount + 1, 0);
 
   const copy = async () => {
@@ -173,16 +174,27 @@ export function PickListButton({ sides, ext, rings, baseMm, insideBaseMm = baseM
       </ul>
 
       <div className="space-y-2 border-t bg-muted/30 px-4 py-3">
-        <Button onClick={copy} variant={copied ? "outline" : "default"} className={`min-h-11 w-full font-semibold ${copied ? "border-success text-success" : ""}`}>
-          {copied ? <Check aria-hidden /> : <ClipboardCopy aria-hidden />}
-          {copied ? "Kopierad!" : "Kopiera plocklista"}
-        </Button>
         {onSave && (
           <Button variant="outline" className="min-h-11 w-full justify-start gap-2 font-semibold" onClick={() => onSave(picks.map((p) => ({ label: p.label, depth: p.depth, ring: p.c.ring, extenders: [...p.c.extenders] })))}>
             <FolderPlus aria-hidden className="shrink-0" />
             <span className="truncate">Spara i {savedTo ? `”${savedTo}”` : "projekt"}</span>
           </Button>
         )}
+        {onFittingChange && (
+          <label className="block py-2 text-sm font-semibold">
+            Behör <span className="text-xs font-normal text-muted-foreground">(valfritt)</span>
+            <select aria-label="Behör" value={fitting ?? ""} onChange={(e) => onFittingChange(e.target.value === "256" || e.target.value === "2356" ? e.target.value : null)}
+              className="mt-1.5 min-h-11 w-full rounded-md border border-input bg-card px-3 py-2 text-base font-normal text-foreground focus:outline-none focus:ring-2 focus:ring-ring">
+              <option value="">Inget behör valt</option>
+              <option value="256">256 behör (vred)</option>
+              <option value="2356">2356 behör (täckbricka)</option>
+            </select>
+          </label>
+        )}
+        <Button onClick={copy} variant={copied ? "outline" : "default"} className={`min-h-11 w-full font-semibold ${copied ? "border-success text-success" : ""}`}>
+          {copied ? <Check aria-hidden /> : <ClipboardCopy aria-hidden />}
+          {copied ? "Kopierad!" : "Kopiera plocklista"}
+        </Button>
         {failed ? (
           <p className="flex items-start gap-1.5 text-xs font-medium text-warning">
             <AlertTriangle className="size-3.5 shrink-0" aria-hidden />
