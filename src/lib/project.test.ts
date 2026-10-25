@@ -5,19 +5,27 @@ describe("behör i material och delning", () => {
   const door = (id: string, fitting?: "256" | "2356", done = false): Door => ({ id, name: `Dörr ${id}`, kind: "oval", done, sides: [{ label: "Utsida", depth: 36, ring: 11, extenders: [8, 8] }], ...(fitting ? { fitting } : {}) });
   const project = { name: "Test", doors: [door("1", "256"), door("2", "256", true), door("3", "2356"), door("4")] };
   it("summerar en vald behörssats per dörr och lämnar ovalda dörrar utan behör", () => {
-    expect(projectTotals(project.doors).fittings).toEqual([{ fitting: "256", count: 2 }, { fitting: "2356", count: 1 }]);
+    expect(projectTotals(project.doors).fittings).toEqual([{ fitting: "256", size: 11, kind: "oval", side: "Utsida", count: 2 }, { fitting: "2356", size: 11, kind: "oval", side: "Utsida", count: 1 }]);
     expect(projectTotals([door("4")]).fittings).toEqual([]);
+    expect(projectTotals(project.doors).rings).toEqual([{ size: 11, kind: "oval", side: "Utsida", count: 1 }]);
+  });
+  it("skiljer på ringhöjd och cylindertyp för samma behör", () => {
+    const first = door("1", "256");
+    const taller: Door = { ...door("2", "256"), sides: [{ label: "Utsida", depth: 36, ring: 13, extenders: [] }] };
+    const iloq: Door = { ...door("3", "256"), kind: "iloq" };
+    expect(projectTotals([first, taller, iloq]).fittings).toHaveLength(3);
+    expect(projectTotals([first, taller, iloq]).rings).toEqual([]);
   });
   it("kopierade inköpslistor inkluderar valda behör och räknar bort monterade dörrar", () => {
-    expect(totalsText(project)).toContain("2st 256 behör (vred)");
-    expect(totalsText(project)).toContain("1st 2356 behör (täckbricka)");
-    expect(totalsText(project, true)).toContain("1st 256 behör (vred)");
+    expect(totalsText(project)).toContain("2st 256 behör med 11mm ring");
+    expect(totalsText(project)).toContain("1st 2356 behör med 11mm ring");
+    expect(totalsText(project, true)).toContain("1st 256 behör med 11mm ring");
   });
   it("kopierade dörrlistor och hela projektet behåller valt behör per dörr", () => {
-    expect(doorsText(project)).toContain("256 behör (vred)");
-    expect(doorsText(project)).toContain("2356 behör (täckbricka)");
-    expect(projectText(project)).toContain("2st 256 behör (vred)");
-    expect(projectText(project)).toContain("  2356 behör (täckbricka)");
+    expect(doorsText(project)).toContain("256 behör med 11mm ring");
+    expect(doorsText(project)).toContain("2356 behör med 11mm ring");
+    expect(projectText(project)).toContain("2st 256 behör med 11mm ring");
+    expect(projectText(project)).toContain("2356 behör med 11mm ring");
     expect(doorsText({ name: "Test", doors: [door("4")] })).not.toContain("behör");
   });
 });
