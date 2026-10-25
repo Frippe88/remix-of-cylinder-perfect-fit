@@ -66,7 +66,7 @@ describe("behörsval", () => {
     const t = totalsText(p);
     expect(t).toContain("5st Vred med cylinder (21mm ring)");
     expect(t).toContain("1st Täckbricka med cylinder (13mm ring)");
-    expect(t).toContain("Förlängare:\n  6st 10mm förlängare");
+    expect(t).toContain("Förlängare:\n  1st 8mm förlängare\n  6st 10mm förlängare");
     expect(doorsText(p)).toContain("Utsida: Vred med cylinder (21mm ring) + 1st 10mm förlängare");
   });
   it("tillåter inte behörsval i gratisversionen", () => {
