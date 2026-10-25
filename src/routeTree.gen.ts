@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ProRouteImport } from './routes/pro'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as GuiderIndexRouteImport } from './routes/guider.index'
 import { Route as GuiderSlugRouteImport } from './routes/guider.$slug'
@@ -18,6 +19,11 @@ import { Route as LovableEmailTransactionalPreviewRouteImport } from './routes/l
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProRoute = ProRouteImport.update({
+  id: '/pro',
+  path: '/pro',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
@@ -44,6 +50,7 @@ const LovableEmailTransactionalPreviewRoute =
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/pro': typeof ProRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/guider/$slug': typeof GuiderSlugRoute
   '/guider/': typeof GuiderIndexRoute
@@ -51,6 +58,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/pro': typeof ProRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/guider/$slug': typeof GuiderSlugRoute
   '/guider': typeof GuiderIndexRoute
@@ -59,6 +67,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/pro': typeof ProRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/guider/$slug': typeof GuiderSlugRoute
   '/guider/': typeof GuiderIndexRoute
@@ -68,6 +77,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/pro'
     | '/sitemap.xml'
     | '/guider/$slug'
     | '/guider/'
@@ -75,6 +85,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/pro'
     | '/sitemap.xml'
     | '/guider/$slug'
     | '/guider'
@@ -82,6 +93,7 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/pro'
     | '/sitemap.xml'
     | '/guider/$slug'
     | '/guider/'
@@ -90,6 +102,7 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  ProRoute: typeof ProRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   GuiderSlugRoute: typeof GuiderSlugRoute
   GuiderIndexRoute: typeof GuiderIndexRoute
@@ -103,6 +116,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/pro': {
+      id: '/pro'
+      path: '/pro'
+      fullPath: '/pro'
+      preLoaderRoute: typeof ProRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/sitemap.xml': {
@@ -138,6 +158,7 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  ProRoute: ProRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   GuiderSlugRoute: GuiderSlugRoute,
   GuiderIndexRoute: GuiderIndexRoute,
