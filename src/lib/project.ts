@@ -28,23 +28,24 @@ export function isLooseFitting(fitting: Fitting | null | undefined, ring: number
   return (fitting === "256" || fitting === "2356") && ring > FITTING_KIT_MAX_RING;
 }
 export function looseFittingLabel(fitting: Fitting): string {
-  return `${FITTING_LABEL[fitting]}, plocka själv`;
+  return `${FITTING_LABEL[fitting]}, lös ring`;
 }
-/** Slår ihop behörsnamn och ring utan dubbel "med": "Vred med cylinder 18mm ring", "256 behör med 11mm ring". */
+/** Behalls för äldre anrop; slår ihop namn och ring utan dubbel "med". */
 export function withRing(name: string, ring: string): string {
   return /\bmed\b/i.test(name) ? `${name} ${ring}` : `${name} med ${ring}`;
 }
+/** Ett behör + ring som en beställningsrad: "256 behör (11mm ring)", över 21 mm "256 behör (lös ring 24mm)". */
 export function fittingRingText(fitting: Fitting, ring: number, inner = false): string {
-  const name = isLooseFitting(fitting, ring) ? looseFittingLabel(fitting) : FITTING_LABEL[fitting];
-  return withRing(name, ringName(ring, inner || fitting === "A10.11"));
+  if (isLooseFitting(fitting, ring)) return `${FITTING_LABEL[fitting]} (lös ring ${formatMm(ring)})`;
+  return `${FITTING_LABEL[fitting]} (${ringName(ring, inner || fitting === "A10.11")})`;
 }
 /** Vilka behör som kan väljas för given cylinder. Tom lista = inget behörsval. */
 export function fittingOptions(variant: "free" | "pro", cylinder: "standard" | "round" | "iloq", type: "single" | "double", brand?: string): Fitting[] {
   if (variant !== "pro") return [];
   if (cylinder === "round") return brand === "ASSA ABLOY" ? ["3212"] : brand === "dormakaba / DORMA" ? ["DAK 752"] : [];
   if (type === "double") return cylinder === "standard" ? ["18256"] : ["A10.11"];
-  // Enkelcylinder: fabrikatsneutralt – låssmeden väljer själv märke.
-  return ["vred", "tackbricka"];
+  // Enkelcylinder: 256 (vred) eller 2356 (täckbricka) – det chefen beställer per ringhöjd.
+  return ["256", "2356"];
 }
 export function canSelectFitting(variant: "free" | "pro", cylinder: "standard" | "round" | "iloq", type: "single" | "double", brand?: string): boolean {
   return fittingOptions(variant, cylinder, type, brand).length > 0;
