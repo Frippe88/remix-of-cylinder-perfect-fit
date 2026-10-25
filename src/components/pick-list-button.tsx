@@ -2,7 +2,7 @@ import { useState, type ReactNode } from "react";
 import { AlertTriangle, ArrowDown, ArrowUp, Check, ClipboardCopy, ClipboardList, Disc3, FolderOpen, FolderPlus, Layers } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { calculate, formatMm, type Combination } from "@/lib/cylinder";
-import { fittingForSide, fittingRingText, isLooseFitting, looseFittingLabel, ringName, type DoorSide, type Fitting } from "@/lib/project";
+import { fittingRingText, ringName, type DoorSide, type Fitting } from "@/lib/project";
 
 export type PickSide = { label: string | null; depth: number | null; selected: Combination | null };
 
@@ -67,16 +67,6 @@ function Row({ caption, icon, children }: { caption: string; icon: ReactNode; ch
   );
 }
 
-const FITTING_MENU: Record<Fitting, string> = {
-  "256": "256 behör (ASSA vred)",
-  "2356": "2356 behör (ASSA täckbricka)",
-  "3212": "3212 behör (ASSA rund cylinder)",
-  "18256": "18256 behör (dubbel oval cylinder)",
-  "DAK 7200": "DAK 7200 behör (dormakaba vred)",
-  "DAK 7101": "DAK 7101 behör (dormakaba täckbricka)",
-  "DAK 752": "DAK 752 behör (dormakaba rund cylinder)",
-  "A10.11": "A10.11 monteringskit (iLOQ dubbelcylinder)",
-};
 
 export function PickListButton({ sides, ext, rings, insideRings = rings, insideExt = ext, baseMm, insideBaseMm = baseMm, relaxed, onSave, projectName, projectDoors = 0, projectCount = 1, onOpenProject, note = "", onNoteChange, iloqDouble = false }: {
   sides: PickSide[]; ext: number[]; rings: number[]; insideRings?: number[]; insideExt?: number[]; baseMm: number; insideBaseMm?: number; relaxed: boolean;
