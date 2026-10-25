@@ -1,5 +1,26 @@
 import { describe, expect, it } from "vitest";
-import { canSelectFitting, doorsText, nextDoorName, projectTotals, setDoorSide, totalsText, type Door } from "./project";
+import { canSelectFitting, doorsText, nextDoorName, projectText, projectTotals, setDoorSide, totalsText, type Door } from "./project";
+
+describe("behör i material och delning", () => {
+  const door = (id: string, fitting?: "256" | "2356", done = false): Door => ({ id, name: `Dörr ${id}`, kind: "oval", done, sides: [{ label: "Utsida", depth: 36, ring: 11, extenders: [8, 8] }], ...(fitting ? { fitting } : {}) });
+  const project = { name: "Test", doors: [door("1", "256"), door("2", "256", true), door("3", "2356"), door("4")] };
+  it("summerar en vald behörssats per dörr och lämnar ovalda dörrar utan behör", () => {
+    expect(projectTotals(project.doors).fittings).toEqual([{ fitting: "256", count: 2 }, { fitting: "2356", count: 1 }]);
+    expect(projectTotals([door("4")]).fittings).toEqual([]);
+  });
+  it("kopierade inköpslistor inkluderar valda behör och räknar bort monterade dörrar", () => {
+    expect(totalsText(project)).toContain("2st 256 behör (vred)");
+    expect(totalsText(project)).toContain("1st 2356 behör (täckbricka)");
+    expect(totalsText(project, true)).toContain("1st 256 behör (vred)");
+  });
+  it("kopierade dörrlistor och hela projektet behåller valt behör per dörr", () => {
+    expect(doorsText(project)).toContain("256 behör (vred)");
+    expect(doorsText(project)).toContain("2356 behör (täckbricka)");
+    expect(projectText(project)).toContain("2st 256 behör (vred)");
+    expect(projectText(project)).toContain("  2356 behör (täckbricka)");
+    expect(doorsText({ name: "Test", doors: [door("4")] })).not.toContain("behör");
+  });
+});
 
 describe("behörsval", () => {
   it("tillåter enkel oval och iLOQ i Pro", () => {
