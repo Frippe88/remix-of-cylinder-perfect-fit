@@ -66,7 +66,7 @@ describe("behörsval", () => {
     const t = totalsText(p);
     expect(t).toContain("5st Vred med cylinder (21mm ring)");
     expect(t).toContain("1st Täckbricka med cylinder (13mm ring)");
-    expect(t).toContain("7st förlängare totalt");
+    expect(t).toContain("FÖRLÄNGARE:");
     expect(doorsText(p)).toContain("Utsida: Vred med cylinder (21mm ring) + 1st 10mm förlängare");
   });
   it("tillåter inte behörsval i gratisversionen", () => {
@@ -181,8 +181,8 @@ describe("iLOQ dubbelcylinder – A10.11 och innerring", () => {
     expect(t.kits).toEqual([{ fitting: "A10.11", count: 2 }]);
     expect(t.rings.map((r) => [r.size, r.side, r.inner, r.count])).toEqual([[11, "Utsida", false, 2], [27, "Insida", true, 2]]);
     const txt = totalsText({ name: "P", doors: [d] });
-    expect(txt).toContain("FÄRDIGA BEHÖR:\n1st A10.11 monteringskit");
-    expect(txt).toContain("LÖSA DELAR:\n1st 11mm ring\n1st 27mm iLOQ innerring");
+    expect(txt).toContain("DUBBELCYLINDRAR:\n1st dubbelcylinder\n\nMONTERINGSKIT:\n1st A10.11 monteringskit");
+    expect(txt).toContain("RINGAR:\n1st 11mm ring\n1st 27mm iLOQ innerring");
     expect(txt).not.toContain("insida");
   });
   it("enkel iLOQ på insidan får ingen innerring", () => {
@@ -203,7 +203,7 @@ describe("256/2356 plocka själv", () => {
     expect(t.rings).toEqual([]);
     expect(t.loose.map((f) => [f.fitting, f.size, f.count])).toEqual([["256", 27, 2], ["256", 30, 1], ["2356", 30, 1]]);
     const p: Project = { name: "P", doors: [d(27), d(27), d(30)] };
-    expect(totalsText(p)).toContain("BEHÖR, PLOCKA SJÄLV:\n3st 256 behör (utan ring)\n\nLÖSA DELAR:\n2st 27mm ring\n1st 30mm ring");
+    expect(totalsText(p)).toContain("2st 256 behör (lös ring 27mm)\n1st 256 behör (lös ring 30mm)");
     expect(doorsText(p)).toContain("256 behör (lös ring 27mm)");
   });
 });
