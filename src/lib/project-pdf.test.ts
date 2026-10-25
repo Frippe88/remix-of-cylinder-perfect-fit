@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { projectPdf } from "./project-pdf";
+import { FITTING_NOTE, projectPdf } from "./project-pdf";
 import type { Project } from "./project";
 
 const { printed } = vi.hoisted(() => ({ printed: [] as string[] }));
@@ -33,10 +33,16 @@ describe("behör i PDF", () => {
   it("räknar bort monterade dörrars behör i kvarvarande material", async () => {
     await projectPdf(project, true);
     expect(printed).toContain("256 behör (11mm ring)");
-    expect(printed.some((line) => line.includes("2356"))).toBe(false);
+    expect(printed.some((line) => line !== FITTING_NOTE && line.includes("2356"))).toBe(false);
   });
   it("lägger inte till behör om inget valts", async () => {
     await projectPdf({ name: "Test", doors: [{ id: "3", name: "Utan behör", kind: "oval", done: false, sides: [] }] }, false);
-    expect(printed.some((line) => line.includes("256") || line.includes("2356"))).toBe(false);
+    expect(printed.some((line) => line !== FITTING_NOTE && (line.includes("256") || line.includes("2356")))).toBe(false);
+  });
+  it("PDF utan dörrlista har inköpslistan men ingen dörrlista", async () => {
+    await projectPdf(project, false, false);
+    expect(printed).toContain("256 behör (11mm ring)");
+    expect(printed).not.toContain("Dörrlista");
+    expect(printed).toContain(FITTING_NOTE);
   });
 });
