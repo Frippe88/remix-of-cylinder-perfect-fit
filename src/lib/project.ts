@@ -2,19 +2,33 @@
 import { formatMm } from "./cylinder";
 
 export type RingKind = "oval" | "rund" | "iloq";
-export type Fitting = "256" | "2356" | "3212" | "18256" | "DAK 7200" | "DAK 7101" | "DAK 752";
+export type Fitting = "256" | "2356" | "3212" | "18256" | "DAK 7200" | "DAK 7101" | "DAK 752" | "A10.11";
 export const FITTING_LABEL: Record<Fitting, string> = {
   "256": "256 behör", "2356": "2356 behör", "3212": "3212 behör", "18256": "18256 behör",
   "DAK 7200": "DAK 7200 behör", "DAK 7101": "DAK 7101 behör", "DAK 752": "DAK 752 behör",
+  "A10.11": "A10.11 monteringskit",
 };
-export function fittingRingText(fitting: Fitting, ring: number): string {
-  return `${FITTING_LABEL[fitting]} med ${formatMm(ring)} ring`;
+/** iLOQ dubbelcylinder: insidan kräver iLOQs egen innerring (skruvhål för genomgående skruv). */
+export function isIloqInner(kind: RingKind | undefined, label: string | null | undefined): boolean {
+  return kind === "iloq" && label === "Insida";
+}
+export function ringName(ring: number, kind?: RingKind, label?: string | null): string {
+  return `${formatMm(ring)} ${isIloqInner(kind, label) ? "iLOQ innerring" : "ring"}`;
+}
+/** Gäller behöret just den här sidan? A10.11 hör till insidan; övriga behör till alla sidor. */
+export function fittingForSide(fitting: Fitting | null | undefined, label: string | null | undefined): Fitting | null {
+  if (!fitting) return null;
+  if (fitting === "A10.11") return label === "Insida" ? fitting : null;
+  return fitting;
+}
+export function fittingRingText(fitting: Fitting, ring: number, kind?: RingKind, label?: string | null): string {
+  return `${FITTING_LABEL[fitting]} med ${ringName(ring, kind, label)}`;
 }
 /** Vilka behör som kan väljas för given cylinder. Tom lista = inget behörsval. */
 export function fittingOptions(variant: "free" | "pro", cylinder: "standard" | "round" | "iloq", type: "single" | "double", brand?: string): Fitting[] {
   if (variant !== "pro") return [];
   if (cylinder === "round") return brand === "ASSA ABLOY" ? ["3212"] : brand === "dormakaba / DORMA" ? ["DAK 752"] : [];
-  if (type === "double") return cylinder === "standard" ? ["18256"] : [];
+  if (type === "double") return cylinder === "standard" ? ["18256"] : ["A10.11"];
   return cylinder === "standard" ? ["256", "2356", "DAK 7200", "DAK 7101"] : ["256", "2356"];
 }
 export function canSelectFitting(variant: "free" | "pro", cylinder: "standard" | "round" | "iloq", type: "single" | "double", brand?: string): boolean {
