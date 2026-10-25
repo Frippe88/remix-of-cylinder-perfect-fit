@@ -77,7 +77,9 @@ export function CalculatorPage({ variant }: { variant: "free" | "pro" }) {
   const [fitting, setFitting] = useState<Fitting | null>(null);
   const fittingChoices = fittingOptions(variant, cyl, type, brand);
   const fittingEnabled = fittingChoices.length > 0;
-  const activeFitting = fitting && fittingChoices.includes(fitting) ? fitting : null;
+  // Dubbel iLOQ kräver alltid A10.11-kitet: förvalt automatiskt.
+  const activeFitting = fitting && fittingChoices.includes(fitting) ? fitting
+    : cyl === "iloq" && type === "double" && fittingChoices.includes("A10.11") ? "A10.11" : null;
   const [singleSide, setSingleSide] = useState<"Utsida" | "Insida">("Utsida");
 
   const isRound = cyl === "round";
