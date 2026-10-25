@@ -150,3 +150,10 @@ describe("iLOQ dubbelcylinder", () => {
     expect(cylinderBaseMm("round", "inside", true, "dormakaba / DORMA")).toBe(ROUND_CYLINDER_MM);
   });
 });
+
+describe("dubbel iLOQ insida utan förlängare", () => {
+  it("ger bara innerring utan förlängare när förlängare är tomt", () => {
+    const r = calculate({ depth: 16, extenders: [], rings: [...ILOQ_RING_HEIGHTS], baseMm: 46 });
+    expect(r[0]).toMatchObject({ ring: 30, extenderCount: 0, deviation: 0 });
+  });
+});
