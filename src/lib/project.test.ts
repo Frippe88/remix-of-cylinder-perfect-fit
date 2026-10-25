@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { canSelectFitting, fittingOptions, doorsText, nextDoorName, projectText, projectTotals, setDoorSide, totalsText, type Door } from "./project";
+import { canSelectFitting, fittingOptions, doorsText, FITTING_LABEL, nextDoorName, projectText, projectTotals, setDoorSide, totalsText, type Door, type Fitting, type Project } from "./project";
 
 describe("behör i material och delning", () => {
   const door = (id: string, fitting?: "256" | "2356", done = false): Door => ({ id, name: `Dörr ${id}`, kind: "oval", done, sides: [{ label: "Utsida", depth: 36, ring: 11, extenders: [8, 8] }], ...(fitting ? { fitting } : {}) });
@@ -29,7 +29,7 @@ describe("behör i material och delning", () => {
     expect(doorsText({ name: "Test", doors: [door("4")] })).not.toContain("behör");
   });
   it("sparade listor visar bara behörets namn – inget fabrikat eller vred/täckbricka", () => {
-    const withFitting = (fitting: Fitting): Door => ({ id: "7", name: "Dörr 7", kind: fitting.startsWith("DAK") && fitting === "DAK 752" ? "rund" : "oval", done: false, sides: [{ label: "Utsida", depth: 36, ring: 11, extenders: [] }], fitting });
+    const withFitting = (fitting: Fitting): Door => ({ id: "7", name: "Dörr 7", kind: fitting === "DAK 752" ? "rund" : "oval", done: false, sides: [{ label: "Utsida", depth: 36, ring: 11, extenders: [] }], fitting });
     const all: Project = { name: "Kund B", doors: (Object.keys(FITTING_LABEL) as Fitting[]).map(withFitting) };
     for (const text of [totalsText(all), doorsText(all), projectText(all)]) {
       for (const forbidden of ["ASSA", "dormakaba", "DORMA", "vred", "täckbricka", "Täckbricka"]) expect(text).not.toContain(forbidden);
