@@ -66,7 +66,7 @@ export function ShareSection() {
             </ul>
           )}
         </InfoSheetRow>
-        <InfoSheetRow icon={<Share2 />} title="Tipsa en kollega" hint="Kalkylatorn är gratis och kräver ingen inloggning">
+        <InfoSheetRow icon={<Share2 />} title="Tipsa en kollega" hint="Kalkylatorn är gratis och öppnas direkt i mobilen">
           <div className="flex flex-wrap gap-2">
             <Button onClick={share} className="bg-accent text-accent-foreground hover:bg-accent/90"><Share2 aria-hidden />Dela</Button>
             <Button variant="outline" asChild><a href={`sms:?&body=${msg}`} target="_top"><MessageSquare aria-hidden />SMS</a></Button>
