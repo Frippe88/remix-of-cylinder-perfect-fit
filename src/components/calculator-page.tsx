@@ -6,7 +6,7 @@ import { CylinderResults } from "@/components/cylinder-results";
 import { PickListButton } from "@/components/pick-list-button";
 import { ProjectBar, ProjectPanel, useProject } from "@/components/project-panel";
 import { ProDialog } from "@/components/pro-dialog";
-import { canSelectFitting, nextDoorName, type DoorSide, type Fitting } from "@/lib/project";
+import { fittingOptions, nextDoorName, type DoorSide, type Fitting } from "@/lib/project";
 import { DoorNameDialog } from "@/components/door-name-dialog";
 import { toast } from "sonner";
 import { Toaster } from "@/components/ui/sonner";
@@ -75,8 +75,9 @@ export function CalculatorPage({ variant }: { variant: "free" | "pro" }) {
   const [switchProject, setSwitchProject] = useState(false);
   const [pendingDoor, setPendingDoor] = useState<{ sides: DoorSide[]; kind: "oval" | "rund" | "iloq"; fitting?: Fitting } | null>(null);
   const [fitting, setFitting] = useState<Fitting | null>(null);
-  const fittingEnabled = canSelectFitting(variant, cyl, type);
-  const activeFitting = fittingEnabled ? fitting : null;
+  const fittingChoices = fittingOptions(variant, cyl, type, brand);
+  const fittingEnabled = fittingChoices.length > 0;
+  const activeFitting = fitting && fittingChoices.includes(fitting) ? fitting : null;
   const [singleSide, setSingleSide] = useState<"Utsida" | "Insida">("Utsida");
 
   const isRound = cyl === "round";
