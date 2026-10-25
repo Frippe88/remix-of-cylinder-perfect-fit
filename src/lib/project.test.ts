@@ -64,10 +64,10 @@ describe("behörsval", () => {
     const d = (i: number, fitting: Fitting, ring: number, ext: number[]): Door => ({ id: `${i}`, name: `Dörr ${i}`, kind: "oval", done: false, sides: [{ label: "Utsida", depth: 50, ring, extenders: ext }], fitting });
     const p: Project = { name: "P", doors: [1, 2, 3, 4, 5].map((i) => d(i, "vred", 21, [10])).concat(d(6, "tackbricka", 13, [8, 10])) };
     const t = totalsText(p);
-    expect(t).toContain("5st Vred med cylinder med 21mm ring");
-    expect(t).toContain("1st Täckbricka med cylinder med 13mm ring");
+    expect(t).toContain("5st Vred med cylinder 21mm ring");
+    expect(t).toContain("1st Täckbricka med cylinder 13mm ring");
     expect(t).toContain("7st förlängare totalt");
-    expect(doorsText(p)).toContain("Utsida: Vred med cylinder med 21mm ring + 1st 10mm förlängare");
+    expect(doorsText(p)).toContain("Utsida: Vred med cylinder 21mm ring + 1st 10mm förlängare");
   });
   it("tillåter inte behörsval i gratisversionen", () => {
     expect(canSelectFitting("free", "standard", "single")).toBe(false);

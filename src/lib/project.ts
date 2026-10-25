@@ -30,9 +30,13 @@ export function isLooseFitting(fitting: Fitting | null | undefined, ring: number
 export function looseFittingLabel(fitting: Fitting): string {
   return `${FITTING_LABEL[fitting]}, plocka själv`;
 }
+/** Slår ihop behörsnamn och ring utan dubbel "med": "Vred med cylinder 18mm ring", "256 behör med 11mm ring". */
+export function withRing(name: string, ring: string): string {
+  return /\bmed\b/i.test(name) ? `${name} ${ring}` : `${name} med ${ring}`;
+}
 export function fittingRingText(fitting: Fitting, ring: number, inner = false): string {
   const name = isLooseFitting(fitting, ring) ? looseFittingLabel(fitting) : FITTING_LABEL[fitting];
-  return `${name} med ${ringName(ring, inner || fitting === "A10.11")}`;
+  return withRing(name, ringName(ring, inner || fitting === "A10.11"));
 }
 /** Vilka behör som kan väljas för given cylinder. Tom lista = inget behörsval. */
 export function fittingOptions(variant: "free" | "pro", cylinder: "standard" | "round" | "iloq", type: "single" | "double", brand?: string): Fitting[] {
@@ -149,7 +153,7 @@ export interface PurchaseSection { title: string; hint: string; items: { count: 
 export function purchaseList(t: Totals): PurchaseSection[] {
   const add = (m: Map<string, number>, k: string, n: number) => m.set(k, (m.get(k) ?? 0) + n);
   const ready = new Map<string, number>();
-  t.fittings.forEach((f) => add(ready, `${FITTING_LABEL[f.fitting]} med ${formatMm(f.size)} ring`, f.count));
+  t.fittings.forEach((f) => add(ready, withRing(FITTING_LABEL[f.fitting], `${formatMm(f.size)} ring`), f.count));
   t.kits.forEach((k) => add(ready, FITTING_LABEL[k.fitting], k.count));
   const loose = new Map<string, number>();
   t.loose.forEach((f) => add(loose, `${FITTING_LABEL[f.fitting]} (utan ring)`, f.count));

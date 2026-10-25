@@ -46,4 +46,22 @@ describe("Plocklista", () => {
     fireEvent.click(screen.getByRole("button", { name: /Kopiera plocklista/ }));
     expect(writeText).toHaveBeenCalledWith("8mm ring + 2st 10mm förlängare");
   });
+
+  it("behörsmenyn säger 'Täckbricka med cylinder 18mm ring' – utan dubbel-t 'med'", () => {
+    render(
+      <PickListButton
+        sides={[{ label: "Utsida", depth: 49, selected: { ring: 18, extenders: [], extenderCount: 0, totalExtension: 18, deviation: 0 } }]}
+        ext={ext}
+        rings={rings}
+        baseMm={31}
+        relaxed={false}
+        fitting="tackbricka"
+        onFittingChange={() => {}}
+        fittingChoices={["vred", "tackbricka"]}
+      />,
+    );
+    const opt = screen.getByRole("option", { name: /Täckbricka/ });
+    expect(opt.textContent).toBe("Täckbricka med cylinder 18mm ring");
+    expect(opt.textContent).not.toContain("cylinder med 18mm");
+  });
 });
