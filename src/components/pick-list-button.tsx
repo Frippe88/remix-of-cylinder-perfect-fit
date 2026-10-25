@@ -213,7 +213,7 @@ export function PickListButton({ sides, ext, rings, insideRings = rings, insideE
                 <option key={f} value={f}>{menuText(f)}</option>
               ))}
             </select>
-            <span className="mt-1.5 block text-xs font-normal text-muted-foreground">Vi räknar med ASSA ABLOY:s behör (256, 2356, 18256). Annat fabrikat? Byt bara ut behöret mot motsvarande – ringhöjden är densamma.</span>
+            <span className="mt-2 block rounded-md border border-border bg-muted px-3 py-2 text-sm font-normal leading-snug text-foreground">Vi räknar med <strong className="font-bold">ASSA ABLOY:s behör (256, 2356, 18256)</strong>. Annat fabrikat? Byt bara ut behöret mot motsvarande – <strong className="font-bold">ringhöjden är densamma</strong>.</span>
           </label>
         )}
         {onSave && (

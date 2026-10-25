@@ -45,8 +45,10 @@ export async function projectPdf(p: Project, remainingOnly: boolean, includeDoor
     });
   });
   if (!sections.length) text("Inget material.", 10);
-  y += 2; doc.setTextColor(110);
-  text(FITTING_NOTE, 8.5);
+  y += 2; doc.setTextColor(30);
+  doc.setFont("helvetica", "bold");
+  text(FITTING_NOTE, 9.5);
+  doc.setFont("helvetica", "normal");
   doc.setTextColor(0);
 
   if (includeDoors) {
