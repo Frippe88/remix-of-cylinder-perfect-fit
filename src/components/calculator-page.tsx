@@ -168,6 +168,18 @@ export function CalculatorPage({ variant }: { variant: "free" | "pro" }) {
 
       <main className="mx-auto grid max-w-5xl gap-6 px-4 py-6 lg:grid-cols-[340px_1fr]">
         <section className="contents lg:block">
+          <div className="rounded-xl border bg-card shadow-card">
+            <InfoSheetRow icon={<CircleHelp />} title="Hur gör jag?" hint="Så räknar du en dörr – kort och enkelt">
+              <ol className="space-y-3 text-sm leading-snug">
+                <li><span className="font-bold">1. Välj cylindertyp.</span> Oval, rund eller iLOQ – valet stannar kvar medan du räknar flera dörrar i rad.</li>
+                <li><span className="font-bold">2. Välj enkel- eller dubbelcylinder.</span> Dubbel = cylinder på både utsida och insida, måtten räknas separat.</li>
+                <li><span className="font-bold">3. Mät dörrdjupet.</span> Avstånd från låshusets referenspunkt till dörrbladets yta.</li>
+                <li><span className="font-bold">4. Kolla toleransen.</span> Oval och iLOQ: −2 till +2mm. Rund: ingen fast regel, kalkylatorn tar närmaste möjliga.</li>
+                <li><span className="font-bold">5. Ställ in lagret.</span> Under Lager i bilen bockar du av vilka ringhöjder och förlängare du har med dig.</li>
+                <li><span className="font-bold">6. Tryck på förslaget.</span> Då hamnar ringar, förlängare och behör i plocklistan.{pro ? " Spara dörren i projektet för inköpslista och PDF." : ""}</li>
+              </ol>
+            </InfoSheetRow>
+          </div>
           <Panel title="Mätning">
             <div className="grid grid-cols-3 gap-1 rounded-lg bg-muted p-1" role="group" aria-label="Cylindertyp">
               {CYLINDER_OPTIONS.map((o) => (
@@ -206,7 +218,6 @@ export function CalculatorPage({ variant }: { variant: "free" | "pro" }) {
                         ? `${brand === "EVVA" ? "EVVA" : "dormakaba"} har ingen kopp eller hylsa som bygger ut – cylindern monteras direkt mot låshuset och ringen låses med stoppskruv. 31mm är rätt mått.`
                         : "Standardmått för rund cylinder utan kopp eller hylsa."}
                   </span>
-                  <span className="mt-1 block text-foreground/80">Rund cylinder har ingen fast toleransregel – kalkylatorn väljer alltid närmaste möjliga utstick.</span>
                 </span>
               </label>
             )}
@@ -223,7 +234,7 @@ export function CalculatorPage({ variant }: { variant: "free" | "pro" }) {
             </div>
             {type === "single" && !isRound && (
               <div>
-                <p className="text-xs text-muted-foreground">Var sitter cylindern? Ringen för <span className="font-semibold text-side-outside">utsida</span> och <span className="font-semibold text-side-inside">insida</span> ser olika ut.</p>
+                <p className="text-xs text-muted-foreground">Var sitter cylindern? <span className="font-semibold text-side-outside">Utsida</span> och <span className="font-semibold text-side-inside">insida</span> har olika ring.</p>
                 <div className="mt-1.5 grid grid-cols-2 gap-2">
                   {(["Utsida", "Insida"] as const).map((s) => (
                     <button key={s} type="button" onClick={() => setSingleSide(s)} aria-pressed={singleSide === s}
@@ -234,9 +245,6 @@ export function CalculatorPage({ variant }: { variant: "free" | "pro" }) {
                 </div>
               </div>
             )}
-            {type === "double" && (
-              <p className="text-xs text-muted-foreground">Cylinder på både utsida och insida.</p>
-            )}
             {iloqDouble && (
               <div role="note" className="flex gap-3 rounded-xl border border-accent/50 bg-accent/10 p-3 text-sm">
                 <Info className="mt-0.5 size-5 shrink-0 text-accent" aria-hidden />
@@ -246,7 +254,6 @@ export function CalculatorPage({ variant }: { variant: "free" | "pro" }) {
                 </p>
               </div>
             )}
-            <p className="rounded-lg border-l-4 border-accent bg-accent/10 px-3 py-2 text-sm font-medium text-foreground">Dörrdjup = avstånd från låshusets referenspunkt till dörrbladets yta.</p>
             <DepthInput label={type === "single" ? "Dörrdjup" : "Dörrdjup utsida"} value={outside} onChange={setOutside} />
             {type === "double" && <DepthInput label="Dörrdjup insida" value={inside} onChange={setInside} />}
           </Panel>
