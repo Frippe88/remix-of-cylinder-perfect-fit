@@ -9,11 +9,11 @@ export const FITTING_LABEL: Record<Fitting, string> = {
   "A10.11": "A10.11 monteringskit",
 };
 /** iLOQ dubbelcylinder: insidan kräver iLOQs egen innerring (skruvhål för genomgående skruv). */
-export function isIloqInner(kind: RingKind | undefined, label: string | null | undefined): boolean {
-  return kind === "iloq" && label === "Insida";
+export function isIloqInner(kind: RingKind | undefined, label: string | null | undefined, double: boolean): boolean {
+  return double && kind === "iloq" && label === "Insida";
 }
-export function ringName(ring: number, kind?: RingKind, label?: string | null): string {
-  return `${formatMm(ring)} ${isIloqInner(kind, label) ? "iLOQ innerring" : "ring"}`;
+export function ringName(ring: number, inner = false): string {
+  return `${formatMm(ring)} ${inner ? "iLOQ innerring" : "ring"}`;
 }
 /** Gäller behöret just den här sidan? A10.11 hör till insidan; övriga behör till alla sidor. */
 export function fittingForSide(fitting: Fitting | null | undefined, label: string | null | undefined): Fitting | null {
@@ -21,8 +21,8 @@ export function fittingForSide(fitting: Fitting | null | undefined, label: strin
   if (fitting === "A10.11") return label === "Insida" ? fitting : null;
   return fitting;
 }
-export function fittingRingText(fitting: Fitting, ring: number, kind?: RingKind, label?: string | null): string {
-  return `${FITTING_LABEL[fitting]} med ${ringName(ring, kind, label)}`;
+export function fittingRingText(fitting: Fitting, ring: number, inner = false): string {
+  return `${FITTING_LABEL[fitting]} med ${ringName(ring, inner || fitting === "A10.11")}`;
 }
 /** Vilka behör som kan väljas för given cylinder. Tom lista = inget behörsval. */
 export function fittingOptions(variant: "free" | "pro", cylinder: "standard" | "round" | "iloq", type: "single" | "double", brand?: string): Fitting[] {
@@ -58,14 +58,14 @@ export function setDoorSide(door: Door, sideIndex: number, label: string | null)
 
 export interface Totals {
   extenders: { size: number; kind: RingKind; count: number }[];
-  rings: { size: number; kind: RingKind; side: string; count: number }[];
-  fittings: { fitting: Fitting; size: number; kind: RingKind; side: string; count: number }[];
+  rings: { size: number; kind: RingKind; side: string; inner: boolean; count: number }[];
+  fittings: { fitting: Fitting; size: number; kind: RingKind; side: string; inner: boolean; count: number }[];
 }
 
 /** Summerar allt material för alla dörrar i projektet. */
 export function projectTotals(doors: Door[]): Totals {
   const ext = new Map<string, { size: number; kind: RingKind; count: number }>();
-  const rings = new Map<string, { size: number; kind: RingKind; side: string; count: number }>();
+  const rings = new Map<string, Totals["rings"][number]>();
   const fittings = new Map<string, Totals["fittings"][number]>();
   const extKind = (k: RingKind): RingKind => (k === "rund" ? "rund" : "oval");
   for (const d of doors) for (const s of d.sides) {
@@ -75,15 +75,16 @@ export function projectTotals(doors: Door[]): Totals {
       cur.count++; ext.set(key, cur);
     }
     const side = RING_HAS_SIDE[d.kind] ? (s.label ?? "Utsida") : "";
+    const inner = isIloqInner(d.kind, s.label, d.sides.length > 1);
     const fit = fittingForSide(d.fitting, s.label);
     if (fit) {
       const key = `${fit}:${d.kind}:${side}:${s.ring}`;
-      const cur = fittings.get(key) ?? { fitting: fit, size: s.ring, kind: d.kind, side, count: 0 };
+      const cur = fittings.get(key) ?? { fitting: fit, size: s.ring, kind: d.kind, side, inner, count: 0 };
       cur.count++; fittings.set(key, cur);
       continue;
     }
-    const key = `${d.kind}:${side}:${s.ring}`;
-    const cur = rings.get(key) ?? { size: s.ring, kind: d.kind, side, count: 0 };
+    const key = `${d.kind}:${side}:${inner}:${s.ring}`;
+    const cur = rings.get(key) ?? { size: s.ring, kind: d.kind, side, inner, count: 0 };
     cur.count++; rings.set(key, cur);
   }
   const sort = (a: { kind: string; size: number; side?: string }, b: { kind: string; size: number; side?: string }) =>
@@ -91,14 +92,15 @@ export function projectTotals(doors: Door[]): Totals {
   return { extenders: [...ext.values()].sort(sort), rings: [...rings.values()].sort(sort), fittings: [...fittings.values()].sort((a, b) => a.fitting.localeCompare(b.fitting, "sv", { numeric: true }) || sort(a, b)) };
 }
 
-export function sideText(s: DoorSide, kind: RingKind, fitting?: Fitting): string {
+export function sideText(s: DoorSide, kind: RingKind, fitting?: Fitting, double = false): string {
   const counts = new Map<number, number>();
   s.extenders.forEach((e) => counts.set(e, (counts.get(e) ?? 0) + 1));
   const ext = [...counts].sort((a, b) => a[0] - b[0]).map(([e, n]) => `${n}st ${formatMm(e)} förlängare`);
   const side = RING_HAS_SIDE[kind] && !s.label ? ` ${"utsida"}` : "";
   // Ordning: sida, behör med ring (eller ring), sist förlängare.
   const fit = fittingForSide(fitting, s.label);
-  const ring = fit ? `${fittingRingText(fit, s.ring, kind, s.label)}${side}` : `${ringName(s.ring, kind, s.label)}${side}`;
+  const inner = isIloqInner(kind, s.label, double);
+  const ring = fit ? `${fittingRingText(fit, s.ring, inner)}${side}` : `${ringName(s.ring, inner)}${side}`;
   return (s.label ? `${s.label}: ` : "") + [ring, ...ext].join(" + ");
 }
 
@@ -108,8 +110,8 @@ export function doorsToPick(doors: Door[], remainingOnly: boolean): Door[] {
 }
 
 /** Totalrad för ring/behör: "27mm iLOQ innerring insida (iLOQ)". */
-export function totalRingText(r: { size: number; kind: RingKind; side: string; fitting?: Fitting }): string {
-  const base = r.fitting ? fittingRingText(r.fitting, r.size, r.kind, r.side) : ringName(r.size, r.kind, r.side);
+export function totalRingText(r: { size: number; kind: RingKind; side: string; inner: boolean; fitting?: Fitting }): string {
+  const base = r.fitting ? fittingRingText(r.fitting, r.size, r.inner) : ringName(r.size, r.inner);
   return `${base}${r.side ? ` ${r.side.toLowerCase()}` : ""} (${KIND_LABEL[r.kind]})`;
 }
 
@@ -125,12 +127,12 @@ export function totalsText(p: Project, remainingOnly = false): string {
 }
 
 export function doorsText(p: Project): string {
-  return p.doors.map((d) => [`${d.name} (${KIND_LABEL[d.kind]})`, ...d.sides.map((s) => "  " + sideText(s, d.kind, d.fitting))].join("\n")).join("\n");
+  return p.doors.map((d) => [`${d.name} (${KIND_LABEL[d.kind]})`, ...d.sides.map((s) => "  " + sideText(s, d.kind, d.fitting, d.sides.length > 1))].join("\n")).join("\n");
 }
 
 /** Whole project as shareable text: every door, then the full material list. */
 export function projectText(p: Project): string {
-  const doors = p.doors.map((d) => [`${d.name} (${KIND_LABEL[d.kind]})${d.done ? " – monterad" : ""}`, ...d.sides.map((s) => "  " + sideText(s, d.kind, d.fitting))].join("\n")).join("\n\n");
+  const doors = p.doors.map((d) => [`${d.name} (${KIND_LABEL[d.kind]})${d.done ? " – monterad" : ""}`, ...d.sides.map((s) => "  " + sideText(s, d.kind, d.fitting, d.sides.length > 1))].join("\n")).join("\n\n");
   return [`${p.name || "Projekt"}`, "", "Dörrar:", doors, "", "Totalt material:", totalsText(p).split("\n").slice(2).join("\n")].join("\n").trim();
 }
 

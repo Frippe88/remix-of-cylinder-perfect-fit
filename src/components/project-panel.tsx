@@ -120,7 +120,7 @@ function DoorCard({ d, onToggle, onRemove, onSetSide }: { d: Door; onToggle: () 
             <div className="mt-2 flex flex-wrap items-center gap-1.5">
             {s.extenders.length === 0 ? <span className="text-xs text-muted-foreground">inga förl.</span> :
               s.extenders.map((e, j) => <Chip key={j} side={s.label}>{formatMm(e)}</Chip>)}
-            <Chip accent side={s.label}>{(() => { const f = fittingForSide(d.fitting, s.label); return f ? fittingRingText(f, s.ring, d.kind, s.label) : isIloqInner(d.kind, s.label) ? ringName(s.ring, d.kind, s.label) : `ring ${formatMm(s.ring)}`; })()}</Chip>
+            <Chip accent side={s.label}>{(() => { const f = fittingForSide(d.fitting, s.label); const inner = isIloqInner(d.kind, s.label, d.sides.length > 1); return f ? fittingRingText(f, s.ring, inner) : inner ? ringName(s.ring, true) : `ring ${formatMm(s.ring)}`; })()}</Chip>
             </div>
           </li>
         ))}
@@ -246,12 +246,12 @@ export function ProjectPanel({ project, setProject, store, open, onOpenChange, c
                 </>}
                 {totals.rings.length > 0 && <p className="flex items-center gap-2 text-xs font-bold uppercase tracking-wide text-muted-foreground"><span className="size-3 rounded-full border-2 border-accent" aria-hidden />Ringar</p>}
                 <ul className="mt-2 space-y-2">{totals.rings.map((r) => (
-                  <li key={r.kind + r.side + r.size} className="flex items-center justify-between gap-3 border-b border-border/60 py-2.5 text-sm last:border-b-0"><span className="flex min-w-0 flex-wrap items-center gap-x-2 gap-y-1"><span className="font-mono font-bold">{formatMm(r.size)}</span>{isIloqInner(r.kind, r.side) && <span className="font-semibold">iLOQ innerring</span>}{r.side && <span className={`inline-flex items-center gap-1 font-semibold ${r.side === "Insida" ? "text-side-inside" : "text-side-outside"}`}>{r.side === "Insida" ? <ArrowDown className="size-3.5" aria-hidden /> : <ArrowUp className="size-3.5" aria-hidden />}{r.side}</span>} <span className="text-xs text-muted-foreground">({KIND_LABEL[r.kind]})</span></span><Chip accent>{r.count} st</Chip></li>
+                  <li key={r.kind + r.side + r.size} className="flex items-center justify-between gap-3 border-b border-border/60 py-2.5 text-sm last:border-b-0"><span className="flex min-w-0 flex-wrap items-center gap-x-2 gap-y-1"><span className="font-mono font-bold">{formatMm(r.size)}</span>{r.inner && <span className="font-semibold">iLOQ innerring</span>}{r.side && <span className={`inline-flex items-center gap-1 font-semibold ${r.side === "Insida" ? "text-side-inside" : "text-side-outside"}`}>{r.side === "Insida" ? <ArrowDown className="size-3.5" aria-hidden /> : <ArrowUp className="size-3.5" aria-hidden />}{r.side}</span>} <span className="text-xs text-muted-foreground">({KIND_LABEL[r.kind]})</span></span><Chip accent>{r.count} st</Chip></li>
                 ))}</ul>
                 {totals.fittings.length > 0 && <>
                   <p className="mt-4 text-xs font-bold uppercase tracking-wide text-muted-foreground">Behör med ring</p>
                   <ul className="mt-2 divide-y">{totals.fittings.map((f) => (
-                    <li key={`${f.fitting}:${f.kind}:${f.side}:${f.size}`} className="flex items-center justify-between gap-3 py-2.5 text-sm"><span className="min-w-0 font-semibold">{fittingRingText(f.fitting, f.size, f.kind, f.side)} <span className="text-xs font-normal text-muted-foreground">{f.side.toLowerCase()} ({KIND_LABEL[f.kind]})</span></span><Chip accent>{f.count} st</Chip></li>
+                    <li key={`${f.fitting}:${f.kind}:${f.side}:${f.size}`} className="flex items-center justify-between gap-3 py-2.5 text-sm"><span className="min-w-0 font-semibold">{fittingRingText(f.fitting, f.size, f.inner)} <span className="text-xs font-normal text-muted-foreground">{f.side.toLowerCase()} ({KIND_LABEL[f.kind]})</span></span><Chip accent>{f.count} st</Chip></li>
                   ))}</ul>
                 </>}
               </div>
