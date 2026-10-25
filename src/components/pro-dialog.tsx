@@ -1,7 +1,8 @@
 import { Check, Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
-
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+
+
 
 
 const FEATURES = [
