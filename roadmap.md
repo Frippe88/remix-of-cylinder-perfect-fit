@@ -16,4 +16,5 @@
 - [ ] Skruvlängder — väntar på verifierade skruvlängder.
 - [ ] Annonser/spridning pausade tills allt på sidan är rätt.
 - [x] iLOQ dubbel: A10.11 som egen sektion 'Monteringskit iLOQ' i PDF, panel och kopierad inköpslista; ringar som lösa ringar
-- [ ] Bedöm och plats sätt "Lager i bilen" så det känns smidigt i både Pro och gratis
+- [x] Bedöm och plats sätt "Lager i bilen" så det känns smidigt i både Pro och gratis
+      Fredrik valde: behåll raden där den är (Pro och gratis) och behåll ordningen plocklista före rekommendation på datorn.
