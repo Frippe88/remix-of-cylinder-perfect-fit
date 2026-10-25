@@ -273,12 +273,22 @@ export function ProjectPanel({ project, setProject, store, open, onOpenChange, c
               <p className="text-sm leading-relaxed text-muted-foreground">
                 Projektfunktionen är ny och byggs på löpande. Just nu är den gratis att använda, och den sparar bara i den här telefonen eller webbläsaren – ingen kopia finns i molnet än. Byter du enhet, eller rensar webbläsaren, försvinner projekten.
               </p>
-              <ul className="mt-4 space-y-2 text-sm font-medium">
-                <li className="flex items-start gap-2"><Check className="mt-0.5 size-4 shrink-0 text-success" aria-hidden /><span>Idag: flera projekt, dörrar och total plocklista – utan kostnad</span></li>
-                <li className="flex items-start gap-2"><Clock className="mt-0.5 size-4 shrink-0 text-accent" aria-hidden /><span>Härnäst: inloggning och synkning mellan telefon och dator</span></li>
-                <li className="flex items-start gap-2"><Clock className="mt-0.5 size-4 shrink-0 text-accent" aria-hidden /><span>Härnäst: automatisk skruvlängd utifrån antalet förlängare</span></li>
-                <li className="flex items-start gap-2"><Clock className="mt-0.5 size-4 shrink-0 text-accent" aria-hidden /><span>Senare: prenumeration som håller funktionen igång</span></li>
+              <p className="mt-4 text-xs font-bold uppercase tracking-wide text-muted-foreground">Idag</p>
+              <ul className="mt-2 space-y-2 text-sm font-medium">
+                <li className="flex items-start gap-2"><Check className="mt-0.5 size-4 shrink-0 text-success" aria-hidden /><span>Flera projekt med dörrar för hela bygget – utan kostnad</span></li>
+                <li className="flex items-start gap-2"><Check className="mt-0.5 size-4 shrink-0 text-success" aria-hidden /><span>Behörsval (256, 2356, 18256) – färdig sats eller lös ring</span></li>
+                <li className="flex items-start gap-2"><Check className="mt-0.5 size-4 shrink-0 text-success" aria-hidden /><span>Automatisk inköpslista per cylindertyp med ringar och förlängare</span></li>
+                <li className="flex items-start gap-2"><Check className="mt-0.5 size-4 shrink-0 text-success" aria-hidden /><span>PDF – komplett arbetsorder eller bara inköpslista</span></li>
+                <li className="flex items-start gap-2"><Check className="mt-0.5 size-4 shrink-0 text-success" aria-hidden /><span>Kopiera till mejl eller SMS med ett klick</span></li>
               </ul>
+              <div className="mt-4 rounded-lg border border-dashed border-border bg-muted/30 p-3">
+                <p className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wide text-muted-foreground"><Clock className="size-3.5 text-accent" aria-hidden />Kommer snart</p>
+                <ul className="mt-2 space-y-1.5 text-sm font-medium">
+                  <li className="flex items-start gap-2"><span className="mt-1.5 size-1.5 shrink-0 rounded-full bg-accent" aria-hidden /><span>Automatisk skruvlängd utifrån antalet förlängare</span></li>
+                  <li className="flex items-start gap-2"><span className="mt-1.5 size-1.5 shrink-0 rounded-full bg-accent" aria-hidden /><span>Inloggning och synkning mellan telefon och dator</span></li>
+                </ul>
+              </div>
+              <p className="mt-3 text-sm text-muted-foreground">Senare blir projekt en prenumeration som håller funktionen igång.</p>
               <Button asChild variant="outline" className="mt-5 h-11 w-full border-accent/40 font-semibold">
                 <a href={`mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent("Feedback om Projekt (beta)")}&body=${encodeURIComponent("Hej!\n\nMin feedback om projektfunktionen:\n\n")}`}>
                   <Mail className="size-4 text-accent" aria-hidden /> Skicka feedback
