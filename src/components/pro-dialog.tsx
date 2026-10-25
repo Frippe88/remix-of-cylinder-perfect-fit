@@ -1,7 +1,6 @@
-import { Check, Mail, Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { CONTACT_EMAIL } from "@/components/contact-form";
+
 
 const FEATURES = [
   "Spara obegränsat antal egna projekt med alla dörrar",
