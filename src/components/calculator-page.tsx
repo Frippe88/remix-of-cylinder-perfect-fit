@@ -181,13 +181,13 @@ export function CalculatorPage({ variant }: { variant: "free" | "pro" }) {
             </InfoSheetRow>
           </div>
           <Panel title="Mätning">
-            <div className="grid grid-cols-3 gap-1 rounded-lg bg-muted p-1" role="group" aria-label="Cylindertyp">
+            <div className="grid grid-cols-3 gap-0.5 rounded-lg bg-muted p-1 sm:gap-1" role="group" aria-label="Cylindertyp">
               {CYLINDER_OPTIONS.map((o) => (
                 <button
                   key={o.id}
                   onClick={() => switchCyl(o.id)}
                   aria-pressed={cyl === o.id}
-                  className={`rounded-md px-1 py-2 text-center text-xs font-bold leading-tight transition sm:text-sm ${cyl === o.id ? "bg-accent text-accent-foreground shadow-card" : "text-muted-foreground hover:bg-card"}`}
+                  className={`rounded-md px-0.5 py-2 text-center text-[11px] font-bold leading-tight whitespace-nowrap transition sm:px-1 sm:text-[13px] ${cyl === o.id ? "bg-accent text-accent-foreground shadow-card" : "text-muted-foreground hover:bg-card"}`}
                 >
                   {o.name}
                   <span className="block font-mono text-[10px] font-semibold opacity-80">{o.id === "round" ? baseMm : o.mm}mm</span>
