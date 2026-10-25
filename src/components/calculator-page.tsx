@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { CylinderResults } from "@/components/cylinder-results";
 import { PickListButton } from "@/components/pick-list-button";
 import { ProjectBar, ProjectPanel, useProject } from "@/components/project-panel";
+import { ProDialog } from "@/components/pro-dialog";
 import { nextDoorName, type DoorSide } from "@/lib/project";
 import { DoorNameDialog } from "@/components/door-name-dialog";
 import { toast } from "sonner";
@@ -68,6 +69,8 @@ export function CalculatorPage({ variant }: { variant: "free" | "pro" }) {
   const [roundRings, setRoundRings] = useState<number[]>([...ROUND_RING_HEIGHTS]);
   const pro = variant === "pro";
   const [project, setProject, projectStore] = useProject();
+  const [proOpen, setProOpen] = useState(false);
+  useEffect(() => { if (pro) setProOpen(true); }, [pro]);
   const [projectOpen, setProjectOpen] = useState(false);
   const [switchProject, setSwitchProject] = useState(false);
   const [pendingDoor, setPendingDoor] = useState<{ sides: DoorSide[]; kind: "oval" | "rund" | "iloq" } | null>(null);
@@ -271,6 +274,7 @@ export function CalculatorPage({ variant }: { variant: "free" | "pro" }) {
           setPendingDoor(null);
           toast.success(`${name} tillagd i ${project.name.trim() ? `”${project.name.trim()}”` : "projektet"}`);
         }} />
+      <ProDialog open={proOpen} onOpenChange={setProOpen} />
       <ProjectBar project={project} projects={projectStore.list.length} onOpen={() => { setSwitchProject(false); setProjectOpen(true); }} />
       <ProjectPanel project={project} setProject={setProject} store={projectStore} open={projectOpen} onOpenChange={(v) => { setProjectOpen(v); if (!v) setSwitchProject(false); }} closeOnSelect={switchProject} />
       </>}
