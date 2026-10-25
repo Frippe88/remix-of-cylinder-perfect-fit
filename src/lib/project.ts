@@ -2,8 +2,9 @@
 import { formatMm } from "./cylinder";
 
 export type RingKind = "oval" | "rund" | "iloq";
-export type Fitting = "256" | "2356" | "3212" | "18256" | "DAK 7200" | "DAK 7101" | "DAK 752" | "A10.11";
+export type Fitting = "vred" | "tackbricka" | "256" | "2356" | "3212" | "18256" | "DAK 7200" | "DAK 7101" | "DAK 752" | "A10.11";
 export const FITTING_LABEL: Record<Fitting, string> = {
+  vred: "Vred-Cylinder", tackbricka: "Täckbricka-Cylinder",
   "256": "256 behör", "2356": "2356 behör", "3212": "3212 behör", "18256": "18256 behör",
   "DAK 7200": "DAK 7200 behör", "DAK 7101": "DAK 7101 behör", "DAK 752": "DAK 752 behör",
   "A10.11": "A10.11 monteringskit",
@@ -38,7 +39,8 @@ export function fittingOptions(variant: "free" | "pro", cylinder: "standard" | "
   if (variant !== "pro") return [];
   if (cylinder === "round") return brand === "ASSA ABLOY" ? ["3212"] : brand === "dormakaba / DORMA" ? ["DAK 752"] : [];
   if (type === "double") return cylinder === "standard" ? ["18256"] : ["A10.11"];
-  return cylinder === "standard" ? ["256", "2356", "DAK 7200", "DAK 7101"] : ["256", "2356"];
+  // Enkelcylinder: fabrikatsneutralt – låssmeden väljer själv märke.
+  return ["vred", "tackbricka"];
 }
 export function canSelectFitting(variant: "free" | "pro", cylinder: "standard" | "round" | "iloq", type: "single" | "double", brand?: string): boolean {
   return fittingOptions(variant, cylinder, type, brand).length > 0;
@@ -158,10 +160,12 @@ export function purchaseList(t: Totals): PurchaseSection[] {
   ringEntries.forEach((r) => add(parts, ringLabel(r), r.count));
   t.extenders.forEach((e) => add(parts, `${formatMm(e.size)} förlängare${e.kind === "rund" ? " rund" : ""}`, e.count));
   const items = (m: Map<string, number>) => [...m].map(([text, count]) => ({ count, text }));
+  const extTotal = t.extenders.reduce((n, e) => n + e.count, 0);
   return [
-    { title: "Färdiga behör", hint: "Hela satser – ringen ingår", items: items(ready) },
+    { title: "Färdiga behör", hint: "Behör med ring – samma ring räknas ihop", items: items(ready) },
     { title: "Behör, plocka själv", hint: "Ringen ingår inte – ta ringen under Lösa delar", items: items(loose) },
     { title: "Lösa delar", hint: "Ringar och förlängare", items: items(parts) },
+    { title: "Förlängare totalt", hint: "Alla dörrar", items: extTotal ? [{ count: extTotal, text: "förlängare totalt" }] : [] },
   ].filter((s) => s.items.length);
 }
 
