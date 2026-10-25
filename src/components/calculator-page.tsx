@@ -40,13 +40,13 @@ const CYLINDER_OPTIONS = [
     id: "standard" as const,
     name: "Oval cylinder",
     mm: STANDARD_CYLINDER_MM,
-    hint: "Vanlig nyckelcylinder med oval profil, kallas också euro- eller systemcylinder. Öppnas med en nyckel med tandat blad.",
+    hint: "Vanlig oval nyckelcylinder – kallas också euro- eller systemcylinder.",
   },
   {
     id: "round" as const,
     name: "Rund cylinder",
     mm: ROUND_CYLINDER_MM,
-    hint: "Cylinder med rund profil. Använder egna ringar (8mm och 13mm) och 10mm förlängare.",
+    hint: "Rund profil – egna ringar och 10mm förlängare.",
   },
   {
     id: "iloq" as const,
