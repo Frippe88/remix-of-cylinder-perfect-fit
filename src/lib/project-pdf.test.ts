@@ -22,7 +22,8 @@ describe("behör i PDF", () => {
     await projectPdf(project, false);
     expect(printed).toContain("256 behör (11mm ring)");
     expect(printed).toContain("2356 behör (11mm ring)");
-    expect(printed).toContain("Behörssatser");
+    expect(printed).toContain("Oval cylinder");
+    expect(printed).toContain("ENKELCYLINDER");
     expect(printed.some((line) => line.startsWith("Utsida: 256 behör (11mm ring)"))).toBe(true);
     expect(printed.some((line) => line.startsWith("Utsida: 2356 behör (11mm ring)"))).toBe(true);
     expect(printed.some((line) => line.includes("dörrdjup"))).toBe(false);
