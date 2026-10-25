@@ -4,7 +4,7 @@ import { ArrowDown, ArrowUp, Check, ChevronDown, ChevronsRight, ClipboardCopy, C
 import { InfoSheetRow } from "@/components/info-sheet-row";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from "@/components/ui/sheet";
-import { clearDoors, doorsText, doorsToPick, FITTING_LABEL, fittingForSide, fittingRingText, isIloqInner, ringName, KIND_LABEL, projectText, projectTotals, RING_HAS_SIDE, setDoorSide, totalsText, type Door, type Project } from "@/lib/project";
+import { clearDoors, doorsText, doorsToPick, FITTING_LABEL, fittingForSide, fittingRingText, isIloqInner, ringName, KIND_LABEL, projectText, projectTotals, purchaseList, RING_HAS_SIDE, setDoorSide, totalsText, type Door, type Project } from "@/lib/project";
 import { sideChip } from "@/components/pick-list-button";
 import { CONTACT_EMAIL } from "@/components/contact-form";
 import { formatMm } from "@/lib/cylinder";
