@@ -1,7 +1,7 @@
 import { useState, type ReactNode } from "react";
 import { AlertTriangle, ArrowDown, ArrowUp, Check, ClipboardCopy, ClipboardList, Disc3, FolderOpen, FolderPlus, Layers, Wrench } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { ROUND_NO_UNDERCUT_RINGS, calculate, formatMm, type Combination } from "@/lib/cylinder";
+import { ROUND_NO_UNDERCUT_RINGS, calculate, describeDeviation, formatMm, formatSigned, type Combination } from "@/lib/cylinder";
 import { FITTING_LABEL, fittingForSide, fittingRingText, isLooseFitting, ringName, type DoorSide, type Fitting } from "@/lib/project";
 
 export type PickSide = { label: string | null; depth: number | null; selected: Combination | null };
@@ -187,6 +187,10 @@ export function PickListButton({ sides, ext, rings, insideRings = rings, insideE
                 {formatMm(p.c.ring)}
               </span>
               {isInner(p.label) && <span className="text-xs font-semibold text-foreground">iLOQ innerring (med skruvhål)</span>}
+            </Row>
+            <Row caption="Utstick" icon={p.c.deviation === 0 ? <Check className="size-3.5" /> : p.c.deviation > 0 ? <ArrowUp className="size-3.5" /> : <ArrowDown className="size-3.5" />}>
+              <span className={`inline-flex items-center rounded-md px-2 py-1 font-mono text-sm font-bold ${p.c.deviation === 0 ? "bg-success-soft text-success" : "bg-muted text-foreground"}`}>{formatSigned(p.c.deviation)}</span>
+              <span className="text-xs font-medium text-foreground/80">{describeDeviation(p.c.deviation)}</span>
             </Row>
             {(() => {
               const sideFit = fittingForSide(fitting, p.label);
