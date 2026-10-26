@@ -28,6 +28,7 @@ import {
   ROUND_EXTENDER_SIZES,
   ROUND_RING_HEIGHTS,
   ASSA_S_BRAND,
+  ASSA_ROUND_BRAND,
   ASSA_S_RING_HEIGHTS,
   roundRingHeights,
   type Combination,
@@ -61,7 +62,7 @@ const CYLINDER_OPTIONS = [
 
 type Cyl = "standard" | "round" | "iloq";
 
-const ROUND_BRANDS = ["ASSA ABLOY", ASSA_S_BRAND, "dormakaba / DORMA", "EVVA", "Annat fabrikat"] as const;
+const ROUND_BRANDS = [ASSA_ROUND_BRAND, ASSA_S_BRAND, "dormakaba / DORMA", "EVVA", "Annat fabrikat"] as const;
 
 export function CalculatorPage({ variant }: { variant: "free" | "pro" }) {
   const [type, setType] = useState<"single" | "double">("single");
@@ -94,6 +95,7 @@ export function CalculatorPage({ variant }: { variant: "free" | "pro" }) {
   const insideBaseMm = cylinderBaseMm(cyl, "inside", type === "double", brand);
   const iloqDouble = cyl === "iloq" && type === "double";
   const isAssaS = isRound && brand === ASSA_S_BRAND;
+  const isAssaRound = isRound && brand === ASSA_ROUND_BRAND;
   const ringValues = isRound ? roundRingHeights(brand) : cyl === "iloq" ? [...RING_HEIGHTS, ...ILOQ_RING_HEIGHTS] : [...RING_HEIGHTS];
   const extValues = isRound ? [...ROUND_EXTENDER_SIZES] : [...EXTENDER_SIZES];
   const ext = isRound ? roundExt : stdExt;
