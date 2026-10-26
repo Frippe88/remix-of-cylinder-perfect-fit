@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { AlertTriangle, ArrowDown, ArrowUp, Check, ChevronDown, ChevronUp, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import {
+import { ROUND_NO_UNDERCUT_RINGS,
   calculate, filterByMode, describeDeviation, formatMm, formatSigned,
   TOLERANCE_MIN, TOLERANCE_MAX, type Combination, type ViewMode,
 } from "@/lib/cylinder";
