@@ -218,9 +218,9 @@ export function CalculatorPage({ variant }: { variant: "free" | "pro" }) {
                   </span>
                   <span className="mt-1 block">
                     {isAssaS
-                      ? "Gäller Triton, Neptun, dp och Combi med S i namnet (t.ex. 48S12) och behör 3211S/3212S. Ringen finns bara i 15mm – resten justeras med 10mm förlängare."
+                      ? "Gäller Triton, Neptun, dp och Combi med S i namnet (t.ex. 49S11, 59S12) och behör 3211S/3212S. Ringen finns bara i 15mm – resten justeras med 10mm förlängare."
                       : isAssaRound
-                      ? "Gäller vanlig rund ASSA-cylinder utan S i namnet (t.ex. 4812). Ringen är inställbar och låses i 8 eller 13mm med stoppskruv. Råcylindern är 31mm, men cylinderhylsan (koppen) som sitter på bygger ut den till 33mm. Därför skiljer sig måttet – det är inget fel."
+                      ? "Gäller rund ASSA-cylinder utan S i namnet – d12 1211 (enkel), 1212 (dubbel), äldre 4811/4812. Ringen är inställbar och låses i 8 eller 13mm med stoppskruv. Råcylindern är 31mm, men cylinderhylsan (koppen) bygger ut den till 33mm. Därför skiljer sig måttet – det är inget fel."
                       : brand === "dormakaba / DORMA" || brand === "EVVA"
                         ? `${brand === "EVVA" ? "EVVA" : "dormakaba"} har ingen kopp eller hylsa som bygger ut – cylindern monteras direkt mot låshuset och ringen låses med stoppskruv. 31mm är rätt mått.`
                         : "Standardmått för rund cylinder utan kopp eller hylsa."}
