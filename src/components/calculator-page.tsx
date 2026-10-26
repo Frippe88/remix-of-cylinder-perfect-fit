@@ -1,6 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { GUIDES } from "@/lib/guides";
-import { ArrowRight, BookOpen, Check, CircleHelp, FolderOpen, Info, KeyRound, Minus, Moon, Package, Plus, ShieldCheck, Sun } from "lucide-react";
+import { ArrowRight, BookOpen, Check, ChevronRight, CircleHelp, FolderOpen, Info, KeyRound, Minus, Moon, Package, Plus, ShieldCheck, Sun } from "lucide-react";
 import { Dialog, DialogClose, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { useEffect, useState } from "react";
 import { CylinderResults, ModePicker } from "@/components/cylinder-results";
@@ -8,6 +8,7 @@ import type { ViewMode } from "@/lib/cylinder";
 import { PickListButton } from "@/components/pick-list-button";
 import { ProjectBar, ProjectPanel, useProject } from "@/components/project-panel";
 import { InfoSheetRow } from "@/components/info-sheet-row";
+import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { ProDialog } from "@/components/pro-dialog";
 import { fittingOptions, nextDoorName, type DoorSide, type Fitting } from "@/lib/project";
 import { DoorNameDialog } from "@/components/door-name-dialog";
@@ -212,20 +213,49 @@ export function CalculatorPage({ variant }: { variant: "free" | "pro" }) {
                     <option key={b} value={b}>{b}</option>
                   ))}
                 </select>
-                <span className="mt-2 block rounded-lg border-l-4 border-accent bg-accent/10 px-3 py-2.5 text-sm font-medium leading-snug text-foreground">
-                  <span className="block font-bold">
-                    {isAssaS ? "Ringar: bara 15mm · räknas med 33mm" : isAssaRound ? "Ringar: 8mm och 13mm · räknas med 33mm" : `${brand === "Annat fabrikat" ? "Annat fabrikat" : brand === "EVVA" ? "EVVA" : "dormakaba"} räknas med 31mm`}
-                  </span>
-                  <span className="mt-1 block">
-                    {isAssaS
-                      ? "Välj denna om cylindern har S i namnet (t.ex. 49S11, 59S12), behör 3211S/3212S. Resten tas med 10mm förlängare. Varför 33mm? Cylindern är 31mm, men hylsan (koppen) bygger ut den 2mm."
-                      : isAssaRound
-                      ? "Välj denna om cylindern saknar S i namnet (t.ex. 1211, 1212, 4811, 4812). Varför 33mm? Cylindern är 31mm, men hylsan (koppen) bygger ut den 2mm – det är inget fel. 8mm ring räknas aldrig på minus – stoppskruven fäster inte."
-                      : brand === "dormakaba / DORMA" || brand === "EVVA"
-                        ? `${brand === "EVVA" ? "EVVA" : "dormakaba"} har ingen kopp eller hylsa som bygger ut – cylindern monteras direkt mot låshuset och ringen låses med stoppskruv. 31mm är rätt mått. 8mm ring räknas aldrig på minus – stoppskruven fäster inte.`
-                        : "Standardmått för rund cylinder utan kopp eller hylsa. 8mm ring räknas aldrig på minus – stoppskruven fäster inte."}
-                  </span>
-                </span>
+                <Sheet>
+                  <SheetTrigger asChild>
+                    <button type="button" className="mt-2 flex w-full items-center gap-2 rounded-lg border-l-4 border-accent bg-accent/10 px-3 py-2.5 text-left text-sm font-bold leading-snug text-foreground transition hover:bg-accent/15">
+                      <span className="min-w-0 flex-1">
+                        {isAssaS ? "Ringar: bara 15mm · räknas med 33mm" : isAssaRound ? "Ringar: 8mm och 13mm · räknas med 33mm" : `${brand === "Annat fabrikat" ? "Annat fabrikat" : brand === "EVVA" ? "EVVA" : "dormakaba"} räknas med 31mm`}
+                      </span>
+                      <span className="flex shrink-0 items-center gap-1 text-xs font-semibold text-accent">
+                        Läs mer
+                        <ChevronRight className="size-4" aria-hidden />
+                      </span>
+                    </button>
+                  </SheetTrigger>
+                  <SheetContent side="bottom" className="max-h-[85dvh] overflow-y-auto rounded-t-2xl">
+                    <SheetHeader className="text-left">
+                      <SheetTitle className="text-lg font-bold">Fabrikat – vad som gäller</SheetTitle>
+                      <SheetDescription>{brand}</SheetDescription>
+                    </SheetHeader>
+                    <div className="mx-auto mt-2 w-full max-w-xl space-y-3 pb-6 text-sm leading-snug">
+                      <p className="rounded-lg bg-muted px-3 py-2.5 font-bold">
+                        {isAssaS ? "Ringar: bara 15mm · räknas med 33mm" : isAssaRound ? "Ringar: 8mm och 13mm · räknas med 33mm" : "Räknas med 31mm"}
+                      </p>
+                      {isAssaS && (
+                        <>
+                          <p>Välj denna om cylindern har S i namnet (t.ex. 49S11, 59S12), behör 3211S/3212S. Resten tas med 10mm förlängare.</p>
+                          <p><span className="font-bold">Varför 33mm?</span> Cylindern är 31mm, men hylsan (koppen) bygger ut den 2mm – det är inget fel.</p>
+                        </>
+                      )}
+                      {isAssaRound && (
+                        <>
+                          <p>Välj denna om cylindern saknar S i namnet (t.ex. 1211, 1212, 4811, 4812).</p>
+                          <p><span className="font-bold">Varför 33mm?</span> Cylindern är 31mm, men hylsan (koppen) bygger ut den 2mm – det är inget fel.</p>
+                          <p><span className="font-bold">8mm ring räknas aldrig på minus.</span> Stoppskruven fäster inte när cylindern sticker in – kalkylatorn bygger istället ut med 13mm ring och förlängare.</p>
+                        </>
+                      )}
+                      {!isAssaS && !isAssaRound && (
+                        <>
+                          <p>{brand === "EVVA" ? "EVVA" : brand === "dormakaba / DORMA" ? "dormakaba" : "Fabrikatet"} har ingen kopp eller hylsa som bygger ut – cylindern monteras direkt mot låshuset och ringen låses med stoppskruv. 31mm är rätt mått.</p>
+                          <p><span className="font-bold">8mm ring räknas aldrig på minus.</span> Stoppskruven fäster inte när cylindern sticker in – kalkylatorn bygger istället ut med 13mm ring och förlängare.</p>
+                        </>
+                      )}
+                    </div>
+                  </SheetContent>
+                </Sheet>
               </label>
             )}
             <div className="grid grid-cols-2 gap-1 rounded-lg bg-muted p-1">
