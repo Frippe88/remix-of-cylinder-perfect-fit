@@ -27,6 +27,9 @@ import {
   ROUND_CYLINDER_MM,
   ROUND_EXTENDER_SIZES,
   ROUND_RING_HEIGHTS,
+  ASSA_S_BRAND,
+  ASSA_S_RING_HEIGHTS,
+  roundRingHeights,
   type Combination,
 } from "@/lib/cylinder";
 
@@ -58,7 +61,7 @@ const CYLINDER_OPTIONS = [
 
 type Cyl = "standard" | "round" | "iloq";
 
-const ROUND_BRANDS = ["ASSA ABLOY", "dormakaba / DORMA", "EVVA", "Annat fabrikat"] as const;
+const ROUND_BRANDS = ["ASSA ABLOY", ASSA_S_BRAND, "dormakaba / DORMA", "EVVA", "Annat fabrikat"] as const;
 
 export function CalculatorPage({ variant }: { variant: "free" | "pro" }) {
   const [type, setType] = useState<"single" | "double">("single");
@@ -90,11 +93,12 @@ export function CalculatorPage({ variant }: { variant: "free" | "pro" }) {
   const baseMm = cylinderBaseMm(cyl, "outside", type === "double", brand);
   const insideBaseMm = cylinderBaseMm(cyl, "inside", type === "double", brand);
   const iloqDouble = cyl === "iloq" && type === "double";
-  const ringValues = isRound ? [...ROUND_RING_HEIGHTS] : cyl === "iloq" ? [...RING_HEIGHTS, ...ILOQ_RING_HEIGHTS] : [...RING_HEIGHTS];
+  const isAssaS = isRound && brand === ASSA_S_BRAND;
+  const ringValues = isRound ? roundRingHeights(brand) : cyl === "iloq" ? [...RING_HEIGHTS, ...ILOQ_RING_HEIGHTS] : [...RING_HEIGHTS];
   const extValues = isRound ? [...ROUND_EXTENDER_SIZES] : [...EXTENDER_SIZES];
   const ext = isRound ? roundExt : stdExt;
   const setExt = isRound ? setRoundExt : setStdExt;
-  const activeRings = isRound ? roundRings : rings;
+  const activeRings = isAssaS ? [...ASSA_S_RING_HEIGHTS] : isRound ? roundRings : rings;
   const setActiveRings = isRound ? setRoundRings : setRings;
   // Dubbel iLOQ: insidan kräver iLOQ:s egna innerringar (27/30/33 mm) med skruvhål.
   const insideRings = iloqDouble ? activeRings.filter((r) => (ILOQ_RING_HEIGHTS as readonly number[]).includes(r)) : activeRings;
