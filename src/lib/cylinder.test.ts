@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { calculate, deviationOf, filterByMode, EXTENDER_SIZES, RING_HEIGHTS, ILOQ_RING_HEIGHTS, ILOQ_CYLINDER_MM, ROUND_CYLINDER_MM, ASSA_ROUND_CYLINDER_MM } from "./cylinder";
+import { calculate, deviationOf, filterByMode, EXTENDER_SIZES, RING_HEIGHTS, ILOQ_RING_HEIGHTS, ILOQ_CYLINDER_MM, ROUND_CYLINDER_MM, ASSA_ROUND_CYLINDER_MM, ASSA_ROUND_BRAND } from "./cylinder";
 
 const all = { extenders: [...EXTENDER_SIZES], rings: [...RING_HEIGHTS] };
 
@@ -145,7 +145,7 @@ describe("iLOQ dubbelcylinder", () => {
     expect(cylinderBaseMm("standard", "inside", true)).toBe(31);
   });
   it("endast ASSA ABLOY rund räknas med 33mm, övriga fabrikat 31mm", () => {
-    expect(cylinderBaseMm("round", "outside", false, "ASSA ABLOY")).toBe(33);
+    expect(cylinderBaseMm("round", "outside", false, ASSA_ROUND_BRAND)).toBe(33);
     expect(cylinderBaseMm("round", "outside", false, "EVVA")).toBe(31);
     expect(cylinderBaseMm("round", "inside", true, "dormakaba / DORMA")).toBe(ROUND_CYLINDER_MM);
   });
@@ -158,11 +158,12 @@ describe("dubbel iLOQ insida utan förlängare", () => {
   });
 });
 
-import { roundRingHeights as _rrh, ASSA_S_BRAND as _S, cylinderBaseMm as _cb } from "./cylinder";
+import { roundRingHeights as _rrh, ASSA_S_BRAND as _S, ASSA_ROUND_BRAND as _R, cylinderBaseMm as _cb } from "./cylinder";
 describe("ASSA S-serie", () => {
   it("bara 15mm ring och 33mm bas", () => {
     expect(_rrh(_S)).toEqual([15]);
-    expect(_rrh("ASSA ABLOY")).toEqual([8, 13]);
+    expect(_rrh(_R)).toEqual([8, 13]);
     expect(_cb("round", "outside", false, _S)).toBe(33);
+    expect(_cb("round", "outside", false, _R)).toBe(33);
   });
 });
