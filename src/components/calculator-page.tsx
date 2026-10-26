@@ -27,6 +27,9 @@ import {
   ROUND_CYLINDER_MM,
   ROUND_EXTENDER_SIZES,
   ROUND_RING_HEIGHTS,
+  ASSA_S_BRAND,
+  ASSA_S_RING_HEIGHTS,
+  roundRingHeights,
   type Combination,
 } from "@/lib/cylinder";
 
@@ -58,7 +61,7 @@ const CYLINDER_OPTIONS = [
 
 type Cyl = "standard" | "round" | "iloq";
 
-const ROUND_BRANDS = ["ASSA ABLOY", "dormakaba / DORMA", "EVVA", "Annat fabrikat"] as const;
+const ROUND_BRANDS = ["ASSA ABLOY", ASSA_S_BRAND, "dormakaba / DORMA", "EVVA", "Annat fabrikat"] as const;
 
 export function CalculatorPage({ variant }: { variant: "free" | "pro" }) {
   const [type, setType] = useState<"single" | "double">("single");
@@ -90,11 +93,12 @@ export function CalculatorPage({ variant }: { variant: "free" | "pro" }) {
   const baseMm = cylinderBaseMm(cyl, "outside", type === "double", brand);
   const insideBaseMm = cylinderBaseMm(cyl, "inside", type === "double", brand);
   const iloqDouble = cyl === "iloq" && type === "double";
-  const ringValues = isRound ? [...ROUND_RING_HEIGHTS] : cyl === "iloq" ? [...RING_HEIGHTS, ...ILOQ_RING_HEIGHTS] : [...RING_HEIGHTS];
+  const isAssaS = isRound && brand === ASSA_S_BRAND;
+  const ringValues = isRound ? roundRingHeights(brand) : cyl === "iloq" ? [...RING_HEIGHTS, ...ILOQ_RING_HEIGHTS] : [...RING_HEIGHTS];
   const extValues = isRound ? [...ROUND_EXTENDER_SIZES] : [...EXTENDER_SIZES];
   const ext = isRound ? roundExt : stdExt;
   const setExt = isRound ? setRoundExt : setStdExt;
-  const activeRings = isRound ? roundRings : rings;
+  const activeRings = isAssaS ? [...ASSA_S_RING_HEIGHTS] : isRound ? roundRings : rings;
   const setActiveRings = isRound ? setRoundRings : setRings;
   // Dubbel iLOQ: insidan kräver iLOQ:s egna innerringar (27/30/33 mm) med skruvhål.
   const insideRings = iloqDouble ? activeRings.filter((r) => (ILOQ_RING_HEIGHTS as readonly number[]).includes(r)) : activeRings;
@@ -208,10 +212,12 @@ export function CalculatorPage({ variant }: { variant: "free" | "pro" }) {
                 </select>
                 <span className="mt-2 block rounded-lg border-l-4 border-accent bg-accent/10 px-3 py-2.5 text-sm font-medium leading-snug text-foreground">
                   <span className="block font-bold">
-                    {brand === "ASSA ABLOY" ? "ASSA ABLOY räknas med 33mm" : `${brand === "Annat fabrikat" ? "Annat fabrikat" : brand === "EVVA" ? "EVVA" : "dormakaba"} räknas med 31mm`}
+                    {isAssaS ? "S-serien räknas med 33mm och fast 15mm ring" : brand === "ASSA ABLOY" ? "ASSA ABLOY räknas med 33mm" : `${brand === "Annat fabrikat" ? "Annat fabrikat" : brand === "EVVA" ? "EVVA" : "dormakaba"} räknas med 31mm`}
                   </span>
                   <span className="mt-1 block">
-                    {brand === "ASSA ABLOY"
+                    {isAssaS
+                      ? "Gäller Triton, Neptun, dp och Combi med S i namnet (t.ex. 48S12) och behör 3211S/3212S. Ringen finns bara i 15mm – resten justeras med 10mm förlängare."
+                      : brand === "ASSA ABLOY"
                       ? "Råcylindern är 31mm, men cylinderhylsan (koppen) som sitter på bygger ut den till 33mm. Därför skiljer sig måttet – det är inget fel."
                       : brand === "dormakaba / DORMA" || brand === "EVVA"
                         ? `${brand === "EVVA" ? "EVVA" : "dormakaba"} har ingen kopp eller hylsa som bygger ut – cylindern monteras direkt mot låshuset och ringen låses med stoppskruv. 31mm är rätt mått.`
