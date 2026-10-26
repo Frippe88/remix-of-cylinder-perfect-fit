@@ -283,13 +283,17 @@ export function CalculatorPage({ variant }: { variant: "free" | "pro" }) {
               </div>
             )}
             {iloqDouble && (
-              <div role="note" className="flex gap-3 rounded-xl border border-accent/50 bg-accent/10 p-3 text-sm">
-                <Info className="mt-0.5 size-5 shrink-0 text-accent" aria-hidden />
-                <p>
-                  <span className="font-bold">iLOQ dubbelcylinder: +{ILOQ_DOUBLE_INSIDE_EXTRA_MM}mm på insidan.</span>{" "}
-                  <span className="text-muted-foreground">Kitets två monteringsbrickor (3mm styck) bygger ut cylindern, så insidan räknas med {insideBaseMm}mm istället för {ILOQ_CYLINDER_MM}mm.</span>
-                </p>
-              </div>
+              <InfoPopupRow
+                label={<>iLOQ dubbelcylinder: +{ILOQ_DOUBLE_INSIDE_EXTRA_MM}mm på insidan</>}
+                title="iLOQ dubbelcylinder"
+                description="Så räknas insidan"
+              >
+                <div className="space-y-3 text-sm leading-snug">
+                  <p className="rounded-lg bg-muted px-3 py-2.5 font-bold">Insidan räknas med {insideBaseMm}mm istället för {ILOQ_CYLINDER_MM}mm.</p>
+                  <p>Kitets två monteringsbrickor (3mm styck) bygger ut cylindern {ILOQ_DOUBLE_INSIDE_EXTRA_MM}mm på insidan. Utsidan räknas som vanligt med {ILOQ_CYLINDER_MM}mm.</p>
+                  <p><span className="font-bold">A10.11-monteringskitet</span> läggs alltid med automatiskt på insidan, och förlängare planeras bara på utsidan.</p>
+                </div>
+              </InfoPopupRow>
             )}
             <Dialog>
               <DialogTrigger asChild>
