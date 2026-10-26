@@ -157,3 +157,12 @@ describe("dubbel iLOQ insida utan förlängare", () => {
     expect(r[0]).toMatchObject({ ring: 30, extenderCount: 0, deviation: 0 });
   });
 });
+
+import { roundRingHeights as _rrh, ASSA_S_BRAND as _S, cylinderBaseMm as _cb } from "./cylinder";
+describe("ASSA S-serie", () => {
+  it("bara 15mm ring och 33mm bas", () => {
+    expect(_rrh(_S)).toEqual([15]);
+    expect(_rrh("ASSA ABLOY")).toEqual([8, 13]);
+    expect(_cb("round", "outside", false, _S)).toBe(33);
+  });
+});
