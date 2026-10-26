@@ -4,9 +4,9 @@ export const ILOQ_CYLINDER_MM = 40;
 // iLOQ dubbelcylinder: två 3 mm monteringsbrickor bygger ut cylindern på insidan.
 export const ILOQ_DOUBLE_INSIDE_EXTRA_MM = 6;
 
-export const ASSA_S_BRAND = "ASSA ABLOY S-serie (Triton/Neptun)";
-// Vanlig rund ASSA-cylinder utan S i namnet (d12 1211/1212, äldre 4811/4812) – inställbar ring, 33mm med hylsa.
-export const ASSA_ROUND_BRAND = "ASSA ABLOY d12 (inställbar ring)";
+export const ASSA_S_BRAND = "ASSA ABLOY med S – ring 15mm";
+// Vanlig rund ASSA-cylinder utan S i namnet (d12 1211/1212, äldre 4811/4812) – ringar 8/13mm, 33mm med hylsa.
+export const ASSA_ROUND_BRAND = "ASSA ABLOY utan S – ring 8 / 13mm";
 // S-serien (3211S/3212S) har bara 15 mm ring; justering sker med förlängare.
 export const ASSA_S_RING_HEIGHTS = [15] as const;
 export function roundRingHeights(brand?: string): number[] {
