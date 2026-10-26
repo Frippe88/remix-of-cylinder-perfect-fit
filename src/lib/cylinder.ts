@@ -5,7 +5,7 @@ export const ILOQ_CYLINDER_MM = 40;
 export const ILOQ_DOUBLE_INSIDE_EXTRA_MM = 6;
 
 export const ASSA_S_BRAND = "ASSA ABLOY S-serie (Triton/Neptun)";
-// Vanlig rund ASSA-cylinder utan S i namnet (t.ex. 4812) – inställbar ring, 33mm med hylsa.
+// Vanlig rund ASSA-cylinder utan S i namnet (d12 1211/1212, äldre 4811/4812) – inställbar ring, 33mm med hylsa.
 export const ASSA_ROUND_BRAND = "ASSA ABLOY d12 (inställbar ring)";
 // S-serien (3211S/3212S) har bara 15 mm ring; justering sker med förlängare.
 export const ASSA_S_RING_HEIGHTS = [15] as const;
