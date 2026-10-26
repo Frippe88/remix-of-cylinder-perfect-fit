@@ -42,7 +42,11 @@ export interface CalcInput {
   rings: number[];
   baseMm?: number; // cylinderlängd, standard 31 mm (iLOQ 40 mm)
   relaxed?: boolean; // true = ge alltid bästa resultat även utanför toleransen (rund cylinder)
+  noUndercutRings?: number[]; // ringar som aldrig får ha negativ avvikelse (cylindern får inte sticka in)
 }
+
+/** Rund 8mm ring: stoppskruven når inte godset om cylindern sticker in – endast 0 eller plus. */
+export const ROUND_NO_UNDERCUT_RINGS = [8] as const;
 
 // Arbeta i tiondels millimeter för att undvika flyttalsfel.
 const toT = (mm: number) => Math.round(mm * 10);

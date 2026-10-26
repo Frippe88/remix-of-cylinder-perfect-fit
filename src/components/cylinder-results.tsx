@@ -43,9 +43,9 @@ export function CylinderResults({ title, depth, ext, rings, baseMm, relaxed = fa
 } & Sel) {
   const results = useMemo(() => {
     if (depth === null) return [];
-    const strict = calculate({ depth, extenders: ext, rings, baseMm, relaxed });
+    const strict = calculate({ depth, extenders: ext, rings, baseMm, relaxed, noUndercutRings: relaxed ? [...ROUND_NO_UNDERCUT_RINGS] : [] });
     // Fallback: om inget ligger inom toleransen, visa ändå bästa möjliga (med varning).
-    if (strict.length === 0 && !relaxed) return calculate({ depth, extenders: ext, rings, baseMm, relaxed: true });
+    if (strict.length === 0 && !relaxed) return calculate({ depth, extenders: ext, rings, baseMm, relaxed: true, noUndercutRings: relaxed ? [...ROUND_NO_UNDERCUT_RINGS] : [] });
     return strict;
   }, [depth, ext, rings, baseMm, relaxed]);
   const best = filterByMode(results, mode)[0] ?? results[0];
