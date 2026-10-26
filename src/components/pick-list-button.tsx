@@ -1,7 +1,7 @@
 import { useState, type ReactNode } from "react";
 import { AlertTriangle, ArrowDown, ArrowUp, Check, ClipboardCopy, ClipboardList, Disc3, FolderOpen, FolderPlus, Layers, Wrench } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { calculate, formatMm, type Combination } from "@/lib/cylinder";
+import { ROUND_NO_UNDERCUT_RINGS, calculate, formatMm, type Combination } from "@/lib/cylinder";
 import { FITTING_LABEL, fittingForSide, fittingRingText, isLooseFitting, ringName, type DoorSide, type Fitting } from "@/lib/project";
 
 export type PickSide = { label: string | null; depth: number | null; selected: Combination | null };
@@ -10,8 +10,8 @@ export const sameCombo = (a: Combination | null | undefined, b: Combination | nu
   !!a && !!b && a.ring === b.ring && a.extenders.join(",") === b.extenders.join(",");
 
 function bestFor(depth: number, ext: number[], rings: number[], baseMm: number, relaxed: boolean): Combination | undefined {
-  const strict = calculate({ depth, extenders: ext, rings, baseMm, relaxed });
-  if (strict.length === 0 && !relaxed) return calculate({ depth, extenders: ext, rings, baseMm, relaxed: true })[0];
+  const strict = calculate({ depth, extenders: ext, rings, baseMm, relaxed, noUndercutRings: relaxed ? [...ROUND_NO_UNDERCUT_RINGS] : [] });
+  if (strict.length === 0 && !relaxed) return calculate({ depth, extenders: ext, rings, baseMm, relaxed: true, noUndercutRings: relaxed ? [...ROUND_NO_UNDERCUT_RINGS] : [] })[0];
   return strict[0];
 }
 

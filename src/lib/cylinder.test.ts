@@ -167,3 +167,12 @@ describe("ASSA S-serie", () => {
     expect(_cb("round", "outside", false, _R)).toBe(33);
   });
 });
+
+describe("rund 8mm ring", () => {
+  it("får aldrig sticka in (bara 0 eller plus)", () => {
+    const r = calculate({ depth: 26, extenders: [10], rings: [8, 13], baseMm: 33, relaxed: true, noUndercutRings: [8] });
+    expect(r[0]).toMatchObject({ ring: 13, extenders: [10], deviation: 4 });
+    expect(r.some((c) => c.ring === 8 && c.deviation < 0)).toBe(false);
+    expect(calculate({ depth: 25, extenders: [10], rings: [8], baseMm: 33, relaxed: true, noUndercutRings: [8] })[0]!.deviation).toBe(0);
+  });
+});

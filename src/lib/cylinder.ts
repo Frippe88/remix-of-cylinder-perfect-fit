@@ -42,7 +42,11 @@ export interface CalcInput {
   rings: number[];
   baseMm?: number; // cylinderlängd, standard 31 mm (iLOQ 40 mm)
   relaxed?: boolean; // true = ge alltid bästa resultat även utanför toleransen (rund cylinder)
+  noUndercutRings?: number[]; // ringar som aldrig får ha negativ avvikelse (cylindern får inte sticka in)
 }
+
+/** Rund 8mm ring: stoppskruven når inte godset om cylindern sticker in – endast 0 eller plus. */
+export const ROUND_NO_UNDERCUT_RINGS = [8] as const;
 
 // Arbeta i tiondels millimeter för att undvika flyttalsfel.
 const toT = (mm: number) => Math.round(mm * 10);
@@ -64,7 +68,8 @@ export function compareCombinations(a: Combination, b: Combination): number {
 }
 
 export function calculate(input: CalcInput): Combination[] {
-  const { depth, extenders, rings, baseMm = STANDARD_CYLINDER_MM, relaxed = false } = input;
+  const { depth, extenders, rings, baseMm = STANDARD_CYLINDER_MM, relaxed = false, noUndercutRings = [] } = input;
+  const noUnder = new Set(noUndercutRings.map(toT));
   if (!Number.isFinite(depth) || depth < 0) return [];
   const sizes = [...new Set(extenders.map(toT))].filter((s) => s > 0).sort((a, b) => b - a);
   const ringT = [...new Set(rings.map(toT))].filter((r) => r > 0);
@@ -75,14 +80,14 @@ export function calculate(input: CalcInput): Combination[] {
   // Öka taket stegvis tills minst en kombination hittas (nedre gräns −2 gäller fortfarande).
   let cap = toT(TOLERANCE_MAX);
   for (;;) {
-    const out = calculateWithCap(sizes, ringT, base, cap);
+    const out = calculateWithCap(sizes, ringT, base, cap, noUnder);
     if (out.length > 0 || !relaxed) return out;
     if (cap > toT(200)) return out; // säkerhetsgräns
     cap += toT(2);
   }
 }
 
-function calculateWithCap(sizes: number[], ringT: number[], base: number, cap: number): Combination[] {
+function calculateWithCap(sizes: number[], ringT: number[], base: number, cap: number, noUnder: Set<number>): Combination[] {
   const maxExt = Math.max(...ringT) + cap - base;
   if (maxExt < 0) return [];
 
@@ -107,7 +112,7 @@ function calculateWithCap(sizes: number[], ringT: number[], base: number, cap: n
     const total = set.reduce((s, x) => s + x, 0);
     for (const r of ringT) {
       const dev = base + total - r;
-      if (dev >= toT(TOLERANCE_MIN) && dev <= cap) {
+      if (dev >= (noUnder.has(r) ? 0 : toT(TOLERANCE_MIN)) && dev <= cap) {
         out.push({
           ring: fromT(r),
           extenders: set.map(fromT),

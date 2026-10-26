@@ -220,10 +220,10 @@ export function CalculatorPage({ variant }: { variant: "free" | "pro" }) {
                     {isAssaS
                       ? "Välj denna om cylindern har S i namnet (t.ex. 49S11, 59S12), behör 3211S/3212S. Resten tas med 10mm förlängare. Varför 33mm? Cylindern är 31mm, men hylsan (koppen) bygger ut den 2mm."
                       : isAssaRound
-                      ? "Välj denna om cylindern saknar S i namnet (t.ex. 1211, 1212, 4811, 4812). Varför 33mm? Cylindern är 31mm, men hylsan (koppen) bygger ut den 2mm – det är inget fel."
+                      ? "Välj denna om cylindern saknar S i namnet (t.ex. 1211, 1212, 4811, 4812). Varför 33mm? Cylindern är 31mm, men hylsan (koppen) bygger ut den 2mm – det är inget fel. 8mm ring räknas aldrig på minus – stoppskruven fäster inte."
                       : brand === "dormakaba / DORMA" || brand === "EVVA"
-                        ? `${brand === "EVVA" ? "EVVA" : "dormakaba"} har ingen kopp eller hylsa som bygger ut – cylindern monteras direkt mot låshuset och ringen låses med stoppskruv. 31mm är rätt mått.`
-                        : "Standardmått för rund cylinder utan kopp eller hylsa."}
+                        ? `${brand === "EVVA" ? "EVVA" : "dormakaba"} har ingen kopp eller hylsa som bygger ut – cylindern monteras direkt mot låshuset och ringen låses med stoppskruv. 31mm är rätt mått. 8mm ring räknas aldrig på minus – stoppskruven fäster inte.`
+                        : "Standardmått för rund cylinder utan kopp eller hylsa. 8mm ring räknas aldrig på minus – stoppskruven fäster inte."}
                   </span>
                 </span>
               </label>

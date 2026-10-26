@@ -44,7 +44,7 @@ describe("Plocklista", () => {
       <PickListButton sides={[{ label: null, depth: 45, selected: null }]} ext={[10]} rings={[8, 13]} baseMm={31} relaxed />,
     );
     fireEvent.click(screen.getByRole("button", { name: /Kopiera plocklista/ }));
-    expect(writeText).toHaveBeenCalledWith("8mm ring + 2st 10mm förlängare");
+    expect(writeText).toHaveBeenCalledWith("13mm ring + 3st 10mm förlängare");
   });
 
   it("behörsmenyn säger 'Täckbricka med cylinder (18mm ring)' – utan dubbel-t 'med'", () => {
