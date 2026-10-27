@@ -1,5 +1,5 @@
 // Projekt med flera dörrar – ren logik (lagring sköts i UI via localStorage).
-import { formatMm } from "./cylinder";
+import { formatMm, roundScrewSet } from "./cylinder";
 
 export type RingKind = "oval" | "rund" | "iloq";
 export type Fitting = "vred" | "tackbricka" | "256" | "2356" | "3212" | "18256" | "DAK 7200" | "DAK 7101" | "DAK 752" | "A10.11";
@@ -52,7 +52,7 @@ export function canSelectFitting(variant: "free" | "pro", cylinder: "standard" |
   return fittingOptions(variant, cylinder, type, brand).length > 0;
 }
 export interface DoorSide { label: string | null; depth: number; ring: number; extenders: number[] }
-export interface Door { id: string; name: string; kind: RingKind; done: boolean; sides: DoorSide[]; fitting?: Fitting }
+export interface Door { id: string; name: string; kind: RingKind; done: boolean; sides: DoorSide[]; fitting?: Fitting; brand?: string }
 export interface Project { name: string; doors: Door[] }
 
 export const KIND_LABEL: Record<RingKind, string> = { oval: "oval", rund: "rund", iloq: "iLOQ" };
@@ -182,9 +182,11 @@ export function purchaseList(doors: Door[]): PurchaseSection[] {
   for (const kind of ["oval", "rund", "iloq"] as RingKind[]) {
     const ds = doors.filter((d) => d.kind === kind);
     if (!ds.length) continue;
-    const single = new Map<string, number>(), kits = new Map<string, number>(), double = new Map<string, number>(), ext = new Map<string, number>();
+    const single = new Map<string, number>(), kits = new Map<string, number>(), double = new Map<string, number>(), ext = new Map<string, number>(), screws = new Map<string, number>();
     const ring = (mm: number) => `${formatMm(mm)} ${kind === "rund" ? "rund ring" : "ring"}`;
     for (const d of ds) {
+      const sc = d.sides.length > 1 ? doorScrew(d) : null;
+      if (sc) add(screws, `skruvsats: ${sc.text}`);
       d.sides.forEach((s) => s.extenders.forEach((e) => add(ext, `${formatMm(e)} förlängare`)));
       // Runda cylindrar har inga behörssatser – bara ringar.
       const fitting = kind === "rund" ? undefined : d.fitting;
@@ -210,6 +212,7 @@ export function purchaseList(doors: Door[]): PurchaseSection[] {
       { title: "Enkelcylinder", items: sorted(single) },
       { title: "Dubbelcylinder", items: [...sorted(kits), ...sorted(double)] },
       { title: "Förlängare", items: sorted(ext) },
+      { title: "Skruv", items: sorted(screws) },
     ].filter((g) => g.items.length);
     if (groups.length) sections.push({ title: SECTION_TITLE[kind], groups });
   }
@@ -236,13 +239,22 @@ export function doorTitle(d: Door): string {
   return `${d.name} (${KIND_LABEL[d.kind]}, ${d.sides.length > 1 ? "dubbelcylinder" : "enkelcylinder"})${pair ? `, ${FITTING_LABEL[d.fitting!]}` : ""}`;
 }
 
+export const SINGLE_SCREW_TEXT = "Beror på montage – kalkylatorn kan inte ange exakt skruvlängd vid enkelcylinder.";
+/** Skruv per dörr (bara runda cylindrar med känt fabrikat). */
+export function doorScrew(d: Door): { text: string; warning: boolean } | null {
+  if (d.kind !== "rund" || !d.brand) return null;
+  if (d.sides.length < 2) return roundScrewSet(d.brand, 0) ? { text: SINGLE_SCREW_TEXT, warning: false } : null;
+  return roundScrewSet(d.brand, d.sides.reduce((n, s) => n + s.extenders.length, 0));
+}
+const screwLine = (d: Door) => { const sc = doorScrew(d); return sc ? [`  Skruv: ${sc.text}`] : []; };
+
 export function doorsText(p: Project): string {
-  return p.doors.map((d) => [doorTitle(d), ...d.sides.map((s) => "  " + sideText(s, d.kind, d.fitting, d.sides.length > 1))].join("\n")).join("\n");
+  return p.doors.map((d) => [doorTitle(d), ...d.sides.map((s) => "  " + sideText(s, d.kind, d.fitting, d.sides.length > 1)), ...screwLine(d)].join("\n")).join("\n");
 }
 
 /** Whole project as shareable text: every door, then the full material list. */
 export function projectText(p: Project): string {
-  const doors = p.doors.map((d) => [`${doorTitle(d)}${d.done ? " – monterad" : ""}`, ...d.sides.map((s) => "  " + sideText(s, d.kind, d.fitting, d.sides.length > 1))].join("\n")).join("\n\n");
+  const doors = p.doors.map((d) => [`${doorTitle(d)}${d.done ? " – monterad" : ""}`, ...d.sides.map((s) => "  " + sideText(s, d.kind, d.fitting, d.sides.length > 1)), ...screwLine(d)].join("\n")).join("\n\n");
   return [`${p.name || "Projekt"}`, "", "Dörrar:", doors, "", "Totalt material:", totalsText(p).split("\n").slice(2).join("\n")].join("\n").trim();
 }
 
