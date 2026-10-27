@@ -172,3 +172,15 @@ export function roundScrewSet(brand: string | undefined, extenderCount: number):
   if (brand === "EVVA") return { text: `2 st ${35 + n}mm + 2 st ${60 + n}mm skruv`, warning: false };
   return null;
 }
+
+// Skruv för enkel oval cylinder: medbringarbricka + låskista = 21 mm, minst 10 mm gänga i cylindern.
+export const OVAL_SCREW_LOCK_MM = 21;
+export const OVAL_SCREW_MIN_THREAD_MM = 10;
+export const OVAL_SCREW_CLIP_MM = 63;
+export const OVAL_SCREW_NOTE = "Skruvlängden räknas med monterad medbringarbricka och minst 10mm skruv in i cylindern.";
+export function ovalSingleScrewSet(extenderMm: number): ScrewSet {
+  if (extenderMm <= 0) return { text: "2 st 24mm cylinderskruv", warning: false };
+  const need = OVAL_SCREW_LOCK_MM + extenderMm + OVAL_SCREW_MIN_THREAD_MM;
+  if (need <= OVAL_SCREW_CLIP_MM) return { text: "2 st 63mm klippbar cylinderskruv – kapa till rätt längd", warning: false };
+  return { text: `${formatMm(extenderMm)} förlängning – 63mm räcker inte, längre klippbar cylinderskruv krävs (minst ${formatMm(need)})`, warning: true };
+}
