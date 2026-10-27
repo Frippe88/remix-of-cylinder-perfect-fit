@@ -1,7 +1,7 @@
 import { useState, type ReactNode } from "react";
 import { AlertTriangle, ArrowDown, ArrowUp, Check, ClipboardCopy, ClipboardList, Disc3, FolderOpen, FolderPlus, Layers, Wrench } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { ROUND_NO_UNDERCUT_RINGS, calculate, describeDeviation, formatMm, formatSigned, type Combination } from "@/lib/cylinder";
+import { ROUND_NO_UNDERCUT_RINGS, calculate, roundScrewSet, describeDeviation, formatMm, formatSigned, type Combination } from "@/lib/cylinder";
 import { FITTING_LABEL, fittingForSide, fittingRingText, isLooseFitting, ringName, type DoorSide, type Fitting } from "@/lib/project";
 
 export type PickSide = { label: string | null; depth: number | null; selected: Combination | null };
@@ -80,12 +80,12 @@ const FITTING_MENU: Record<Fitting, string> = {
   "A10.11": "A10.11 monteringskit (iLOQ dubbelcylinder)",
 };
 
-export function PickListButton({ sides, ext, rings, insideRings = rings, insideExt = ext, baseMm, insideBaseMm = baseMm, relaxed, onSave, projectName, projectDoors = 0, projectCount = 1, onOpenProject, fitting = null, onFittingChange, fittingChoices = ["256", "2356"], iloqDouble = false }: {
+export function PickListButton({ sides, ext, rings, insideRings = rings, insideExt = ext, baseMm, insideBaseMm = baseMm, relaxed, onSave, projectName, projectDoors = 0, projectCount = 1, onOpenProject, fitting = null, onFittingChange, fittingChoices = ["256", "2356"], iloqDouble = false, screwBrand }: {
   sides: PickSide[]; ext: number[]; rings: number[]; insideRings?: number[]; insideExt?: number[]; baseMm: number; insideBaseMm?: number; relaxed: boolean;
   onSave?: ((sides: DoorSide[]) => void) | undefined;
   projectName?: string; projectDoors?: number; projectCount?: number; onOpenProject?: () => void;
   fitting?: Fitting | null; onFittingChange?: ((value: Fitting | null) => void) | undefined;
-  fittingChoices?: Fitting[]; iloqDouble?: boolean;
+  fittingChoices?: Fitting[]; iloqDouble?: boolean; screwBrand?: string | undefined;
 }) {
   const savedTo = (projectName ?? "").trim();
   const projectLabel = savedTo || "Projekt";
@@ -98,7 +98,8 @@ export function PickListButton({ sides, ext, rings, insideRings = rings, insideE
   if (picks.length === 0) return null;
 
   const isInner = (label: string | null) => iloqDouble && label === "Insida";
-  const text = picks.map((p) => (p.label ? `${p.label}: ` : "") + pickLine(p.c, fittingForSide(fitting, p.label), isInner(p.label))).join("\n");
+  const screws = screwBrand ? roundScrewSet(screwBrand, picks.reduce((n, p) => n + p.c.extenderCount, 0)) : null;
+  const text = picks.map((p) => (p.label ? `${p.label}: ` : "") + pickLine(p.c, fittingForSide(fitting, p.label), isInner(p.label))).join("\n") + (screws ? `\nSkruv: ${screws.text}` : "");
   const insidePick = picks.find((p) => isInner(p.label));
   const menuText = (f: Fitting) => (f === "vred" || f === "tackbricka") && picks[0] ? fittingRingText(f, picks[0].c.ring)
     : f === "A10.11" && insidePick ? `A10.11 monteringskit (${ringName(insidePick.c.ring, true)} insida)`
@@ -204,6 +205,16 @@ export function PickListButton({ sides, ext, rings, insideRings = rings, insideE
             })()}
           </li>
         ))}
+        {screws && (
+          <li className="px-4 py-3">
+            <Row caption="Skruv" icon={screws.warning ? <AlertTriangle className="size-3.5 text-destructive" /> : <Wrench className="size-3.5" />}>
+              <span className={`inline-flex items-center gap-1.5 rounded-md border px-2.5 py-1 text-sm font-bold ${screws.warning ? "border-destructive/50 bg-destructive/10 text-destructive" : "border-input bg-muted text-foreground"}`}>
+                {screws.warning && <AlertTriangle className="size-3.5 shrink-0" aria-hidden />}
+                {screws.text}
+              </span>
+            </Row>
+          </li>
+        )}
       </ul>
 
       <div className="space-y-2 border-t bg-muted/30 px-4 py-3">
