@@ -165,7 +165,7 @@ export function formatSigned(v: number): string {
 export const ROUND_SCREW_MAX_EXTENDERS = 3;
 export interface ScrewSet { text: string; warning: boolean }
 export function roundScrewSet(brand: string | undefined, extenderCount: number): ScrewSet | null {
-  if (extenderCount > ROUND_SCREW_MAX_EXTENDERS) return { text: `${extenderCount} st förlängare – ingen färdig skruvsats, kräver speciallängd/kapskruv`, warning: true };
+  if (extenderCount > ROUND_SCREW_MAX_EXTENDERS) return { text: `${extenderCount} st förlängare – ingen färdig skruvsats, kräver speciallängd/klippbara skruv`, warning: true };
   const n = extenderCount * 10;
   if (brand === ASSA_S_BRAND) return { text: `4 st ${66 + n}mm skruv${extenderCount ? ` (3212S:${extenderCount})` : " (3212S)"}`, warning: false };
   if (brand === ASSA_ROUND_BRAND || brand === "dormakaba / DORMA") return { text: `4 st ${60 + n}mm skruv`, warning: false };
