@@ -81,7 +81,7 @@ export function CalculatorPage({ variant }: { variant: "free" | "pro" }) {
   useEffect(() => { if (pro) setProOpen(true); }, [pro]);
   const [projectOpen, setProjectOpen] = useState(false);
   const [switchProject, setSwitchProject] = useState(false);
-  const [pendingDoor, setPendingDoor] = useState<{ sides: DoorSide[]; kind: "oval" | "rund" | "iloq"; fitting?: Fitting } | null>(null);
+  const [pendingDoor, setPendingDoor] = useState<{ sides: DoorSide[]; kind: "oval" | "rund" | "iloq"; fitting?: Fitting; brand?: string } | null>(null);
   const [fitting, setFitting] = useState<Fitting | null>(null);
   const fittingChoices = fittingOptions(variant, cyl, type, brand);
   const fittingEnabled = fittingChoices.length > 0;
@@ -325,7 +325,7 @@ export function CalculatorPage({ variant }: { variant: "free" | "pro" }) {
             ext={ext} rings={activeRings} insideRings={insideRings} insideExt={insideExt} baseMm={baseMm} insideBaseMm={insideBaseMm} relaxed={isRound} screwBrand={isRound ? brand : undefined}
             fitting={activeFitting} onFittingChange={fittingEnabled ? setFitting : undefined} fittingChoices={fittingChoices} iloqDouble={iloqDouble}
             {...(pro ? { projectName: project.name, projectDoors: project.doors.length, projectCount: projectStore.list.length, onOpenProject: () => { setSwitchProject(true); setProjectOpen(true); } } : {})}
-            onSave={!pro ? undefined : (sides) => { trackEvent("sparad_dorr", { cylinder: cyl }); setPendingDoor({ sides, kind: isRound ? "rund" : cyl === "iloq" ? "iloq" : "oval", ...(activeFitting ? { fitting: activeFitting } : {}) }); }}
+            onSave={!pro ? undefined : (sides) => { trackEvent("sparad_dorr", { cylinder: cyl }); setPendingDoor({ sides, kind: isRound ? "rund" : cyl === "iloq" ? "iloq" : "oval", ...(isRound ? { brand } : {}), ...(activeFitting ? { fitting: activeFitting } : {}) }); }}
           />
           <ModePicker mode={mode} onChange={(m) => { setMode(m); setSel({ key: "", out: null, in: null }); }} />
           <CylinderResults mode={mode} title={type === "single" ? null : "Utsida"} depth={parse(outside)} ext={ext} rings={activeRings} baseMm={baseMm} relaxed={isRound} selected={selOut} onSelect={(c) => setSel((s) => ({ key: selKey, out: c, in: s.key === selKey ? s.in : null }))} />
@@ -336,8 +336,8 @@ export function CalculatorPage({ variant }: { variant: "free" | "pro" }) {
       <DoorNameDialog open={!!pendingDoor} defaultName={nextDoorName(project.doors)} projectName={project.name} onCancel={() => setPendingDoor(null)}
         onConfirm={(name) => {
           if (!pendingDoor) return;
-          const { sides, kind, fitting } = pendingDoor;
-          setProject((p) => ({ ...p, doors: [...p.doors, { id: `${Date.now()}`, name, kind, done: false, sides, ...(fitting ? { fitting } : {}) }] }));
+          const { sides, kind, fitting, brand } = pendingDoor;
+          setProject((p) => ({ ...p, doors: [...p.doors, { id: `${Date.now()}`, name, kind, done: false, sides, ...(fitting ? { fitting } : {}), ...(brand ? { brand } : {}) }] }));
           setPendingDoor(null);
           toast.success(`${name} tillagd i ${project.name.trim() ? `”${project.name.trim()}”` : "projektet"}`);
         }} />

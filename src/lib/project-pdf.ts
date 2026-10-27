@@ -1,5 +1,5 @@
 // Builds an A4 PDF of a project (doors + material list) in the browser.
-import { doorsToPick, doorTitle, purchaseList, sideText, type Project } from "./project";
+import { doorScrew, doorsToPick, doorTitle, purchaseList, sideText, type Project } from "./project";
 
 export const FITTING_NOTE = "Behören 256, 2356 och 18256 är ASSA ABLOY:s. Har ni ett annat fabrikat byter ni bara ut behöret mot motsvarande – ringhöjderna är desamma.";
 
@@ -57,6 +57,7 @@ export async function projectPdf(p: Project, remainingOnly: boolean, includeDoor
     if (d.done) { doc.setFont("helvetica", "bold"); doc.setFontSize(9); doc.text("X", M + 0.9, y - 0.4); }
     text(`${doorTitle(d)}${d.done ? " – monterad" : ""}`, 11, true, M + 7);
     d.sides.forEach((s) => text(sideText(s, d.kind, d.fitting, d.sides.length > 1), 10, false, M + 7));
+    const sc = doorScrew(d); if (sc) text(`Skruv: ${sc.text}`, 10, sc.warning, M + 7);
     y += 1.5;
   });
   }

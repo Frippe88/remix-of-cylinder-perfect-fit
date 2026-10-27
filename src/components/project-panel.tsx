@@ -1,3 +1,4 @@
+import { doorScrew } from "@/lib/project";
 import { trackEvent } from "@/lib/analytics";
 import { useEffect, useRef, useState } from "react";
 import { ArrowDown, ArrowUp, Check, ChevronDown, ChevronsRight, ClipboardCopy, ClipboardList, Clock, DoorOpen, FolderOpen, Info, Layers, Mail, Pencil, Plus, Trash2, X } from "lucide-react";
@@ -124,6 +125,9 @@ function DoorCard({ d, onToggle, onRemove, onSetSide }: { d: Door; onToggle: () 
             </div>
           </li>
         ))}
+        {(() => { const sc = doorScrew(d); return sc ? (
+          <li className={`text-xs font-semibold ${sc.warning ? "text-destructive" : "text-foreground"}`}>Skruv: {sc.text}</li>
+        ) : null; })()}
       </ul>
     </li>
   );
