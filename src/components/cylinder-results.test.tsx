@@ -18,8 +18,7 @@ describe("Results overview", () => {
     }
     expect(screen.getAllByRole("article")).toHaveLength(count);
     expect(screen.getAllByRole("article", { name: "Bästa rekommendation" })).toHaveLength(1);
-    fireEvent.click(screen.getByRole("button", { name: "Exakt 0mm" }));
-    expect(screen.getByText("Inga fler alternativ i den här vyn.")).toBeInTheDocument();
+    expect(screen.queryByRole("group", { name: "Filtrera alternativ" })).not.toBeInTheDocument();
     fireEvent.click(screen.getByRole("button", { name: /Dölj alternativ/ }));
     expect(screen.getAllByRole("article")).toHaveLength(1);
   });

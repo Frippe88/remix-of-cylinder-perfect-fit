@@ -82,7 +82,7 @@ export function CylinderResults({ title, depth, ext, rings, baseMm, relaxed = fa
       ) : (
         <>
           <ResultCard relaxed={relaxed} c={best} best side={title} {...sel} />
-          <Alternatives key={`${depth}:${baseMm}:${ext.join(",")}:${rings.join(",")}`} results={results} best={best} relaxed={relaxed} side={title} {...sel} />
+          <Alternatives key={`${depth}:${baseMm}:${ext.join(",")}:${rings.join(",")}:${mode}`} mode={mode} results={results} best={best} relaxed={relaxed} side={title} {...sel} />
         </>
       )}
     </section>
@@ -93,14 +93,14 @@ type CardSel = { chosen?: Combination | null | undefined; onSelect?: ((c: Combin
 const same = (a?: Combination | null, b?: Combination | null) =>
   !!a && !!b && a.ring === b.ring && a.extenders.join(",") === b.extenders.join(",");
 
-function Alternatives({ results, best, relaxed, side, chosen, onSelect }: { results: Combination[]; best: Combination; relaxed: boolean; side: string | null } & CardSel) {
+function Alternatives({ results, best, relaxed, side, chosen, onSelect, mode }: { results: Combination[]; best: Combination; relaxed: boolean; side: string | null; mode: ViewMode } & CardSel) {
   const [open, setOpen] = useState(false);
-  const [mode, setMode] = useState<ViewMode>("all");
   const [visible, setVisible] = useState(PAGE_SIZE);
-  const alternatives = results.filter(c => c !== best);
   const shown = filterByMode(results, mode).filter(c => c !== best);
+  const alternatives = shown;
   const forSide = side ? ` för ${side.toLowerCase()}` : "";
   if (alternatives.length === 0) return null;
+  void relaxed;
   return (
     <div>
       <Button variant="ghost" aria-expanded={open} onClick={() => setOpen(!open)} className="h-auto min-h-11 w-full justify-between gap-3 px-1 text-foreground hover:bg-muted">
@@ -108,11 +108,7 @@ function Alternatives({ results, best, relaxed, side, chosen, onSelect }: { resu
         {open ? <ChevronUp aria-hidden /> : <ChevronDown aria-hidden />}
       </Button>
       {open && <div className="space-y-3 pt-2">
-        <div role="group" aria-label="Filtrera alternativ" className="grid grid-cols-3 gap-1 rounded-md bg-muted p-1">
-          {MODES.map(m => <Button key={m.id} variant="ghost" size="sm" aria-pressed={mode === m.id} onClick={() => { setMode(m.id); setVisible(PAGE_SIZE); }} className={`min-h-10 px-1 text-xs hover:bg-card ${mode === m.id ? "bg-card text-foreground shadow-card" : "text-muted-foreground"}`}>{m.label}</Button>)}
-        </div>
-        <p className="text-xs text-muted-foreground">{mode === "all" ? (relaxed ? "Bäst passform först." : "Inom −2 till +2mm. Bäst passform först.") : mode === "exact" ? "Alternativ i liv med ringen." : "Alternativ med färre förlängare."}</p>
-        {shown.length === 0 ? <p className="py-3 text-sm text-muted-foreground">Inga fler alternativ i den här vyn.</p> : <>
+        {<>
           <div className="space-y-2">{shown.slice(0, visible).map((c, i) => <ResultCard relaxed={relaxed} key={i} c={c} side={side} chosen={chosen} onSelect={onSelect} />)}</div>
           <div className="flex flex-wrap items-center justify-between gap-2">
             <p className="text-xs text-muted-foreground">Visar {Math.min(visible, shown.length)} av {shown.length} alternativ{forSide}</p>
