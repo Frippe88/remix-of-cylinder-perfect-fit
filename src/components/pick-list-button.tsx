@@ -81,7 +81,10 @@ const FITTING_MENU: Record<Fitting, string> = {
 };
 
 export function PickListButton({ sides, ext, rings, insideRings = rings, insideExt = ext, baseMm, insideBaseMm = baseMm, relaxed, onSave, projectName, projectDoors = 0, projectCount = 1, onOpenProject, fitting = null, onFittingChange, fittingChoices = ["256", "2356"], iloqDouble = false, screwBrand, ovalSingle = false }: {
-...
+  sides: PickSide[]; ext: number[]; rings: number[]; insideRings?: number[]; insideExt?: number[]; baseMm: number; insideBaseMm?: number; relaxed: boolean;
+  onSave?: ((sides: DoorSide[]) => void) | undefined;
+  projectName?: string; projectDoors?: number; projectCount?: number; onOpenProject?: () => void;
+  fitting?: Fitting | null; onFittingChange?: ((value: Fitting | null) => void) | undefined;
   fittingChoices?: Fitting[]; iloqDouble?: boolean; screwBrand?: string | undefined; ovalSingle?: boolean;
 }) {
   const savedTo = (projectName ?? "").trim();
