@@ -194,3 +194,12 @@ describe("skruvsats rund cylinder", () => {
     expect(roundScrewSet("EVVA", 4)?.warning).toBe(true);
   });
 });
+
+import { ovalSingleScrewSet } from "./cylinder";
+describe("skruv enkel oval", () => {
+  it("0 förlängare ger 24mm", () => expect(ovalSingleScrewSet(0).text).toBe("2 st 24mm cylinderskruv"));
+  it("4 st 8mm (32mm) räcker med 63mm", () => expect(ovalSingleScrewSet(32).warning).toBe(false));
+  it("3 st 10mm räcker med 63mm", () => expect(ovalSingleScrewSet(30).warning).toBe(false));
+  it("4 st 10mm (40mm) kräver längre skruv", () => expect(ovalSingleScrewSet(40).warning).toBe(true));
+  it("3 st 12,5mm (37,5mm) kräver längre skruv", () => expect(ovalSingleScrewSet(37.5).warning).toBe(true));
+});
