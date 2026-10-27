@@ -160,3 +160,15 @@ export function formatMm(v: number): string {
 export function formatSigned(v: number): string {
   return (v > 0 ? "+" : v < 0 ? "−" : "±") + formatMm(Math.abs(v));
 }
+
+// Skruvsatser för runda cylindrar, per fabrikat och totalt antal förlängare (0–3 st).
+export const ROUND_SCREW_MAX_EXTENDERS = 3;
+export interface ScrewSet { text: string; warning: boolean }
+export function roundScrewSet(brand: string | undefined, extenderCount: number): ScrewSet | null {
+  if (extenderCount > ROUND_SCREW_MAX_EXTENDERS) return { text: `${extenderCount} st förlängare – ingen färdig skruvsats, kräver speciallängd/kapskruv`, warning: true };
+  const n = extenderCount * 10;
+  if (brand === ASSA_S_BRAND) return { text: `4 st ${66 + n}mm skruv${extenderCount ? ` (3212S:${extenderCount})` : " (3212S)"}`, warning: false };
+  if (brand === ASSA_ROUND_BRAND || brand === "dormakaba / DORMA") return { text: `4 st ${60 + n}mm skruv`, warning: false };
+  if (brand === "EVVA") return { text: `2 st ${35 + n}mm + 2 st ${60 + n}mm skruv`, warning: false };
+  return null;
+}

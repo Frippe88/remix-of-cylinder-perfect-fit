@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+import { roundScrewSet,  describe, expect, it } from "vitest";
 import { calculate, deviationOf, filterByMode, EXTENDER_SIZES, RING_HEIGHTS, ILOQ_RING_HEIGHTS, ILOQ_CYLINDER_MM, ROUND_CYLINDER_MM, ASSA_ROUND_CYLINDER_MM, ASSA_ROUND_BRAND } from "./cylinder";
 
 const all = { extenders: [...EXTENDER_SIZES], rings: [...RING_HEIGHTS] };
@@ -174,5 +174,23 @@ describe("rund 8mm ring", () => {
     expect(r[0]).toMatchObject({ ring: 13, extenders: [10], deviation: 4 });
     expect(r.some((c) => c.ring === 8 && c.deviation < 0)).toBe(false);
     expect(calculate({ depth: 25, extenders: [10], rings: [8], baseMm: 33, relaxed: true, noUndercutRings: [8] })[0]!.deviation).toBe(0);
+  });
+});
+
+describe("skruvsats rund cylinder", () => {
+  it("ASSA utan S och dormakaba: 60/70/80/90mm", () => {
+    expect(roundScrewSet(ASSA_ROUND_BRAND, 0)?.text).toBe("4 st 60mm skruv");
+    expect(roundScrewSet("dormakaba / DORMA", 3)?.text).toBe("4 st 90mm skruv");
+  });
+  it("ASSA med S: 66/76/86/96mm", () => {
+    expect(roundScrewSet(ASSA_S_BRAND, 0)?.text).toContain("66mm");
+    expect(roundScrewSet(ASSA_S_BRAND, 3)?.text).toContain("96mm");
+  });
+  it("EVVA: delade längder 35+60 upp till 65+90", () => {
+    expect(roundScrewSet("EVVA", 0)?.text).toBe("2 st 35mm + 2 st 60mm skruv");
+    expect(roundScrewSet("EVVA", 3)?.text).toBe("2 st 65mm + 2 st 90mm skruv");
+  });
+  it("över 3 förlängare ger varning", () => {
+    expect(roundScrewSet("EVVA", 4)?.warning).toBe(true);
   });
 });
