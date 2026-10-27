@@ -1,5 +1,5 @@
-import { roundScrewSet,  describe, expect, it } from "vitest";
-import { calculate, deviationOf, filterByMode, EXTENDER_SIZES, RING_HEIGHTS, ILOQ_RING_HEIGHTS, ILOQ_CYLINDER_MM, ROUND_CYLINDER_MM, ASSA_ROUND_CYLINDER_MM, ASSA_ROUND_BRAND } from "./cylinder";
+import { describe, expect, it } from "vitest";
+import { calculate, deviationOf, filterByMode, EXTENDER_SIZES, RING_HEIGHTS, ILOQ_RING_HEIGHTS, ILOQ_CYLINDER_MM, ROUND_CYLINDER_MM, ASSA_ROUND_CYLINDER_MM, ASSA_ROUND_BRAND, ASSA_S_BRAND, roundScrewSet } from "./cylinder";
 
 const all = { extenders: [...EXTENDER_SIZES], rings: [...RING_HEIGHTS] };
 
