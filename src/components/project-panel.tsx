@@ -124,6 +124,9 @@ function DoorCard({ d, onToggle, onRemove, onSetSide }: { d: Door; onToggle: () 
             </div>
           </li>
         ))}
+        {(() => { const sc = doorScrew(d); return sc ? (
+          <li className={`text-xs font-semibold ${sc.warning ? "text-destructive" : "text-foreground"}`}>Skruv: {sc.text}</li>
+        ) : null; })()}
       </ul>
     </li>
   );

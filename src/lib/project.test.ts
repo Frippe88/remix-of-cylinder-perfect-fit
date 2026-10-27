@@ -219,3 +219,13 @@ describe("18256 som komplett paket", () => {
     expect(items).toEqual([{ count: 2, text: "18256 behör (21mm ring utsida + 13mm ring insida)" }]);
   });
 });
+
+import { doorScrew as _doorScrew } from "./project";
+describe("skruv i projekt", () => {
+  it("dubbel rund EVVA med 1 förlängare ger 45+70mm", () => {
+    expect(_doorScrew({ id: "s", name: "D", kind: "rund", done: false, brand: "EVVA", sides: [{ label: "Utsida", depth: 1, ring: 8, extenders: [10] }, { label: "Insida", depth: 1, ring: 8, extenders: [] }] })?.text).toBe("2 st 45mm + 2 st 70mm skruv");
+  });
+  it("enkel rund ger montagetext", () => {
+    expect(_doorScrew({ id: "s", name: "D", kind: "rund", done: false, brand: "EVVA", sides: [{ label: null, depth: 1, ring: 8, extenders: [] }] })?.text).toMatch(/Beror på montage/);
+  });
+});
