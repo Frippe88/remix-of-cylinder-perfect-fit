@@ -98,7 +98,9 @@ export function PickListButton({ sides, ext, rings, insideRings = rings, insideE
   if (picks.length === 0) return null;
 
   const isInner = (label: string | null) => iloqDouble && label === "Insida";
-  const screws = screwBrand ? roundScrewSet(screwBrand, picks.reduce((n, p) => n + p.c.extenderCount, 0)) : null;
+  const screws = !screwBrand ? null
+    : sides.length < 2 ? { text: "Beror på montage – kalkylatorn kan inte ange exakt skruvlängd vid enkelcylinder.", warning: false }
+    : roundScrewSet(screwBrand, picks.reduce((n, p) => n + p.c.extenderCount, 0));
   const text = picks.map((p) => (p.label ? `${p.label}: ` : "") + pickLine(p.c, fittingForSide(fitting, p.label), isInner(p.label))).join("\n") + (screws ? `\nSkruv: ${screws.text}` : "");
   const insidePick = picks.find((p) => isInner(p.label));
   const menuText = (f: Fitting) => (f === "vred" || f === "tackbricka") && picks[0] ? fittingRingText(f, picks[0].c.ring)
