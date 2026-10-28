@@ -82,7 +82,7 @@ export function CylinderResults({ title, depth, ext, rings, baseMm, relaxed = fa
       ) : (
         <>
           <ResultCard relaxed={relaxed} c={best} best side={title} {...sel} />
-          <Alternatives key={`${depth}:${baseMm}:${ext.join(",")}:${rings.join(",")}:${mode}`} mode={mode} results={results} best={best} relaxed={relaxed} side={title} {...sel} />
+          <Alternatives key={`${depth}:${baseMm}:${ext.join(",")}:${rings.join(",")}:${mode}`} mode={mode} screwAware={ovalSingle} results={results} best={best} relaxed={relaxed} side={title} {...sel} />
         </>
       )}
     </section>
@@ -93,7 +93,7 @@ type CardSel = { chosen?: Combination | null | undefined; onSelect?: ((c: Combin
 const same = (a?: Combination | null, b?: Combination | null) =>
   !!a && !!b && a.ring === b.ring && a.extenders.join(",") === b.extenders.join(",");
 
-function Alternatives({ results, best, relaxed, side, chosen, onSelect, mode }: { results: Combination[]; best: Combination; relaxed: boolean; side: string | null; mode: ViewMode } & CardSel) {
+function Alternatives({ results, best, relaxed, side, chosen, onSelect, mode, screwAware = false }: { results: Combination[]; best: Combination; relaxed: boolean; side: string | null; mode: ViewMode; screwAware?: boolean } & CardSel) {
   const [open, setOpen] = useState(false);
   const [visible, setVisible] = useState(PAGE_SIZE);
   const shown = filterByMode(results, mode, screwAware).filter(c => c !== best);
