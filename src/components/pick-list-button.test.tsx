@@ -94,10 +94,11 @@ describe("Plocklista", () => {
   it("dörrdjup 60: ingen 63mm-lösning – visar minsta skruvlängd och ingen Byt till Alla", () => {
     render(
       <PickListButton
-        sides={[{ label: "Utsida", depth: 60, selected: { ring: 6, extenders: [10, 12.5], extenderCount: 2, totalExtension: 22.5, deviation: 0.5 } }]}
+        sides={[{ label: "Utsida", depth: 60, selected: { ring: 6, extenders: [10, 12.5, 12.5], extenderCount: 3, totalExtension: 35, deviation: 0 } }]}
         ext={ext} rings={rings} baseMm={31} relaxed={false} ovalSingle onShowAll={vi.fn()}
       />,
     );
+    expect(screen.getByText("Längre skruv behövs (minst 66mm)")).toBeInTheDocument();
     expect(screen.queryByRole("button", { name: "Byt till Alla" })).toBeNull();
   });
 });
