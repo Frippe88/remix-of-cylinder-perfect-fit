@@ -218,7 +218,7 @@ export function PickListButton({ sides, ext, rings, insideRings = rings, insideE
             <Row caption="Skruv" icon={screws.warning ? <AlertTriangle className="size-3.5 text-destructive" /> : <Wrench className="size-3.5" />}>
               {ovalScrew?.warning ? (
                 <span className="inline-flex items-center gap-1.5 rounded-md border border-destructive/50 bg-destructive/10 px-2 py-1 text-sm font-bold text-destructive">
-                  63mm räcker inte{onShowAll ? " – välj Alla" : ", längre skruv behövs"}
+                  {showAll ? "63mm räcker inte – välj Alla" : `Längre skruv behövs (minst ${formatMm(screwNeed)})`}
                 </span>
               ) : (
                 <span className="inline-flex items-center gap-1.5 rounded-md border border-input bg-muted px-2.5 py-1 text-sm font-bold text-foreground">
@@ -238,12 +238,12 @@ export function PickListButton({ sides, ext, rings, insideRings = rings, insideE
                   <PopoverContent className="w-72 space-y-2 text-sm">
                     <p className="font-bold">Varför räcker inte 63mm?</p>
                     <p>63mm skruv klarar max 32mm förlängare (kista + bricka = 21mm, gänga = 10mm). Den här kombinationen behöver mer förlängning än så.</p>
-                    <p>Välj läget <strong>Alla</strong> för att få ett godkänt förslag (inom ±2mm) där standard 63mm räcker.</p>
+                    {showAll ? <p>Välj läget <strong>Alla</strong> för att få ett godkänt förslag (inom ±2mm) där standard 63mm räcker.</p> : <p>För det här dörrdjupet finns ingen kombination inom ±2mm där 63mm räcker. Använd klippbar cylinderskruv på minst <strong>{formatMm(screwNeed)}</strong>.</p>}
                     <p className="border-t border-border pt-2 text-xs text-muted-foreground">{OVAL_SCREW_NOTE}</p>
                   </PopoverContent>
                 </Popover>
-                {onShowAll && (
-                  <Button size="sm" variant="outline" className="min-h-9 border-accent/50 bg-accent/10 font-bold text-foreground hover:bg-accent/15" onClick={onShowAll}>
+                {showAll && (
+                  <Button size="sm" variant="outline" className="min-h-9 border-accent/50 bg-accent/10 font-bold text-foreground hover:bg-accent/15" onClick={showAll}>
                     Byt till Alla
                   </Button>
                 )}
