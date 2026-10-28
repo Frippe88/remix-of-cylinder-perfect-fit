@@ -99,7 +99,11 @@ export function PickListButton({ sides, ext, rings, insideRings = rings, insideE
   if (picks.length === 0) return null;
 
   const isInner = (label: string | null) => iloqDouble && label === "Insida";
-  const ovalScrew = ovalSingle && sides.length < 2 && picks[0] ? ovalSingleScrewSet(picks[0].c.extenders.reduce((a, b) => a + b, 0)) : null;
+  const ovalExtMm = picks[0] ? picks[0].c.extenders.reduce((a, b) => a + b, 0) : 0;
+  const ovalScrew = ovalSingle && sides.length < 2 && picks[0] ? ovalSingleScrewSet(ovalExtMm) : null;
+  const screwFixable = !!ovalScrew?.warning && hasOvalScrewFit(calculate({ depth: picks[0]!.depth, extenders: ext, rings, baseMm, relaxed: false }));
+  const showAll = screwFixable ? onShowAll : undefined;
+  const screwNeed = ovalScrewNeedMm(ovalExtMm);
   const screws = ovalScrew ?? (!screwBrand ? null
     : sides.length < 2 ? { text: "Beror på montage – kalkylatorn kan inte ange exakt skruvlängd vid enkelcylinder.", warning: false }
     : roundScrewSet(screwBrand, picks.reduce((n, p) => n + p.c.extenderCount, 0)));
