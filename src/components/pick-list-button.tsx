@@ -233,7 +233,6 @@ export function PickListButton({ sides, ext, rings, insideRings = rings, insideE
                     <p className="font-bold">Varför räcker inte 63mm?</p>
                     <p>63mm skruv klarar max 32mm förlängare (kista + bricka = 21mm, gänga = 10mm). Den här kombinationen behöver mer förlängning än så.</p>
                     <p>Välj läget <strong>Alla</strong> för att få ett godkänt förslag (inom ±2mm) där standard 63mm räcker.</p>
-                    {onShowAll && <Button size="sm" className="w-full" onClick={onShowAll}>Byt till Alla</Button>}
                     <p className="border-t border-border pt-2 text-xs text-muted-foreground">{OVAL_SCREW_NOTE}</p>
                   </PopoverContent>
                 </Popover>
