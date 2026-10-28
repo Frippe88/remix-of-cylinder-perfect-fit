@@ -213,7 +213,9 @@ export function PickListButton({ sides, ext, rings, insideRings = rings, insideE
           <li className="px-4 py-3">
             <Row caption="Skruv" icon={screws.warning ? <AlertTriangle className="size-3.5 text-destructive" /> : <Wrench className="size-3.5" />}>
               {ovalScrew?.warning ? (
-                <span className="inline-flex items-center gap-1.5 rounded-md border border-destructive/50 bg-destructive/10 px-2 py-1 text-sm font-bold text-destructive">63mm räcker inte</span>
+                <span className="inline-flex items-center gap-1.5 rounded-md border border-destructive/50 bg-destructive/10 px-2 py-1 text-sm font-bold text-destructive">
+                  63mm räcker inte{onShowAll ? " – välj Alla" : ", längre skruv behövs"}
+                </span>
               ) : (
                 <span className="inline-flex items-center gap-1.5 rounded-md border border-input bg-muted px-2.5 py-1 text-sm font-bold text-foreground">
                   {screws.text}

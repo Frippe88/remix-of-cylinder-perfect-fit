@@ -80,7 +80,7 @@ describe("Plocklista", () => {
         onShowAll={onShowAll}
       />,
     );
-    expect(screen.getByText("63mm räcker inte")).toBeInTheDocument();
+    expect(screen.getByText("63mm räcker inte – välj Alla")).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Förklara varför 63mm inte räcker" })).toBeInTheDocument();
     fireEvent.click(screen.getByRole("button", { name: "Byt till Alla" }));
     expect(onShowAll).toHaveBeenCalledTimes(1);
