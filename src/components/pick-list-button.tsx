@@ -1,6 +1,7 @@
 import { useState, type ReactNode } from "react";
 import { AlertTriangle, ArrowDown, ArrowUp, Check, ClipboardCopy, ClipboardList, Disc3, FolderOpen, FolderPlus, Layers, Wrench } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { ROUND_NO_UNDERCUT_RINGS, calculate, preferOvalScrewFit, roundScrewSet, ovalSingleScrewSet, OVAL_SCREW_NOTE, describeDeviation, formatMm, formatSigned, type Combination } from "@/lib/cylinder";
 import { FITTING_LABEL, fittingForSide, fittingRingText, isLooseFitting, ringName, type DoorSide, type Fitting } from "@/lib/project";
 
@@ -80,12 +81,12 @@ const FITTING_MENU: Record<Fitting, string> = {
   "A10.11": "A10.11 monteringskit (iLOQ dubbelcylinder)",
 };
 
-export function PickListButton({ sides, ext, rings, insideRings = rings, insideExt = ext, baseMm, insideBaseMm = baseMm, relaxed, onSave, projectName, projectDoors = 0, projectCount = 1, onOpenProject, fitting = null, onFittingChange, fittingChoices = ["256", "2356"], iloqDouble = false, screwBrand, ovalSingle = false }: {
+export function PickListButton({ sides, ext, rings, insideRings = rings, insideExt = ext, baseMm, insideBaseMm = baseMm, relaxed, onSave, projectName, projectDoors = 0, projectCount = 1, onOpenProject, fitting = null, onFittingChange, fittingChoices = ["256", "2356"], iloqDouble = false, screwBrand, ovalSingle = false, onShowAll }: {
   sides: PickSide[]; ext: number[]; rings: number[]; insideRings?: number[]; insideExt?: number[]; baseMm: number; insideBaseMm?: number; relaxed: boolean;
   onSave?: ((sides: DoorSide[]) => void) | undefined;
   projectName?: string; projectDoors?: number; projectCount?: number; onOpenProject?: () => void;
   fitting?: Fitting | null; onFittingChange?: ((value: Fitting | null) => void) | undefined;
-  fittingChoices?: Fitting[]; iloqDouble?: boolean; screwBrand?: string | undefined; ovalSingle?: boolean;
+  fittingChoices?: Fitting[]; iloqDouble?: boolean; screwBrand?: string | undefined; ovalSingle?: boolean; onShowAll?: (() => void) | undefined;
 }) {
   const savedTo = (projectName ?? "").trim();
   const projectLabel = savedTo || "Projekt";
@@ -215,6 +216,19 @@ export function PickListButton({ sides, ext, rings, insideRings = rings, insideE
                 {screws.warning && <AlertTriangle className="size-3.5 shrink-0" aria-hidden />}
                 {screws.text}
               </span>
+              {ovalScrew?.warning && (
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <button type="button" aria-label="Varför räcker inte 63mm?" className="inline-flex size-7 items-center justify-center rounded-full border border-destructive/50 bg-destructive/10 text-sm font-bold text-destructive">?</button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-72 space-y-2 text-sm">
+                    <p className="font-bold">Varför räcker inte 63mm?</p>
+                    <p>63mm skruv klarar max 32mm förlängare (kista + bricka = 21mm, gänga = 10mm). Den här kombinationen behöver mer förlängning än så.</p>
+                    <p>Välj läget <strong>Alla</strong> för att få ett godkänt förslag (inom ±2mm) där standard 63mm räcker.</p>
+                    {onShowAll && <Button size="sm" className="w-full" onClick={onShowAll}>Byt till Alla</Button>}
+                  </PopoverContent>
+                </Popover>
+              )}
             </Row>
             {ovalScrew && <p className="mt-1.5 text-xs text-muted-foreground">{OVAL_SCREW_NOTE}</p>}
           </li>
