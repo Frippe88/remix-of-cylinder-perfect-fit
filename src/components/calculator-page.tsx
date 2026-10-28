@@ -328,7 +328,7 @@ export function CalculatorPage({ variant }: { variant: "free" | "pro" }) {
             onSave={!pro ? undefined : (sides) => { trackEvent("sparad_dorr", { cylinder: cyl }); setPendingDoor({ sides, kind: isRound ? "rund" : cyl === "iloq" ? "iloq" : "oval", ...(isRound ? { brand } : {}), ...(activeFitting ? { fitting: activeFitting } : {}) }); }}
           />
           <ModePicker mode={mode} onChange={(m) => { setMode(m); setSel({ key: "", out: null, in: null }); }} />
-          <CylinderResults mode={mode} title={type === "single" ? null : "Utsida"} depth={parse(outside)} ext={ext} rings={activeRings} baseMm={baseMm} relaxed={isRound} selected={selOut} onSelect={(c) => setSel((s) => ({ key: selKey, out: c, in: s.key === selKey ? s.in : null }))} />
+          <CylinderResults mode={mode} ovalSingle={cyl === "standard" && type === "single"} title={type === "single" ? null : "Utsida"} depth={parse(outside)} ext={ext} rings={activeRings} baseMm={baseMm} relaxed={isRound} selected={selOut} onSelect={(c) => setSel((s) => ({ key: selKey, out: c, in: s.key === selKey ? s.in : null }))} />
           {type === "double" && <CylinderResults mode={mode} title="Insida" depth={parse(inside)} ext={insideExt} rings={insideRings} baseMm={insideBaseMm} relaxed={isRound} selected={selIn} onSelect={(c) => setSel((s) => ({ key: selKey, out: s.key === selKey ? s.out : null, in: c }))} />}
         </section>
       </main>

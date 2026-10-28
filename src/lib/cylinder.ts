@@ -184,3 +184,9 @@ export function ovalSingleScrewSet(extenderMm: number): ScrewSet {
   if (need <= OVAL_SCREW_CLIP_MM) return { text: "2 st 63mm klippbar cylinderskruv – kapa till rätt längd", warning: false };
   return { text: `${formatMm(extenderMm)} förlängning – 63mm räcker inte, längre klippbar cylinderskruv krävs (minst ${formatMm(need)})`, warning: true };
 }
+
+/** Enkel oval: lägg kombinationer där 24/63mm skruv räcker först (inom toleransen), annars oförändrad ordning. */
+export function preferOvalScrewFit(list: Combination[]): Combination[] {
+  const ok = (c: Combination) => c.deviation >= TOLERANCE_MIN && c.deviation <= TOLERANCE_MAX && !ovalSingleScrewSet(c.totalExtension).warning;
+  return [...list.filter(ok), ...list.filter((c) => !ok(c))];
+}

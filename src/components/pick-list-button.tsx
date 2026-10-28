@@ -1,7 +1,7 @@
 import { useState, type ReactNode } from "react";
 import { AlertTriangle, ArrowDown, ArrowUp, Check, ClipboardCopy, ClipboardList, Disc3, FolderOpen, FolderPlus, Layers, Wrench } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { ROUND_NO_UNDERCUT_RINGS, calculate, roundScrewSet, ovalSingleScrewSet, OVAL_SCREW_NOTE, describeDeviation, formatMm, formatSigned, type Combination } from "@/lib/cylinder";
+import { ROUND_NO_UNDERCUT_RINGS, calculate, preferOvalScrewFit, roundScrewSet, ovalSingleScrewSet, OVAL_SCREW_NOTE, describeDeviation, formatMm, formatSigned, type Combination } from "@/lib/cylinder";
 import { FITTING_LABEL, fittingForSide, fittingRingText, isLooseFitting, ringName, type DoorSide, type Fitting } from "@/lib/project";
 
 export type PickSide = { label: string | null; depth: number | null; selected: Combination | null };
@@ -9,10 +9,10 @@ export type PickSide = { label: string | null; depth: number | null; selected: C
 export const sameCombo = (a: Combination | null | undefined, b: Combination | null | undefined) =>
   !!a && !!b && a.ring === b.ring && a.extenders.join(",") === b.extenders.join(",");
 
-function bestFor(depth: number, ext: number[], rings: number[], baseMm: number, relaxed: boolean): Combination | undefined {
+function bestFor(depth: number, ext: number[], rings: number[], baseMm: number, relaxed: boolean, oval = false): Combination | undefined {
   const strict = calculate({ depth, extenders: ext, rings, baseMm, relaxed, noUndercutRings: relaxed ? [...ROUND_NO_UNDERCUT_RINGS] : [] });
   if (strict.length === 0 && !relaxed) return calculate({ depth, extenders: ext, rings, baseMm, relaxed: true, noUndercutRings: relaxed ? [...ROUND_NO_UNDERCUT_RINGS] : [] })[0];
-  return strict[0];
+  return (oval ? preferOvalScrewFit(strict) : strict)[0];
 }
 
 /** Texten som kopieras – håll den ren, den klistras in i SMS/WhatsApp/order. */
@@ -93,7 +93,7 @@ export function PickListButton({ sides, ext, rings, insideRings = rings, insideE
   const [failed, setFailed] = useState(false);
   const picks = sides
     .filter((s) => s.depth !== null)
-    .map((s) => ({ label: s.label, depth: s.depth as number, c: s.selected ?? (s.label === "Insida" ? bestFor(s.depth as number, insideExt, insideRings, insideBaseMm, relaxed) : bestFor(s.depth as number, ext, rings, baseMm, relaxed)) }))
+    .map((s) => ({ label: s.label, depth: s.depth as number, c: s.selected ?? (s.label === "Insida" ? bestFor(s.depth as number, insideExt, insideRings, insideBaseMm, relaxed) : bestFor(s.depth as number, ext, rings, baseMm, relaxed, !!ovalSingle && sides.length < 2)) }))
     .filter((s): s is { label: string | null; depth: number; c: Combination } => !!s.c);
   if (picks.length === 0) return null;
 

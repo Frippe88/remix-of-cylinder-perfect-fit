@@ -203,3 +203,14 @@ describe("skruv enkel oval", () => {
   it("4 st 10mm (40mm) kräver längre skruv", () => expect(ovalSingleScrewSet(40).warning).toBe(true));
   it("3 st 12,5mm (37,5mm) kräver längre skruv", () => expect(ovalSingleScrewSet(37.5).warning).toBe(true));
 });
+
+import { preferOvalScrewFit } from "./cylinder";
+describe("enkel oval prioriterar 63mm-skruv", () => {
+  for (const depth of [55, 56, 57]) {
+    it(`djup ${depth} ger kombination där 63mm räcker`, () => {
+      const best = preferOvalScrewFit(calculate({ depth, ...all }))[0]!;
+      expect(ovalSingleScrewSet(best.totalExtension).warning).toBe(false);
+      expect(Math.abs(best.deviation)).toBeLessThanOrEqual(2);
+    });
+  }
+});
