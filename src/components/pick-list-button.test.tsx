@@ -68,6 +68,7 @@ describe("Plocklista", () => {
   it("skruvvarning visas som kompakt chip med blå 'Varför?'-knapp", () => {
     const writeText = vi.fn().mockResolvedValue(undefined);
     Object.defineProperty(navigator, "clipboard", { value: { writeText }, configurable: true });
+    const onShowAll = vi.fn();
     render(
       <PickListButton
         sides={[{ label: "Utsida", depth: 39, selected: { ring: 6, extenders: [8, 12.5, 12.5], extenderCount: 3, totalExtension: 33, deviation: 0 } }]}
@@ -76,10 +77,13 @@ describe("Plocklista", () => {
         baseMm={31}
         relaxed={false}
         ovalSingle
+        onShowAll={onShowAll}
       />,
     );
     expect(screen.getByText("63mm räcker inte")).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: "Varför?" })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Förklara varför 63mm inte räcker" })).toBeInTheDocument();
+    fireEvent.click(screen.getByRole("button", { name: "Byt till Alla" }));
+    expect(onShowAll).toHaveBeenCalledTimes(1);
     expect(screen.queryByText(/längre klippbar cylinderskruv krävs/)).toBeNull();
     fireEvent.click(screen.getByRole("button", { name: /Kopiera plocklista/ }));
     expect(writeText).toHaveBeenCalledWith(

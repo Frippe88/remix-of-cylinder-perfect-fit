@@ -224,7 +224,7 @@ export function PickListButton({ sides, ext, rings, insideRings = rings, insideE
               <div className="flex flex-wrap items-center gap-1.5">
                 <Popover>
                   <PopoverTrigger asChild>
-                    <button type="button" className="inline-flex min-h-9 items-center gap-1.5 rounded-md bg-side-outside px-2.5 py-1 text-sm font-bold text-side-outside-soft active:scale-95">
+                    <button type="button" aria-label="Förklara varför 63mm inte räcker" className="inline-flex min-h-9 items-center gap-1.5 rounded-md bg-side-outside px-2.5 py-1 text-sm font-bold text-side-outside-soft active:scale-95">
                       <CircleHelp className="size-4 shrink-0" aria-hidden />
                       Varför?
                     </button>
