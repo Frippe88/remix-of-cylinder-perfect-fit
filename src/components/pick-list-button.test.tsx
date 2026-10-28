@@ -98,6 +98,7 @@ describe("Plocklista", () => {
         ext={ext} rings={rings} baseMm={31} relaxed={false} ovalSingle onShowAll={vi.fn()}
       />,
     );
+    console.log("DOM:", document.body.textContent);
     expect(screen.getByText("Längre skruv behövs (minst 66mm)")).toBeInTheDocument();
     expect(screen.queryByRole("button", { name: "Byt till Alla" })).toBeNull();
   });
