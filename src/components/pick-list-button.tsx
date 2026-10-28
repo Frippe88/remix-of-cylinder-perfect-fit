@@ -1,5 +1,5 @@
 import { useState, type ReactNode } from "react";
-import { AlertTriangle, ArrowDown, ArrowUp, Check, ClipboardCopy, ClipboardList, Disc3, FolderOpen, FolderPlus, Layers, Wrench } from "lucide-react";
+import { AlertTriangle, ArrowDown, ArrowUp, Check, CircleHelp, ClipboardCopy, ClipboardList, Disc3, FolderOpen, FolderPlus, Layers, Wrench } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { ROUND_NO_UNDERCUT_RINGS, calculate, preferOvalScrewFit, roundScrewSet, ovalSingleScrewSet, OVAL_SCREW_NOTE, describeDeviation, formatMm, formatSigned, type Combination } from "@/lib/cylinder";
@@ -212,25 +212,34 @@ export function PickListButton({ sides, ext, rings, insideRings = rings, insideE
         {screws && (
           <li className="px-4 py-3">
             <Row caption="Skruv" icon={screws.warning ? <AlertTriangle className="size-3.5 text-destructive" /> : <Wrench className="size-3.5" />}>
-              <span className={`inline-flex items-center gap-1.5 rounded-md border px-2.5 py-1 text-sm font-bold ${screws.warning ? "border-destructive/50 bg-destructive/10 text-destructive" : "border-input bg-muted text-foreground"}`}>
-                {screws.warning && <AlertTriangle className="size-3.5 shrink-0" aria-hidden />}
-                {screws.text}
-              </span>
-              {ovalScrew?.warning && (
-                <Popover>
-                  <PopoverTrigger asChild>
-                    <button type="button" aria-label="Varför räcker inte 63mm?" className="inline-flex size-7 items-center justify-center rounded-full border border-destructive/50 bg-destructive/10 text-sm font-bold text-destructive">?</button>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-72 space-y-2 text-sm">
-                    <p className="font-bold">Varför räcker inte 63mm?</p>
-                    <p>63mm skruv klarar max 32mm förlängare (kista + bricka = 21mm, gänga = 10mm). Den här kombinationen behöver mer förlängning än så.</p>
-                    <p>Välj läget <strong>Alla</strong> för att få ett godkänt förslag (inom ±2mm) där standard 63mm räcker.</p>
-                    {onShowAll && <Button size="sm" className="w-full" onClick={onShowAll}>Byt till Alla</Button>}
-                  </PopoverContent>
-                </Popover>
+              {ovalScrew?.warning ? (
+                <>
+                  <span className="inline-flex items-center gap-1.5 rounded-md border border-destructive/50 bg-destructive/10 px-2 py-1 text-sm font-bold text-destructive">
+                    <AlertTriangle className="size-3.5 shrink-0" aria-hidden />
+                    63mm räcker inte
+                  </span>
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <button type="button" className="inline-flex min-h-9 items-center gap-1.5 rounded-md bg-side-outside px-2.5 py-1 text-sm font-bold text-side-outside-soft active:scale-95">
+                        <CircleHelp className="size-4 shrink-0" aria-hidden />
+                        Varför?
+                      </button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-72 space-y-2 text-sm">
+                      <p className="font-bold">Varför räcker inte 63mm?</p>
+                      <p>63mm skruv klarar max 32mm förlängare (kista + bricka = 21mm, gänga = 10mm). Den här kombinationen behöver mer förlängning än så.</p>
+                      <p>Välj läget <strong>Alla</strong> för att få ett godkänt förslag (inom ±2mm) där standard 63mm räcker.</p>
+                      {onShowAll && <Button size="sm" className="w-full" onClick={onShowAll}>Byt till Alla</Button>}
+                      <p className="border-t border-border pt-2 text-xs text-muted-foreground">{OVAL_SCREW_NOTE}</p>
+                    </PopoverContent>
+                  </Popover>
+                </>
+              ) : (
+                <span className="inline-flex items-center gap-1.5 rounded-md border border-input bg-muted px-2.5 py-1 text-sm font-bold text-foreground">
+                  {screws.text}
+                </span>
               )}
             </Row>
-            {ovalScrew && <p className="mt-1.5 text-xs text-muted-foreground">{OVAL_SCREW_NOTE}</p>}
           </li>
         )}
       </ul>
