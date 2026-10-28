@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { AlertTriangle, ArrowDown, ArrowUp, Check, ChevronDown, ChevronUp, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ROUND_NO_UNDERCUT_RINGS,
-  calculate, filterByMode, describeDeviation, formatMm, formatSigned,
+  calculate, filterByMode, preferOvalScrewFit, describeDeviation, formatMm, formatSigned,
   TOLERANCE_MIN, TOLERANCE_MAX, type Combination, type ViewMode,
 } from "@/lib/cylinder";
 
@@ -38,16 +38,16 @@ export function ModePicker({ mode, onChange }: { mode: ViewMode; onChange: (m: V
   );
 }
 
-export function CylinderResults({ title, depth, ext, rings, baseMm, relaxed = false, selected = null, onSelect, mode = "all" }: {
-  title: string | null; depth: number | null; ext: number[]; rings: number[]; baseMm: number; relaxed?: boolean; mode?: ViewMode;
+export function CylinderResults({ title, depth, ext, rings, baseMm, relaxed = false, selected = null, onSelect, mode = "all", ovalSingle = false }: {
+  ovalSingle?: boolean; title: string | null; depth: number | null; ext: number[]; rings: number[]; baseMm: number; relaxed?: boolean; mode?: ViewMode;
 } & Sel) {
   const results = useMemo(() => {
     if (depth === null) return [];
     const strict = calculate({ depth, extenders: ext, rings, baseMm, relaxed, noUndercutRings: relaxed ? [...ROUND_NO_UNDERCUT_RINGS] : [] });
     // Fallback: om inget ligger inom toleransen, visa ändå bästa möjliga (med varning).
     if (strict.length === 0 && !relaxed) return calculate({ depth, extenders: ext, rings, baseMm, relaxed: true, noUndercutRings: relaxed ? [...ROUND_NO_UNDERCUT_RINGS] : [] });
-    return strict;
-  }, [depth, ext, rings, baseMm, relaxed]);
+    return ovalSingle ? preferOvalScrewFit(strict) : strict;
+  }, [depth, ext, rings, baseMm, relaxed, ovalSingle]);
   const best = filterByMode(results, mode)[0] ?? results[0];
   useEffect(() => {
     if (mode !== "all" && best && !selected && onSelect) onSelect(best);
