@@ -48,7 +48,7 @@ export function CylinderResults({ title, depth, ext, rings, baseMm, relaxed = fa
     if (strict.length === 0 && !relaxed) return calculate({ depth, extenders: ext, rings, baseMm, relaxed: true, noUndercutRings: relaxed ? [...ROUND_NO_UNDERCUT_RINGS] : [] });
     return ovalSingle ? preferOvalScrewFit(strict) : strict;
   }, [depth, ext, rings, baseMm, relaxed, ovalSingle]);
-  const best = filterByMode(results, mode)[0] ?? results[0];
+  const best = filterByMode(results, mode, ovalSingle)[0] ?? results[0];
   useEffect(() => {
     if (mode !== "all" && best && !selected && onSelect) onSelect(best);
   }, [mode, best, selected, onSelect]);
@@ -96,7 +96,7 @@ const same = (a?: Combination | null, b?: Combination | null) =>
 function Alternatives({ results, best, relaxed, side, chosen, onSelect, mode }: { results: Combination[]; best: Combination; relaxed: boolean; side: string | null; mode: ViewMode } & CardSel) {
   const [open, setOpen] = useState(false);
   const [visible, setVisible] = useState(PAGE_SIZE);
-  const shown = filterByMode(results, mode).filter(c => c !== best);
+  const shown = filterByMode(results, mode, screwAware).filter(c => c !== best);
   const alternatives = shown;
   const forSide = side ? ` för ${side.toLowerCase()}` : "";
   if (alternatives.length === 0) return null;
