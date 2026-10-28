@@ -128,7 +128,7 @@ function calculateWithCap(sizes: number[], ringT: number[], base: number, cap: n
 
 export type ViewMode = "exact" | "all" | "fewer";
 
-export function filterByMode(list: Combination[], mode: ViewMode): Combination[] {
+export function filterByMode(list: Combination[], mode: ViewMode, screwAware = false): Combination[] {
   if (mode === "exact") return list.filter((c) => c.deviation === 0);
   if (mode === "fewer") {
     if (list.length === 0) return [];
@@ -137,9 +137,12 @@ export function filterByMode(list: Combination[], mode: ViewMode): Combination[]
     const min = Math.min(...list.map((c) => c.extenderCount));
     const limit = ref === Infinity ? min : ref - 1;
     const pool = list.filter((c) => c.extenderCount <= Math.max(limit, min));
+    // Samma antal förlängare: välj den där 63mm klippbar skruv räcker före den som kräver speciallängd.
+    const screw = (c: Combination) => (screwAware && ovalSingleScrewSet(c.totalExtension).warning ? 1 : 0);
     return [...pool].sort(
       (a, b) =>
         a.extenderCount - b.extenderCount ||
+        screw(a) - screw(b) ||
         Math.abs(a.deviation) - Math.abs(b.deviation) ||
         compareCombinations(a, b),
     );

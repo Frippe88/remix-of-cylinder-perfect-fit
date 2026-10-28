@@ -214,3 +214,17 @@ describe("enkel oval prioriterar 63mm-skruv", () => {
     });
   }
 });
+
+describe("färre förlängare tänker på 63mm-skruven", () => {
+  const list = calculate({ depth: 56, ...all });
+  it("väljer kombination där 63mm räcker vid samma antal förlängare", () => {
+    const best = filterByMode(list, "fewer", true)[0]!;
+    expect(ovalSingleScrewSet(best.totalExtension).warning).toBe(false);
+    expect(best.extenderCount).toBe(Math.min(...filterByMode(list, "fewer").map((c) => c.extenderCount)));
+  });
+  it("utan skruvhjälp väljs exakt 0mm som kräver längre skruv", () => {
+    const best = filterByMode(list, "fewer")[0]!;
+    expect(best.deviation).toBe(0);
+    expect(ovalSingleScrewSet(best.totalExtension).warning).toBe(true);
+  });
+});
