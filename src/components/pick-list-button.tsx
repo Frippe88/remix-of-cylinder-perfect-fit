@@ -228,7 +228,7 @@ export function PickListButton({ sides, ext, rings, insideRings = rings, insideE
                   <PopoverTrigger asChild>
                     <button type="button" aria-label="Förklara varför 63mm inte räcker" className="inline-flex min-h-9 items-center gap-1.5 rounded-md border-l-4 border-accent bg-accent/10 px-2.5 py-1 text-sm font-bold text-foreground transition hover:bg-accent/15 active:scale-95">
                       <CircleHelp className="size-4 shrink-0 text-accent" aria-hidden />
-                      <span className="text-accent">Varför?</span>
+                      Varför?
                     </button>
                   </PopoverTrigger>
                   <PopoverContent className="w-72 space-y-2 text-sm">
@@ -239,7 +239,7 @@ export function PickListButton({ sides, ext, rings, insideRings = rings, insideE
                   </PopoverContent>
                 </Popover>
                 {onShowAll && (
-                  <Button size="sm" variant="outline" className="min-h-9 border-accent/50 bg-accent/10 font-bold text-accent hover:bg-accent/15" onClick={onShowAll}>
+                  <Button size="sm" variant="outline" className="min-h-9 border-accent/50 bg-accent/10 font-bold text-foreground hover:bg-accent/15" onClick={onShowAll}>
                     Byt till Alla
                   </Button>
                 )}
