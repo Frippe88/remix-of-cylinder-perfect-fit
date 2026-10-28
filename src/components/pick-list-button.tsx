@@ -2,7 +2,7 @@ import { useState, type ReactNode } from "react";
 import { AlertTriangle, ArrowDown, ArrowUp, Check, CircleHelp, ClipboardCopy, ClipboardList, Disc3, FolderOpen, FolderPlus, Layers, Wrench } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { ROUND_NO_UNDERCUT_RINGS, calculate, preferOvalScrewFit, roundScrewSet, ovalSingleScrewSet, OVAL_SCREW_NOTE, describeDeviation, formatMm, formatSigned, type Combination } from "@/lib/cylinder";
+import { ROUND_NO_UNDERCUT_RINGS, calculate, preferOvalScrewFit, roundScrewSet, ovalSingleScrewSet, hasOvalScrewFit, ovalScrewNeedMm, OVAL_SCREW_NOTE, describeDeviation, formatMm, formatSigned, type Combination } from "@/lib/cylinder";
 import { FITTING_LABEL, fittingForSide, fittingRingText, isLooseFitting, ringName, type DoorSide, type Fitting } from "@/lib/project";
 
 export type PickSide = { label: string | null; depth: number | null; selected: Combination | null };
