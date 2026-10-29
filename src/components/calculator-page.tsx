@@ -8,6 +8,8 @@ import { CylinderResults, ModePicker } from "@/components/cylinder-results";
 import type { ViewMode } from "@/lib/cylinder";
 import { PickListButton } from "@/components/pick-list-button";
 import { ProjectBar, ProjectPanel, useProject } from "@/components/project-panel";
+import { Button } from "@/components/ui/button";
+import { useAuth } from "@/hooks/use-auth";
 import { InfoSheetRow } from "@/components/info-sheet-row";
 import { InfoPopupRow } from "@/components/info-popup-row";
 import { AuthForm } from "@/components/auth-form";
@@ -164,10 +166,13 @@ export function CalculatorPage({ variant, loginBar, navActive, locked = false }:
           </div>
           <div className="flex shrink-0 items-center gap-2">
             <ThemeToggle />
-            {pro && <button type="button" onClick={() => { void supabase.auth.signOut(); }} aria-label="Logga ut" title="Logga ut"
-              className="inline-flex size-9 items-center justify-center rounded-lg bg-primary-foreground/10 ring-1 ring-primary-foreground/25 hover:bg-primary-foreground/20 sm:size-10">
-              <LogOut className="size-4" aria-hidden />
-            </button>}
+            <button type="button" onClick={() => setAccountOpen(true)} aria-label={user ? "Konto" : "Logga in"} title={user ? "Konto" : "Logga in"}
+              className={user
+                ? "relative inline-flex size-9 items-center justify-center rounded-lg bg-accent text-accent-foreground shadow-card hover:bg-accent/85 sm:size-10"
+                : "inline-flex size-9 items-center justify-center rounded-lg bg-primary-foreground/10 ring-1 ring-primary-foreground/25 hover:bg-primary-foreground/20 sm:size-10"}>
+              {user ? <UserRound className="size-4" aria-hidden /> : <CircleUserRound className="size-4" aria-hidden />}
+              {user && <span aria-hidden className="absolute right-[-3px] top-[-3px] size-2.5 rounded-full bg-success ring-2 ring-primary" />}
+            </button>
             {pro && <button type="button" onClick={() => { setSwitchProject(false); setProjectOpen(true); }} aria-label="Öppna projekt"
               className="inline-flex h-9 items-center gap-1 rounded-lg bg-primary-foreground/10 px-2 text-sm font-semibold ring-1 ring-primary-foreground/25 hover:bg-primary-foreground/20 sm:h-10 sm:gap-1.5 sm:px-3">
               <FolderOpen className="size-4 text-accent" aria-hidden /><span className="hidden sm:inline">Projekt</span>
