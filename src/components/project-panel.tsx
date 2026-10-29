@@ -314,9 +314,11 @@ export function ProjectPanel({ project, setProject, store, open, onOpenChange, c
                 <p className="py-6 text-center text-sm text-muted-foreground">Alla dörrar är monterade – inget kvar att plocka.</p>
               ) : <>
               <div className="space-y-5 border-y py-4">
-                <div className="flex h-8 items-center justify-between gap-2">
-                  <p className="min-w-0 flex-1 truncate text-xs text-muted-foreground">Tryck på en rad för att bocka av det du plockat.</p>
-                  {picked.size > 0 && <Button variant="outline" size="sm" className="h-8 shrink-0 rounded-full border-accent/50 bg-accent/15 px-3 text-xs font-bold text-foreground hover:bg-accent/25" onClick={() => savePicked(new Set())}><X aria-hidden />Återställ ({picked.size})</Button>}
+                <div className="flex min-h-8 items-center justify-between gap-2">
+                  <p className="text-xs text-muted-foreground">Tryck på en rad för att bocka av det du plockat.</p>
+                  <Button variant="outline" size="sm" onClick={() => savePicked(new Set())} className={`h-8 shrink-0 rounded-full border-accent/50 px-3 text-xs font-bold text-foreground hover:bg-accent/25 ${picked.size > 0 ? "bg-accent/15" : "invisible"}`}>
+                    <X aria-hidden />Återställ ({picked.size})
+                  </Button>
                 </div>
                 {purchaseList(pickDoors).map((s) => (
                   <section key={s.title} className="space-y-3">
