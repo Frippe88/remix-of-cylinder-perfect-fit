@@ -13,7 +13,7 @@ export function ProLoginBar() {
           <Star className="size-4 text-accent-foreground sm:size-5" aria-hidden />
         </span>
         <p className="min-w-0 flex-1 text-xs leading-snug font-semibold sm:text-sm">
-          Pro: spara dörrar i projekt, plocklista, PDF och skruvlängder.
+          Pro: Mät bygget dörr för dörr. Kalkylatorn räknar automatiskt ut ringar, förlängare, behör och skruv – färdig inköpslista i PDF med ett klick.
         </p>
         <div className="flex w-full shrink-0 gap-2 sm:w-auto">
           <Button type="button" size="sm" className="min-h-10 flex-1 bg-accent font-bold text-accent-foreground hover:bg-accent/85 sm:flex-none" onClick={() => setOpen("up")}>
