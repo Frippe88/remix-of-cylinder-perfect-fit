@@ -1,6 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { GUIDES } from "@/lib/guides";
-import { ArrowRight, BookOpen, Check, CircleHelp, FolderOpen, KeyRound, Minus, Moon, Package, Plus, ShieldCheck, Sun } from "lucide-react";
+import { ArrowRight, BookOpen, Check, CircleHelp, FolderOpen, KeyRound, LogOut, Minus, Moon, Package, Plus, ShieldCheck, Sun } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 import { Dialog, DialogClose, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { useEffect, useState } from "react";
 import { CylinderResults, ModePicker } from "@/components/cylinder-results";
@@ -156,6 +157,10 @@ export function CalculatorPage({ variant }: { variant: "free" | "pro" }) {
           </div>
           <div className="flex shrink-0 items-center gap-2">
             <ThemeToggle />
+            {pro && <button type="button" onClick={() => { void supabase.auth.signOut(); }} aria-label="Logga ut" title="Logga ut"
+              className="inline-flex size-9 items-center justify-center rounded-lg bg-primary-foreground/10 ring-1 ring-primary-foreground/25 hover:bg-primary-foreground/20 sm:size-10">
+              <LogOut className="size-4" aria-hidden />
+            </button>}
             {pro && <button type="button" onClick={() => { setSwitchProject(false); setProjectOpen(true); }} aria-label="Öppna projekt"
               className="inline-flex h-9 items-center gap-1 rounded-lg bg-primary-foreground/10 px-2 text-sm font-semibold ring-1 ring-primary-foreground/25 hover:bg-primary-foreground/20 sm:h-10 sm:gap-1.5 sm:px-3">
               <FolderOpen className="size-4 text-accent" aria-hidden /><span className="hidden sm:inline">Projekt</span>

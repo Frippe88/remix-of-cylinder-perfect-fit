@@ -1,5 +1,8 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { KeyRound } from "lucide-react";
 import { CalculatorPage } from "@/components/calculator-page";
+import { AuthForm } from "@/components/auth-form";
+import { useAuth } from "@/hooks/use-auth";
 
 export const Route = createFileRoute("/pro")({
   staticData: { sitemap: true },
@@ -15,5 +18,31 @@ export const Route = createFileRoute("/pro")({
     ],
     links: [{ rel: "canonical", href: "https://cylinderhjalpen.se/pro" }],
   }),
-  component: () => <CalculatorPage variant="pro" />,
+  component: ProRoute,
 });
+
+function ProRoute() {
+  const { user, loading } = useAuth();
+  if (loading) return <div className="min-h-screen" />;
+  if (user) return <CalculatorPage variant="pro" />;
+  return (
+    <div className="min-h-screen">
+      <header className="relative overflow-hidden bg-primary bg-header text-primary-foreground">
+        <div aria-hidden className="absolute inset-x-0 bottom-0 h-1 bg-accent" />
+        <div className="relative mx-auto flex max-w-5xl items-center gap-2.5 px-4 py-3 sm:py-6">
+          <span className="flex size-9 items-center justify-center rounded-xl bg-accent sm:size-12">
+            <KeyRound className="size-5 text-accent-foreground sm:size-6" aria-hidden />
+          </span>
+          <h1 className="text-base font-extrabold sm:text-2xl">Cylinderhjälpen Pro</h1>
+        </div>
+      </header>
+      <main className="px-4 py-8">
+        <AuthForm />
+        <p className="mt-4 text-center text-sm text-muted-foreground">
+          Vill du bara räkna en cylinder?{" "}
+          <Link to="/" className="font-semibold text-accent hover:underline">Använd gratisversionen</Link>
+        </p>
+      </main>
+    </div>
+  );
+}
