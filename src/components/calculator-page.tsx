@@ -18,6 +18,8 @@ import { ShareSection } from "@/components/share-section";
 import { trackEvent } from "@/lib/analytics";
 import {
   formatMm,
+  calculate,
+  preferOvalDoublePair,
   EXTENDER_SIZES,
   RING_HEIGHTS,
   ILOQ_RING_HEIGHTS,
