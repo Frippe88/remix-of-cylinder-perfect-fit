@@ -258,3 +258,10 @@ describe("skruv enkel iLOQ", () => {
   it("37mm förlängning räcker med 63mm", () => { expect(iloqSingleScrewSet(37).warning).toBe(false); });
   it("37,5mm kräver minst 63,5mm", () => { const s = iloqSingleScrewSet(37.5); expect(s.warning).toBe(true); expect(s.text).toContain("minst 63,5mm"); });
 });
+
+import { preferOvalScrewFit as pref, hasOvalScrewFit as hasFit } from "./cylinder";
+describe("enkel iLOQ prioriterar 63mm-skruv", () => {
+  const l = (d: number) => calculate({ depth: d, extenders: [8, 10, 12.5], rings: [27, 30, 33], baseMm: 40 });
+  it("djup 50: Alla ger 36,5mm förlängning där 63mm räcker", () => { expect(pref(l(50), iloqSingleScrewSet)[0]!.totalExtension).toBe(36.5); });
+  it("djup 52: ingen lösning med 63mm", () => { expect(hasFit(l(52), iloqSingleScrewSet)).toBe(false); });
+});

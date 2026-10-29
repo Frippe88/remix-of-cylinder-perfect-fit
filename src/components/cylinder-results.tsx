@@ -2,8 +2,8 @@ import { useEffect, useMemo, useState } from "react";
 import { AlertTriangle, ArrowDown, ArrowUp, Check, ChevronDown, ChevronUp, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ROUND_NO_UNDERCUT_RINGS,
-  calculate, filterByMode, preferOvalScrewFit, describeDeviation, formatMm, formatSigned,
-  TOLERANCE_MIN, TOLERANCE_MAX, type Combination, type ViewMode,
+  calculate, filterByMode, preferOvalScrewFit, iloqSingleScrewSet, ovalSingleScrewSet, describeDeviation, formatMm, formatSigned,
+  TOLERANCE_MIN, TOLERANCE_MAX, type Combination, type ViewMode, type ScrewFn,
 } from "@/lib/cylinder";
 
 const MODES: { id: ViewMode; label: string }[] = [
@@ -38,19 +38,20 @@ export function ModePicker({ mode, onChange }: { mode: ViewMode; onChange: (m: V
   );
 }
 
-export function CylinderResults({ title, depth, ext, rings, baseMm, relaxed = false, selected = null, onSelect, mode = "all", ovalSingle = false, preferred }: {
-  preferred?: Combination | undefined; ovalSingle?: boolean; title: string | null; depth: number | null; ext: number[]; rings: number[]; baseMm: number; relaxed?: boolean; mode?: ViewMode;
+export function CylinderResults({ title, depth, ext, rings, baseMm, relaxed = false, selected = null, onSelect, mode = "all", ovalSingle = false, iloqSingle = false, preferred }: {
+  preferred?: Combination | undefined; ovalSingle?: boolean; iloqSingle?: boolean; title: string | null; depth: number | null; ext: number[]; rings: number[]; baseMm: number; relaxed?: boolean; mode?: ViewMode;
 } & Sel) {
+  const screwFn = iloqSingle ? iloqSingleScrewSet : ovalSingle ? ovalSingleScrewSet : null;
   const results = useMemo(() => {
     if (depth === null) return [];
     const strict = calculate({ depth, extenders: ext, rings, baseMm, relaxed, noUndercutRings: relaxed ? [...ROUND_NO_UNDERCUT_RINGS] : [] });
     // Fallback: om inget ligger inom toleransen, visa ändå bästa möjliga (med varning).
     if (strict.length === 0 && !relaxed) return calculate({ depth, extenders: ext, rings, baseMm, relaxed: true, noUndercutRings: relaxed ? [...ROUND_NO_UNDERCUT_RINGS] : [] });
-    const list = ovalSingle ? preferOvalScrewFit(strict) : strict;
+    const list = screwFn ? preferOvalScrewFit(strict, screwFn) : strict;
     const p = preferred && list.find((c) => c.ring === preferred.ring && c.extenders.join(",") === preferred.extenders.join(","));
     return p ? [p, ...list.filter((c) => c !== p)] : list;
-  }, [depth, ext, rings, baseMm, relaxed, ovalSingle, preferred?.ring, preferred?.extenders.join(",")]);
-  const best = filterByMode(results, mode, ovalSingle)[0] ?? results[0];
+  }, [depth, ext, rings, baseMm, relaxed, ovalSingle, iloqSingle, preferred?.ring, preferred?.extenders.join(",")]);
+  const best = filterByMode(results, mode, screwFn ?? false)[0] ?? results[0];
   useEffect(() => {
     if (mode !== "all" && best && !selected && onSelect) onSelect(best);
   }, [mode, best, selected, onSelect]);
@@ -84,7 +85,7 @@ export function CylinderResults({ title, depth, ext, rings, baseMm, relaxed = fa
       ) : (
         <>
           <ResultCard relaxed={relaxed} c={best} best side={title} {...sel} />
-          <Alternatives key={`${depth}:${baseMm}:${ext.join(",")}:${rings.join(",")}:${mode}`} mode={mode} screwAware={ovalSingle} results={results} best={best} relaxed={relaxed} side={title} {...sel} />
+          <Alternatives key={`${depth}:${baseMm}:${ext.join(",")}:${rings.join(",")}:${mode}`} mode={mode} screwAware={screwFn ?? false} results={results} best={best} relaxed={relaxed} side={title} {...sel} />
         </>
       )}
     </section>
@@ -95,7 +96,7 @@ type CardSel = { chosen?: Combination | null | undefined; onSelect?: ((c: Combin
 const same = (a?: Combination | null, b?: Combination | null) =>
   !!a && !!b && a.ring === b.ring && a.extenders.join(",") === b.extenders.join(",");
 
-function Alternatives({ results, best, relaxed, side, chosen, onSelect, mode, screwAware = false }: { results: Combination[]; best: Combination; relaxed: boolean; side: string | null; mode: ViewMode; screwAware?: boolean } & CardSel) {
+function Alternatives({ results, best, relaxed, side, chosen, onSelect, mode, screwAware = false }: { results: Combination[]; best: Combination; relaxed: boolean; side: string | null; mode: ViewMode; screwAware?: boolean | ScrewFn } & CardSel) {
   const [open, setOpen] = useState(false);
   const [visible, setVisible] = useState(PAGE_SIZE);
   const shown = filterByMode(results, mode, screwAware).filter(c => c !== best);
