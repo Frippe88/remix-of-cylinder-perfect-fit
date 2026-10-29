@@ -288,7 +288,6 @@ export function ProjectPanel({ project, setProject, store, open, onOpenChange, c
               <div className="mt-4 rounded-lg border border-dashed border-border bg-muted/30 p-3">
                 <p className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wide text-muted-foreground"><Clock className="size-3.5 text-accent" aria-hidden />Kommer snart</p>
                 <ul className="mt-2 space-y-1.5 text-sm font-medium">
-                  <li className="flex items-start gap-2"><span className="mt-1.5 size-1.5 shrink-0 rounded-full bg-accent" aria-hidden /><span>Automatisk skruvlängd utifrån antalet förlängare</span></li>
                   <li className="flex items-start gap-2"><span className="mt-1.5 size-1.5 shrink-0 rounded-full bg-accent" aria-hidden /><span>Inloggning och synkning mellan telefon och dator</span></li>
                 </ul>
               </div>

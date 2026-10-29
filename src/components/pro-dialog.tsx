@@ -9,10 +9,11 @@ const FEATURES = [
   "PDF med ett klick – komplett arbetsorder eller bara inköpslista",
   "Kopiera till mejl/SMS – klistra in beställningen direkt",
   "Flera projekt samtidigt – växla mellan olika byggen och kunder",
+  "Automatisk skruvlängd – oval enkel/dubbel och runda per fabrikat, med varning när 63mm inte räcker",
 ];
 
 const COMING = [
-  "Automatisk skruvlängd – räknas ut efter hur många förlängare dörren har",
+  "Inloggning och synkning mellan telefon och dator",
 ];
 
 export function ProDialog({ open, onOpenChange }: { open: boolean; onOpenChange: (v: boolean) => void }) {
