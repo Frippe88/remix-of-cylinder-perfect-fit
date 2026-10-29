@@ -1,5 +1,5 @@
 import { useState, type ReactNode } from "react";
-import { AlertTriangle, ArrowDown, ArrowUp, Check, CircleHelp, ClipboardCopy, ClipboardList, Disc3, FolderOpen, FolderPlus, Layers, Wrench } from "lucide-react";
+import { Lock, AlertTriangle, ArrowDown, ArrowUp, Check, CircleHelp, ClipboardCopy, ClipboardList, Disc3, FolderOpen, FolderPlus, Layers, Wrench } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { ROUND_NO_UNDERCUT_RINGS, calculate, preferOvalScrewFit, roundScrewSet, ovalSingleScrewSet, hasOvalScrewFit, ovalScrewNeedMm, OVAL_SCREW_NOTE, ovalDoubleScrewSet, ovalDoubleScrewNeedMm, OVAL_DOUBLE_SCREW_BASE_MM, OVAL_DOUBLE_SCREW_NOTE, OVAL_SCREW_CLIP_MM, iloqSingleScrewSet, iloqScrewNeedMm, ILOQ_SCREW_NOTE, TOLERANCE_MIN, TOLERANCE_MAX, describeDeviation, formatMm, formatSigned, type Combination } from "@/lib/cylinder";
@@ -81,12 +81,12 @@ const FITTING_MENU: Record<Fitting, string> = {
   "A10.11": "A10.11 monteringskit (iLOQ dubbelcylinder)",
 };
 
-export function PickListButton({ sides, ext, rings, insideRings = rings, insideExt = ext, baseMm, insideBaseMm = baseMm, relaxed, onSave, projectName, projectDoors = 0, projectCount = 1, onOpenProject, fitting = null, onFittingChange, fittingChoices = ["256", "2356"], iloqDouble = false, screwBrand, ovalSingle = false, iloqSingle = false, onShowAll }: {
+export function PickListButton({ sides, ext, rings, insideRings = rings, insideExt = ext, baseMm, insideBaseMm = baseMm, relaxed, onSave, projectName, projectDoors = 0, projectCount = 1, onOpenProject, fitting = null, onFittingChange, fittingChoices = ["256", "2356"], iloqDouble = false, screwBrand, ovalSingle = false, iloqSingle = false, onShowAll, locked = false, onLocked }: {
   sides: PickSide[]; ext: number[]; rings: number[]; insideRings?: number[]; insideExt?: number[]; baseMm: number; insideBaseMm?: number; relaxed: boolean;
   onSave?: ((sides: DoorSide[]) => void) | undefined;
   projectName?: string; projectDoors?: number; projectCount?: number; onOpenProject?: () => void;
   fitting?: Fitting | null; onFittingChange?: ((value: Fitting | null) => void) | undefined;
-  fittingChoices?: Fitting[]; iloqDouble?: boolean; screwBrand?: string | undefined; ovalSingle?: boolean; iloqSingle?: boolean; onShowAll?: (() => void) | undefined;
+  fittingChoices?: Fitting[]; iloqDouble?: boolean; screwBrand?: string | undefined; ovalSingle?: boolean; iloqSingle?: boolean; onShowAll?: (() => void) | undefined; locked?: boolean; onLocked?: () => void;
 }) {
   const savedTo = (projectName ?? "").trim();
   const projectLabel = savedTo || "Projekt";
@@ -114,12 +114,19 @@ export function PickListButton({ sides, ext, rings, insideRings = rings, insideE
   const screws = ovalScrew ?? (!screwBrand ? null
     : sides.length < 2 ? { text: "Beror på montage – kalkylatorn kan inte ange exakt skruvlängd vid enkelcylinder.", warning: false }
     : roundScrewSet(screwBrand, picks.reduce((n, p) => n + p.c.extenderCount, 0)));
-  const text = picks.map((p) => (p.label ? `${p.label}: ` : "") + pickLine(p.c, fittingForSide(fitting, p.label), isInner(p.label))).join("\n") + (screws ? `\nSkruv: ${screws.text}` : "") + (ovalScrew ? `\n(${screwNote})` : "");
+  const text = picks.map((p) => (p.label ? `${p.label}: ` : "") + pickLine(p.c, locked ? null : fittingForSide(fitting, p.label), isInner(p.label))).join("\n") + (screws && !locked ? `\nSkruv: ${screws.text}` : "") + (ovalScrew && !locked ? `\n(${screwNote})` : "");
   const insidePick = picks.find((p) => isInner(p.label));
   const menuText = (f: Fitting) => (f === "vred" || f === "tackbricka") && picks[0] ? fittingRingText(f, picks[0].c.ring)
     : f === "A10.11" && insidePick ? `A10.11 monteringskit (${ringName(insidePick.c.ring, true)} insida)`
     : (f === "256" || f === "2356") && picks[0] ? `${FITTING_MENU[f]} – ${isLooseFitting(f, picks[0].c.ring) ? `lös ring ${formatMm(picks[0].c.ring)}` : ringName(picks[0].c.ring)}` : FITTING_MENU[f];
   const parts = picks.reduce((n, p) => n + p.c.extenderCount + 1, 0);
+
+const Locked = ({ children, label }: { children: ReactNode; label: string }) => (
+    <button type="button" onClick={onLocked} aria-label={label} className="relative inline-flex min-h-9 items-center gap-1.5 rounded-md border border-accent/50 bg-accent/5 px-2.5 py-1 text-left">
+      <span aria-hidden className="select-none text-sm font-bold text-foreground blur-[5px]">{children}</span>
+      <span className="absolute inset-0 flex items-center justify-center gap-1 text-xs font-bold text-foreground"><Lock className="size-3.5 text-accent" aria-hidden />Pro</span>
+    </button>
+  );
 
   const copy = async () => {
     setFailed(false);
@@ -212,9 +219,10 @@ export function PickListButton({ sides, ext, rings, insideRings = rings, insideE
               const sideFit = fittingForSide(fitting, p.label);
               return sideFit ? (
                 <Row caption="Behör" icon={<Wrench className="size-3.5" />}>
+                  {locked ? <Locked label="Behör – lås upp med Pro">{FITTING_LABEL[sideFit]}</Locked> :
                   <span className="inline-flex items-center rounded-md border border-accent/50 bg-accent/10 px-2.5 py-1 text-sm font-bold text-foreground">
                     {FITTING_LABEL[sideFit]}
-                  </span>
+                  </span>}
                 </Row>
               ) : null;
             })()}
@@ -223,7 +231,7 @@ export function PickListButton({ sides, ext, rings, insideRings = rings, insideE
         {screws && (
           <li className="px-4 py-3">
             <Row caption="Skruv" icon={screws.warning ? <AlertTriangle className="size-3.5 text-destructive" /> : <Wrench className="size-3.5" />}>
-              {ovalScrew?.warning ? (
+              {locked ? <Locked label="Skruvlängd – lås upp med Pro">{screws.text.slice(0, 28)}</Locked> : ovalScrew?.warning ? (
                 <span className="inline-flex items-center gap-1.5 rounded-md border border-destructive/50 bg-destructive/10 px-2 py-1 text-sm font-bold text-destructive">
                   {showAll ? "63mm räcker inte – välj Alla" : isOvalDouble && screwFixable ? "63mm räcker inte – välj kortare förlängning" : `Längre skruv behövs (minst ${formatMm(screwNeed)})`}
                 </span>
@@ -233,7 +241,7 @@ export function PickListButton({ sides, ext, rings, insideRings = rings, insideE
                 </span>
               )}
             </Row>
-            {ovalScrew?.warning && (
+            {!locked && ovalScrew?.warning && (
               <div className="flex flex-wrap items-center gap-1.5">
                 <Popover>
                   <PopoverTrigger asChild>
@@ -262,7 +270,7 @@ export function PickListButton({ sides, ext, rings, insideRings = rings, insideE
                 )}
               </div>
             )}
-            {isIloq && !ovalScrew?.warning && (
+            {!locked && isIloq && !ovalScrew?.warning && (
               <Popover>
                 <PopoverTrigger asChild>
                   <button type="button" aria-label="Viktigt om skruv till iLOQ" className="inline-flex min-h-9 items-center gap-1.5 rounded-md border-l-4 border-accent bg-accent/10 px-2.5 py-1 text-sm font-bold text-foreground transition hover:bg-accent/15 active:scale-95">
@@ -282,7 +290,16 @@ export function PickListButton({ sides, ext, rings, insideRings = rings, insideE
       </ul>
 
       <div className="space-y-2 border-t bg-muted/30 px-4 py-3">
-        {onFittingChange && (
+        {locked && onFittingChange && (
+          <div className="pb-2 text-sm font-semibold">
+            Behör <span className="text-xs font-normal text-muted-foreground">(Pro)</span>
+            <button type="button" onClick={onLocked} aria-label="Välj behör – lås upp med Pro" className="relative mt-1.5 flex min-h-11 w-full items-center rounded-md border border-input bg-card px-3 py-2 text-left">
+              <span aria-hidden className="select-none blur-[5px]">{fittingChoices[0] ? menuText(fittingChoices[0]) : "256 behör (vred)"}</span>
+              <span className="absolute inset-0 flex items-center justify-center gap-1.5 text-sm font-bold"><Lock className="size-4 text-accent" aria-hidden />Välj behör med Pro</span>
+            </button>
+          </div>
+        )}
+        {!locked && onFittingChange && (
           <label className="block pb-2 text-sm font-semibold">
             Behör <span className="text-xs font-normal text-muted-foreground">(valfritt)</span>
             <select aria-label="Behör" value={fitting ?? ""} onChange={(e) => onFittingChange(fittingChoices.includes(e.target.value as Fitting) ? (e.target.value as Fitting) : null)}
@@ -295,7 +312,13 @@ export function PickListButton({ sides, ext, rings, insideRings = rings, insideE
             <span className="mt-2 block rounded-md border border-border bg-muted px-3 py-2 text-sm font-normal leading-snug text-foreground">Vi räknar med <strong className="font-bold">ASSA ABLOY:s behör (256, 2356, 18256)</strong>. Annat fabrikat? Byt bara ut behöret mot motsvarande – <strong className="font-bold">ringhöjden är densamma</strong>.</span>
           </label>
         )}
-        {onSave && (
+        {locked && (
+          <Button variant="outline" className="min-h-11 w-full justify-start gap-2 border-accent/50 font-semibold" onClick={onLocked}>
+            <Lock aria-hidden className="shrink-0 text-accent" />
+            <span className="truncate">Spara i projekt – skapa konto för Pro</span>
+          </Button>
+        )}
+        {!locked && onSave && (
           <Button variant="outline" className="min-h-11 w-full justify-start gap-2 font-semibold" onClick={() => onSave(picks.map((p) => ({ label: p.label, depth: p.depth, ring: p.c.ring, extenders: [...p.c.extenders] })))}>
             <FolderPlus aria-hidden className="shrink-0" />
             <span className="truncate">Spara i {savedTo ? `”${savedTo}”` : "projekt"}</span>
