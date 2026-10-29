@@ -8,21 +8,26 @@ import { Label } from "@/components/ui/label";
 export function AccountPanel({ email, onSignOut }: { email: string; onSignOut: () => void }) {
   const [changing, setChanging] = useState(false);
   const [pw, setPw] = useState("");
+  const [cur, setCur] = useState("");
   const [busy, setBusy] = useState(false);
   const [msg, setMsg] = useState<{ ok: boolean; text: string } | null>(null);
 
   async function save(e: React.FormEvent) {
     e.preventDefault();
+    if (!cur) return setMsg({ ok: false, text: "Fyll i ditt nuvarande lösenord." });
     if (pw.length < 8) return setMsg({ ok: false, text: "Lösenordet måste vara minst 8 tecken." });
     setBusy(true);
     setMsg(null);
-    const { error } = await supabase.auth.updateUser({ password: pw });
+    const { error } = await supabase.auth.updateUser({ password: pw, current_password: cur });
     setBusy(false);
     if (error) {
+      if (/current password|invalid|incorrect|credentials/i.test(error.message) && !/weak|pwned/i.test(error.message))
+        return setMsg({ ok: false, text: "Nuvarande lösenord stämmer inte." });
       const weak = /weak|pwned|leaked|known/i.test(error.message);
       return setMsg({ ok: false, text: weak ? "För enkelt eller läckt lösenord. Välj ett starkare." : "Kunde inte byta lösenord. Försök igen." });
     }
     setPw("");
+    setCur("");
     setChanging(false);
     setMsg({ ok: true, text: "Lösenordet är bytt." });
   }
@@ -51,11 +56,13 @@ export function AccountPanel({ email, onSignOut }: { email: string; onSignOut: (
         <p className="text-xs font-semibold text-muted-foreground">Lösenord</p>
         {changing ? (
           <form onSubmit={save} className="space-y-2">
+            <Label htmlFor="acc-cur-pw" className="sr-only">Nuvarande lösenord</Label>
+            <Input id="acc-cur-pw" type="password" placeholder="Nuvarande lösenord" autoComplete="current-password" value={cur} onChange={(e) => setCur(e.target.value)} />
             <Label htmlFor="acc-new-pw" className="sr-only">Nytt lösenord</Label>
             <Input id="acc-new-pw" type="password" placeholder="Nytt lösenord" autoComplete="new-password" value={pw} onChange={(e) => setPw(e.target.value)} />
             <div className="flex gap-2">
               <Button type="submit" disabled={busy} className="min-h-10 flex-1 bg-accent font-semibold text-accent-foreground hover:bg-accent/90">Spara</Button>
-              <Button type="button" variant="outline" className="min-h-10" onClick={() => { setChanging(false); setPw(""); setMsg(null); }}>Avbryt</Button>
+              <Button type="button" variant="outline" className="min-h-10" onClick={() => { setChanging(false); setPw(""); setCur(""); setMsg(null); }}>Avbryt</Button>
             </div>
           </form>
         ) : (
