@@ -112,6 +112,13 @@ export function CalculatorPage({ variant }: { variant: "free" | "pro" }) {
   const [sel, setSel] = useState<{ key: string; out: Combination | null; in: Combination | null }>({ key: "", out: null, in: null });
   const selOut = sel.key === selKey ? sel.out : null;
   const selIn = sel.key === selKey ? sel.in : null;
+  // Dubbel oval i läget Alla: välj par där 63mm skruv räcker om det finns inom ±2mm.
+  const ovalPair = (() => {
+    if (cyl !== "standard" || type !== "double" || mode !== "all") return null;
+    const o = parse(outside), i = parse(inside);
+    if (o === null || i === null) return null;
+    return preferOvalDoublePair(calculate({ depth: o, extenders: ext, rings: activeRings, baseMm, relaxed: false }), calculate({ depth: i, extenders: insideExt, rings: insideRings, baseMm: insideBaseMm, relaxed: false }));
+  })();
 
   // GA4: räkna en beräkning när måtten stått still en stund (inte varje knapptryck).
   useEffect(() => {

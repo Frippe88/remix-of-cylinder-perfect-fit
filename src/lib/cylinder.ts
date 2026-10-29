@@ -206,6 +206,21 @@ export function ovalDoubleScrewSet(totalExtMm: number): ScrewSet {
   return { text: `${formatMm(totalExtMm)} förlängning – 63mm räcker inte, längre klippbar cylinderskruv krävs (minst ${formatMm(need)})`, warning: true };
 }
 
+/** Dubbel oval: om första paret kräver längre skruv, välj par inom toleransen där 48/63mm räcker (minst total avvikelse). */
+export function preferOvalDoublePair(outList: Combination[], inList: Combination[]): [Combination, Combination] | null {
+  const a = outList[0], b = inList[0];
+  if (!a || !b) return null;
+  if (!ovalDoubleScrewSet(a.totalExtension + b.totalExtension).warning) return [a, b];
+  const inTol = (c: Combination) => c.deviation >= TOLERANCE_MIN && c.deviation <= TOLERANCE_MAX;
+  let best: [Combination, Combination] | null = null, score = Infinity;
+  for (const o of outList.filter(inTol)) for (const i of inList.filter(inTol)) {
+    if (ovalDoubleScrewSet(o.totalExtension + i.totalExtension).warning) continue;
+    const s = Math.abs(o.deviation) + Math.abs(i.deviation);
+    if (s < score) { score = s; best = [o, i]; }
+  }
+  return best ?? [a, b];
+}
+
 /** Finns någon kombination inom toleransen där 24/63mm skruv räcker? */
 export function hasOvalScrewFit(list: Combination[]): boolean {
   return list.some((c) => c.deviation >= TOLERANCE_MIN && c.deviation <= TOLERANCE_MAX && !ovalSingleScrewSet(c.totalExtension).warning);
