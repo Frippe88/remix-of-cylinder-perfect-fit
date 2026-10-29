@@ -222,13 +222,10 @@ export function ProjectPanel({ project, setProject, store, open, onOpenChange, c
   const [query, setQuery] = useState("");
   const q = query.trim().toLowerCase();
   const shown = q ? project.doors.filter((d) => d.name.toLowerCase().includes(q)) : project.doors;
-  const pickKey = `cylinderhjalpen.picked.${store.active}`;
-  const [picked, setPicked] = useState<Set<string>>(new Set());
-  useEffect(() => {
-    try { setPicked(new Set(JSON.parse(localStorage.getItem(pickKey) ?? "[]"))); } catch { setPicked(new Set()); }
-    setQuery("");
-  }, [pickKey]);
-  const savePicked = (n: Set<string>) => { setPicked(n); try { localStorage.setItem(pickKey, JSON.stringify([...n])); } catch { /* ignore */ } };
+  // Bockarna sparas i projektet så de synkas mellan enheter som dörrarna.
+  const picked = new Set(project.picked ?? []);
+  useEffect(() => { setQuery(""); }, [store.active]);
+  const savePicked = (n: Set<string>) => setProject((p) => ({ ...p, picked: [...n] }));
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent side="bottom" className="flex max-h-[92dvh] flex-col overflow-hidden rounded-t-xl p-0 sm:mx-auto sm:max-w-2xl [&>button:last-child]:z-20 [&>button:last-child]:rounded-full [&>button:last-child]:bg-card [&>button:last-child]:p-1.5 [&>button:last-child]:shadow-card [&>button:last-child]:opacity-100">
