@@ -193,6 +193,21 @@ export function ovalScrewNeedMm(extenderMm: number): number {
   return OVAL_SCREW_LOCK_MM + extenderMm + OVAL_SCREW_MIN_THREAD_MM;
 }
 
+// Skruv för enkel iLOQ: utan förlängare iLOQ:s egna skruvar; med förlängare 63mm klippbar.
+// iLOQ:s gängdjup är 7mm – skruven får gå in max 6mm och ska ha plan ände (ej spetsig).
+export const ILOQ_SCREW_MIN_THREAD_MM = 5;
+export const ILOQ_SCREW_MAX_THREAD_MM = 6;
+export const ILOQ_SCREW_NOTE = "iLOQ: skruven får gå max 5–6mm in i cylindern och ska ha plan ände – aldrig spetsig skruv. För lång eller spetsig skruv förstör cylindern.";
+export function iloqScrewNeedMm(extenderMm: number): number {
+  return OVAL_SCREW_LOCK_MM + extenderMm + ILOQ_SCREW_MIN_THREAD_MM;
+}
+export function iloqSingleScrewSet(extenderMm: number): ScrewSet {
+  if (extenderMm <= 0) return { text: "2 st iLOQ:s egna cylinderskruvar", warning: false };
+  const need = iloqScrewNeedMm(extenderMm);
+  if (need <= OVAL_SCREW_CLIP_MM) return { text: "2 st 63mm klippbar cylinderskruv – kapa så den går max 6mm in i cylindern", warning: false };
+  return { text: `63mm räcker inte, längre klippbar cylinderskruv krävs (minst ${formatMm(need)})`, warning: true };
+}
+
 // Skruv för dubbel oval: genom insidans cylinder (~19,5mm) + kista 18,5mm + minst 10mm gänga = 48mm, plus all förlängning (in + ut).
 export const OVAL_DOUBLE_SCREW_BASE_MM = 48;
 export const OVAL_DOUBLE_SCREW_NOTE = "Skruven går genom insidans cylinder och kistan, och gängas minst 10mm in i utsidans cylinder.";
