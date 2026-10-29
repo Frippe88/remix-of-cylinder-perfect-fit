@@ -112,3 +112,21 @@ export function AuthForm({ initialMode }: { initialMode?: Mode }) {
     </div>
   );
 }
+
+export function authErrorText(m: string, code = "", status?: number): string {
+  if (code === "weak_password" || /weak|easy to guess|pwned/i.test(m))
+    return "Lösenordet är för enkelt eller har läckt tidigare – välj ett starkare (minst 8 tecken, blanda bokstäver, siffror och tecken).";
+  if (/at least \d+ characters|password should be/i.test(m))
+    return "Lösenordet är för kort – minst 8 tecken.";
+  if (/not allowed|placeholder|reserved|mistyped|invalid.*email|email.*invalid/i.test(m))
+    return "Mejladressen godkänns inte – kontrollera att den är rätt stavad och riktig.";
+  if (code === "user_already_exists" || /already registered|already exists/i.test(m))
+    return "Det finns redan ett konto med den mejlen – logga in istället.";
+  if (/invalid login|invalid credentials/i.test(m)) return "Fel mejl eller lösenord.";
+  if (/not confirmed/i.test(m)) return "Bekräfta mejlen först – kolla inkorgen.";
+  if (status === 429 || /rate limit|too many/i.test(m))
+    return "För många försök på kort tid – vänta en stund och försök igen.";
+  if (/signups? not allowed|disabled/i.test(m)) return "Det går inte att skapa konto just nu.";
+  if (/failed to fetch|network/i.test(m)) return "Ingen anslutning – kontrollera internet och försök igen.";
+  return m ? `Något gick fel: ${m}` : "Något gick fel. Försök igen.";
+}
