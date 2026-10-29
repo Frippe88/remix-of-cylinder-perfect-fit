@@ -99,11 +99,17 @@ export function PickListButton({ sides, ext, rings, insideRings = rings, insideE
   if (picks.length === 0) return null;
 
   const isInner = (label: string | null) => iloqDouble && label === "Insida";
-  const ovalExtMm = picks[0] ? picks[0].c.extenders.reduce((a, b) => a + b, 0) : 0;
-  const ovalScrew = ovalSingle && sides.length < 2 && picks[0] ? ovalSingleScrewSet(ovalExtMm) : null;
-  const screwFixable = !!ovalScrew?.warning && hasOvalScrewFit(calculate({ depth: picks[0]!.depth, extenders: ext, rings, baseMm, relaxed: false }));
-  const showAll = screwFixable ? onShowAll : undefined;
-  const screwNeed = ovalScrewNeedMm(ovalExtMm);
+  const isOvalDouble = !!ovalSingle && sides.length === 2 && picks.length === 2;
+  const ovalExtMm = isOvalDouble ? picks.reduce((n, p) => n + p.c.totalExtension, 0) : picks[0] ? picks[0].c.extenders.reduce((a, b) => a + b, 0) : 0;
+  const ovalScrew = isOvalDouble ? ovalDoubleScrewSet(ovalExtMm) : ovalSingle && sides.length < 2 && picks[0] ? ovalSingleScrewSet(ovalExtMm) : null;
+  const minTolExt = (depth: number, e: number[], r: number[], b: number) =>
+    Math.min(...calculate({ depth, extenders: e, rings: r, baseMm: b, relaxed: false }).filter((c) => c.deviation >= TOLERANCE_MIN && c.deviation <= TOLERANCE_MAX).map((c) => c.totalExtension));
+  const screwFixable = !!ovalScrew?.warning && (isOvalDouble
+    ? picks.reduce((n, p) => n + (p.label === "Insida" ? minTolExt(p.depth, insideExt, insideRings, insideBaseMm) : minTolExt(p.depth, ext, rings, baseMm)), 0) + OVAL_DOUBLE_SCREW_BASE_MM <= OVAL_SCREW_CLIP_MM
+    : hasOvalScrewFit(calculate({ depth: picks[0]!.depth, extenders: ext, rings, baseMm, relaxed: false })));
+  const showAll = screwFixable && !isOvalDouble ? onShowAll : undefined;
+  const screwNeed = isOvalDouble ? ovalDoubleScrewNeedMm(ovalExtMm) : ovalScrewNeedMm(ovalExtMm);
+  const screwNote = isOvalDouble ? OVAL_DOUBLE_SCREW_NOTE : OVAL_SCREW_NOTE;
   const screws = ovalScrew ?? (!screwBrand ? null
     : sides.length < 2 ? { text: "Beror på montage – kalkylatorn kan inte ange exakt skruvlängd vid enkelcylinder.", warning: false }
     : roundScrewSet(screwBrand, picks.reduce((n, p) => n + p.c.extenderCount, 0)));
