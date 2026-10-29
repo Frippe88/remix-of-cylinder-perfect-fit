@@ -153,10 +153,12 @@ export function CalculatorPage({ variant, loginBar, navActive, locked = false }:
             <KeyRound className="size-5 text-accent-foreground sm:size-6" aria-hidden />
           </span>
           <div className="min-w-0 flex-1">
-            <h1 className="truncate text-base font-extrabold leading-tight tracking-tight sm:text-2xl">
-              Cylinderhjälpen<span className="hidden sm:inline"> – kalkylator för rätt mått och montage</span>
+            <h1 className="text-base font-extrabold leading-tight tracking-tight sm:text-2xl">
+              Cylinderhjälpen
             </h1>
-            <p className="truncate text-[11px] leading-tight opacity-80 sm:hidden">Kalkylator för rätt mått och montage</p>
+            <p className="text-[11px] leading-tight opacity-80 sm:text-sm sm:opacity-90">
+              Kalkylator för rätt mått och montage
+            </p>
           </div>
           <div className="flex shrink-0 items-center gap-2">
             <ThemeToggle />
