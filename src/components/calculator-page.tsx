@@ -88,7 +88,6 @@ export function CalculatorPage({ variant, loginBar, navActive, locked = false }:
   const proFeat = pro || locked;
   const [project, setProject, projectStore] = useProject();
   const [proOpen, setProOpen] = useState(false);
-  useEffect(() => { if (pro) setProOpen(true); }, [pro]);
   const [projectOpen, setProjectOpen] = useState(false);
   const [switchProject, setSwitchProject] = useState(false);
   const [pendingDoor, setPendingDoor] = useState<{ sides: DoorSide[]; kind: "oval" | "rund" | "iloq"; fitting?: Fitting; brand?: string } | null>(null);
