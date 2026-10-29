@@ -10,10 +10,10 @@ export type PickSide = { label: string | null; depth: number | null; selected: C
 export const sameCombo = (a: Combination | null | undefined, b: Combination | null | undefined) =>
   !!a && !!b && a.ring === b.ring && a.extenders.join(",") === b.extenders.join(",");
 
-function bestFor(depth: number, ext: number[], rings: number[], baseMm: number, relaxed: boolean, oval = false): Combination | undefined {
+function bestFor(depth: number, ext: number[], rings: number[], baseMm: number, relaxed: boolean, oval = false, iloq = false): Combination | undefined {
   const strict = calculate({ depth, extenders: ext, rings, baseMm, relaxed, noUndercutRings: relaxed ? [...ROUND_NO_UNDERCUT_RINGS] : [] });
   if (strict.length === 0 && !relaxed) return calculate({ depth, extenders: ext, rings, baseMm, relaxed: true, noUndercutRings: relaxed ? [...ROUND_NO_UNDERCUT_RINGS] : [] })[0];
-  return (oval ? preferOvalScrewFit(strict) : strict)[0];
+  return (iloq ? preferOvalScrewFit(strict, iloqSingleScrewSet) : oval ? preferOvalScrewFit(strict) : strict)[0];
 }
 
 /** Texten som kopieras – håll den ren, den klistras in i SMS/WhatsApp/order. */
@@ -94,7 +94,7 @@ export function PickListButton({ sides, ext, rings, insideRings = rings, insideE
   const [failed, setFailed] = useState(false);
   const picks = sides
     .filter((s) => s.depth !== null)
-    .map((s) => ({ label: s.label, depth: s.depth as number, c: s.selected ?? (s.label === "Insida" ? bestFor(s.depth as number, insideExt, insideRings, insideBaseMm, relaxed) : bestFor(s.depth as number, ext, rings, baseMm, relaxed, !!ovalSingle && sides.length < 2)) }))
+    .map((s) => ({ label: s.label, depth: s.depth as number, c: s.selected ?? (s.label === "Insida" ? bestFor(s.depth as number, insideExt, insideRings, insideBaseMm, relaxed) : bestFor(s.depth as number, ext, rings, baseMm, relaxed, !!ovalSingle && sides.length < 2, iloqSingle && sides.length < 2)) }))
     .filter((s): s is { label: string | null; depth: number; c: Combination } => !!s.c);
   if (picks.length === 0) return null;
 
@@ -105,9 +105,9 @@ export function PickListButton({ sides, ext, rings, insideRings = rings, insideE
   const ovalScrew = isOvalDouble ? ovalDoubleScrewSet(ovalExtMm) : ovalSingle && sides.length < 2 && picks[0] ? ovalSingleScrewSet(ovalExtMm) : isIloq ? iloqSingleScrewSet(ovalExtMm) : null;
   const minTolExt = (depth: number, e: number[], r: number[], b: number) =>
     Math.min(...calculate({ depth, extenders: e, rings: r, baseMm: b, relaxed: false }).filter((c) => c.deviation >= TOLERANCE_MIN && c.deviation <= TOLERANCE_MAX).map((c) => c.totalExtension));
-  const screwFixable = !!ovalScrew?.warning && !isIloq && (isOvalDouble
+  const screwFixable = !!ovalScrew?.warning && (isOvalDouble
     ? picks.reduce((n, p) => n + (p.label === "Insida" ? minTolExt(p.depth, insideExt, insideRings, insideBaseMm) : minTolExt(p.depth, ext, rings, baseMm)), 0) + OVAL_DOUBLE_SCREW_BASE_MM <= OVAL_SCREW_CLIP_MM
-    : hasOvalScrewFit(calculate({ depth: picks[0]!.depth, extenders: ext, rings, baseMm, relaxed: false })));
+    : hasOvalScrewFit(calculate({ depth: picks[0]!.depth, extenders: ext, rings, baseMm, relaxed: false }), isIloq ? iloqSingleScrewSet : undefined));
   const showAll = screwFixable ? onShowAll : undefined;
   const screwNeed = isIloq ? iloqScrewNeedMm(ovalExtMm) : isOvalDouble ? ovalDoubleScrewNeedMm(ovalExtMm) : ovalScrewNeedMm(ovalExtMm);
   const screwNote = isIloq ? ILOQ_SCREW_NOTE : isOvalDouble ? OVAL_DOUBLE_SCREW_NOTE : OVAL_SCREW_NOTE;

@@ -128,7 +128,8 @@ function calculateWithCap(sizes: number[], ringT: number[], base: number, cap: n
 
 export type ViewMode = "exact" | "all" | "fewer";
 
-export function filterByMode(list: Combination[], mode: ViewMode, screwAware = false): Combination[] {
+export type ScrewFn = (extenderMm: number) => ScrewSet;
+export function filterByMode(list: Combination[], mode: ViewMode, screwAware: boolean | ScrewFn = false): Combination[] {
   if (mode === "exact") return list.filter((c) => c.deviation === 0);
   if (mode === "fewer") {
     if (list.length === 0) return [];
@@ -138,7 +139,8 @@ export function filterByMode(list: Combination[], mode: ViewMode, screwAware = f
     const limit = ref === Infinity ? min : ref - 1;
     const pool = list.filter((c) => c.extenderCount <= Math.max(limit, min));
     // Samma antal förlängare: välj den där 63mm klippbar skruv räcker före den som kräver speciallängd.
-    const screw = (c: Combination) => (screwAware && ovalSingleScrewSet(c.totalExtension).warning ? 1 : 0);
+    const fn = typeof screwAware === "function" ? screwAware : screwAware ? ovalSingleScrewSet : null;
+    const screw = (c: Combination) => (fn && fn(c.totalExtension).warning ? 1 : 0);
     return [...pool].sort(
       (a, b) =>
         a.extenderCount - b.extenderCount ||
@@ -237,12 +239,12 @@ export function preferOvalDoublePair(outList: Combination[], inList: Combination
 }
 
 /** Finns någon kombination inom toleransen där 24/63mm skruv räcker? */
-export function hasOvalScrewFit(list: Combination[]): boolean {
-  return list.some((c) => c.deviation >= TOLERANCE_MIN && c.deviation <= TOLERANCE_MAX && !ovalSingleScrewSet(c.totalExtension).warning);
+export function hasOvalScrewFit(list: Combination[], fn: ScrewFn = ovalSingleScrewSet): boolean {
+  return list.some((c) => c.deviation >= TOLERANCE_MIN && c.deviation <= TOLERANCE_MAX && !fn(c.totalExtension).warning);
 }
 
 /** Enkel oval: lägg kombinationer där 24/63mm skruv räcker först (inom toleransen), annars oförändrad ordning. */
-export function preferOvalScrewFit(list: Combination[]): Combination[] {
-  const ok = (c: Combination) => c.deviation >= TOLERANCE_MIN && c.deviation <= TOLERANCE_MAX && !ovalSingleScrewSet(c.totalExtension).warning;
+export function preferOvalScrewFit(list: Combination[], fn: ScrewFn = ovalSingleScrewSet): Combination[] {
+  const ok = (c: Combination) => c.deviation >= TOLERANCE_MIN && c.deviation <= TOLERANCE_MAX && !fn(c.totalExtension).warning;
   return [...list.filter(ok), ...list.filter((c) => !ok(c))];
 }
