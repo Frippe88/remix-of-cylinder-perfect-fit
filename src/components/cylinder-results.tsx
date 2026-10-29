@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
-import { AlertTriangle, ArrowDown, ArrowUp, Check, ChevronDown, ChevronUp, Plus } from "lucide-react";
+import { AlertTriangle, ArrowDown, ArrowUp, Check, ChevronDown, ChevronUp, CircleHelp, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { ROUND_NO_UNDERCUT_RINGS,
   calculate, filterByMode, preferOvalScrewFit, iloqSingleScrewSet, ovalSingleScrewSet, describeDeviation, formatMm, formatSigned,
   TOLERANCE_MIN, TOLERANCE_MAX, type Combination, type ViewMode, type ScrewFn,
@@ -26,10 +27,27 @@ function SideBadge({ side }: { side: string | null }) {
 
 type Sel = { selected?: Combination | null; onSelect?: (c: Combination) => void };
 
-export function ModePicker({ mode, onChange }: { mode: ViewMode; onChange: (m: ViewMode) => void }) {
+export function ModePicker({ mode, onChange, pro = false }: { mode: ViewMode; onChange: (m: ViewMode) => void; pro?: boolean }) {
   return (
     <div>
-      <p className="mb-1.5 text-xs font-semibold text-muted-foreground">Vad ska prioriteras?</p>
+      <div className="mb-1.5 flex items-center gap-1.5">
+        <p className="text-xs font-semibold text-muted-foreground">Vad ska prioriteras?</p>
+        <Popover>
+          <PopoverTrigger asChild>
+            <button type="button" aria-label="Förklara prioriteringslägena" className="inline-flex size-6 items-center justify-center rounded-full border-l-2 border-accent bg-accent/10 text-accent transition hover:bg-accent/20 active:scale-95">
+              <CircleHelp className="size-4" aria-hidden />
+            </button>
+          </PopoverTrigger>
+          <PopoverContent className="w-80 max-w-[calc(100vw-2rem)] space-y-2.5 border-l-4 border-l-accent text-sm leading-snug">
+            <p className="font-bold">Hur tänker kalkylatorn?</p>
+            <p>Oval och iLOQ är godkända inom −2 till +2mm, så samma dörr kan ofta lösas på flera sätt.</p>
+            <p><span className="font-bold">Alla:</span> Alla godkända kombinationer. Exakt 0mm hamnar först, även om det kräver fler förlängare.{pro ? " Räcker inte 63mm-skruven väljs automatiskt en godkänd kombination där den räcker." : ""}</p>
+            <p><span className="font-bold">Exakt 0mm:</span> Bara kombinationer exakt i liv med ringen – inga kompromisser.</p>
+            <p><span className="font-bold">Färre förlängare:</span> Minst antal förlängare inom −2 till +2mm. Sparar förlängare i bilen och ger färre skarvar.</p>
+            {pro && <p><span className="font-bold">Varför räcker inte 63mm vid Exakt 0mm?</span> För att nå exakt 0mm kan det krävas så mycket förlängning att skruven inte når. Med Alla eller Färre förlängare väljs en annan ringhöjd med mindre förlängning – fortfarande godkänt, och 63mm räcker.</p>}
+          </PopoverContent>
+        </Popover>
+      </div>
       <div role="group" aria-label="Prioritering" className="grid grid-cols-3 gap-1 rounded-md bg-muted p-1">
         {MODES.map(m => <Button key={m.id} variant="ghost" size="sm" aria-pressed={mode === m.id} onClick={() => onChange(m.id)} className={`min-h-10 px-1 text-xs hover:bg-card ${mode === m.id ? "bg-card text-foreground shadow-card" : "text-muted-foreground"}`}>{m.label}</Button>)}
       </div>
