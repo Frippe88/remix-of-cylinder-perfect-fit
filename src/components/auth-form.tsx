@@ -50,7 +50,7 @@ export function AuthForm({ initialMode }: { initialMode?: Mode }) {
 
   async function google() {
     setMsg(null);
-    const r = await lovable.auth.signInWithOAuth("google", { redirect_uri: `${window.location.origin}/pro` });
+    const r = await lovable.auth.signInWithOAuth("google", { redirect_uri: window.location.origin });
     if (r.error) setMsg({ kind: "err", text: "Google-inloggningen misslyckades. Försök igen." });
   }
 
