@@ -1,5 +1,4 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
-import { KeyRound } from "lucide-react";
+import { createFileRoute } from "@tanstack/react-router";
 import { CalculatorPage } from "@/components/calculator-page";
 import { ProLoginBar } from "@/components/pro-login-bar";
 import { useAuth } from "@/hooks/use-auth";
