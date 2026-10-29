@@ -87,7 +87,7 @@ describe("Plocklista", () => {
     expect(screen.queryByText(/längre klippbar cylinderskruv krävs/)).toBeNull();
     fireEvent.click(screen.getByRole("button", { name: /Kopiera plocklista/ }));
     expect(writeText).toHaveBeenCalledWith(
-      expect.stringContaining("Skruv: 33mm förlängning – 63mm räcker inte, längre klippbar cylinderskruv krävs (minst 64mm)"),
+      expect.stringContaining("Skruv: 63mm räcker inte, längre klippbar cylinderskruv krävs (minst 64mm)"),
     );
   });
 

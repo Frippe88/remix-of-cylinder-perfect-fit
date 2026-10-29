@@ -185,7 +185,7 @@ export function ovalSingleScrewSet(extenderMm: number): ScrewSet {
   if (extenderMm <= 0) return { text: "2 st 24mm cylinderskruv", warning: false };
   const need = OVAL_SCREW_LOCK_MM + extenderMm + OVAL_SCREW_MIN_THREAD_MM;
   if (need <= OVAL_SCREW_CLIP_MM) return { text: "2 st 63mm klippbar cylinderskruv – kapa till rätt längd", warning: false };
-  return { text: `${formatMm(extenderMm)} förlängning – 63mm räcker inte, längre klippbar cylinderskruv krävs (minst ${formatMm(need)})`, warning: true };
+  return { text: `63mm räcker inte, längre klippbar cylinderskruv krävs (minst ${formatMm(need)})`, warning: true };
 }
 
 /** Minsta skruvlängd för enkel oval vid given förlängning. */
@@ -203,7 +203,7 @@ export function ovalDoubleScrewSet(totalExtMm: number): ScrewSet {
   if (totalExtMm <= 0) return { text: "2 st 48mm cylinderskruv", warning: false };
   const need = ovalDoubleScrewNeedMm(totalExtMm);
   if (need <= OVAL_SCREW_CLIP_MM) return { text: "2 st 63mm klippbar cylinderskruv – kapa till rätt längd", warning: false };
-  return { text: `${formatMm(totalExtMm)} förlängning – 63mm räcker inte, längre klippbar cylinderskruv krävs (minst ${formatMm(need)})`, warning: true };
+  return { text: `63mm räcker inte, längre klippbar cylinderskruv krävs (minst ${formatMm(need)})`, warning: true };
 }
 
 /** Dubbel oval: om första paret kräver längre skruv, välj par inom toleransen där 48/63mm räcker (minst total avvikelse). */
