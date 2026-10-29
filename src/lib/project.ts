@@ -1,5 +1,5 @@
 // Projekt med flera dörrar – ren logik (lagring sköts i UI via localStorage).
-import { formatMm, roundScrewSet, ovalSingleScrewSet } from "./cylinder";
+import { formatMm, roundScrewSet, ovalSingleScrewSet, ovalDoubleScrewSet } from "./cylinder";
 
 export type RingKind = "oval" | "rund" | "iloq";
 export type Fitting = "vred" | "tackbricka" | "256" | "2356" | "3212" | "18256" | "DAK 7200" | "DAK 7101" | "DAK 752" | "A10.11";
