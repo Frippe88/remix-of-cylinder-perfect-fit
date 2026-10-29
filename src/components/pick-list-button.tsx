@@ -2,7 +2,7 @@ import { useState, type ReactNode } from "react";
 import { AlertTriangle, ArrowDown, ArrowUp, Check, CircleHelp, ClipboardCopy, ClipboardList, Disc3, FolderOpen, FolderPlus, Layers, Wrench } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { ROUND_NO_UNDERCUT_RINGS, calculate, preferOvalScrewFit, roundScrewSet, ovalSingleScrewSet, hasOvalScrewFit, ovalScrewNeedMm, OVAL_SCREW_NOTE, describeDeviation, formatMm, formatSigned, type Combination } from "@/lib/cylinder";
+import { ROUND_NO_UNDERCUT_RINGS, calculate, preferOvalScrewFit, roundScrewSet, ovalSingleScrewSet, hasOvalScrewFit, ovalScrewNeedMm, OVAL_SCREW_NOTE, ovalDoubleScrewSet, ovalDoubleScrewNeedMm, OVAL_DOUBLE_SCREW_BASE_MM, OVAL_DOUBLE_SCREW_NOTE, OVAL_SCREW_CLIP_MM, TOLERANCE_MIN, TOLERANCE_MAX, describeDeviation, formatMm, formatSigned, type Combination } from "@/lib/cylinder";
 import { FITTING_LABEL, fittingForSide, fittingRingText, isLooseFitting, ringName, type DoorSide, type Fitting } from "@/lib/project";
 
 export type PickSide = { label: string | null; depth: number | null; selected: Combination | null };
@@ -113,7 +113,7 @@ export function PickListButton({ sides, ext, rings, insideRings = rings, insideE
   const screws = ovalScrew ?? (!screwBrand ? null
     : sides.length < 2 ? { text: "Beror på montage – kalkylatorn kan inte ange exakt skruvlängd vid enkelcylinder.", warning: false }
     : roundScrewSet(screwBrand, picks.reduce((n, p) => n + p.c.extenderCount, 0)));
-  const text = picks.map((p) => (p.label ? `${p.label}: ` : "") + pickLine(p.c, fittingForSide(fitting, p.label), isInner(p.label))).join("\n") + (screws ? `\nSkruv: ${screws.text}` : "") + (ovalScrew ? `\n(${OVAL_SCREW_NOTE})` : "");
+  const text = picks.map((p) => (p.label ? `${p.label}: ` : "") + pickLine(p.c, fittingForSide(fitting, p.label), isInner(p.label))).join("\n") + (screws ? `\nSkruv: ${screws.text}` : "") + (ovalScrew ? `\n(${screwNote})` : "");
   const insidePick = picks.find((p) => isInner(p.label));
   const menuText = (f: Fitting) => (f === "vred" || f === "tackbricka") && picks[0] ? fittingRingText(f, picks[0].c.ring)
     : f === "A10.11" && insidePick ? `A10.11 monteringskit (${ringName(insidePick.c.ring, true)} insida)`
@@ -245,7 +245,7 @@ export function PickListButton({ sides, ext, rings, insideRings = rings, insideE
                     <p className="font-bold">Varför räcker inte 63mm?</p>
                     <p>63mm skruv klarar max 32mm förlängare (kista + bricka = 21mm, gänga = 10mm). Den här kombinationen behöver mer förlängning än så.</p>
                     {showAll ? <p>Välj läget <strong>Alla</strong> för att få ett godkänt förslag (inom ±2mm) där standard 63mm räcker.</p> : <p>För det här dörrdjupet finns ingen kombination inom ±2mm där 63mm räcker. Använd klippbar cylinderskruv på minst <strong>{formatMm(screwNeed)}</strong>.</p>}
-                    <p className="border-t border-border pt-2 text-xs text-muted-foreground">{OVAL_SCREW_NOTE}</p>
+                    <p className="border-t border-border pt-2 text-xs text-muted-foreground">{screwNote}</p>
                   </PopoverContent>
                 </Popover>
                 {showAll && (
