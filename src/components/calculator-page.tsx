@@ -1,6 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { GUIDES } from "@/lib/guides";
-import { ArrowRight, BookOpen, Check, CircleHelp, FolderOpen, KeyRound, LogOut, Minus, Moon, Package, Plus, ShieldCheck, Sun } from "lucide-react";
+import { ArrowRight, BookOpen, Check, CircleHelp, CircleUserRound, FolderOpen, KeyRound, Minus, Moon, Package, Plus, ShieldCheck, Sun, UserRound } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { Dialog, DialogClose, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { useEffect, useState } from "react";
@@ -71,6 +71,8 @@ const ROUND_BRANDS = [ASSA_ROUND_BRAND, ASSA_S_BRAND, "dormakaba / DORMA", "EVVA
 
 export function CalculatorPage({ variant, loginBar, navActive, locked = false }: { variant: "free" | "pro"; loginBar?: React.ReactNode; navActive?: "free" | "pro"; locked?: boolean }) {
   const [signupOpen, setSignupOpen] = useState(false);
+  const [accountOpen, setAccountOpen] = useState(false);
+  const { user, signOut } = useAuth();
   const [type, setType] = useState<"single" | "double">("single");
   const [cyl, setCyl] = useState<Cyl>("standard");
   const [brand, setBrand] = useState<string>(ROUND_BRANDS[0]);
