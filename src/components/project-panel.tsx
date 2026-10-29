@@ -1,5 +1,7 @@
 import { doorScrew } from "@/lib/project";
 import { trackEvent } from "@/lib/analytics";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/hooks/use-auth";
 import { useEffect, useRef, useState } from "react";
 import { ArrowDown, ArrowUp, Check, ChevronDown, ChevronsRight, ClipboardCopy, ClipboardList, Clock, DoorOpen, FolderOpen, Info, Layers, Mail, Pencil, Plus, Trash2, X } from "lucide-react";
 import { InfoSheetRow } from "@/components/info-sheet-row";
@@ -14,6 +16,7 @@ import { deliverFile, FITTING_NOTE, pdfFileName, projectPdf } from "@/lib/projec
 
 const OLD_KEY = "cylinderhjalpen.project.v1";
 const KEY = "cylinderhjalpen.projects.v2";
+const TS_KEY = "cylinderhjalpen.projects.updated";
 const EMPTY: Project = { name: "", doors: [] };
 
 interface Saved { id: string; project: Project }
@@ -29,6 +32,9 @@ export interface ProjectStore {
 export function useProject() {
   const [store, setStore] = useState<Store>(fresh);
   const [loaded, setLoaded] = useState(false);
+  const { user } = useAuth();
+  const fromRemote = useRef(false);
+  const synced = useRef<string | null>(null);
   useEffect(() => {
     try {
       const raw = localStorage.getItem(KEY);
@@ -40,7 +46,49 @@ export function useProject() {
     } catch { /* ignore */ }
     setLoaded(true);
   }, []);
-  useEffect(() => { if (loaded) localStorage.setItem(KEY, JSON.stringify(store)); }, [store, loaded]);
+  useEffect(() => {
+    if (!loaded) return;
+    localStorage.setItem(KEY, JSON.stringify(store));
+    if (fromRemote.current) { fromRemote.current = false; return; }
+    localStorage.setItem(TS_KEY, new Date().toISOString());
+  }, [store, loaded]);
+
+  // Molnsynk för inloggade: senast ändrade vinner, lokalt sparas alltid först (offline).
+  const storeRef = useRef(store); storeRef.current = store;
+  useEffect(() => {
+    if (!loaded || !user) { synced.current = null; return; }
+    let live = true;
+    const pull = async () => {
+      const { data } = await supabase.from("user_projects").select("data, updated_at").eq("user_id", user.id).maybeSingle();
+      if (!live) return;
+      const localTs = localStorage.getItem(TS_KEY) ?? "1970-01-01";
+      const remote = data?.data as unknown as Store | undefined;
+      if (remote?.list?.length && data && Date.parse(data.updated_at) > Date.parse(localTs)) {
+        fromRemote.current = true; setStore(remote);
+        localStorage.setItem(TS_KEY, data.updated_at);
+      } else {
+        await push();
+      }
+      synced.current = user.id;
+    };
+    const push = async () => {
+      const ts = localStorage.getItem(TS_KEY) ?? new Date().toISOString();
+      await supabase.from("user_projects").upsert({ user_id: user.id, data: storeRef.current as never, updated_at: ts });
+    };
+    pull();
+    const onFocus = () => { if (document.visibilityState === "visible") pull(); };
+    document.addEventListener("visibilitychange", onFocus);
+    window.addEventListener("online", onFocus);
+    return () => { live = false; document.removeEventListener("visibilitychange", onFocus); window.removeEventListener("online", onFocus); };
+  }, [loaded, user]);
+  useEffect(() => {
+    if (!user || synced.current !== user.id) return;
+    const t = setTimeout(() => {
+      const ts = localStorage.getItem(TS_KEY) ?? new Date().toISOString();
+      supabase.from("user_projects").upsert({ user_id: user.id, data: store as never, updated_at: ts }).then(() => {});
+    }, 1200);
+    return () => clearTimeout(t);
+  }, [store, user]);
   const current = store.list.find((s) => s.id === store.active) ?? store.list[0]!;
   const setProject = (fn: (p: Project) => Project) =>
     setStore((s) => ({ ...s, list: s.list.map((x) => (x.id === (s.list.some((y) => y.id === s.active) ? s.active : s.list[0]!.id) ? { ...x, project: fn(x.project) } : x)) }));
