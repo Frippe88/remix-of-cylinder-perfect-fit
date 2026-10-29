@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { CalculatorPage } from "@/components/calculator-page";
+import { ProLoginBar } from "@/components/pro-login-bar";
 export const Route = createFileRoute("/")({
   staticData: { sitemap: true },
   head: () => ({
@@ -42,5 +43,5 @@ export const Route = createFileRoute("/")({
     ],
 
   }),
-  component: () => <CalculatorPage variant="free" />,
+  component: () => <CalculatorPage variant="free" loginBar={<ProLoginBar teaser />} />,
 });
