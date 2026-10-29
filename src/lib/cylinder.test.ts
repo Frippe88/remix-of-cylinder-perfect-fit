@@ -239,3 +239,14 @@ describe("skruv dubbel oval", () => {
     expect(s.text).toContain("minst 64mm");
   });
 });
+
+import { preferOvalDoublePair } from "./cylinder";
+describe("dubbel oval väljer par där 63mm räcker", () => {
+  it("total förlängning max 15mm inom ±2mm när det finns", () => {
+    const o = calculate({ depth: 28, ...all }), i = calculate({ depth: 28, ...all });
+    const [a, b] = preferOvalDoublePair(o, i)!;
+    expect(ovalDoubleScrewSet(a.totalExtension + b.totalExtension).warning).toBe(false);
+    expect(Math.abs(a.deviation)).toBeLessThanOrEqual(2);
+    expect(Math.abs(b.deviation)).toBeLessThanOrEqual(2);
+  });
+});
