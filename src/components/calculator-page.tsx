@@ -68,7 +68,7 @@ type Cyl = "standard" | "round" | "iloq";
 
 const ROUND_BRANDS = [ASSA_ROUND_BRAND, ASSA_S_BRAND, "dormakaba / DORMA", "EVVA", "Annat fabrikat"] as const;
 
-export function CalculatorPage({ variant }: { variant: "free" | "pro" }) {
+export function CalculatorPage({ variant, loginBar, navActive }: { variant: "free" | "pro"; loginBar?: React.ReactNode; navActive?: "free" | "pro" }) {
   const [type, setType] = useState<"single" | "double">("single");
   const [cyl, setCyl] = useState<Cyl>("standard");
   const [brand, setBrand] = useState<string>(ROUND_BRANDS[0]);
@@ -178,10 +178,11 @@ export function CalculatorPage({ variant }: { variant: "free" | "pro" }) {
           </span>
         </div>
       </header>
+      {loginBar && <div className="mx-auto max-w-5xl px-4 pt-4">{loginBar}</div>}
       <nav aria-label="Version" className="mx-auto flex max-w-5xl gap-2 px-4 pt-4">
         {([["free", "/", "Cylinderkalkyl", "Gratis"], ["pro", "/pro", "Cylinderkalkyl", "Pro"]] as const).map(([v, to, label, tag]) => (
-          <Link key={v} to={to} aria-current={variant === v ? "page" : undefined}
-            className={`flex flex-1 items-center justify-center gap-2 rounded-lg border px-3 py-2.5 text-sm font-semibold transition ${variant === v ? "border-accent bg-accent/10 ring-1 ring-accent" : "border-input bg-card hover:bg-muted"}`}>
+          <Link key={v} to={to} aria-current={(navActive ?? variant) === v ? "page" : undefined}
+            className={`flex flex-1 items-center justify-center gap-2 rounded-lg border px-3 py-2.5 text-sm font-semibold transition ${(navActive ?? variant) === v ? "border-accent bg-accent/10 ring-1 ring-accent" : "border-input bg-card hover:bg-muted"}`}>
             {label}<span className="rounded-full border border-accent/50 bg-accent/15 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-accent">{tag}</span>
           </Link>
         ))}

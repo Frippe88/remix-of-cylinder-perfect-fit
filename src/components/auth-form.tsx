@@ -8,8 +8,8 @@ import { Label } from "@/components/ui/label";
 
 type Mode = "in" | "up" | "forgot";
 
-export function AuthForm() {
-  const [mode, setMode] = useState<Mode>("in");
+export function AuthForm({ initialMode }: { initialMode?: Mode }) {
+  const [mode, setMode] = useState<Mode>(initialMode ?? "in");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [busy, setBusy] = useState(false);
