@@ -251,3 +251,10 @@ describe("dubbel oval väljer par där 63mm räcker", () => {
     expect(Math.abs(b.deviation)).toBeLessThanOrEqual(2);
   });
 });
+
+import { iloqSingleScrewSet } from "./cylinder";
+describe("skruv enkel iLOQ", () => {
+  it("utan förlängare: iLOQ:s egna skruvar", () => { expect(iloqSingleScrewSet(0)).toEqual({ text: "2 st iLOQ:s egna cylinderskruvar", warning: false }); });
+  it("37mm förlängning räcker med 63mm", () => { expect(iloqSingleScrewSet(37).warning).toBe(false); });
+  it("37,5mm kräver minst 63,5mm", () => { const s = iloqSingleScrewSet(37.5); expect(s.warning).toBe(true); expect(s.text).toContain("minst 63,5mm"); });
+});

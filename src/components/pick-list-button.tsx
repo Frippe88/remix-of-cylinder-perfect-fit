@@ -2,7 +2,7 @@ import { useState, type ReactNode } from "react";
 import { AlertTriangle, ArrowDown, ArrowUp, Check, CircleHelp, ClipboardCopy, ClipboardList, Disc3, FolderOpen, FolderPlus, Layers, Wrench } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { ROUND_NO_UNDERCUT_RINGS, calculate, preferOvalScrewFit, roundScrewSet, ovalSingleScrewSet, hasOvalScrewFit, ovalScrewNeedMm, OVAL_SCREW_NOTE, ovalDoubleScrewSet, ovalDoubleScrewNeedMm, OVAL_DOUBLE_SCREW_BASE_MM, OVAL_DOUBLE_SCREW_NOTE, OVAL_SCREW_CLIP_MM, TOLERANCE_MIN, TOLERANCE_MAX, describeDeviation, formatMm, formatSigned, type Combination } from "@/lib/cylinder";
+import { ROUND_NO_UNDERCUT_RINGS, calculate, preferOvalScrewFit, roundScrewSet, ovalSingleScrewSet, hasOvalScrewFit, ovalScrewNeedMm, OVAL_SCREW_NOTE, ovalDoubleScrewSet, ovalDoubleScrewNeedMm, OVAL_DOUBLE_SCREW_BASE_MM, OVAL_DOUBLE_SCREW_NOTE, OVAL_SCREW_CLIP_MM, iloqSingleScrewSet, iloqScrewNeedMm, ILOQ_SCREW_NOTE, TOLERANCE_MIN, TOLERANCE_MAX, describeDeviation, formatMm, formatSigned, type Combination } from "@/lib/cylinder";
 import { FITTING_LABEL, fittingForSide, fittingRingText, isLooseFitting, ringName, type DoorSide, type Fitting } from "@/lib/project";
 
 export type PickSide = { label: string | null; depth: number | null; selected: Combination | null };
@@ -81,12 +81,12 @@ const FITTING_MENU: Record<Fitting, string> = {
   "A10.11": "A10.11 monteringskit (iLOQ dubbelcylinder)",
 };
 
-export function PickListButton({ sides, ext, rings, insideRings = rings, insideExt = ext, baseMm, insideBaseMm = baseMm, relaxed, onSave, projectName, projectDoors = 0, projectCount = 1, onOpenProject, fitting = null, onFittingChange, fittingChoices = ["256", "2356"], iloqDouble = false, screwBrand, ovalSingle = false, onShowAll }: {
+export function PickListButton({ sides, ext, rings, insideRings = rings, insideExt = ext, baseMm, insideBaseMm = baseMm, relaxed, onSave, projectName, projectDoors = 0, projectCount = 1, onOpenProject, fitting = null, onFittingChange, fittingChoices = ["256", "2356"], iloqDouble = false, screwBrand, ovalSingle = false, iloqSingle = false, onShowAll }: {
   sides: PickSide[]; ext: number[]; rings: number[]; insideRings?: number[]; insideExt?: number[]; baseMm: number; insideBaseMm?: number; relaxed: boolean;
   onSave?: ((sides: DoorSide[]) => void) | undefined;
   projectName?: string; projectDoors?: number; projectCount?: number; onOpenProject?: () => void;
   fitting?: Fitting | null; onFittingChange?: ((value: Fitting | null) => void) | undefined;
-  fittingChoices?: Fitting[]; iloqDouble?: boolean; screwBrand?: string | undefined; ovalSingle?: boolean; onShowAll?: (() => void) | undefined;
+  fittingChoices?: Fitting[]; iloqDouble?: boolean; screwBrand?: string | undefined; ovalSingle?: boolean; iloqSingle?: boolean; onShowAll?: (() => void) | undefined;
 }) {
   const savedTo = (projectName ?? "").trim();
   const projectLabel = savedTo || "Projekt";
@@ -101,15 +101,16 @@ export function PickListButton({ sides, ext, rings, insideRings = rings, insideE
   const isInner = (label: string | null) => iloqDouble && label === "Insida";
   const isOvalDouble = !!ovalSingle && sides.length === 2 && picks.length === 2;
   const ovalExtMm = isOvalDouble ? picks.reduce((n, p) => n + p.c.totalExtension, 0) : picks[0] ? picks[0].c.extenders.reduce((a, b) => a + b, 0) : 0;
-  const ovalScrew = isOvalDouble ? ovalDoubleScrewSet(ovalExtMm) : ovalSingle && sides.length < 2 && picks[0] ? ovalSingleScrewSet(ovalExtMm) : null;
+  const isIloq = iloqSingle && sides.length < 2 && !!picks[0];
+  const ovalScrew = isOvalDouble ? ovalDoubleScrewSet(ovalExtMm) : ovalSingle && sides.length < 2 && picks[0] ? ovalSingleScrewSet(ovalExtMm) : isIloq ? iloqSingleScrewSet(ovalExtMm) : null;
   const minTolExt = (depth: number, e: number[], r: number[], b: number) =>
     Math.min(...calculate({ depth, extenders: e, rings: r, baseMm: b, relaxed: false }).filter((c) => c.deviation >= TOLERANCE_MIN && c.deviation <= TOLERANCE_MAX).map((c) => c.totalExtension));
-  const screwFixable = !!ovalScrew?.warning && (isOvalDouble
+  const screwFixable = !!ovalScrew?.warning && !isIloq && (isOvalDouble
     ? picks.reduce((n, p) => n + (p.label === "Insida" ? minTolExt(p.depth, insideExt, insideRings, insideBaseMm) : minTolExt(p.depth, ext, rings, baseMm)), 0) + OVAL_DOUBLE_SCREW_BASE_MM <= OVAL_SCREW_CLIP_MM
     : hasOvalScrewFit(calculate({ depth: picks[0]!.depth, extenders: ext, rings, baseMm, relaxed: false })));
   const showAll = screwFixable ? onShowAll : undefined;
-  const screwNeed = isOvalDouble ? ovalDoubleScrewNeedMm(ovalExtMm) : ovalScrewNeedMm(ovalExtMm);
-  const screwNote = isOvalDouble ? OVAL_DOUBLE_SCREW_NOTE : OVAL_SCREW_NOTE;
+  const screwNeed = isIloq ? iloqScrewNeedMm(ovalExtMm) : isOvalDouble ? ovalDoubleScrewNeedMm(ovalExtMm) : ovalScrewNeedMm(ovalExtMm);
+  const screwNote = isIloq ? ILOQ_SCREW_NOTE : isOvalDouble ? OVAL_DOUBLE_SCREW_NOTE : OVAL_SCREW_NOTE;
   const screws = ovalScrew ?? (!screwBrand ? null
     : sides.length < 2 ? { text: "Beror på montage – kalkylatorn kan inte ange exakt skruvlängd vid enkelcylinder.", warning: false }
     : roundScrewSet(screwBrand, picks.reduce((n, p) => n + p.c.extenderCount, 0)));
@@ -243,7 +244,9 @@ export function PickListButton({ sides, ext, rings, insideRings = rings, insideE
                   </PopoverTrigger>
                   <PopoverContent className="w-72 space-y-2 text-sm">
                     <p className="font-bold">Varför räcker inte 63mm?</p>
-                    {isOvalDouble
+                    {isIloq
+                      ? <p>63mm skruv klarar max 37mm förlängare vid iLOQ (kista + bricka = 21mm, skruven får bara gå 5–6mm in i cylindern).</p>
+                      : isOvalDouble
                       ? <p>Vid dubbel oval klarar 63mm skruv max 15mm förlängning totalt, insida + utsida (insidans cylinder + kista = 38mm, gänga = 10mm).</p>
                       : <p>63mm skruv klarar max 32mm förlängare (kista + bricka = 21mm, gänga = 10mm). Den här kombinationen behöver mer förlängning än så.</p>}
                     {showAll ? <p>Välj läget <strong>Alla</strong> för att få ett godkänt förslag (inom ±2mm) där standard 63mm räcker.</p>
@@ -258,6 +261,21 @@ export function PickListButton({ sides, ext, rings, insideRings = rings, insideE
                   </Button>
                 )}
               </div>
+            )}
+            {isIloq && !ovalScrew?.warning && (
+              <Popover>
+                <PopoverTrigger asChild>
+                  <button type="button" aria-label="Viktigt om skruv till iLOQ" className="inline-flex min-h-9 items-center gap-1.5 rounded-md border-l-4 border-accent bg-accent/10 px-2.5 py-1 text-sm font-bold text-foreground transition hover:bg-accent/15 active:scale-95">
+                    <CircleHelp className="size-4 shrink-0 text-accent" aria-hidden />
+                    Viktigt om iLOQ-skruv
+                  </button>
+                </PopoverTrigger>
+                <PopoverContent className="w-72 space-y-2 text-sm">
+                  <p className="font-bold">Skruv till iLOQ</p>
+                  <p>Skruven får gå <strong>max 5–6mm</strong> in i cylindern (gängdjupet är 7mm).</p>
+                  <p>Använd skruv med <strong>plan ände</strong> – aldrig spetsig. Bottnar skruven förstörs cylindern.</p>
+                </PopoverContent>
+              </Popover>
             )}
           </li>
         )}
