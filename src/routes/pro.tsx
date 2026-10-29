@@ -1,6 +1,8 @@
+import { useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { CalculatorPage } from "@/components/calculator-page";
 import { ProLoginBar } from "@/components/pro-login-bar";
+import { ProDialog } from "@/components/pro-dialog";
 import { useAuth } from "@/hooks/use-auth";
 
 export const Route = createFileRoute("/pro")({
@@ -22,8 +24,15 @@ export const Route = createFileRoute("/pro")({
 
 function ProRoute() {
   const { user, loading } = useAuth();
+  const [proOpen, setProOpen] = useState(true);
   if (loading) return <div className="min-h-screen" />;
   if (user) return <CalculatorPage variant="pro" />;
-  // Utan inloggning: hela gratis-kalkylatorn först, inloggning som liten remsa.
-  return <CalculatorPage variant="free" loginBar={<ProLoginBar />} navActive="pro" />;
+  // Utan inloggning: hela gratis-kalkylatorn först, inloggning som liten remsa
+  // och infopopopen med vad Pro innehåller öppen direkt.
+  return (
+    <>
+      <CalculatorPage variant="free" loginBar={<ProLoginBar />} navActive="pro" />
+      <ProDialog open={proOpen} onOpenChange={setProOpen} />
+    </>
+  );
 }
