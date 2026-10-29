@@ -243,7 +243,8 @@ describe("skruv dubbel oval", () => {
 import { preferOvalDoublePair } from "./cylinder";
 describe("dubbel oval väljer par där 63mm räcker", () => {
   it("total förlängning max 15mm inom ±2mm när det finns", () => {
-    const o = calculate({ depth: 28, ...all }), i = calculate({ depth: 28, ...all });
+    const o = calculate({ depth: 21, ...all }), i = calculate({ depth: 30, ...all });
+    expect(ovalDoubleScrewSet(o[0]!.totalExtension + i[0]!.totalExtension).warning).toBe(true);
     const [a, b] = preferOvalDoublePair(o, i)!;
     expect(ovalDoubleScrewSet(a.totalExtension + b.totalExtension).warning).toBe(false);
     expect(Math.abs(a.deviation)).toBeLessThanOrEqual(2);
