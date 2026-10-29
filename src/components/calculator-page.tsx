@@ -12,6 +12,7 @@ import { useAuth } from "@/hooks/use-auth";
 import { InfoSheetRow } from "@/components/info-sheet-row";
 import { InfoPopupRow } from "@/components/info-popup-row";
 import { AuthForm } from "@/components/auth-form";
+import { AccountPanel } from "@/components/account-panel";
 import { ProDialog } from "@/components/pro-dialog";
 import { fittingOptions, nextDoorName, type DoorSide, type Fitting } from "@/lib/project";
 import { DoorNameDialog } from "@/components/door-name-dialog";
@@ -361,14 +362,7 @@ export function CalculatorPage({ variant, loginBar, navActive, locked = false }:
       <Dialog open={accountOpen} onOpenChange={setAccountOpen}>
         <DialogContent className="w-[calc(100vw-2rem)] max-w-sm p-0">
           {user ? (
-            <div className="space-y-4 p-5">
-              <p className="text-sm font-bold">Inloggad</p>
-              <p className="truncate rounded-lg bg-muted px-3 py-2 text-sm">{user.email}</p>
-              <Button type="button" variant="outline" className="min-h-10 w-full font-semibold"
-                onClick={() => { setAccountOpen(false); void signOut(); }}>
-                Logga ut
-              </Button>
-            </div>
+            <AccountPanel email={user.email ?? ""} onSignOut={() => { setAccountOpen(false); void signOut(); }} />
           ) : (
             <AuthForm initialMode="in" />
           )}
