@@ -3,7 +3,7 @@ import { trackEvent } from "@/lib/analytics";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/use-auth";
 import { useEffect, useRef, useState } from "react";
-import { ArrowDown, ArrowUp, Check, ChevronDown, ChevronsRight, ClipboardCopy, ClipboardList, Clock, DoorOpen, FolderOpen, Info, Layers, Mail, Pencil, Plus, Trash2, X } from "lucide-react";
+import { ArrowDown, ArrowUp, Check, ChevronDown, ChevronsRight, ClipboardCopy, ClipboardList, Clock, DoorOpen, FolderOpen, Info, Layers, Mail, Pencil, Plus, Search, Trash2, X } from "lucide-react";
 import { InfoSheetRow } from "@/components/info-sheet-row";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from "@/components/ui/sheet";
@@ -219,6 +219,16 @@ export function ProjectPanel({ project, setProject, store, open, onOpenChange, c
   const onlyLeft = remainingOnly && done > 0;
   const pickDoors = doorsToPick(project.doors, onlyLeft);
   const totals = projectTotals(pickDoors);
+  const [query, setQuery] = useState("");
+  const q = query.trim().toLowerCase();
+  const shown = q ? project.doors.filter((d) => d.name.toLowerCase().includes(q)) : project.doors;
+  const pickKey = `cylinderhjalpen.picked.${store.active}`;
+  const [picked, setPicked] = useState<Set<string>>(new Set());
+  useEffect(() => {
+    try { setPicked(new Set(JSON.parse(localStorage.getItem(pickKey) ?? "[]"))); } catch { setPicked(new Set()); }
+    setQuery("");
+  }, [pickKey]);
+  const savePicked = (n: Set<string>) => { setPicked(n); try { localStorage.setItem(pickKey, JSON.stringify([...n])); } catch { /* ignore */ } };
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent side="bottom" className="flex max-h-[92dvh] flex-col overflow-hidden rounded-t-xl p-0 sm:mx-auto sm:max-w-2xl [&>button:last-child]:z-20 [&>button:last-child]:rounded-full [&>button:last-child]:bg-card [&>button:last-child]:p-1.5 [&>button:last-child]:shadow-card [&>button:last-child]:opacity-100">
@@ -262,15 +272,25 @@ export function ProjectPanel({ project, setProject, store, open, onOpenChange, c
             <p className="py-6 text-center text-sm text-muted-foreground">Inga dörrar än. Räkna en dörr och tryck "Spara i projekt".</p>
           ) : tab === "doors" ? (
             <>
-              <p className="text-xs text-muted-foreground">Tryck på sidetiketten <span className="font-semibold text-side-outside">utsida</span>/<span className="font-semibold text-side-inside">insida</span> för att byta sida på en rad.</p>
+              {project.doors.length > 3 && (
+                <div className="relative">
+                  <Search aria-hidden className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+                  <input type="search" value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Sök dörr, t.ex. 1102 eller plan 2" aria-label="Sök dörr"
+                    autoComplete="off" autoCorrect="off" spellCheck={false} enterKeyHint="search"
+                    className="h-11 w-full rounded-lg border border-input bg-card pl-9 pr-10 text-base [&::-webkit-search-cancel-button]:hidden" />
+                  {query && <button type="button" onClick={() => setQuery("")} aria-label="Rensa sökning" className="absolute right-2 top-1/2 -translate-y-1/2 rounded-full p-1.5 text-muted-foreground hover:bg-muted"><X className="size-4" aria-hidden /></button>}
+                </div>
+              )}
+              <p className="text-xs text-muted-foreground">{q ? `${shown.length} av ${project.doors.length} dörrar matchar.` : <>Tryck på sidetiketten <span className="font-semibold text-side-outside">utsida</span>/<span className="font-semibold text-side-inside">insida</span> för att byta sida på en rad.</>}</p>
               <ul className="space-y-2">
-                {project.doors.map((d) => (
+                {shown.map((d) => (
                   <DoorCard key={d.id} d={d}
                     onToggle={() => setProject((p) => ({ ...p, doors: p.doors.map((x) => x.id === d.id ? { ...x, done: !x.done } : x) }))}
                     onRemove={() => setProject((p) => ({ ...p, doors: p.doors.filter((x) => x.id !== d.id) }))}
                     onSetSide={(i, label) => setProject((p) => ({ ...p, doors: p.doors.map((x) => x.id === d.id ? setDoorSide(x, i, label) : x) }))} />
                 ))}
               </ul>
+              {q && shown.length === 0 && <p className="py-4 text-center text-sm text-muted-foreground">Ingen dörr heter något med "{query.trim()}".</p>}
               <Button variant="ghost" className="w-full text-muted-foreground" onClick={() => { if (confirm(`Töm alla dörrar i ${project.name || "projektet"}? Projektet finns kvar.`)) setProject(clearDoors); }}>
                 <X aria-hidden /> Töm dörrar
               </Button>
@@ -297,15 +317,30 @@ export function ProjectPanel({ project, setProject, store, open, onOpenChange, c
                 <p className="py-6 text-center text-sm text-muted-foreground">Alla dörrar är monterade – inget kvar att plocka.</p>
               ) : <>
               <div className="space-y-5 border-y py-4">
+                <div className="flex items-center justify-between gap-2">
+                  <p className="text-xs text-muted-foreground">Tryck på en rad för att bocka av det du plockat.</p>
+                  {picked.size > 0 && <Button variant="ghost" size="sm" className="h-8 shrink-0 text-xs text-muted-foreground" onClick={() => savePicked(new Set())}><X aria-hidden />Återställ ({picked.size})</Button>}
+                </div>
                 {purchaseList(pickDoors).map((s) => (
                   <section key={s.title} className="space-y-3">
                     <p className="text-sm font-bold text-foreground">{s.title}</p>
                     {s.groups.map((g) => (
                       <div key={g.title}>
                         <p className="text-xs font-bold uppercase tracking-wide text-accent">{g.title}</p>
-                        <ul className="mt-1 divide-y">{g.items.map((i) => (
-                          <li key={i.text} className="flex items-center justify-between gap-3 py-2.5 text-sm"><span className="min-w-0 font-semibold">{i.text}</span><Chip accent>{i.count} st</Chip></li>
-                        ))}</ul>
+                        <ul className="mt-1 divide-y">{g.items.map((i) => {
+                          const k = `${s.title}|${g.title}|${i.text}|${i.count}`;
+                          const on = picked.has(k);
+                          return (
+                            <li key={i.text}>
+                              <button type="button" aria-pressed={on} onClick={() => { const n = new Set(picked); if (on) n.delete(k); else n.add(k); savePicked(n); }}
+                                className="flex w-full items-center gap-3 py-2.5 text-left text-sm">
+                                <span className={`flex size-5 shrink-0 items-center justify-center rounded border-2 ${on ? "border-success bg-success text-success-foreground" : "border-muted-foreground/50"}`}>{on && <Check className="size-3.5" aria-hidden />}</span>
+                                <span className={`min-w-0 flex-1 font-semibold ${on ? "text-muted-foreground line-through" : ""}`}>{i.text}</span>
+                                <Chip accent={!on}>{i.count} st</Chip>
+                              </button>
+                            </li>
+                          );
+                        })}</ul>
                       </div>
                     ))}
                   </section>
