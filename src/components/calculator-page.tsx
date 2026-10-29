@@ -358,6 +358,22 @@ export function CalculatorPage({ variant, loginBar, navActive, locked = false }:
           {type === "double" && <CylinderResults mode={mode} preferred={ovalPair?.[1]} title="Insida" depth={parse(inside)} ext={insideExt} rings={insideRings} baseMm={insideBaseMm} relaxed={isRound} selected={selIn} onSelect={(c) => setSel((s) => ({ key: selKey, out: s.key === selKey ? s.out : null, in: c }))} />}
         </section>
       </main>
+      <Dialog open={accountOpen} onOpenChange={setAccountOpen}>
+        <DialogContent className="w-[calc(100vw-2rem)] max-w-sm p-0">
+          {user ? (
+            <div className="space-y-4 p-5">
+              <p className="text-sm font-bold">Inloggad</p>
+              <p className="truncate rounded-lg bg-muted px-3 py-2 text-sm">{user.email}</p>
+              <Button type="button" variant="outline" className="min-h-10 w-full font-semibold"
+                onClick={() => { setAccountOpen(false); void signOut(); }}>
+                Logga ut
+              </Button>
+            </div>
+          ) : (
+            <AuthForm initialMode="in" />
+          )}
+        </DialogContent>
+      </Dialog>
       {locked && (
         <Dialog open={signupOpen} onOpenChange={setSignupOpen}>
           <DialogContent className="w-[calc(100vw-2rem)] max-w-sm p-0">
