@@ -63,7 +63,7 @@ export function useProject() {
       if (!live) return;
       const localTs = localStorage.getItem(TS_KEY) ?? "1970-01-01";
       const remote = data?.data as unknown as Store | undefined;
-      if (remote?.list?.length && data && data.updated_at > localTs) {
+      if (remote?.list?.length && data && Date.parse(data.updated_at) > Date.parse(localTs)) {
         fromRemote.current = true; setStore(remote);
         localStorage.setItem(TS_KEY, data.updated_at);
       } else {
