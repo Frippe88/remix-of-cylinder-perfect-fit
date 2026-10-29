@@ -2,7 +2,7 @@ import { useState, type ReactNode } from "react";
 import { AlertTriangle, ArrowDown, ArrowUp, Check, CircleHelp, ClipboardCopy, ClipboardList, Disc3, FolderOpen, FolderPlus, Layers, Wrench } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { ROUND_NO_UNDERCUT_RINGS, calculate, preferOvalScrewFit, roundScrewSet, ovalSingleScrewSet, hasOvalScrewFit, ovalScrewNeedMm, OVAL_SCREW_NOTE, describeDeviation, formatMm, formatSigned, type Combination } from "@/lib/cylinder";
+import { ROUND_NO_UNDERCUT_RINGS, calculate, preferOvalScrewFit, roundScrewSet, ovalSingleScrewSet, hasOvalScrewFit, ovalScrewNeedMm, OVAL_SCREW_NOTE, ovalDoubleScrewSet, ovalDoubleScrewNeedMm, OVAL_DOUBLE_SCREW_BASE_MM, OVAL_DOUBLE_SCREW_NOTE, OVAL_SCREW_CLIP_MM, TOLERANCE_MIN, TOLERANCE_MAX, describeDeviation, formatMm, formatSigned, type Combination } from "@/lib/cylinder";
 import { FITTING_LABEL, fittingForSide, fittingRingText, isLooseFitting, ringName, type DoorSide, type Fitting } from "@/lib/project";
 
 export type PickSide = { label: string | null; depth: number | null; selected: Combination | null };
@@ -99,15 +99,21 @@ export function PickListButton({ sides, ext, rings, insideRings = rings, insideE
   if (picks.length === 0) return null;
 
   const isInner = (label: string | null) => iloqDouble && label === "Insida";
-  const ovalExtMm = picks[0] ? picks[0].c.extenders.reduce((a, b) => a + b, 0) : 0;
-  const ovalScrew = ovalSingle && sides.length < 2 && picks[0] ? ovalSingleScrewSet(ovalExtMm) : null;
-  const screwFixable = !!ovalScrew?.warning && hasOvalScrewFit(calculate({ depth: picks[0]!.depth, extenders: ext, rings, baseMm, relaxed: false }));
-  const showAll = screwFixable ? onShowAll : undefined;
-  const screwNeed = ovalScrewNeedMm(ovalExtMm);
+  const isOvalDouble = !!ovalSingle && sides.length === 2 && picks.length === 2;
+  const ovalExtMm = isOvalDouble ? picks.reduce((n, p) => n + p.c.totalExtension, 0) : picks[0] ? picks[0].c.extenders.reduce((a, b) => a + b, 0) : 0;
+  const ovalScrew = isOvalDouble ? ovalDoubleScrewSet(ovalExtMm) : ovalSingle && sides.length < 2 && picks[0] ? ovalSingleScrewSet(ovalExtMm) : null;
+  const minTolExt = (depth: number, e: number[], r: number[], b: number) =>
+    Math.min(...calculate({ depth, extenders: e, rings: r, baseMm: b, relaxed: false }).filter((c) => c.deviation >= TOLERANCE_MIN && c.deviation <= TOLERANCE_MAX).map((c) => c.totalExtension));
+  const screwFixable = !!ovalScrew?.warning && (isOvalDouble
+    ? picks.reduce((n, p) => n + (p.label === "Insida" ? minTolExt(p.depth, insideExt, insideRings, insideBaseMm) : minTolExt(p.depth, ext, rings, baseMm)), 0) + OVAL_DOUBLE_SCREW_BASE_MM <= OVAL_SCREW_CLIP_MM
+    : hasOvalScrewFit(calculate({ depth: picks[0]!.depth, extenders: ext, rings, baseMm, relaxed: false })));
+  const showAll = screwFixable && !isOvalDouble ? onShowAll : undefined;
+  const screwNeed = isOvalDouble ? ovalDoubleScrewNeedMm(ovalExtMm) : ovalScrewNeedMm(ovalExtMm);
+  const screwNote = isOvalDouble ? OVAL_DOUBLE_SCREW_NOTE : OVAL_SCREW_NOTE;
   const screws = ovalScrew ?? (!screwBrand ? null
     : sides.length < 2 ? { text: "Beror på montage – kalkylatorn kan inte ange exakt skruvlängd vid enkelcylinder.", warning: false }
     : roundScrewSet(screwBrand, picks.reduce((n, p) => n + p.c.extenderCount, 0)));
-  const text = picks.map((p) => (p.label ? `${p.label}: ` : "") + pickLine(p.c, fittingForSide(fitting, p.label), isInner(p.label))).join("\n") + (screws ? `\nSkruv: ${screws.text}` : "") + (ovalScrew ? `\n(${OVAL_SCREW_NOTE})` : "");
+  const text = picks.map((p) => (p.label ? `${p.label}: ` : "") + pickLine(p.c, fittingForSide(fitting, p.label), isInner(p.label))).join("\n") + (screws ? `\nSkruv: ${screws.text}` : "") + (ovalScrew ? `\n(${screwNote})` : "");
   const insidePick = picks.find((p) => isInner(p.label));
   const menuText = (f: Fitting) => (f === "vred" || f === "tackbricka") && picks[0] ? fittingRingText(f, picks[0].c.ring)
     : f === "A10.11" && insidePick ? `A10.11 monteringskit (${ringName(insidePick.c.ring, true)} insida)`
@@ -218,7 +224,7 @@ export function PickListButton({ sides, ext, rings, insideRings = rings, insideE
             <Row caption="Skruv" icon={screws.warning ? <AlertTriangle className="size-3.5 text-destructive" /> : <Wrench className="size-3.5" />}>
               {ovalScrew?.warning ? (
                 <span className="inline-flex items-center gap-1.5 rounded-md border border-destructive/50 bg-destructive/10 px-2 py-1 text-sm font-bold text-destructive">
-                  {showAll ? "63mm räcker inte – välj Alla" : `Längre skruv behövs (minst ${formatMm(screwNeed)})`}
+                  {showAll ? "63mm räcker inte – välj Alla" : isOvalDouble && screwFixable ? "63mm räcker inte – välj kortare förlängning" : `Längre skruv behövs (minst ${formatMm(screwNeed)})`}
                 </span>
               ) : (
                 <span className="inline-flex items-center gap-1.5 rounded-md border border-input bg-muted px-2.5 py-1 text-sm font-bold text-foreground">
@@ -237,9 +243,13 @@ export function PickListButton({ sides, ext, rings, insideRings = rings, insideE
                   </PopoverTrigger>
                   <PopoverContent className="w-72 space-y-2 text-sm">
                     <p className="font-bold">Varför räcker inte 63mm?</p>
-                    <p>63mm skruv klarar max 32mm förlängare (kista + bricka = 21mm, gänga = 10mm). Den här kombinationen behöver mer förlängning än så.</p>
-                    {showAll ? <p>Välj läget <strong>Alla</strong> för att få ett godkänt förslag (inom ±2mm) där standard 63mm räcker.</p> : <p>För det här dörrdjupet finns ingen kombination inom ±2mm där 63mm räcker. Använd klippbar cylinderskruv på minst <strong>{formatMm(screwNeed)}</strong>.</p>}
-                    <p className="border-t border-border pt-2 text-xs text-muted-foreground">{OVAL_SCREW_NOTE}</p>
+                    {isOvalDouble
+                      ? <p>Vid dubbel oval klarar 63mm skruv max 15mm förlängning totalt, insida + utsida (insidans cylinder + kista = 38mm, gänga = 10mm).</p>
+                      : <p>63mm skruv klarar max 32mm förlängare (kista + bricka = 21mm, gänga = 10mm). Den här kombinationen behöver mer förlängning än så.</p>}
+                    {showAll ? <p>Välj läget <strong>Alla</strong> för att få ett godkänt förslag (inom ±2mm) där standard 63mm räcker.</p>
+                      : isOvalDouble && screwFixable ? <p>Det finns kombinationer inom ±2mm med mindre förlängning där 63mm räcker. Öppna <strong>Visa andra alternativ</strong> på insida/utsida och välj en med kortare förlängning.</p>
+                      : <p>För det här dörrdjupet finns ingen kombination inom ±2mm där 63mm räcker. Använd klippbar cylinderskruv på minst <strong>{formatMm(screwNeed)}</strong>.</p>}
+                    <p className="border-t border-border pt-2 text-xs text-muted-foreground">{screwNote}</p>
                   </PopoverContent>
                 </Popover>
                 {showAll && (

@@ -228,3 +228,14 @@ describe("färre förlängare tänker på 63mm-skruven", () => {
     expect(ovalSingleScrewSet(best.totalExtension).warning).toBe(true);
   });
 });
+
+import { ovalDoubleScrewSet } from "./cylinder";
+describe("skruv dubbel oval", () => {
+  it("0 förlängning ger 48mm", () => expect(ovalDoubleScrewSet(0).text).toBe("2 st 48mm cylinderskruv"));
+  it("15mm totalt räcker med 63mm", () => expect(ovalDoubleScrewSet(15).warning).toBe(false));
+  it("16mm totalt kräver längre skruv, minst 64mm", () => {
+    const s = ovalDoubleScrewSet(16);
+    expect(s.warning).toBe(true);
+    expect(s.text).toContain("minst 64mm");
+  });
+});

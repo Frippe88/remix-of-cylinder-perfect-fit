@@ -193,6 +193,19 @@ export function ovalScrewNeedMm(extenderMm: number): number {
   return OVAL_SCREW_LOCK_MM + extenderMm + OVAL_SCREW_MIN_THREAD_MM;
 }
 
+// Skruv för dubbel oval: genom insidans cylinder (~19,5mm) + kista 18,5mm + minst 10mm gänga = 48mm, plus all förlängning (in + ut).
+export const OVAL_DOUBLE_SCREW_BASE_MM = 48;
+export const OVAL_DOUBLE_SCREW_NOTE = "Skruven går genom insidans cylinder och kistan, och gängas minst 10mm in i utsidans cylinder.";
+export function ovalDoubleScrewNeedMm(totalExtMm: number): number {
+  return OVAL_DOUBLE_SCREW_BASE_MM + totalExtMm;
+}
+export function ovalDoubleScrewSet(totalExtMm: number): ScrewSet {
+  if (totalExtMm <= 0) return { text: "2 st 48mm cylinderskruv", warning: false };
+  const need = ovalDoubleScrewNeedMm(totalExtMm);
+  if (need <= OVAL_SCREW_CLIP_MM) return { text: "2 st 63mm klippbar cylinderskruv – kapa till rätt längd", warning: false };
+  return { text: `${formatMm(totalExtMm)} förlängning – 63mm räcker inte, längre klippbar cylinderskruv krävs (minst ${formatMm(need)})`, warning: true };
+}
+
 /** Finns någon kombination inom toleransen där 24/63mm skruv räcker? */
 export function hasOvalScrewFit(list: Combination[]): boolean {
   return list.some((c) => c.deviation >= TOLERANCE_MIN && c.deviation <= TOLERANCE_MAX && !ovalSingleScrewSet(c.totalExtension).warning);

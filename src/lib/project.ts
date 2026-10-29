@@ -1,5 +1,5 @@
 // Projekt med flera dörrar – ren logik (lagring sköts i UI via localStorage).
-import { formatMm, roundScrewSet, ovalSingleScrewSet } from "./cylinder";
+import { formatMm, roundScrewSet, ovalSingleScrewSet, ovalDoubleScrewSet } from "./cylinder";
 
 export type RingKind = "oval" | "rund" | "iloq";
 export type Fitting = "vred" | "tackbricka" | "256" | "2356" | "3212" | "18256" | "DAK 7200" | "DAK 7101" | "DAK 752" | "A10.11";
@@ -243,6 +243,7 @@ export const SINGLE_SCREW_TEXT = "Beror på montage – kalkylatorn kan inte ang
 /** Skruv per dörr (bara runda cylindrar med känt fabrikat). */
 export function doorScrew(d: Door): { text: string; warning: boolean } | null {
   if (d.kind === "oval" && d.sides.length === 1) return ovalSingleScrewSet(d.sides[0]!.extenders.reduce((a, b) => a + b, 0));
+  if (d.kind === "oval" && d.sides.length === 2) return ovalDoubleScrewSet(d.sides.reduce((n, s) => n + s.extenders.reduce((a, b) => a + b, 0), 0));
   if (d.kind !== "rund" || !d.brand) return null;
   if (d.sides.length < 2) return roundScrewSet(d.brand, 0) ? { text: SINGLE_SCREW_TEXT, warning: false } : null;
   return roundScrewSet(d.brand, d.sides.reduce((n, s) => n + s.extenders.length, 0));

@@ -216,7 +216,7 @@ describe("18256 som komplett paket", () => {
     const door = (id: string, o: number, i: number): Door => ({ id, name: id, kind: "oval", done: false, fitting: "18256",
       sides: [{ label: "Utsida", depth: 0, ring: o, extenders: [] }, { label: "Insida", depth: 0, ring: i, extenders: [] }] });
     const items = purchaseList([door("a", 21, 13), door("b", 21, 13)]).flatMap((s) => s.groups.flatMap((g) => g.items));
-    expect(items).toEqual([{ count: 2, text: "18256 behör (21mm ring utsida + 13mm ring insida)" }]);
+    expect(items).toEqual([{ count: 2, text: "18256 behör (21mm ring utsida + 13mm ring insida)" }, { count: 2, text: "skruvsats: 2 st 48mm cylinderskruv" }]);
   });
 });
 
