@@ -330,15 +330,15 @@ export function CalculatorPage({ variant }: { variant: "free" | "pro" }) {
 
         <section className="order-2 min-w-0 space-y-7 lg:order-none">
           <PickListButton
-            sides={type === "single" ? [{ label: isRound ? null : singleSide, depth: parse(outside), selected: selOut }] : [{ label: "Utsida", depth: parse(outside), selected: selOut }, { label: "Insida", depth: parse(inside), selected: selIn }]}
+            sides={type === "single" ? [{ label: isRound ? null : singleSide, depth: parse(outside), selected: selOut }] : [{ label: "Utsida", depth: parse(outside), selected: selOut ?? ovalPair?.[0] ?? null }, { label: "Insida", depth: parse(inside), selected: selIn ?? ovalPair?.[1] ?? null }]}
             ext={ext} rings={activeRings} insideRings={insideRings} insideExt={insideExt} baseMm={baseMm} insideBaseMm={insideBaseMm} relaxed={isRound} screwBrand={isRound ? brand : undefined} ovalSingle={cyl === "standard"} onShowAll={mode === "all" ? undefined : () => { setMode("all"); setSel({ key: "", out: null, in: null }); }}
             fitting={activeFitting} onFittingChange={fittingEnabled ? setFitting : undefined} fittingChoices={fittingChoices} iloqDouble={iloqDouble}
             {...(pro ? { projectName: project.name, projectDoors: project.doors.length, projectCount: projectStore.list.length, onOpenProject: () => { setSwitchProject(true); setProjectOpen(true); } } : {})}
             onSave={!pro ? undefined : (sides) => { trackEvent("sparad_dorr", { cylinder: cyl }); setPendingDoor({ sides, kind: isRound ? "rund" : cyl === "iloq" ? "iloq" : "oval", ...(isRound ? { brand } : {}), ...(activeFitting ? { fitting: activeFitting } : {}) }); }}
           />
           <ModePicker mode={mode} onChange={(m) => { setMode(m); setSel({ key: "", out: null, in: null }); }} />
-          <CylinderResults mode={mode} ovalSingle={cyl === "standard" && type === "single"} title={type === "single" ? null : "Utsida"} depth={parse(outside)} ext={ext} rings={activeRings} baseMm={baseMm} relaxed={isRound} selected={selOut} onSelect={(c) => setSel((s) => ({ key: selKey, out: c, in: s.key === selKey ? s.in : null }))} />
-          {type === "double" && <CylinderResults mode={mode} title="Insida" depth={parse(inside)} ext={insideExt} rings={insideRings} baseMm={insideBaseMm} relaxed={isRound} selected={selIn} onSelect={(c) => setSel((s) => ({ key: selKey, out: s.key === selKey ? s.out : null, in: c }))} />}
+          <CylinderResults mode={mode} ovalSingle={cyl === "standard" && type === "single"} preferred={ovalPair?.[0]} title={type === "single" ? null : "Utsida"} depth={parse(outside)} ext={ext} rings={activeRings} baseMm={baseMm} relaxed={isRound} selected={selOut} onSelect={(c) => setSel((s) => ({ key: selKey, out: c, in: s.key === selKey ? s.in : null }))} />
+          {type === "double" && <CylinderResults mode={mode} preferred={ovalPair?.[1]} title="Insida" depth={parse(inside)} ext={insideExt} rings={insideRings} baseMm={insideBaseMm} relaxed={isRound} selected={selIn} onSelect={(c) => setSel((s) => ({ key: selKey, out: s.key === selKey ? s.out : null, in: c }))} />}
         </section>
       </main>
       {pro && <>
