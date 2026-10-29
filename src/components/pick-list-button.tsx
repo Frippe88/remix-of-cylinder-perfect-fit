@@ -107,7 +107,7 @@ export function PickListButton({ sides, ext, rings, insideRings = rings, insideE
   const screwFixable = !!ovalScrew?.warning && (isOvalDouble
     ? picks.reduce((n, p) => n + (p.label === "Insida" ? minTolExt(p.depth, insideExt, insideRings, insideBaseMm) : minTolExt(p.depth, ext, rings, baseMm)), 0) + OVAL_DOUBLE_SCREW_BASE_MM <= OVAL_SCREW_CLIP_MM
     : hasOvalScrewFit(calculate({ depth: picks[0]!.depth, extenders: ext, rings, baseMm, relaxed: false })));
-  const showAll = screwFixable && !isOvalDouble ? onShowAll : undefined;
+  const showAll = screwFixable ? onShowAll : undefined;
   const screwNeed = isOvalDouble ? ovalDoubleScrewNeedMm(ovalExtMm) : ovalScrewNeedMm(ovalExtMm);
   const screwNote = isOvalDouble ? OVAL_DOUBLE_SCREW_NOTE : OVAL_SCREW_NOTE;
   const screws = ovalScrew ?? (!screwBrand ? null
