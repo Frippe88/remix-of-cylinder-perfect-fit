@@ -35,6 +35,7 @@ export function useProject() {
   const { user } = useAuth();
   const fromRemote = useRef(false);
   const synced = useRef<string | null>(null);
+  const firstSave = useRef(true);
   useEffect(() => {
     try {
       const raw = localStorage.getItem(KEY);
@@ -49,6 +50,8 @@ export function useProject() {
   useEffect(() => {
     if (!loaded) return;
     localStorage.setItem(KEY, JSON.stringify(store));
+    // Första sparningen efter laddning är ingen ändring – stämpla inte tid (annars vinner tom enhet).
+    if (firstSave.current) { firstSave.current = false; return; }
     if (fromRemote.current) { fromRemote.current = false; return; }
     localStorage.setItem(TS_KEY, new Date().toISOString());
   }, [store, loaded]);
@@ -63,7 +66,11 @@ export function useProject() {
       if (!live) return;
       const localTs = localStorage.getItem(TS_KEY) ?? "1970-01-01";
       const remote = data?.data as unknown as Store | undefined;
-      if (remote?.list?.length && data && Date.parse(data.updated_at) > Date.parse(localTs)) {
+      const doors = (st?: Store) => st?.list?.reduce((n, x) => n + (x.project?.doors?.length ?? 0), 0) ?? 0;
+      const localEmpty = doors(storeRef.current) === 0;
+      const remoteEmpty = doors(remote) === 0;
+      const remoteWins = !remoteEmpty && (localEmpty || Date.parse(data!.updated_at) > Date.parse(localTs));
+      if (remote?.list?.length && data && remoteWins) {
         fromRemote.current = true; setStore(remote);
         localStorage.setItem(TS_KEY, data.updated_at);
       } else {
