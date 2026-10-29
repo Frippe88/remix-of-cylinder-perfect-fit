@@ -1,10 +1,11 @@
 import { useState } from "react";
-import { KeyRound, Star } from "lucide-react";
+import { Link } from "@tanstack/react-router";
+import { ArrowRight, KeyRound, Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { AuthForm } from "@/components/auth-form";
 
-export function ProLoginBar() {
+export function ProLoginBar({ teaser = false }: { teaser?: boolean }) {
   const [open, setOpen] = useState<"in" | "up" | null>(null);
   return (
     <>
@@ -16,19 +17,29 @@ export function ProLoginBar() {
           Pro: Mät bygget dörr för dörr. Kalkylatorn räknar automatiskt ut ringar, förlängare, behör och skruv – färdig inköpslista i PDF med ett klick.
         </p>
         <div className="flex w-full shrink-0 gap-2 sm:w-auto">
-          <Button type="button" size="sm" className="min-h-10 flex-1 bg-accent font-bold text-accent-foreground hover:bg-accent/85 sm:flex-none" onClick={() => setOpen("up")}>
-            <KeyRound className="size-4" aria-hidden />Skapa konto
-          </Button>
-          <Button type="button" size="sm" variant="outline" className="min-h-10 flex-1 font-semibold sm:flex-none" onClick={() => setOpen("in")}>
-            Logga in
-          </Button>
+          {teaser ? (
+            <Button asChild size="sm" className="min-h-10 flex-1 bg-accent font-bold text-accent-foreground hover:bg-accent/85 sm:flex-none">
+              <Link to="/pro">Testa Pro gratis<ArrowRight className="size-4" aria-hidden /></Link>
+            </Button>
+          ) : (
+            <>
+              <Button type="button" size="sm" className="min-h-10 flex-1 bg-accent font-bold text-accent-foreground hover:bg-accent/85 sm:flex-none" onClick={() => setOpen("up")}>
+                <KeyRound className="size-4" aria-hidden />Skapa konto
+              </Button>
+              <Button type="button" size="sm" variant="outline" className="min-h-10 flex-1 font-semibold sm:flex-none" onClick={() => setOpen("in")}>
+                Logga in
+              </Button>
+            </>
+          )}
         </div>
       </div>
-      <Dialog open={open !== null} onOpenChange={(v) => !v && setOpen(null)}>
-        <DialogContent className="w-[calc(100vw-2rem)] max-w-sm p-0">
-          <AuthForm key={open ?? "in"} initialMode={open ?? "in"} />
-        </DialogContent>
-      </Dialog>
+      {!teaser && (
+        <Dialog open={open !== null} onOpenChange={(v) => !v && setOpen(null)}>
+          <DialogContent className="w-[calc(100vw-2rem)] max-w-sm p-0">
+            <AuthForm key={open ?? "in"} initialMode={open ?? "in"} />
+          </DialogContent>
+        </Dialog>
+      )}
     </>
   );
 }
