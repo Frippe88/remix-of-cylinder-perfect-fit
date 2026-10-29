@@ -53,7 +53,7 @@ export function canSelectFitting(variant: "free" | "pro", cylinder: "standard" |
 }
 export interface DoorSide { label: string | null; depth: number; ring: number; extenders: number[] }
 export interface Door { id: string; name: string; kind: RingKind; done: boolean; sides: DoorSide[]; fitting?: Fitting; brand?: string }
-export interface Project { name: string; doors: Door[] }
+export interface Project { name: string; doors: Door[]; picked?: string[] }
 
 export const KIND_LABEL: Record<RingKind, string> = { oval: "oval", rund: "rund", iloq: "iLOQ" };
 
