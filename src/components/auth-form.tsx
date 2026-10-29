@@ -24,13 +24,13 @@ export function AuthForm({ initialMode }: { initialMode?: Mode }) {
         const { error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) throw error;
       } else if (mode === "up") {
-        const { error } = await supabase.auth.signUp({
+        const { data, error } = await supabase.auth.signUp({
           email,
           password,
           options: { emailRedirectTo: `${window.location.origin}/pro` },
         });
         if (error) throw error;
-        setMsg({ kind: "ok", text: "Kolla din mejl och klicka på länken för att aktivera kontot." });
+        if (!data.session) setMsg({ kind: "ok", text: "Kolla din mejl och klicka på länken för att aktivera kontot." });
       } else {
         const { error } = await supabase.auth.resetPasswordForEmail(email, {
           redirectTo: `${window.location.origin}/reset-password`,
@@ -39,17 +39,10 @@ export function AuthForm({ initialMode }: { initialMode?: Mode }) {
         setMsg({ kind: "ok", text: "Vi har skickat en länk för att välja nytt lösenord." });
       }
     } catch (err) {
-      const m = err instanceof Error ? err.message : "";
-      setMsg({
-        kind: "err",
-        text: /invalid login/i.test(m)
-          ? "Fel mejl eller lösenord."
-          : /already registered/i.test(m)
-            ? "Det finns redan ett konto med den mejlen – logga in."
-            : /not confirmed/i.test(m)
-              ? "Bekräfta mejlen först – kolla inkorgen."
-              : "Något gick fel. Försök igen.",
-      });
+      const e = err as { message?: string; code?: string; status?: number };
+      const m = e?.message ?? "";
+      const c = e?.code ?? "";
+      setMsg({ kind: "err", text: authErrorText(m, c, e?.status) });
     } finally {
       setBusy(false);
     }
