@@ -44,7 +44,7 @@ export function ModePicker({ mode, onChange, pro = false }: { mode: ViewMode; on
             <p><span className="font-bold">Alla:</span> Alla godkända kombinationer. Exakt 0mm hamnar först, även om det kräver fler förlängare.{pro ? " Räcker inte 63mm-skruven väljs automatiskt en godkänd kombination där den räcker." : ""}</p>
             <p><span className="font-bold">Exakt 0mm:</span> Bara kombinationer exakt i liv med ringen – inga kompromisser.</p>
             <p><span className="font-bold">Färre förlängare:</span> Minst antal förlängare inom −2 till +2mm. Sparar förlängare i bilen och ger färre skarvar.</p>
-            {pro && <p><span className="font-bold">Varför räcker inte 63mm vid Exakt 0mm?</span> För att nå exakt 0mm kan det krävas så mycket förlängning att skruven inte når. Med Alla eller Färre förlängare väljs en annan ringhöjd med mindre förlängning – fortfarande godkänt, och 63mm räcker.</p>}
+            {pro && <p><span className="font-bold">Varför räcker inte 63mm vid Exakt 0mm?</span> För att nå exakt 0mm kan det krävas så mycket förlängning att skruven inte når. Ibland löser Alla eller Färre förlängare det med en annan ringhöjd och mindre förlängning – då står "välj Alla" vid skruven. Är dörren för djup räcker 63mm inte i något läge, och då står det direkt hur lång skruv som behövs.</p>}
           </PopoverContent>
         </Popover>
       </div>
