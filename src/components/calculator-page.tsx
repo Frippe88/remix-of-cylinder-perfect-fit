@@ -160,7 +160,7 @@ export function CalculatorPage({ variant, loginBar, navActive, locked = false }:
               Cylinderhjälpen
             </h1>
             <p className="text-[11px] leading-tight opacity-80 sm:text-sm sm:opacity-90">
-              Kalkylator för rätt mått och montage
+              Rätt ring, förlängare och skruv på 3 sekunder
             </p>
           </div>
           <div className="flex shrink-0 items-center gap-2">
