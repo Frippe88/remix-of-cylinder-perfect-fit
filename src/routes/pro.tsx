@@ -31,7 +31,7 @@ function ProRoute() {
   // och infopopopen med vad Pro innehåller öppen direkt.
   return (
     <>
-      <CalculatorPage variant="free" loginBar={<ProLoginBar />} navActive="pro" />
+      <CalculatorPage variant="free" loginBar={<ProLoginBar />} navActive="pro" locked />
       <ProDialog open={proOpen} onOpenChange={setProOpen} />
     </>
   );

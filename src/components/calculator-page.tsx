@@ -10,6 +10,7 @@ import { PickListButton } from "@/components/pick-list-button";
 import { ProjectBar, ProjectPanel, useProject } from "@/components/project-panel";
 import { InfoSheetRow } from "@/components/info-sheet-row";
 import { InfoPopupRow } from "@/components/info-popup-row";
+import { AuthForm } from "@/components/auth-form";
 import { ProDialog } from "@/components/pro-dialog";
 import { fittingOptions, nextDoorName, type DoorSide, type Fitting } from "@/lib/project";
 import { DoorNameDialog } from "@/components/door-name-dialog";
@@ -68,7 +69,8 @@ type Cyl = "standard" | "round" | "iloq";
 
 const ROUND_BRANDS = [ASSA_ROUND_BRAND, ASSA_S_BRAND, "dormakaba / DORMA", "EVVA", "Annat fabrikat"] as const;
 
-export function CalculatorPage({ variant, loginBar, navActive }: { variant: "free" | "pro"; loginBar?: React.ReactNode; navActive?: "free" | "pro" }) {
+export function CalculatorPage({ variant, loginBar, navActive, locked = false }: { variant: "free" | "pro"; loginBar?: React.ReactNode; navActive?: "free" | "pro"; locked?: boolean }) {
+  const [signupOpen, setSignupOpen] = useState(false);
   const [type, setType] = useState<"single" | "double">("single");
   const [cyl, setCyl] = useState<Cyl>("standard");
   const [brand, setBrand] = useState<string>(ROUND_BRANDS[0]);
@@ -79,6 +81,7 @@ export function CalculatorPage({ variant, loginBar, navActive }: { variant: "fre
   const [roundExt, setRoundExt] = useState<number[]>([...ROUND_EXTENDER_SIZES]);
   const [roundRings, setRoundRings] = useState<number[]>([...ROUND_RING_HEIGHTS]);
   const pro = variant === "pro";
+  const proFeat = pro || locked;
   const [project, setProject, projectStore] = useProject();
   const [proOpen, setProOpen] = useState(false);
   useEffect(() => { if (pro) setProOpen(true); }, [pro]);
@@ -86,7 +89,7 @@ export function CalculatorPage({ variant, loginBar, navActive }: { variant: "fre
   const [switchProject, setSwitchProject] = useState(false);
   const [pendingDoor, setPendingDoor] = useState<{ sides: DoorSide[]; kind: "oval" | "rund" | "iloq"; fitting?: Fitting; brand?: string } | null>(null);
   const [fitting, setFitting] = useState<Fitting | null>(null);
-  const fittingChoices = fittingOptions(variant, cyl, type, brand);
+  const fittingChoices = fittingOptions(proFeat ? "pro" : variant, cyl, type, brand);
   const fittingEnabled = fittingChoices.length > 0;
   // Dubbel iLOQ kräver alltid A10.11-kitet: förvalt automatiskt.
   const activeFitting = fitting && fittingChoices.includes(fitting) ? fitting
@@ -337,8 +340,8 @@ export function CalculatorPage({ variant, loginBar, navActive }: { variant: "fre
         <section className="order-2 min-w-0 space-y-7 lg:order-none">
           <PickListButton
             sides={type === "single" ? [{ label: isRound ? null : singleSide, depth: parse(outside), selected: selOut }] : [{ label: "Utsida", depth: parse(outside), selected: selOut ?? ovalPair?.[0] ?? null }, { label: "Insida", depth: parse(inside), selected: selIn ?? ovalPair?.[1] ?? null }]}
-            ext={ext} rings={activeRings} insideRings={insideRings} insideExt={insideExt} baseMm={baseMm} insideBaseMm={insideBaseMm} relaxed={isRound} screwBrand={pro && isRound ? brand : undefined} ovalSingle={pro && cyl === "standard"} iloqSingle={pro && cyl === "iloq" && type === "single"} onShowAll={mode === "all" ? undefined : () => { setMode("all"); setSel({ key: "", out: null, in: null }); }}
-            fitting={activeFitting} onFittingChange={fittingEnabled ? setFitting : undefined} fittingChoices={fittingChoices} iloqDouble={iloqDouble}
+            ext={ext} rings={activeRings} insideRings={insideRings} insideExt={insideExt} baseMm={baseMm} insideBaseMm={insideBaseMm} relaxed={isRound} screwBrand={proFeat && isRound ? brand : undefined} ovalSingle={proFeat && cyl === "standard"} iloqSingle={proFeat && cyl === "iloq" && type === "single"} onShowAll={mode === "all" ? undefined : () => { setMode("all"); setSel({ key: "", out: null, in: null }); }}
+            fitting={activeFitting} onFittingChange={fittingEnabled ? setFitting : undefined} fittingChoices={fittingChoices} iloqDouble={iloqDouble} locked={locked} onLocked={() => setSignupOpen(true)}
             {...(pro ? { projectName: project.name, projectDoors: project.doors.length, projectCount: projectStore.list.length, onOpenProject: () => { setSwitchProject(true); setProjectOpen(true); } } : {})}
             onSave={!pro ? undefined : (sides) => { trackEvent("sparad_dorr", { cylinder: cyl }); setPendingDoor({ sides, kind: isRound ? "rund" : cyl === "iloq" ? "iloq" : "oval", ...(isRound ? { brand } : {}), ...(activeFitting ? { fitting: activeFitting } : {}) }); }}
           />
@@ -347,6 +350,13 @@ export function CalculatorPage({ variant, loginBar, navActive }: { variant: "fre
           {type === "double" && <CylinderResults mode={mode} preferred={ovalPair?.[1]} title="Insida" depth={parse(inside)} ext={insideExt} rings={insideRings} baseMm={insideBaseMm} relaxed={isRound} selected={selIn} onSelect={(c) => setSel((s) => ({ key: selKey, out: s.key === selKey ? s.out : null, in: c }))} />}
         </section>
       </main>
+      {locked && (
+        <Dialog open={signupOpen} onOpenChange={setSignupOpen}>
+          <DialogContent className="w-[calc(100vw-2rem)] max-w-sm p-0">
+            <AuthForm initialMode="up" />
+          </DialogContent>
+        </Dialog>
+      )}
       {pro && <>
       <DoorNameDialog open={!!pendingDoor} defaultName={nextDoorName(project.doors)} projectName={project.name} onCancel={() => setPendingDoor(null)}
         onConfirm={(name) => {
