@@ -200,7 +200,7 @@ export function ovalDoubleScrewNeedMm(totalExtMm: number): number {
   return OVAL_DOUBLE_SCREW_BASE_MM + totalExtMm;
 }
 export function ovalDoubleScrewSet(totalExtMm: number): ScrewSet {
-  if (totalExtMm <= 0) return { text: "2 st 48mm cylinderskruv", warning: false };
+  if (totalExtMm <= 0) return { text: "2 st 63mm klippbar cylinderskruv", warning: false };
   const need = ovalDoubleScrewNeedMm(totalExtMm);
   if (need <= OVAL_SCREW_CLIP_MM) return { text: "2 st 63mm klippbar cylinderskruv – kapa till rätt längd", warning: false };
   return { text: `63mm räcker inte, längre klippbar cylinderskruv krävs (minst ${formatMm(need)})`, warning: true };
