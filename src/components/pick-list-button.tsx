@@ -224,7 +224,7 @@ export function PickListButton({ sides, ext, rings, insideRings = rings, insideE
             <Row caption="Skruv" icon={screws.warning ? <AlertTriangle className="size-3.5 text-destructive" /> : <Wrench className="size-3.5" />}>
               {ovalScrew?.warning ? (
                 <span className="inline-flex items-center gap-1.5 rounded-md border border-destructive/50 bg-destructive/10 px-2 py-1 text-sm font-bold text-destructive">
-                  {showAll ? "63mm räcker inte – välj Alla" : `Längre skruv behövs (minst ${formatMm(screwNeed)})`}
+                  {showAll ? "63mm räcker inte – välj Alla" : isOvalDouble && screwFixable ? "63mm räcker inte – välj kortare förlängning" : `Längre skruv behövs (minst ${formatMm(screwNeed)})`}
                 </span>
               ) : (
                 <span className="inline-flex items-center gap-1.5 rounded-md border border-input bg-muted px-2.5 py-1 text-sm font-bold text-foreground">
@@ -243,8 +243,12 @@ export function PickListButton({ sides, ext, rings, insideRings = rings, insideE
                   </PopoverTrigger>
                   <PopoverContent className="w-72 space-y-2 text-sm">
                     <p className="font-bold">Varför räcker inte 63mm?</p>
-                    <p>63mm skruv klarar max 32mm förlängare (kista + bricka = 21mm, gänga = 10mm). Den här kombinationen behöver mer förlängning än så.</p>
-                    {showAll ? <p>Välj läget <strong>Alla</strong> för att få ett godkänt förslag (inom ±2mm) där standard 63mm räcker.</p> : <p>För det här dörrdjupet finns ingen kombination inom ±2mm där 63mm räcker. Använd klippbar cylinderskruv på minst <strong>{formatMm(screwNeed)}</strong>.</p>}
+                    {isOvalDouble
+                      ? <p>Vid dubbel oval klarar 63mm skruv max 15mm förlängning totalt, insida + utsida (insidans cylinder + kista = 38mm, gänga = 10mm).</p>
+                      : <p>63mm skruv klarar max 32mm förlängare (kista + bricka = 21mm, gänga = 10mm). Den här kombinationen behöver mer förlängning än så.</p>}
+                    {showAll ? <p>Välj läget <strong>Alla</strong> för att få ett godkänt förslag (inom ±2mm) där standard 63mm räcker.</p>
+                      : isOvalDouble && screwFixable ? <p>Det finns kombinationer inom ±2mm med mindre förlängning där 63mm räcker. Öppna <strong>Visa andra alternativ</strong> på insida/utsida och välj en med kortare förlängning.</p>
+                      : <p>För det här dörrdjupet finns ingen kombination inom ±2mm där 63mm räcker. Använd klippbar cylinderskruv på minst <strong>{formatMm(screwNeed)}</strong>.</p>}
                     <p className="border-t border-border pt-2 text-xs text-muted-foreground">{screwNote}</p>
                   </PopoverContent>
                 </Popover>
