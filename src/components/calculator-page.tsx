@@ -1,13 +1,14 @@
 import { Link } from "@tanstack/react-router";
 import { GUIDES } from "@/lib/guides";
-import { ArrowRight, BookOpen, Check, CircleHelp, FolderOpen, KeyRound, LogOut, Minus, Moon, Package, Plus, ShieldCheck, Sun } from "lucide-react";
-import { supabase } from "@/integrations/supabase/client";
+import { ArrowRight, BookOpen, Check, CircleHelp, CircleUserRound, FolderOpen, KeyRound, Minus, Moon, Package, Plus, ShieldCheck, Sun, UserRound } from "lucide-react";
 import { Dialog, DialogClose, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { useEffect, useState } from "react";
 import { CylinderResults, ModePicker } from "@/components/cylinder-results";
 import type { ViewMode } from "@/lib/cylinder";
 import { PickListButton } from "@/components/pick-list-button";
 import { ProjectBar, ProjectPanel, useProject } from "@/components/project-panel";
+import { Button } from "@/components/ui/button";
+import { useAuth } from "@/hooks/use-auth";
 import { InfoSheetRow } from "@/components/info-sheet-row";
 import { InfoPopupRow } from "@/components/info-popup-row";
 import { AuthForm } from "@/components/auth-form";
@@ -71,6 +72,8 @@ const ROUND_BRANDS = [ASSA_ROUND_BRAND, ASSA_S_BRAND, "dormakaba / DORMA", "EVVA
 
 export function CalculatorPage({ variant, loginBar, navActive, locked = false }: { variant: "free" | "pro"; loginBar?: React.ReactNode; navActive?: "free" | "pro"; locked?: boolean }) {
   const [signupOpen, setSignupOpen] = useState(false);
+  const [accountOpen, setAccountOpen] = useState(false);
+  const { user, signOut } = useAuth();
   const [type, setType] = useState<"single" | "double">("single");
   const [cyl, setCyl] = useState<Cyl>("standard");
   const [brand, setBrand] = useState<string>(ROUND_BRANDS[0]);
@@ -162,10 +165,13 @@ export function CalculatorPage({ variant, loginBar, navActive, locked = false }:
           </div>
           <div className="flex shrink-0 items-center gap-2">
             <ThemeToggle />
-            {pro && <button type="button" onClick={() => { void supabase.auth.signOut(); }} aria-label="Logga ut" title="Logga ut"
-              className="inline-flex size-9 items-center justify-center rounded-lg bg-primary-foreground/10 ring-1 ring-primary-foreground/25 hover:bg-primary-foreground/20 sm:size-10">
-              <LogOut className="size-4" aria-hidden />
-            </button>}
+            <button type="button" onClick={() => setAccountOpen(true)} aria-label={user ? "Konto" : "Logga in"} title={user ? "Konto" : "Logga in"}
+              className={user
+                ? "relative inline-flex size-9 items-center justify-center rounded-lg bg-accent text-accent-foreground shadow-card hover:bg-accent/85 sm:size-10"
+                : "inline-flex size-9 items-center justify-center rounded-lg bg-primary-foreground/10 ring-1 ring-primary-foreground/25 hover:bg-primary-foreground/20 sm:size-10"}>
+              {user ? <UserRound className="size-4" aria-hidden /> : <CircleUserRound className="size-4" aria-hidden />}
+              {user && <span aria-hidden className="absolute right-[-3px] top-[-3px] size-2.5 rounded-full bg-success ring-2 ring-primary" />}
+            </button>
             {pro && <button type="button" onClick={() => { setSwitchProject(false); setProjectOpen(true); }} aria-label="Öppna projekt"
               className="inline-flex h-9 items-center gap-1 rounded-lg bg-primary-foreground/10 px-2 text-sm font-semibold ring-1 ring-primary-foreground/25 hover:bg-primary-foreground/20 sm:h-10 sm:gap-1.5 sm:px-3">
               <FolderOpen className="size-4 text-accent" aria-hidden /><span className="hidden sm:inline">Projekt</span>
@@ -352,6 +358,22 @@ export function CalculatorPage({ variant, loginBar, navActive, locked = false }:
           {type === "double" && <CylinderResults mode={mode} preferred={ovalPair?.[1]} title="Insida" depth={parse(inside)} ext={insideExt} rings={insideRings} baseMm={insideBaseMm} relaxed={isRound} selected={selIn} onSelect={(c) => setSel((s) => ({ key: selKey, out: s.key === selKey ? s.out : null, in: c }))} />}
         </section>
       </main>
+      <Dialog open={accountOpen} onOpenChange={setAccountOpen}>
+        <DialogContent className="w-[calc(100vw-2rem)] max-w-sm p-0">
+          {user ? (
+            <div className="space-y-4 p-5">
+              <p className="text-sm font-bold">Inloggad</p>
+              <p className="truncate rounded-lg bg-muted px-3 py-2 text-sm">{user.email}</p>
+              <Button type="button" variant="outline" className="min-h-10 w-full font-semibold"
+                onClick={() => { setAccountOpen(false); void signOut(); }}>
+                Logga ut
+              </Button>
+            </div>
+          ) : (
+            <AuthForm initialMode="in" />
+          )}
+        </DialogContent>
+      </Dialog>
       {locked && (
         <Dialog open={signupOpen} onOpenChange={setSignupOpen}>
           <DialogContent className="w-[calc(100vw-2rem)] max-w-sm p-0">
