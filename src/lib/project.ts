@@ -185,8 +185,8 @@ export function purchaseList(doors: Door[]): PurchaseSection[] {
     const single = new Map<string, number>(), kits = new Map<string, number>(), double = new Map<string, number>(), ext = new Map<string, number>(), screws = new Map<string, number>();
     const ring = (mm: number) => `${formatMm(mm)} ${kind === "rund" ? "rund ring" : "ring"}`;
     for (const d of ds) {
-      const sc = d.sides.length > 1 ? doorScrew(d) : null;
-      if (sc) add(screws, `skruvsats: ${sc.text}`);
+      const sc = doorScrew(d);
+      if (sc && sc.text !== SINGLE_SCREW_TEXT) add(screws, `skruvsats: ${sc.text}`);
       d.sides.forEach((s) => s.extenders.forEach((e) => add(ext, `${formatMm(e)} förlängare`)));
       // Runda cylindrar har inga behörssatser – bara ringar.
       const fitting = kind === "rund" ? undefined : d.fitting;
