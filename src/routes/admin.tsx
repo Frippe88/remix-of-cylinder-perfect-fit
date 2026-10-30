@@ -54,6 +54,18 @@ function AdminPage() {
     await supabase.from("company_applications").update({ status: "approved" }).eq("id", a.id);
     void load();
   }
+  async function removeCompany(c: Company) {
+    if (!confirm(`Ta bort ${c.name}? Alla anställda förlorar Pro direkt.`)) return;
+    const { error } = await supabase.from("companies").delete().eq("id", c.id);
+    if (error) return alert("Kunde inte ta bort företaget.");
+    void load();
+  }
+  async function removeApp(a: App) {
+    if (!confirm(`Ta bort ansökan från ${a.company_name}?`)) return;
+    const { error } = await supabase.from("company_applications").delete().eq("id", a.id);
+    if (error) return alert("Kunde inte ta bort ansökan.");
+    void load();
+  }
   async function reject(a: App) {
     await supabase.from("company_applications").update({ status: "rejected" }).eq("id", a.id);
     void load();
@@ -80,18 +92,27 @@ function AdminPage() {
             <p className="text-sm">{a.contact_name} · <a href={`tel:${a.phone}`} className="font-semibold text-accent">{a.phone}</a> · <a href={`mailto:${a.email}`} className="font-semibold text-accent">{a.email}</a></p>
             <p className="text-sm text-muted-foreground">{a.seats} tekniker{a.org_number ? ` · Org.nr ${a.org_number}` : ""} · {new Date(a.created_at).toLocaleDateString("sv-SE")}</p>
             {a.message && <p className="mt-1 text-sm">{a.message}</p>}
-            {a.status === "pending" && (
-              <div className="mt-3 flex gap-2">
-                <Button onClick={() => approve(a)} className="bg-accent font-bold text-accent-foreground hover:bg-accent/90">Godkänn</Button>
-                <Button variant="outline" onClick={() => reject(a)}>Neka</Button>
-              </div>
-            )}
+            <div className="mt-3 flex flex-wrap gap-2">
+              {a.status === "pending" && (
+                <>
+                  <Button onClick={() => approve(a)} className="bg-accent font-bold text-accent-foreground hover:bg-accent/90">Godkänn</Button>
+                  <Button variant="outline" onClick={() => reject(a)}>Neka</Button>
+                </>
+              )}
+              <Button variant="ghost" className="text-destructive" onClick={() => removeApp(a)}>Ta bort ansökan</Button>
+            </div>
           </li>
         ))}
       </ul>
       <h2 className="text-xl font-bold">Aktiva företag</h2>
       <ul className="space-y-2">
-        {companies.map((c) => <li key={c.id} className="rounded-lg border bg-card p-3 text-sm"><b>{c.name}</b> · admin {c.admin_email} · {c.seats} licenser</li>)}
+        {companies.length === 0 && <li className="text-muted-foreground">Inga aktiva företag.</li>}
+        {companies.map((c) => (
+          <li key={c.id} className="flex flex-wrap items-center gap-2 rounded-lg border bg-card p-3 text-sm">
+            <span className="flex-1"><b>{c.name}</b> · admin {c.admin_email} · {c.seats} licenser</span>
+            <Button size="sm" variant="destructive" onClick={() => removeCompany(c)}>Ta bort företag</Button>
+          </li>
+        ))}
       </ul>
     </main>
   );
