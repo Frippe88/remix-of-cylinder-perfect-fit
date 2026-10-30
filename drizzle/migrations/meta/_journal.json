@@ -15,6 +15,13 @@
       "when": 1793384058058,
       "tag": "0001_company_accounts",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1793384164924,
+      "tag": "0002_grant_site_owner_admin",
+      "breakpoints": true
     }
   ]
 }
