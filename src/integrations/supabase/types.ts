@@ -14,6 +14,101 @@ export type Database = {
   }
   public: {
     Tables: {
+      companies: {
+        Row: {
+          admin_email: string
+          created_at: string
+          id: string
+          name: string
+          plan: string
+          seats: number
+        }
+        Insert: {
+          admin_email: string
+          created_at?: string
+          id?: string
+          name: string
+          plan?: string
+          seats?: number
+        }
+        Update: {
+          admin_email?: string
+          created_at?: string
+          id?: string
+          name?: string
+          plan?: string
+          seats?: number
+        }
+        Relationships: []
+      }
+      company_applications: {
+        Row: {
+          company_name: string
+          contact_name: string
+          created_at: string
+          email: string
+          id: string
+          message: string | null
+          org_number: string | null
+          phone: string
+          seats: number
+          status: string
+        }
+        Insert: {
+          company_name: string
+          contact_name: string
+          created_at?: string
+          email: string
+          id?: string
+          message?: string | null
+          org_number?: string | null
+          phone: string
+          seats: number
+          status?: string
+        }
+        Update: {
+          company_name?: string
+          contact_name?: string
+          created_at?: string
+          email?: string
+          id?: string
+          message?: string | null
+          org_number?: string | null
+          phone?: string
+          seats?: number
+          status?: string
+        }
+        Relationships: []
+      }
+      company_members: {
+        Row: {
+          company_id: string
+          created_at: string
+          email: string
+          id: string
+        }
+        Insert: {
+          company_id: string
+          created_at?: string
+          email: string
+          id?: string
+        }
+        Update: {
+          company_id?: string
+          created_at?: string
+          email?: string
+          id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "company_members_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       user_projects: {
         Row: {
           data: Json
@@ -32,15 +127,42 @@ export type Database = {
         }
         Relationships: []
       }
+      user_roles: {
+        Row: {
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
+      is_company_admin: { Args: { _company: string }; Returns: boolean }
+      is_company_member: { Args: { _company: string }; Returns: boolean }
+      my_email: { Args: never; Returns: string }
     }
     Enums: {
-      [_ in never]: never
+      app_role: "admin"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -167,6 +289,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: ["admin"],
+    },
   },
 } as const
