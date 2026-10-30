@@ -1,5 +1,5 @@
 import { useState, type ReactNode } from "react";
-import { Lock, AlertTriangle, ArrowDown, ArrowUp, Check, CircleHelp, ClipboardCopy, ClipboardList, Disc3, FolderOpen, FolderPlus, Layers, Wrench } from "lucide-react";
+import { Lock, AlertTriangle, ArrowDown, ArrowUp, Check, ChevronDown, CircleHelp, ClipboardCopy, ClipboardList, Disc3, FolderOpen, FolderPlus, Layers, Wrench } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { ROUND_NO_UNDERCUT_RINGS, calculate, preferOvalScrewFit, roundScrewSet, ovalSingleScrewSet, hasOvalScrewFit, ovalScrewNeedMm, OVAL_SCREW_NOTE, ovalDoubleScrewSet, ovalDoubleScrewNeedMm, OVAL_DOUBLE_SCREW_BASE_MM, OVAL_DOUBLE_SCREW_NOTE, OVAL_SCREW_CLIP_MM, iloqSingleScrewSet, iloqScrewNeedMm, ILOQ_SCREW_NOTE, TOLERANCE_MIN, TOLERANCE_MAX, describeDeviation, formatMm, formatSigned, type Combination } from "@/lib/cylinder";
