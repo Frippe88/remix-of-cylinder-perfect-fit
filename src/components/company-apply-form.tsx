@@ -69,7 +69,7 @@ export function CompanyApplyForm() {
       </div>
       <div className="space-y-1">
         <Label htmlFor="ca-message">Övrigt (valfritt)</Label>
-        <Textarea id="ca-message" rows={3} maxLength={1000} value={form.message ?? ""} onChange={(e) => setForm((f) => ({ ...f, message: e.target.value }))} />
+        <Textarea id="ca-message" rows={3} maxLength={1000} value={form["message"] ?? ""} onChange={(e) => setForm((f) => ({ ...f, message: e.target.value }))} />
       </div>
       {fail && <p className="text-sm font-medium text-destructive">{fail}</p>}
       <Button type="submit" disabled={busy} className="min-h-11 w-full bg-accent font-bold text-accent-foreground hover:bg-accent/90">
