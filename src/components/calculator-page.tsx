@@ -230,15 +230,18 @@ export function CalculatorPage({ variant, loginBar, navActive, locked = false }:
             {isRound && (
               <label className="block text-sm font-semibold text-foreground">
                 Fabrikat
-                <select
-                  value={brand}
-                  onChange={(e) => setBrand(e.target.value)}
-                  className="mt-1 block w-full rounded-lg border border-input bg-card px-3 py-3 text-base font-normal text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
-                >
-                  {ROUND_BRANDS.map((b) => (
-                    <option key={b} value={b}>{b}</option>
-                  ))}
-                </select>
+                <span className="relative mt-1 block">
+                  <select
+                    value={brand}
+                    onChange={(e) => setBrand(e.target.value)}
+                    className="block w-full appearance-none rounded-lg border border-input bg-card py-3 pl-3 pr-11 text-base font-normal text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+                  >
+                    {ROUND_BRANDS.map((b) => (
+                      <option key={b} value={b}>{b}</option>
+                    ))}
+                  </select>
+                  <ChevronDown aria-hidden className="pointer-events-none absolute right-4 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+                </span>
                 <InfoPopupRow
                   label={isAssaS ? "Ringar: bara 15mm · räknas med 33mm" : isAssaRound ? "Ringar: 8mm och 13mm · räknas med 33mm" : `${brand === "Annat fabrikat" ? "Annat fabrikat" : brand === "EVVA" ? "EVVA" : "dormakaba"} räknas med 31mm`}
                   title="Fabrikat – vad som gäller"
