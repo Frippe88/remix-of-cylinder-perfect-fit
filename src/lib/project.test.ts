@@ -228,4 +228,18 @@ describe("skruv i projekt", () => {
   it("enkel rund ger montagetext", () => {
     expect(_doorScrew({ id: "s", name: "D", kind: "rund", done: false, brand: "EVVA", sides: [{ label: null, depth: 1, ring: 8, extenders: [] }] })?.text).toMatch(/Beror på montage/);
   });
+  it("inköpslistan summerar skruv även för enkel oval och enkel iLOQ", () => {
+    const one = (id: string, kind: "oval" | "iloq", ext: number[]): Door => ({ id, name: id, kind, done: false, sides: [{ label: null, depth: 1, ring: 6, extenders: ext }] });
+    const screws = purchaseList([one("a", "oval", []), one("b", "oval", []), one("c", "oval", [10]), one("d", "iloq", [])])
+      .flatMap((s) => s.groups.filter((g) => g.title === "Skruv").flatMap((g) => g.items));
+    expect(screws).toEqual([
+      { count: 2, text: "skruvsats: 2 st 24mm cylinderskruv" },
+      { count: 1, text: "skruvsats: 2 st 63mm klippbar cylinderskruv – kapa till rätt längd" },
+      { count: 1, text: "skruvsats: 2 st iLOQ:s egna cylinderskruvar" },
+    ]);
+  });
+  it("enkel rund hamnar inte i inköpslistans skruv", () => {
+    const d: Door = { id: "r", name: "r", kind: "rund", done: false, brand: "EVVA", sides: [{ label: null, depth: 1, ring: 8, extenders: [] }] };
+    expect(purchaseList([d]).flatMap((s) => s.groups).some((g) => g.title === "Skruv")).toBe(false);
+  });
 });
