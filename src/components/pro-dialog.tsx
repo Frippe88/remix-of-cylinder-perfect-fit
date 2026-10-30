@@ -10,11 +10,15 @@ const FEATURES = [
   "PDF med ett klick – komplett arbetsorder eller bara inköpslista",
   "Kopiera till mejl/SMS – klistra in beställningen direkt",
   "Flera projekt samtidigt – växla mellan olika byggen och kunder",
-  "Automatisk skruvlängd – oval enkel/dubbel och runda per fabrikat, med varning när 63mm inte räcker",
+  "Molnsynk – konto med inloggning, projekten följer med mellan telefon och dator",
+  "Bocka av plocklistan i bilen – synkas mellan dina enheter",
+  "Sök bland dörrarna i stora projekt",
+  "Automatisk skruvlängd – oval, iLOQ enkel och runda per fabrikat, med varning när 63mm inte räcker",
 ];
 
 const COMING = [
-  "Inloggning och synkning mellan telefon och dator",
+  "Skruvlängd för dubbel iLOQ",
+  "Fler fabrikat och behör",
 ];
 
 export function ProDialog({ open, onOpenChange }: { open: boolean; onOpenChange: (v: boolean) => void }) {

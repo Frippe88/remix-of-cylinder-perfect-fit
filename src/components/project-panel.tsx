@@ -365,20 +365,20 @@ export function ProjectPanel({ project, setProject, store, open, onOpenChange, c
           <div className="overflow-hidden rounded-xl border border-accent/30 bg-accent/5">
             <InfoSheetRow icon={<Info />} title="Beta – gratis under testperioden" hint="Tryck för info om sparande och feedback">
               <p className="text-sm leading-relaxed text-muted-foreground">
-                Projektfunktionen är ny och byggs på löpande. Just nu är den gratis att använda, och den sparar bara i den här telefonen eller webbläsaren – ingen kopia finns i molnet än. Byter du enhet, eller rensar webbläsaren, försvinner projekten.
+                Projektfunktionen är ny och byggs på löpande. Just nu är den gratis att använda. När du är inloggad sparas projekten i molnet och följer med mellan telefon och dator – utan täckning sparas allt i telefonen och skickas upp när nätet är tillbaka.
               </p>
               <p className="mt-4 text-xs font-bold uppercase tracking-wide text-muted-foreground">Idag</p>
               <ul className="mt-2 space-y-2 text-sm font-medium">
-                <li className="flex items-start gap-2"><Check className="mt-0.5 size-4 shrink-0 text-success" aria-hidden /><span>Flera projekt med dörrar för hela bygget – utan kostnad</span></li>
-                <li className="flex items-start gap-2"><Check className="mt-0.5 size-4 shrink-0 text-success" aria-hidden /><span>Behörsval (256, 2356, 18256) – färdig sats eller lös ring</span></li>
-                <li className="flex items-start gap-2"><Check className="mt-0.5 size-4 shrink-0 text-success" aria-hidden /><span>Automatisk inköpslista per cylindertyp med ringar och förlängare</span></li>
-                <li className="flex items-start gap-2"><Check className="mt-0.5 size-4 shrink-0 text-success" aria-hidden /><span>PDF – komplett arbetsorder eller bara inköpslista</span></li>
-                <li className="flex items-start gap-2"><Check className="mt-0.5 size-4 shrink-0 text-success" aria-hidden /><span>Kopiera till mejl eller SMS med ett klick</span></li>
+                {["Flera projekt med dörrar för hela bygget – utan kostnad", "Molnsynk mellan telefon och dator", "Behörsval (256, 2356, 18256) – färdig sats eller lös ring", "Automatisk inköpslista per cylindertyp med ringar och förlängare", "Bocka av plocklistan – synkas mellan enheter", "Sök bland dörrarna", "Automatisk skruvlängd med varning när 63mm inte räcker", "PDF – komplett arbetsorder eller bara inköpslista", "Kopiera till mejl eller SMS med ett klick"].map((t) => (
+                  <li key={t} className="flex items-start gap-2"><Check className="mt-0.5 size-4 shrink-0 text-success" aria-hidden /><span>{t}</span></li>
+                ))}
               </ul>
               <div className="mt-4 rounded-lg border border-dashed border-border bg-muted/30 p-3">
                 <p className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wide text-muted-foreground"><Clock className="size-3.5 text-accent" aria-hidden />Kommer snart</p>
                 <ul className="mt-2 space-y-1.5 text-sm font-medium">
-                  <li className="flex items-start gap-2"><span className="mt-1.5 size-1.5 shrink-0 rounded-full bg-accent" aria-hidden /><span>Inloggning och synkning mellan telefon och dator</span></li>
+                  {["Skruvlängd för dubbel iLOQ", "Fler fabrikat och behör"].map((t) => (
+                    <li key={t} className="flex items-start gap-2"><span className="mt-1.5 size-1.5 shrink-0 rounded-full bg-accent" aria-hidden /><span>{t}</span></li>
+                  ))}
                 </ul>
               </div>
               <p className="mt-3 text-sm text-muted-foreground">Senare blir projekt en prenumeration som håller funktionen igång.</p>
