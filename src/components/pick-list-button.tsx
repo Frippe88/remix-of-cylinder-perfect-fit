@@ -1,5 +1,5 @@
 import { useState, type ReactNode } from "react";
-import { Lock, AlertTriangle, ArrowDown, ArrowUp, Check, CircleHelp, ClipboardCopy, ClipboardList, Disc3, FolderOpen, FolderPlus, Layers, Wrench } from "lucide-react";
+import { Lock, AlertTriangle, ArrowDown, ArrowUp, Check, ChevronDown, CircleHelp, ClipboardCopy, ClipboardList, Disc3, FolderOpen, FolderPlus, Layers, Wrench } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { ROUND_NO_UNDERCUT_RINGS, calculate, preferOvalScrewFit, roundScrewSet, ovalSingleScrewSet, hasOvalScrewFit, ovalScrewNeedMm, OVAL_SCREW_NOTE, ovalDoubleScrewSet, ovalDoubleScrewNeedMm, OVAL_DOUBLE_SCREW_BASE_MM, OVAL_DOUBLE_SCREW_NOTE, OVAL_SCREW_CLIP_MM, iloqSingleScrewSet, iloqScrewNeedMm, ILOQ_SCREW_NOTE, TOLERANCE_MIN, TOLERANCE_MAX, describeDeviation, formatMm, formatSigned, type Combination } from "@/lib/cylinder";
@@ -302,13 +302,16 @@ const Locked = ({ children, label }: { children: ReactNode; label: string }) => 
         {!locked && onFittingChange && (
           <label className="block pb-2 text-sm font-semibold">
             Behör <span className="text-xs font-normal text-muted-foreground">(valfritt)</span>
+            <span className="relative mt-1.5 block">
             <select aria-label="Behör" value={fitting ?? ""} onChange={(e) => onFittingChange(fittingChoices.includes(e.target.value as Fitting) ? (e.target.value as Fitting) : null)}
-              className="mt-1.5 min-h-11 w-full rounded-md border border-input bg-card px-3 py-2 text-base font-normal text-foreground focus:outline-none focus:ring-2 focus:ring-ring">
+              className="min-h-11 w-full appearance-none rounded-md border border-input bg-card py-2 pl-3 pr-11 text-base font-normal text-foreground focus:outline-none focus:ring-2 focus:ring-ring">
               <option value="">Inget behör valt</option>
               {fittingChoices.map((f) => (
                 <option key={f} value={f}>{menuText(f)}</option>
               ))}
             </select>
+            <ChevronDown aria-hidden className="pointer-events-none absolute right-4 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+            </span>
             <span className="mt-2 block rounded-md border border-border bg-muted px-3 py-2 text-sm font-normal leading-snug text-foreground">Vi räknar med <strong className="font-bold">ASSA ABLOY:s behör (256, 2356, 18256)</strong>. Annat fabrikat? Byt bara ut behöret mot motsvarande – <strong className="font-bold">ringhöjden är densamma</strong>.</span>
           </label>
         )}
