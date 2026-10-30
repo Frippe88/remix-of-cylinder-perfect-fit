@@ -4,6 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { CompanySection } from "@/components/company-section";
 
 export function AccountPanel({ email, onSignOut }: { email: string; onSignOut: () => void }) {
   const [changing, setChanging] = useState(false);
@@ -65,6 +66,9 @@ export function AccountPanel({ email, onSignOut }: { email: string; onSignOut: (
             ))}
           </ul>
         </div>
+        <CompanySection email={email} />
+
+
 
         <div className="rounded-lg border bg-card p-3">
           {changing ? (
