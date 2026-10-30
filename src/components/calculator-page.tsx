@@ -1,6 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { GUIDES } from "@/lib/guides";
-import { ArrowRight, BookOpen, Check, ChevronDown, CircleHelp, CircleUserRound, FolderOpen, KeyRound, Minus, Moon, Package, Plus, ShieldCheck, Sun, UserRound } from "lucide-react";
+import { ArrowRight, BookOpen, Check, ChevronDown, CircleHelp, FolderOpen, KeyRound, Minus, Moon, Package, Plus, ShieldCheck, Sun, UserRound } from "lucide-react";
 import { Dialog, DialogClose, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { useEffect, useState } from "react";
 import { CylinderResults, ModePicker } from "@/components/cylinder-results";
@@ -167,10 +167,13 @@ export function CalculatorPage({ variant, loginBar, navActive, locked = false }:
             <ThemeToggle />
             <button type="button" onClick={() => setAccountOpen(true)} aria-label={user ? "Konto" : "Logga in"} title={user ? "Konto" : "Logga in"}
               className={user
-                ? "relative inline-flex size-9 items-center justify-center rounded-lg bg-accent text-accent-foreground shadow-card hover:bg-accent/85 sm:size-10"
-                : "inline-flex size-9 items-center justify-center rounded-lg bg-primary-foreground/10 ring-1 ring-primary-foreground/25 hover:bg-primary-foreground/20 sm:size-10"}>
-              {user ? <UserRound className="size-4" aria-hidden /> : <CircleUserRound className="size-4" aria-hidden />}
-              {user && <span aria-hidden className="absolute right-[-3px] top-[-3px] size-2.5 rounded-full bg-success ring-2 ring-primary" />}
+                ? "relative inline-flex h-9 items-center gap-1.5 rounded-full bg-accent pl-1 pr-3 text-xs font-bold text-accent-foreground shadow-card hover:bg-accent/85 sm:h-10 sm:text-sm"
+                : "inline-flex h-9 items-center gap-1.5 rounded-full bg-primary-foreground/10 pl-1 pr-3 text-xs font-bold ring-1 ring-primary-foreground/30 hover:bg-primary-foreground/20 sm:h-10 sm:text-sm"}>
+              <span className={`flex size-7 items-center justify-center rounded-full sm:size-8 ${user ? "bg-accent-foreground/15" : "bg-accent text-accent-foreground"}`}>
+                <UserRound className="size-4" aria-hidden />
+              </span>
+              {user ? "Konto" : "Logga in"}
+              {user && <span aria-hidden className="absolute right-0 top-0 size-2.5 rounded-full bg-success ring-2 ring-primary" />}
             </button>
             {pro && <button type="button" onClick={() => { setSwitchProject(false); setProjectOpen(true); }} aria-label="Öppna projekt"
               className="inline-flex h-9 items-center gap-1 rounded-lg bg-primary-foreground/10 px-2 text-sm font-semibold ring-1 ring-primary-foreground/25 hover:bg-primary-foreground/20 sm:h-10 sm:gap-1.5 sm:px-3">
@@ -189,15 +192,20 @@ export function CalculatorPage({ variant, loginBar, navActive, locked = false }:
           </span>
         </div>
       </header>
-      {loginBar && <div className="mx-auto max-w-5xl px-4 pt-4">{loginBar}</div>}
-      <nav aria-label="Version" className="mx-auto flex max-w-5xl gap-2 px-4 pt-4">
-        {([["free", "/", "Cylinderkalkyl", "Gratis"], ["pro", "/pro", "Cylinderkalkyl", "Pro"]] as const).map(([v, to, label, tag]) => (
-          <Link key={v} to={to} aria-current={(navActive ?? variant) === v ? "page" : undefined}
-            className={`flex flex-1 items-center justify-center gap-2 rounded-lg border px-3 py-2.5 text-sm font-semibold transition ${(navActive ?? variant) === v ? "border-accent bg-accent/10 ring-1 ring-accent" : "border-input bg-card hover:bg-muted"}`}>
-            {label}<span className="rounded-full border border-accent/50 bg-accent/15 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-accent">{tag}</span>
-          </Link>
-        ))}
+      <nav aria-label="Version" className="mx-auto max-w-5xl px-4 pt-4">
+        <div className="grid grid-cols-2 gap-1 rounded-xl bg-muted p-1">
+          {([["free", "/", "Gratis"], ["pro", "/pro", "Pro"]] as const).map(([v, to, tag]) => {
+            const active = (navActive ?? variant) === v;
+            return (
+              <Link key={v} to={to} aria-current={active ? "page" : undefined}
+                className={`flex items-center justify-center gap-1.5 rounded-lg px-3 py-2 text-sm font-bold transition ${active ? "bg-card text-foreground shadow-card ring-1 ring-accent" : "text-muted-foreground hover:text-foreground"}`}>
+                Cylinderkalkyl <span className={`rounded-full px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide ${active ? "bg-accent text-accent-foreground" : "bg-accent/15 text-accent"}`}>{tag}</span>
+              </Link>
+            );
+          })}
+        </div>
       </nav>
+      {loginBar && <div className="mx-auto max-w-5xl px-4 pt-3">{loginBar}</div>}
 
       <main className="mx-auto grid max-w-5xl gap-6 px-4 py-6 lg:grid-cols-[340px_1fr]">
         <section className="contents lg:block">
@@ -220,7 +228,7 @@ export function CalculatorPage({ variant, loginBar, navActive, locked = false }:
                   key={o.id}
                   onClick={() => switchCyl(o.id)}
                   aria-pressed={cyl === o.id}
-                  className={`rounded-md px-0.5 py-2 text-center text-[11px] font-bold leading-tight whitespace-nowrap transition sm:px-1 sm:text-[13px] ${cyl === o.id ? "bg-accent text-accent-foreground shadow-card" : "text-muted-foreground hover:bg-card"}`}
+                  className={`rounded-md px-0.5 py-2.5 text-center text-[11px] font-bold leading-tight whitespace-nowrap transition sm:px-1 sm:text-[13px] ${cyl === o.id ? "bg-accent text-accent-foreground shadow-elevated ring-1 ring-accent" : "text-foreground/70 hover:bg-card hover:text-foreground"}`}
                 >
                   {o.name}
                   <span className="mt-0.5 block font-mono text-[13px] font-bold">{o.id === "round" ? cylinderBaseMm("round", "outside", false, brand) : o.mm}mm</span>

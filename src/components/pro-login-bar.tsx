@@ -13,13 +13,13 @@ export function ProLoginBar({ teaser = false }: { teaser?: boolean }) {
         <span className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-accent sm:size-9">
           <Star className="size-4 text-accent-foreground sm:size-5" aria-hidden />
         </span>
-        <p className="min-w-0 flex-1 text-xs leading-snug font-semibold sm:text-sm">
-          Pro: Mät bygget dörr för dörr. Kalkylatorn räknar automatiskt ut ringar, förlängare, behör och skruv – färdig inköpslista i PDF med ett klick.
+        <p className="min-w-0 flex-1 text-xs leading-snug sm:text-sm">
+          <span className="font-bold">Pro:</span> hela bygget dörr för dörr – ringar, förlängare, behör och skruv i färdig PDF.
         </p>
-        <div className="flex w-full shrink-0 gap-2 sm:w-auto">
+        <div className={`flex shrink-0 gap-2 ${teaser ? "" : "w-full sm:w-auto"}`}>
           {teaser ? (
-            <Button asChild size="sm" className="min-h-10 flex-1 bg-accent font-bold text-accent-foreground hover:bg-accent/85 sm:flex-none">
-              <Link to="/pro">Testa Pro gratis<ArrowRight className="size-4" aria-hidden /></Link>
+            <Button asChild size="sm" className="min-h-9 bg-accent font-bold text-accent-foreground hover:bg-accent/85">
+              <Link to="/pro">Testa<ArrowRight className="size-4" aria-hidden /></Link>
             </Button>
           ) : (
             <>
