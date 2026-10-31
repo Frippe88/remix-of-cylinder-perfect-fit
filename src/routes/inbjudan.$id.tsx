@@ -38,8 +38,8 @@ function InvitePage() {
 
   useEffect(() => {
     if (!user || res) return;
-    join({ data: { companyId: id } })
-      .then((r) => setRes(r.ok ? { ok: true, text: `Klart! Du har nu Pro via ${r.companyName}.` } : { ok: false, text: REASONS[r.reason] ?? REASONS["error"]! }))
+    join({ data: { token: id } })
+      .then((r) => setRes(r.ok ? { ok: true, text: r.already ? `Du är redan med i ${r.companyName} – Pro är aktivt.` : `Klart! Du har nu Pro via ${r.companyName}.` } : { ok: false, text: REASONS[r.reason] ?? REASONS["error"]! }))
       .catch(() => setRes({ ok: false, text: REASONS["error"]! }));
   }, [user, id, join, res]);
 

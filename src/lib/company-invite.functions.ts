@@ -48,22 +48,26 @@ export const sendCompanyWelcome = createServerFn({ method: "POST" })
     }
   });
 
-// Join a company via its shared invite link (/inbjudan/<companyId>).
+// Join a company via its shared invite link (/inbjudan/<token>). The token lives in
+// company_invites (readable only by the company admin) so the admin can reset it.
 // The seat-limit trigger on company_members rejects joins once all seats are used.
 export const joinCompanyByLink = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((d: { companyId: string }) => z.object({ companyId: z.string().uuid() }).parse(d))
+  .inputValidator((d: { token: string }) => z.object({ token: z.string().uuid() }).parse(d))
   .handler(async ({ data, context }) => {
     const email = String(context.claims?.email ?? "").trim().toLowerCase();
     if (!email) return { ok: false as const, reason: "no_email" as const };
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    const { data: company } = await supabaseAdmin.from("companies").select("id,name,status").eq("id", data.companyId).maybeSingle();
+    const { data: invite } = await supabaseAdmin.from("company_invites").select("company_id").eq("token", data.token).maybeSingle();
+    if (!invite) return { ok: false as const, reason: "invalid" as const };
+    const { data: company } = await supabaseAdmin.from("companies").select("id,name,status").eq("id", invite.company_id).maybeSingle();
     if (!company || company.status !== "active") return { ok: false as const, reason: "invalid" as const };
     const { data: existing } = await supabaseAdmin.from("company_members").select("id").eq("company_id", company.id).eq("email", email).maybeSingle();
     if (existing) return { ok: true as const, companyName: company.name, already: true };
     const { error } = await supabaseAdmin.from("company_members").insert({ company_id: company.id, email });
     if (error) {
       if (/licens/i.test(error.message)) return { ok: false as const, reason: "full" as const };
+      if (/duplicate|unique/i.test(error.message)) return { ok: true as const, companyName: company.name, already: true };
       console.error("join company failed", error);
       return { ok: false as const, reason: "error" as const };
     }
