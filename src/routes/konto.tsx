@@ -121,6 +121,13 @@ function AccountPage() {
                   {sub.status === "past_due" && <p className="font-semibold text-destructive">Senaste betalningen gick inte igenom – uppdatera kortet.</p>}
                   <Button variant="outline" className="min-h-11 font-semibold" onClick={openPortal}><CreditCard className="size-4" />Hantera abonnemang och kort<ExternalLink className="size-3.5" /></Button>
                 </div>
+              ) : company === undefined ? null : company ? (
+                <div className="mt-2 space-y-2 text-sm">
+                  <p className="flex items-center gap-2 font-bold text-success"><Check className="size-4" />Pro är aktivt</p>
+                  <p>{company.admin
+                    ? <>Företagslicens för <b>{company.name}</b> · {company.seats} tekniker. Du behöver inte köpa Pro separat.</>
+                    : <>Ingår via <b>{company.name}</b>. Du behöver inte köpa Pro själv.</>}</p>
+                </div>
               ) : checkout ? (
                 <div className="mt-3 overflow-hidden rounded-lg bg-card">
                   <EmbeddedCheckoutProvider stripe={getStripe()} options={{ fetchClientSecret }}>
