@@ -1,3 +1,4 @@
+import { SALES_OPEN } from "@/lib/subscription";
 import { useCallback, useEffect, useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { EmbeddedCheckout, EmbeddedCheckoutProvider } from "@stripe/react-stripe-js";
@@ -72,6 +73,7 @@ export function CompanyBuy() {
       </div>
     </div>
   );
+  if (!SALES_OPEN) return <p className="rounded-lg border border-accent/40 bg-card p-3 text-sm font-semibold">Köp öppnar snart – under betan är Pro gratis att testa.</p>;
   if (!paymentsConfigured()) return <p className="text-sm font-semibold text-destructive">Betalning är inte öppnad ännu.</p>;
 
   if (order) return (

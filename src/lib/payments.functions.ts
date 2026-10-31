@@ -1,3 +1,4 @@
+import { SALES_OPEN } from "@/lib/subscription";
 import { createServerFn } from "@tanstack/react-start";
 import type Stripe from "stripe";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
@@ -51,6 +52,7 @@ export const createProCheckout = createServerFn({ method: "POST" })
         ? await context.supabase.from("company_members").select("company_id").eq("email", myEmail).limit(1).maybeSingle()
         : { data: null };
       if (ownCo || member) return { error: "Du har redan Pro via företagslicens." };
+      if (!SALES_OPEN) return { error: "Köp öppnar snart." };
       const stripe = createStripeClient(data.environment);
       const prices = await stripe.prices.list({ lookup_keys: [PRO_PRICE] });
       if (!prices.data.length) return { error: "Priset hittades inte" };
