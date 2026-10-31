@@ -8,12 +8,12 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 
 const FIELDS = [
-  ["company_name", "Företagsnamn", "Skåne Lås AB", "organization"],
-  ["org_number", "Org.nummer (valfritt)", "556677-8899", "off"],
-  ["contact_name", "Kontaktperson", "För- och efternamn", "name"],
-  ["phone", "Telefon", "070-123 45 67", "tel"],
-  ["email", "E-post (blir admin-konto)", "vd@foretag.se", "email"],
-  ["seats", "Antal tekniker", "10", "off"],
+  ["company_name", "Företagsnamn", "", "organization"],
+  ["org_number", "Org.nummer (valfritt)", "556123-4567", "off"],
+  ["contact_name", "Kontaktperson", "", "name"],
+  ["phone", "Telefon", "", "tel"],
+  ["email", "E-post (blir admin-konto)", "", "email"],
+  ["seats", "Antal tekniker", "t.ex. 5", "off"],
 ] as const;
 
 export function CompanyApplyForm() {
