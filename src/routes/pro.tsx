@@ -1,3 +1,4 @@
+import { PRO_MONTHLY_SEK } from "@/lib/subscription";
 import { useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Star } from "lucide-react";
@@ -45,7 +46,7 @@ function ProAccountBar({ userId }: { userId: string }) {
   return (
     <Link to="/konto" className="flex items-center gap-2 rounded-xl border border-accent/40 bg-accent/5 px-3 py-2 text-sm shadow-card hover:bg-accent/10">
       <Star className="size-4 shrink-0 text-accent" aria-hidden />
-      <span className="flex-1">{active ? <><b>Pro aktivt</b> – abonnemang och kvitton</> : <><b>Beta:</b> köp Pro för 149 kr/mån</>}</span>
+      <span className="flex-1">{active ? <><b>Pro aktivt</b> – abonnemang och kvitton</> : <><b>Beta:</b> köp Pro för {PRO_MONTHLY_SEK} kr/mån</>}</span>
       <span className="font-bold text-accent">Mitt konto →</span>
     </Link>
   );
