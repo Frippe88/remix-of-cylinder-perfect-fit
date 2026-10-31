@@ -17,27 +17,42 @@ export type Database = {
       companies: {
         Row: {
           admin_email: string
+          admin_user_id: string | null
           created_at: string
+          environment: string | null
           id: string
           name: string
+          org_number: string | null
           plan: string
           seats: number
+          status: string
+          stripe_subscription_id: string | null
         }
         Insert: {
           admin_email: string
+          admin_user_id?: string | null
           created_at?: string
+          environment?: string | null
           id?: string
           name: string
+          org_number?: string | null
           plan?: string
           seats?: number
+          status?: string
+          stripe_subscription_id?: string | null
         }
         Update: {
           admin_email?: string
+          admin_user_id?: string | null
           created_at?: string
+          environment?: string | null
           id?: string
           name?: string
+          org_number?: string | null
           plan?: string
           seats?: number
+          status?: string
+          stripe_subscription_id?: string | null
         }
         Relationships: []
       }
