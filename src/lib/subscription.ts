@@ -13,14 +13,38 @@ export const VAT_RATE = 0.25;
 
 /** Företagstrappa, kr per tekniker och månad exkl. moms. */
 export const COMPANY_TIERS = [
-  { min: 1, max: 9, price: 149 },
-  { min: 10, max: 19, price: 129 },
-  { min: 20, max: null, price: 99 },
+  { min: 1, max: 9, price: 149, priceId: "company_seat_1_9" },
+  { min: 10, max: 19, price: 129, priceId: "company_seat_10_19" },
+  { min: 20, max: null, price: 99, priceId: "company_seat_20_plus" },
 ] as const;
 
-export function companyPricePerSeat(seats: number): number {
+export const COMPANY_MAX_SEATS = 500;
+
+function companyTier(seats: number) {
   const n = Math.max(1, Math.floor(seats));
-  return COMPANY_TIERS.find((t) => n >= t.min && (t.max === null || n <= t.max))!.price;
+  return COMPANY_TIERS.find((t) => n >= t.min && (t.max === null || n <= t.max))!;
+}
+
+export function companyPricePerSeat(seats: number): number {
+  return companyTier(seats).price;
+}
+
+/** Stripe-pris (lookup key) som gäller för antal tekniker. */
+export function companyPriceId(seats: number): string {
+  return companyTier(seats).priceId;
+}
+
+export function isValidSeatCount(seats: unknown): seats is number {
+  return typeof seats === "number" && Number.isInteger(seats) && seats >= 1 && seats <= COMPANY_MAX_SEATS;
+}
+
+export function isCompanyPrice(priceId: string | null | undefined): boolean {
+  return !!priceId && priceId.startsWith("company_seat_");
+}
+
+/** Företagskontots status utifrån Stripe-abonnemangets status. */
+export function companyStatusFromStripe(status: string): "active" | "canceled" {
+  return ["active", "trialing", "past_due"].includes(status) ? "active" : "canceled";
 }
 
 export function companyMonthlyTotal(seats: number): number {
