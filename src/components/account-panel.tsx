@@ -5,9 +5,11 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { CompanySection } from "@/components/company-section";
+import { ProDialog } from "@/components/pro-dialog";
 
 export function AccountPanel({ email, onSignOut }: { email: string; onSignOut: () => void }) {
   const [changing, setChanging] = useState(false);
+  const [proOpen, setProOpen] = useState(false);
   const [pw, setPw] = useState("");
   const [cur, setCur] = useState("");
   const [busy, setBusy] = useState(false);
@@ -65,6 +67,10 @@ export function AccountPanel({ email, onSignOut }: { email: string; onSignOut: (
               <li key={t} className="flex items-center gap-1.5"><Check className="size-3.5 text-accent" aria-hidden />{t}</li>
             ))}
           </ul>
+          <button type="button" onClick={() => setProOpen(true)} className="mt-2.5 flex w-full items-center justify-center gap-1.5 rounded-lg border border-accent/40 bg-accent/10 px-3 py-2 text-sm font-bold text-accent hover:bg-accent/15">
+            Se allt som ingår i Pro<ChevronRight className="size-4" aria-hidden />
+          </button>
+          <ProDialog open={proOpen} onOpenChange={setProOpen} />
         </div>
         <CompanySection email={email} />
 
