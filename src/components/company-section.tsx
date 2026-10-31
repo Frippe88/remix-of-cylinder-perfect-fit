@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { Building2, ChevronRight, Trash2, UserPlus } from "lucide-react";
 import { updateCompanySeats } from "@/lib/payments.functions";
+import { sendCompanyInvite } from "@/lib/company-invite.functions";
 import { getStripeEnvironment } from "@/lib/stripe";
 import { companyMonthlyTotal, companyPricePerSeat } from "@/lib/subscription";
 import { supabase } from "@/integrations/supabase/client";
@@ -40,9 +41,10 @@ export function CompanySection({ email, fallback }: { email: string; fallback?: 
     if (!company) return;
     const p = memberEmailSchema.safeParse(newEmail);
     if (!p.success) return setMsg("Ogiltig e-post.");
-    const { error } = await supabase.from("company_members").insert({ company_id: company.id, email: p.data });
+    const { data: row, error } = await supabase.from("company_members").insert({ company_id: company.id, email: p.data }).select("id").single();
     if (error) return setMsg(/licens/i.test(error.message) ? "Alla licenser är använda." : /duplicate|unique/i.test(error.message) ? "Redan tillagd." : "Kunde inte lägga till.");
     setNewEmail(""); setMsg(null); void load();
+    void sendCompanyInvite({ data: { memberId: row.id } }).catch(() => {});
   }
   async function remove(id: string) {
     await supabase.from("company_members").delete().eq("id", id);
@@ -93,7 +95,7 @@ export function CompanySection({ email, fallback }: { email: string; fallback?: 
             <Button type="submit" className="h-10 bg-accent px-3 text-accent-foreground hover:bg-accent/90" aria-label="Lägg till tekniker"><UserPlus className="size-4" /></Button>
           </form>
           {msg && <p className="text-xs font-medium text-destructive">{msg}</p>}
-          <p className="text-[11px] text-muted-foreground">Teknikern loggar in med samma e-post för att få Pro. Ska du själv använda Pro, lägg till din egen e-post.</p>
+          <p className="text-[11px] text-muted-foreground">Teknikern får en inbjudan på mejlen och loggar in med samma e-post för att få Pro. Ska du själv använda Pro, lägg till din egen e-post.</p>
           {company.stripe_subscription_id && (seatEdit === null ? (
             <button type="button" onClick={() => setSeatEdit(String(company.seats))} className="text-xs font-semibold text-accent underline">Ändra antal licenser</button>
           ) : (
