@@ -11,6 +11,7 @@ import { getStripe, getStripeEnvironment, paymentsConfigured } from "@/lib/strip
 import { createBillingPortal, createProCheckout, listReceipts, type Receipt } from "@/lib/payments.functions";
 import { PRO_MONTHLY_SEK, isCompanyPrice, withVat } from "@/lib/subscription";
 import { CompanySection } from "@/components/company-section";
+import { supabase } from "@/integrations/supabase/client";
 
 export const Route = createFileRoute("/konto")({
   staticData: { sitemap: false },
@@ -39,6 +40,14 @@ function AccountPage() {
   const [checkout, setCheckout] = useState(false);
   const [receipts, setReceipts] = useState<Receipt[] | null>(null);
   const [err, setErr] = useState<string | null>(null);
+  const [company, setCompany] = useState<{ name: string; seats: number; admin: boolean } | null | undefined>(undefined);
+
+  // Pro via företagslicens (chef eller inbjuden tekniker) – då ska man inte köpa enskild Pro.
+  useEffect(() => {
+    if (!user) return;
+    void supabase.from("companies").select("name,seats,admin_user_id,admin_email").eq("status", "active").order("created_at", { ascending: false }).limit(1).maybeSingle()
+      .then(({ data }) => setCompany(data ? { name: data.name, seats: data.seats, admin: data.admin_user_id === user.id || data.admin_email.toLowerCase() === (user.email ?? "").toLowerCase() } : null));
+  }, [user]);
 
   // Efter köp: webhooken kan ta några sekunder – fråga om igen.
   useEffect(() => {
