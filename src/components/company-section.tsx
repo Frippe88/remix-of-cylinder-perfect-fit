@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { Link } from "@tanstack/react-router";
-import { Building2, ChevronRight, Copy, Trash2, UserPlus } from "lucide-react";
+import { Building2, ChevronRight, Copy, RefreshCw, Trash2, UserPlus } from "lucide-react";
 import { updateCompanySeats } from "@/lib/payments.functions";
 import { sendCompanyInvite } from "@/lib/company-invite.functions";
 import { getStripeEnvironment } from "@/lib/stripe";
@@ -46,6 +46,12 @@ export function CompanySection({ email, fallback }: { email: string; fallback?: 
     if (error) return setMsg(/licens/i.test(error.message) ? "Alla licenser är använda." : /duplicate|unique/i.test(error.message) ? "Redan tillagd." : "Kunde inte lägga till.");
     setNewEmail(""); setMsg(null); void load();
     void sendCompanyInvite({ data: { memberId: row.id } }).catch(() => {});
+  }
+  async function inviteToken(companyId: string): Promise<string | null> {
+    const { data } = await supabase.from("company_invites").select("token").eq("company_id", companyId).maybeSingle();
+    if (data) return data.token;
+    const { data: created } = await supabase.from("company_invites").insert({ company_id: companyId }).select("token").single();
+    return created?.token ?? null;
   }
   async function remove(id: string) {
     await supabase.from("company_members").delete().eq("id", id);
@@ -100,10 +106,18 @@ export function CompanySection({ email, fallback }: { email: string; fallback?: 
             <p className="text-xs font-bold">Bjud in alla på en gång</p>
             <p className="text-[11px] text-muted-foreground">Skicka länken i ett mejl till alla tekniker. De loggar in via länken och får Pro direkt, tills licenserna är fyllda.</p>
             <Button type="button" variant="outline" className="h-9 w-full font-semibold" onClick={async () => {
-              const url = `${window.location.origin}/inbjudan/${company.id}`;
+              const token = await inviteToken(company.id);
+              if (!token) return setMsg("Kunde inte skapa länken.");
+              const url = `${window.location.origin}/inbjudan/${token}`;
               try { await navigator.clipboard.writeText(url); } catch { window.prompt("Kopiera länken:", url); }
-              setCopied(true); setTimeout(() => setCopied(false), 2500); void load();
+              setCopied(true); setTimeout(() => setCopied(false), 2500);
             }}><Copy className="size-4" aria-hidden />{copied ? "Länken kopierad!" : "Kopiera inbjudningslänk"}</Button>
+            <button type="button" className="flex items-center gap-1 text-[11px] font-semibold text-muted-foreground underline" onClick={async () => {
+              if (!window.confirm("Den gamla länken slutar fungera. Tekniker som redan är med behåller Pro. Fortsätta?")) return;
+              const { error } = await supabase.from("company_invites").upsert({ company_id: company.id, token: crypto.randomUUID() });
+              setMsg(error ? "Kunde inte byta länk." : null);
+              if (!error) { setCopied(false); window.alert("Ny länk skapad. Kopiera och skicka den nya."); }
+            }}><RefreshCw className="size-3" aria-hidden />Byt länk (gamla slutar gälla)</button>
           </div>
           <p className="text-[11px] text-muted-foreground">Teknikern får en inbjudan på mejlen och loggar in med samma e-post för att få Pro. Ska du själv använda Pro, lägg till din egen e-post.</p>
           {company.stripe_subscription_id && (seatEdit === null ? (

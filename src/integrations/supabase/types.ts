@@ -95,6 +95,32 @@ export type Database = {
         }
         Relationships: []
       }
+      company_invites: {
+        Row: {
+          company_id: string
+          created_at: string
+          token: string
+        }
+        Insert: {
+          company_id: string
+          created_at?: string
+          token?: string
+        }
+        Update: {
+          company_id?: string
+          created_at?: string
+          token?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "company_invites_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: true
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       company_members: {
         Row: {
           company_id: string
