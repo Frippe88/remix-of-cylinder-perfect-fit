@@ -1,6 +1,8 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowLeft, Building2, CalendarCheck, Check, Receipt, Star, Users } from "lucide-react";
-import { CompanyApplyForm } from "@/components/company-apply-form";
+import { ArrowLeft, Building2, Check, Mail, Receipt, Star, Users, Zap } from "lucide-react";
+import { CompanyBuy } from "@/components/company-buy";
+import { CONTACT_EMAIL } from "@/components/contact-form";
+import { PaymentTestModeBanner } from "@/components/payment-test-mode-banner";
 import { COMPANY_TIERS, PRO_MONTHLY_SEK, companyMonthlyTotal, companyPricePerSeat } from "@/lib/subscription";
 
 export const Route = createFileRoute("/foretag")({
@@ -8,9 +10,9 @@ export const Route = createFileRoute("/foretag")({
   head: () => ({
     meta: [
       { title: "Företagslicens – Cylinderhjälpen Pro för hela företaget" },
-      { name: "description", content: "Ge alla era låssmeder Cylinderhjälpen Pro. Samlad faktura, egen adminpanel och 30 dagars provperiod." },
+      { name: "description", content: "Ge alla era låssmeder Cylinderhjälpen Pro. Välj antal tekniker, betala direkt och få mängdrabatt." },
       { property: "og:title", content: "Företagslicens – Cylinderhjälpen Pro för hela företaget" },
-      { property: "og:description", content: "Samlad faktura och adminpanel där chefen lägger till och tar bort tekniker." },
+      { property: "og:description", content: "Välj antal tekniker, betala direkt och lägg till era låssmeder i adminpanelen." },
       { property: "og:url", content: "https://cylinderhjalpen.se/foretag" },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
@@ -22,8 +24,8 @@ export const Route = createFileRoute("/foretag")({
 
 const PERKS = [
   { icon: Users, title: "Egen adminpanel", text: "Bjud in och ta bort låssmeder med ett klick. Börjar eller slutar någon styr du licensen direkt." },
-  { icon: Receipt, title: "En faktura för alla", text: "Alla licenser samlas på samma faktura till företaget. Ingen behöver lägga ut privat eller spara kvitton." },
-  { icon: CalendarCheck, title: "30 dagar gratis", text: "Alla licenser ni köper får 30 dagars gratis Pro innan betalperioden börjar. Alla låssmeder hinner testa skarpt ute på jobben först." },
+  { icon: Receipt, title: "Ett kvitto för alla", text: "Alla licenser på samma betalning och samma kvitto varje månad – som PDF eller utskrift." },
+  { icon: Zap, title: "Igång direkt", text: "Välj antal, betala och lägg till era låssmeder. Ingen ansökan, ingen väntan." },
 ];
 
 const PRO = [
@@ -38,12 +40,13 @@ const PRO = [
 function CompanyPage() {
   return (
     <div className="min-h-screen bg-background">
+      <PaymentTestModeBanner />
       <main className="mx-auto max-w-2xl space-y-6 px-4 py-6">
         <Link to="/pro" className="inline-flex items-center gap-1 text-sm font-semibold text-muted-foreground hover:text-foreground"><ArrowLeft className="size-4" />Tillbaka</Link>
         <header className="space-y-2">
           <span className="inline-flex items-center gap-1.5 rounded-full bg-accent/15 px-2.5 py-1 text-xs font-bold text-accent"><Building2 className="size-3.5" />Företagslicens · Beta</span>
           <h1 className="text-2xl font-extrabold sm:text-3xl">Cylinderhjälpen Pro för hela företaget</h1>
-          <p className="text-muted-foreground">Skicka in en ansökan så hör vi av oss och sätter upp ert företagskonto.</p>
+          <p className="text-muted-foreground">Välj hur många ni är, betala direkt och lägg sedan till era låssmeder.</p>
         </header>
         <ul className="grid gap-2 sm:grid-cols-3">
           {PERKS.map(({ icon: Icon, title, text }) => (
@@ -55,7 +58,7 @@ function CompanyPage() {
         </ul>
         <section className="rounded-xl border bg-card p-4 shadow-card sm:p-5">
           <h2 className="text-lg font-bold">Priser – billigare ju fler ni är</h2>
-          <p className="mt-1 text-sm text-muted-foreground">Pris per tekniker och månad, exkl. moms. Samlad faktura (PDF) med 30 dagars betalning.</p>
+          <p className="mt-1 text-sm text-muted-foreground">Pris per tekniker och månad, exkl. moms. Priset gäller alla licenser – är ni 12 betalar alla 129 kr.</p>
           <ul className="mt-3 grid gap-2 sm:grid-cols-3">
             {COMPANY_TIERS.map((t) => (
               <li key={t.min} className="rounded-lg border border-accent/40 bg-accent/5 p-3 text-center">
@@ -76,8 +79,12 @@ function CompanyPage() {
           </ul>
         </section>
         <section className="rounded-xl border bg-card p-4 shadow-card sm:p-5">
-          <h2 className="mb-3 text-lg font-bold">Ansök om företagskonto</h2>
-          <CompanyApplyForm />
+          <h2 className="mb-3 text-lg font-bold">Köp företagslicens</h2>
+          <CompanyBuy />
+        </section>
+        <section className="flex items-start gap-3 rounded-xl border bg-card p-4 text-sm">
+          <Mail className="mt-0.5 size-5 shrink-0 text-accent" aria-hidden />
+          <p>Vill ni diskutera pris, samarbete eller något annat? Mejla oss på <a href={`mailto:${CONTACT_EMAIL}`} className="font-semibold text-accent underline">{CONTACT_EMAIL}</a>.</p>
         </section>
       </main>
     </div>
