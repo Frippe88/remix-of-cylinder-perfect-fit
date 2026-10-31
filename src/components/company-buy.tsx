@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { EmbeddedCheckout, EmbeddedCheckoutProvider } from "@stripe/react-stripe-js";
-import { ArrowLeft, CheckCircle2, CreditCard, Minus, Plus } from "lucide-react";
+import { ArrowLeft, Check, CheckCircle2, CreditCard, Minus, Plus } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/use-auth";
 import { companyBuySchema, type CompanyBuyInput } from "@/lib/company";
@@ -109,9 +109,10 @@ export function CompanyBuy() {
         {errors["seats"] && <p className="text-xs font-medium text-destructive">{errors["seats"]}</p>}
       </div>
       <div className="rounded-lg border border-accent/40 bg-accent/5 p-3 text-sm">
-        <p>{seatsNum} tekniker × {companyPricePerSeat(seatsNum)} kr</p>
-        <p className="text-2xl font-extrabold">{kr(total)}<span className="text-base font-semibold text-muted-foreground">/mån exkl. moms</span></p>
-        <p className="text-xs text-muted-foreground">{kr(withVat(total))} inkl. 25 % moms · ingen bindningstid</p>
+        <p>{seatsNum} tekniker × {companyPricePerSeat(seatsNum)} kr per månad</p>
+        <p className="text-2xl font-extrabold">{kr(total)}<span className="text-base font-semibold text-muted-foreground"> per månad exkl. moms</span></p>
+        <p className="text-xs text-muted-foreground">{kr(withVat(total))} per månad inkl. 25 % moms</p>
+        <p className="mt-2 flex items-start gap-1.5 text-xs font-semibold"><Check className="mt-0.5 size-3.5 shrink-0 text-accent" aria-hidden />Månadsabonnemang – dras automatiskt varje månad. Ingen bindningstid, säg upp när du vill.</p>
       </div>
       <Button type="submit" className="min-h-12 w-full bg-accent text-base font-bold text-accent-foreground hover:bg-accent/85">
         <CreditCard className="size-5" />Gå till betalning

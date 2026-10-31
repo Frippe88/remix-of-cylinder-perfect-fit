@@ -49,7 +49,7 @@ export function ProDialog({ open, onOpenChange }: { open: boolean; onOpenChange:
           </ul>
         </div>
         <div className="rounded-lg border border-accent/30 bg-accent/5 p-3 text-sm">
-          <p><b>{PRO_MONTHLY_SEK} kr/mån</b> exkl. moms · ingen bindningstid · kvitto på mejl.</p>
+          <p><b>{PRO_MONTHLY_SEK} kr per månad</b> exkl. moms · månadsabonnemang som förnyas automatiskt · ingen bindningstid, säg upp när du vill.</p>
           <p className="mt-1 text-muted-foreground">Flera tekniker? <Link to="/foretag" className="font-semibold text-accent underline" onClick={() => onOpenChange(false)}>Företagslicens från 99 kr/tekniker</Link></p>
         </div>
         <Button asChild className="min-h-11 bg-accent font-bold text-accent-foreground hover:bg-accent/85">
