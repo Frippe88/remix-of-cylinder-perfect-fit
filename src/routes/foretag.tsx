@@ -21,7 +21,7 @@ export const Route = createFileRoute("/foretag")({
 
 const PERKS = [
   { icon: Users, title: "Egen adminpanel", text: "Bjud in och ta bort låssmeder med ett klick. Börjar eller slutar någon styr du licensen direkt." },
-  { icon: Receipt, title: "En faktura för alla", text: "Alla licenser samlas på samma faktura till företaget. Ingen behöver lägga ut privat eller spara kvitton, och ekonomin har allt på ett ställe." },
+  { icon: Receipt, title: "En faktura för alla", text: "Alla licenser samlas på samma faktura till företaget. Ingen behöver lägga ut privat eller spara kvitton." },
   { icon: CalendarCheck, title: "30 dagar gratis", text: "Hela teamet kör skarpt i 30 dagar utan bindningstid eller förskott." },
 ];
 
