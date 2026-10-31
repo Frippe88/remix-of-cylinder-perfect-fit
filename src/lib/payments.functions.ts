@@ -130,7 +130,7 @@ export const listReceipts = createServerFn({ method: "POST" })
     }
   });
 
-type CompanyCheckoutInput = { environment: StripeEnv; returnUrl: string; company_name: string; org_number?: string; seats: number };
+type CompanyCheckoutInput = { environment: StripeEnv; returnUrl: string; company_name: string; org_number?: string | undefined; seats: number };
 
 export const createCompanyCheckout = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
