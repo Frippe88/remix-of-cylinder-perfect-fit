@@ -7,7 +7,7 @@ import { useAuth } from "@/hooks/use-auth";
 import { companyBuySchema, type CompanyBuyInput } from "@/lib/company";
 import { createCompanyCheckout } from "@/lib/payments.functions";
 import { getStripe, getStripeEnvironment, paymentsConfigured } from "@/lib/stripe";
-import { COMPANY_MAX_SEATS, companyMonthlyTotal, companyPricePerSeat, companyYearlyTotal, withVat, type BillingPeriod } from "@/lib/subscription";
+import { COMPANY_MAX_SEATS, companyMonthlyTotal, companyPricePerSeat, companyYearlyTotal, type BillingPeriod } from "@/lib/subscription";
 import { ProLoginBar } from "@/components/pro-login-bar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";

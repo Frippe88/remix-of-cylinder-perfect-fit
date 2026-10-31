@@ -9,7 +9,7 @@ import { useAuth } from "@/hooks/use-auth";
 import { useSubscription } from "@/hooks/use-subscription";
 import { getStripe, getStripeEnvironment, paymentsConfigured } from "@/lib/stripe";
 import { createBillingPortal, createProCheckout, listReceipts, type Receipt } from "@/lib/payments.functions";
-import { PRO_MONTHLY_SEK, isCompanyPrice, withVat } from "@/lib/subscription";
+import { PRO_MONTHLY_SEK, isCompanyPrice } from "@/lib/subscription";
 import { CompanySection } from "@/components/company-section";
 import { supabase } from "@/integrations/supabase/client";
 
