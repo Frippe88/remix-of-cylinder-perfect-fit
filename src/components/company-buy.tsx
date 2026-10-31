@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { EmbeddedCheckout, EmbeddedCheckoutProvider } from "@stripe/react-stripe-js";
-import { ArrowLeft, CheckCircle2, CreditCard, Minus, Plus } from "lucide-react";
+import { ArrowLeft, Check, CheckCircle2, CreditCard, Minus, Plus } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/use-auth";
 import { companyBuySchema, type CompanyBuyInput } from "@/lib/company";
