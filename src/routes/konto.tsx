@@ -11,6 +11,7 @@ import { getStripe, getStripeEnvironment, paymentsConfigured } from "@/lib/strip
 import { createBillingPortal, createProCheckout, listReceipts, type Receipt } from "@/lib/payments.functions";
 import { PRO_MONTHLY_SEK, isCompanyPrice, withVat } from "@/lib/subscription";
 import { CompanySection } from "@/components/company-section";
+import { supabase } from "@/integrations/supabase/client";
 
 export const Route = createFileRoute("/konto")({
   staticData: { sitemap: false },
@@ -39,6 +40,23 @@ function AccountPage() {
   const [checkout, setCheckout] = useState(false);
   const [receipts, setReceipts] = useState<Receipt[] | null>(null);
   const [err, setErr] = useState<string | null>(null);
+  const [company, setCompany] = useState<{ name: string; seats: number; admin: boolean } | null | undefined>(undefined);
+
+  // Pro via företagslicens (chef eller inbjuden tekniker) – då ska man inte köpa enskild Pro.
+  useEffect(() => {
+    if (!user) return;
+    const email = (user.email ?? "").toLowerCase();
+    void (async () => {
+      const { data: own } = await supabase.from("companies").select("name,seats").eq("status", "active")
+        .or(`admin_user_id.eq.${user.id},admin_email.eq.${email}`).limit(1).maybeSingle();
+      if (own) return setCompany({ ...own, admin: true });
+      const { data: m } = await supabase.from("company_members").select("company_id").eq("email", email).limit(5);
+      const ids = (m ?? []).map((r) => r.company_id);
+      if (!ids.length) return setCompany(null);
+      const { data: c } = await supabase.from("companies").select("name,seats").eq("status", "active").in("id", ids).limit(1).maybeSingle();
+      setCompany(c ? { ...c, admin: false } : null);
+    })();
+  }, [user]);
 
   // Efter köp: webhooken kan ta några sekunder – fråga om igen.
   useEffect(() => {
@@ -102,6 +120,13 @@ function AccountPage() {
                   </p>
                   {sub.status === "past_due" && <p className="font-semibold text-destructive">Senaste betalningen gick inte igenom – uppdatera kortet.</p>}
                   <Button variant="outline" className="min-h-11 font-semibold" onClick={openPortal}><CreditCard className="size-4" />Hantera abonnemang och kort<ExternalLink className="size-3.5" /></Button>
+                </div>
+              ) : company === undefined ? null : company ? (
+                <div className="mt-2 space-y-2 text-sm">
+                  <p className="flex items-center gap-2 font-bold text-success"><Check className="size-4" />Pro är aktivt</p>
+                  <p>{company.admin
+                    ? <>Företagslicens för <b>{company.name}</b> · {company.seats} tekniker. Du behöver inte köpa Pro separat.</>
+                    : <>Ingår via <b>{company.name}</b>. Du behöver inte köpa Pro själv.</>}</p>
                 </div>
               ) : checkout ? (
                 <div className="mt-3 overflow-hidden rounded-lg bg-card">
