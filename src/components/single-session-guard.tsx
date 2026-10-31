@@ -7,7 +7,8 @@ const CLAIMED_KEY = "claimed-session-id";
 
 function sessionIdFromToken(token: string): string | null {
   try {
-    const payload = JSON.parse(atob(token.split(".")[1].replace(/-/g, "+").replace(/_/g, "/")));
+    const part = token.split(".")[1] ?? "";
+    const payload = JSON.parse(atob(part.replace(/-/g, "+").replace(/_/g, "/")));
     return typeof payload.session_id === "string" ? payload.session_id : null;
   } catch {
     return null;
