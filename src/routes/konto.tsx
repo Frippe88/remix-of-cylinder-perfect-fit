@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { EmbeddedCheckout, EmbeddedCheckoutProvider } from "@stripe/react-stripe-js";
-import { ArrowLeft, Building2, Check, CreditCard, Download, ExternalLink, Printer, Receipt as ReceiptIcon, Star } from "lucide-react";
+import { ArrowLeft, Building2, Check, CreditCard, ExternalLink, Receipt as ReceiptIcon, Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ProLoginBar } from "@/components/pro-login-bar";
 import { PaymentTestModeBanner } from "@/components/payment-test-mode-banner";
