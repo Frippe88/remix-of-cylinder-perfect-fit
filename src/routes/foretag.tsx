@@ -6,9 +6,9 @@ export const Route = createFileRoute("/foretag")({
   staticData: { sitemap: true },
   head: () => ({
     meta: [
-      { title: "Företagslicens – Cylinderhjälpen Pro för hela teamet" },
-      { name: "description", content: "Ge alla era låssmeder Cylinderhjälpen Pro. Samlad faktura, admin för teamet och 30 dagars provperiod." },
-      { property: "og:title", content: "Företagslicens – Cylinderhjälpen Pro för hela teamet" },
+      { title: "Företagslicens – Cylinderhjälpen Pro för hela företaget" },
+      { name: "description", content: "Ge alla era låssmeder Cylinderhjälpen Pro. Samlad faktura, egen adminpanel och 30 dagars provperiod." },
+      { property: "og:title", content: "Företagslicens – Cylinderhjälpen Pro för hela företaget" },
       { property: "og:description", content: "Samlad faktura och adminpanel där chefen lägger till och tar bort tekniker." },
       { property: "og:url", content: "https://cylinderhjalpen.se/foretag" },
       { property: "og:type", content: "website" },
@@ -22,7 +22,7 @@ export const Route = createFileRoute("/foretag")({
 const PERKS = [
   { icon: Users, title: "Egen adminpanel", text: "Bjud in och ta bort låssmeder med ett klick. Börjar eller slutar någon styr du licensen direkt." },
   { icon: Receipt, title: "En faktura för alla", text: "Alla licenser samlas på samma faktura till företaget. Ingen behöver lägga ut privat eller spara kvitton." },
-  { icon: CalendarCheck, title: "30 dagar gratis", text: "Alla licenser ni köper får 30 dagars gratis Pro innan betalperioden börjar. Hela teamet hinner testa skarpt ute på jobben först." },
+  { icon: CalendarCheck, title: "30 dagar gratis", text: "Alla licenser ni köper får 30 dagars gratis Pro innan betalperioden börjar. Alla låssmeder hinner testa skarpt ute på jobben först." },
 ];
 
 const PRO = [
@@ -41,7 +41,7 @@ function CompanyPage() {
         <Link to="/pro" className="inline-flex items-center gap-1 text-sm font-semibold text-muted-foreground hover:text-foreground"><ArrowLeft className="size-4" />Tillbaka</Link>
         <header className="space-y-2">
           <span className="inline-flex items-center gap-1.5 rounded-full bg-accent/15 px-2.5 py-1 text-xs font-bold text-accent"><Building2 className="size-3.5" />Företagslicens · Beta</span>
-          <h1 className="text-2xl font-extrabold sm:text-3xl">Cylinderhjälpen Pro för hela teamet</h1>
+          <h1 className="text-2xl font-extrabold sm:text-3xl">Cylinderhjälpen Pro för hela företaget</h1>
           <p className="text-muted-foreground">Skicka in en ansökan så hör vi av oss och sätter upp ert företagskonto.</p>
         </header>
         <ul className="grid gap-2 sm:grid-cols-3">

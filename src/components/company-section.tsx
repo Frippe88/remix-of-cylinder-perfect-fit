@@ -47,7 +47,7 @@ export function CompanySection({ email }: { email: string }) {
   if (!company) return (
     <Link to="/foretag" className="flex items-center gap-2.5 rounded-lg border bg-card p-3 hover:bg-muted">
       <Building2 className="size-4 shrink-0 text-accent" aria-hidden />
-      <span className="flex-1"><span className="block text-sm font-bold">Företagslicens för team</span><span className="block text-xs text-muted-foreground">Samlad faktura för alla tekniker</span></span>
+      <span className="flex-1"><span className="block text-sm font-bold">Företagslicens för firman</span><span className="block text-xs text-muted-foreground">Samlad faktura för alla tekniker</span></span>
       <ChevronRight className="size-4 text-muted-foreground" aria-hidden />
     </Link>
   );
@@ -62,7 +62,7 @@ export function CompanySection({ email }: { email: string }) {
       {!isAdmin && <p className="mt-1 text-xs text-muted-foreground">Du tillhör {company.name} – Pro ingår via företaget.</p>}
       {isAdmin && (
         <div className="mt-2 space-y-2">
-          <p className="text-xs font-semibold text-muted-foreground">Mitt team · {members.length} av {company.seats} licenser</p>
+          <p className="text-xs font-semibold text-muted-foreground">Mina låssmeder · {members.length} av {company.seats} licenser</p>
           <ul className="space-y-1">
             {members.map((m) => (
               <li key={m.id} className="flex items-center gap-2 rounded-md bg-muted px-2 py-1.5 text-sm">
