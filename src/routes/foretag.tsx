@@ -84,7 +84,7 @@ function CompanyPage() {
         </section>
         <section className="flex items-start gap-3 rounded-xl border bg-card p-4 text-sm">
           <Mail className="mt-0.5 size-5 shrink-0 text-accent" aria-hidden />
-          <p>Vill ni diskutera pris, samarbete eller något annat? Mejla oss på <a href={`mailto:${CONTACT_EMAIL}`} className="font-semibold text-accent underline">{CONTACT_EMAIL}</a>.</p>
+          <p>Vill ni hellre ha faktura (30 dagar) eller har andra frågor? Mejla oss på <a href={`mailto:${CONTACT_EMAIL}`} className="font-semibold text-accent underline">{CONTACT_EMAIL}</a> så ordnar vi det.</p>
         </section>
       </main>
     </div>

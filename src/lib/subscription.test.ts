@@ -2,9 +2,13 @@ import { describe, expect, it } from "vitest";
 import { companyMonthlyTotal, companyPriceId, companyPricePerSeat, companyStatusFromStripe, isSubscriptionActive, isValidSeatCount, PRO_MONTHLY_SEK, withVat } from "./subscription";
 
 describe("prissättning", () => {
-  it("enskild Pro kostar 149 kr/mån", () => expect(PRO_MONTHLY_SEK).toBe(149));
-  it("1–9 tekniker: 149 kr", () => {
-    expect(companyPricePerSeat(1)).toBe(149);
+  it("enskild Pro kostar 179 kr/mån", () => expect(PRO_MONTHLY_SEK).toBe(179));
+  it("1–3 tekniker: 179 kr", () => {
+    expect(companyPricePerSeat(1)).toBe(179);
+    expect(companyPricePerSeat(3)).toBe(179);
+  });
+  it("4–9 tekniker: 149 kr", () => {
+    expect(companyPricePerSeat(4)).toBe(149);
     expect(companyPricePerSeat(9)).toBe(149);
   });
   it("10–19 tekniker: 129 kr", () => {
@@ -26,9 +30,13 @@ describe("abonnemangsstatus", () => {
 });
 
 describe("företagsköp", () => {
-  it("1–9 tekniker använder 149-priset", () => {
-    expect(companyPriceId(1)).toBe("company_seat_1_9");
-    expect(companyPriceId(9)).toBe("company_seat_1_9");
+  it("1–3 tekniker använder 179-priset", () => {
+    expect(companyPriceId(1)).toBe("company_seat_1_3");
+    expect(companyPriceId(3)).toBe("company_seat_1_3");
+  });
+  it("4–9 tekniker använder 149-priset", () => {
+    expect(companyPriceId(4)).toBe("company_seat_4_9");
+    expect(companyPriceId(9)).toBe("company_seat_4_9");
   });
   it("10–19 tekniker använder 129-priset", () => {
     expect(companyPriceId(10)).toBe("company_seat_10_19");

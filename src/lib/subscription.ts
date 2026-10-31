@@ -8,12 +8,13 @@ export type SubscriptionRow = {
 };
 
 /** Enskild Pro-licens, kr/mån exkl. moms. */
-export const PRO_MONTHLY_SEK = 149;
+export const PRO_MONTHLY_SEK = 179;
 export const VAT_RATE = 0.25;
 
 /** Företagstrappa, kr per tekniker och månad exkl. moms. */
 export const COMPANY_TIERS = [
-  { min: 1, max: 9, price: 149, priceId: "company_seat_1_9" },
+  { min: 1, max: 3, price: 179, priceId: "company_seat_1_3" },
+  { min: 4, max: 9, price: 149, priceId: "company_seat_4_9" },
   { min: 10, max: 19, price: 129, priceId: "company_seat_10_19" },
   { min: 20, max: null, price: 99, priceId: "company_seat_20_plus" },
 ] as const;
