@@ -1,6 +1,10 @@
+import { SALES_OPEN } from "@/lib/subscription";
+
 const clientToken = import.meta.env["VITE_PAYMENTS_CLIENT_TOKEN"] as string | undefined;
 
 export function PaymentTestModeBanner() {
+  // Köp pausade under betan – visa ingen test-/betalremsa.
+  if (!SALES_OPEN) return null;
   if (!clientToken) {
     return <div className="w-full border-b border-destructive/40 bg-destructive/10 px-4 py-2 text-center text-sm text-destructive">Betalning är inte aktiverad på sajten ännu.</div>;
   }
