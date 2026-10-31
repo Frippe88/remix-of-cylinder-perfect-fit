@@ -30,9 +30,23 @@ export function companyPricePerSeat(seats: number): number {
   return companyTier(seats).price;
 }
 
-/** Stripe-pris (lookup key) som gäller för antal tekniker. */
-export function companyPriceId(seats: number): string {
-  return companyTier(seats).priceId;
+export type BillingPeriod = "month" | "year";
+/** Helår = 10 månaders pris (2 månader gratis). */
+export const YEARLY_MONTHS_PAID = 10;
+
+/** Stripe-pris (lookup key) som gäller för antal tekniker och period. */
+export function companyPriceId(seats: number, period: BillingPeriod = "month"): string {
+  const id = companyTier(seats).priceId;
+  return period === "year" ? `${id}_yearly` : id;
+}
+
+export function periodFromPriceId(priceId: string | null | undefined): BillingPeriod {
+  return priceId?.endsWith("_yearly") ? "year" : "month";
+}
+
+/** Årskostnad exkl. moms för företag på helår. */
+export function companyYearlyTotal(seats: number): number {
+  return companyMonthlyTotal(seats) * YEARLY_MONTHS_PAID;
 }
 
 export function isValidSeatCount(seats: unknown): seats is number {

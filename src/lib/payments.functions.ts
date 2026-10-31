@@ -3,7 +3,7 @@ import type Stripe from "stripe";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import { type StripeEnv, createStripeClient, getStripeErrorMessage } from "@/lib/stripe.server";
 import { companyBuySchema } from "@/lib/company";
-import { companyPriceId, isValidSeatCount } from "@/lib/subscription";
+import { companyPriceId, isValidSeatCount, periodFromPriceId, type BillingPeriod } from "@/lib/subscription";
 
 const PRO_PRICE = "pro_monthly";
 
@@ -137,14 +137,15 @@ export const listReceipts = createServerFn({ method: "POST" })
     }
   });
 
-type CompanyCheckoutInput = { environment: StripeEnv; returnUrl: string; company_name: string; org_number?: string | undefined; seats: number };
+type CompanyCheckoutInput = { environment: StripeEnv; returnUrl: string; company_name: string; org_number?: string | undefined; seats: number; period?: BillingPeriod };
 
 export const createCompanyCheckout = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((data: CompanyCheckoutInput) => {
     envValidator(data);
     const p = companyBuySchema.parse(data);
-    return { environment: data.environment, returnUrl: String(data.returnUrl ?? ""), ...p };
+    const period: BillingPeriod = data.period === "year" ? "year" : "month";
+    return { environment: data.environment, returnUrl: String(data.returnUrl ?? ""), ...p, period };
   })
   .handler(async ({ data, context }): Promise<{ clientSecret: string } | { error: string }> => {
     try {
@@ -155,7 +156,7 @@ export const createCompanyCheckout = createServerFn({ method: "POST" })
         .eq("admin_user_id", context.userId).eq("status", "active").limit(1).maybeSingle();
       if (existing) return { error: "Du har redan ett aktivt företagskonto. Ändra antal tekniker under Mitt konto." };
       const stripe = createStripeClient(data.environment);
-      const prices = await stripe.prices.list({ lookup_keys: [companyPriceId(data.seats)] });
+      const prices = await stripe.prices.list({ lookup_keys: [companyPriceId(data.seats, data.period)] });
       if (!prices.data.length) return { error: "Priset hittades inte" };
       const customerId = await resolveOrCreateCustomer(stripe, { email, userId: context.userId });
       const meta = {
@@ -198,7 +199,8 @@ export const updateCompanySeats = createServerFn({ method: "POST" })
       const sub = await stripe.subscriptions.retrieve(company.stripe_subscription_id);
       const item = sub.items.data[0];
       if (!item) return { error: "Abonnemanget saknar licenser" };
-      const prices = await stripe.prices.list({ lookup_keys: [companyPriceId(data.seats)] });
+      const period = periodFromPriceId(item.price.lookup_key);
+      const prices = await stripe.prices.list({ lookup_keys: [companyPriceId(data.seats, period)] });
       if (!prices.data.length) return { error: "Priset hittades inte" };
       await stripe.subscriptions.update(sub.id, {
         items: [{ id: item.id, price: prices.data[0]!.id, quantity: data.seats }],
