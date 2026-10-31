@@ -39,8 +39,8 @@ function InvitePage() {
   useEffect(() => {
     if (!user || res) return;
     join({ data: { companyId: id } })
-      .then((r) => setRes(r.ok ? { ok: true, text: `Klart! Du har nu Pro via ${r.companyName}.` } : { ok: false, text: REASONS[r.reason] ?? REASONS.error! }))
-      .catch(() => setRes({ ok: false, text: REASONS.error! }));
+      .then((r) => setRes(r.ok ? { ok: true, text: `Klart! Du har nu Pro via ${r.companyName}.` } : { ok: false, text: REASONS[r.reason] ?? REASONS["error"]! }))
+      .catch(() => setRes({ ok: false, text: REASONS["error"]! }));
   }, [user, id, join, res]);
 
   return (
