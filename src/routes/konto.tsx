@@ -137,7 +137,7 @@ function AccountPage() {
               ) : (
                 <div className="mt-2 space-y-3">
                   <p className="text-3xl font-extrabold">{PRO_MONTHLY_SEK} kr<span className="text-base font-semibold text-muted-foreground"> per månad exkl. moms</span></p>
-                  <p className="text-sm text-muted-foreground">{fmtKr(withVat(PRO_MONTHLY_SEK))} per månad inkl. 25 % moms. Kvitto skickas till din mejl efter varje betalning.</p>
+                  <p className="text-sm text-muted-foreground">Moms specificeras på kvittot, som skickas till din mejl efter varje betalning.</p>
                   <p className="flex items-start gap-1.5 text-sm font-semibold"><Check className="mt-0.5 size-4 shrink-0 text-accent" aria-hidden />Månadsabonnemang – dras automatiskt varje månad. Ingen bindningstid, säg upp när du vill.</p>
                   {paymentsConfigured() ? (
                     <Button className="min-h-12 w-full bg-accent text-base font-bold text-accent-foreground hover:bg-accent/85" onClick={() => setCheckout(true)}>

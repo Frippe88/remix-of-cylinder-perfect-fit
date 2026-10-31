@@ -126,7 +126,7 @@ export function CompanyBuy() {
       <div className="rounded-lg border border-accent/40 bg-accent/5 p-3 text-sm">
         <p>{seatsNum} tekniker × {companyPricePerSeat(seatsNum)} kr per månad{yearly && " × 10 månader"}</p>
         <p className="text-2xl font-extrabold">{kr(total)}<span className="text-base font-semibold text-muted-foreground"> {unit} exkl. moms</span></p>
-        <p className="text-xs text-muted-foreground">{kr(withVat(total))} {unit} inkl. 25 % moms</p>
+        <p className="text-xs text-muted-foreground">Moms specificeras på kvittot.</p>
         {yearly && <p className="text-xs font-semibold text-accent">Ni sparar {kr(companyMonthlyTotal(seatsNum) * 2)} jämfört med månad.</p>}
         <p className="mt-2 flex items-start gap-1.5 text-xs font-semibold"><Check className="mt-0.5 size-3.5 shrink-0 text-accent" aria-hidden />{yearly ? "Betalas för 12 månader i taget och förnyas automatiskt. Säg upp när du vill – gäller året ut." : "Månadsabonnemang – dras automatiskt varje månad. Ingen bindningstid, säg upp när du vill."}</p>
       </div>
