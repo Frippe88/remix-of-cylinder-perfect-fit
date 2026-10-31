@@ -151,6 +151,7 @@ export const createCompanyCheckout = createServerFn({ method: "POST" })
   })
   .handler(async ({ data, context }): Promise<{ clientSecret: string } | { error: string }> => {
     try {
+      if (!SALES_OPEN) return { error: "Köp öppnar snart." };
       const { data: u } = await context.supabase.auth.getUser();
       const email = u.user?.email?.toLowerCase();
       if (!email) return { error: "Kontot saknar e-post" };
