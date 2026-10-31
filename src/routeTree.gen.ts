@@ -18,6 +18,7 @@ import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as GuiderIndexRouteImport } from './routes/guider.index'
 import { Route as GuiderSlugRouteImport } from './routes/guider.$slug'
+import { Route as InbjudanIdRouteImport } from './routes/inbjudan.$id'
 import { Route as ApiPublicPaymentsWebhookRouteImport } from './routes/api/public/payments/webhook'
 import { Route as LovableEmailTransactionalPreviewRouteImport } from './routes/lovable/email/transactional/preview'
 
@@ -66,6 +67,11 @@ const GuiderSlugRoute = GuiderSlugRouteImport.update({
   path: '/guider/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
+const InbjudanIdRoute = InbjudanIdRouteImport.update({
+  id: '/inbjudan/$id',
+  path: '/inbjudan/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiPublicPaymentsWebhookRoute =
   ApiPublicPaymentsWebhookRouteImport.update({
     id: '/api/public/payments/webhook',
@@ -88,6 +94,7 @@ export interface FileRoutesByFullPath {
   '/reset-password': typeof ResetPasswordRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/guider/$slug': typeof GuiderSlugRoute
+  '/inbjudan/$id': typeof InbjudanIdRoute
   '/guider/': typeof GuiderIndexRoute
   '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
   '/lovable/email/transactional/preview': typeof LovableEmailTransactionalPreviewRoute
@@ -101,6 +108,7 @@ export interface FileRoutesByTo {
   '/reset-password': typeof ResetPasswordRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/guider/$slug': typeof GuiderSlugRoute
+  '/inbjudan/$id': typeof InbjudanIdRoute
   '/guider': typeof GuiderIndexRoute
   '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
   '/lovable/email/transactional/preview': typeof LovableEmailTransactionalPreviewRoute
@@ -115,6 +123,7 @@ export interface FileRoutesById {
   '/reset-password': typeof ResetPasswordRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/guider/$slug': typeof GuiderSlugRoute
+  '/inbjudan/$id': typeof InbjudanIdRoute
   '/guider/': typeof GuiderIndexRoute
   '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
   '/lovable/email/transactional/preview': typeof LovableEmailTransactionalPreviewRoute
@@ -130,6 +139,7 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/sitemap.xml'
     | '/guider/$slug'
+    | '/inbjudan/$id'
     | '/guider/'
     | '/api/public/payments/webhook'
     | '/lovable/email/transactional/preview'
@@ -143,6 +153,7 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/sitemap.xml'
     | '/guider/$slug'
+    | '/inbjudan/$id'
     | '/guider'
     | '/api/public/payments/webhook'
     | '/lovable/email/transactional/preview'
@@ -156,6 +167,7 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/sitemap.xml'
     | '/guider/$slug'
+    | '/inbjudan/$id'
     | '/guider/'
     | '/api/public/payments/webhook'
     | '/lovable/email/transactional/preview'
@@ -170,6 +182,7 @@ export interface RootRouteChildren {
   ResetPasswordRoute: typeof ResetPasswordRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   GuiderSlugRoute: typeof GuiderSlugRoute
+  InbjudanIdRoute: typeof InbjudanIdRoute
   GuiderIndexRoute: typeof GuiderIndexRoute
   ApiPublicPaymentsWebhookRoute: typeof ApiPublicPaymentsWebhookRoute
   LovableEmailTransactionalPreviewRoute: typeof LovableEmailTransactionalPreviewRoute
@@ -240,6 +253,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof GuiderSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/inbjudan/$id': {
+      id: '/inbjudan/$id'
+      path: '/inbjudan/$id'
+      fullPath: '/inbjudan/$id'
+      preLoaderRoute: typeof InbjudanIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/payments/webhook': {
       id: '/api/public/payments/webhook'
       path: '/api/public/payments/webhook'
@@ -266,6 +286,7 @@ const rootRouteChildren: RootRouteChildren = {
   ResetPasswordRoute: ResetPasswordRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   GuiderSlugRoute: GuiderSlugRoute,
+  InbjudanIdRoute: InbjudanIdRoute,
   GuiderIndexRoute: GuiderIndexRoute,
   ApiPublicPaymentsWebhookRoute: ApiPublicPaymentsWebhookRoute,
   LovableEmailTransactionalPreviewRoute: LovableEmailTransactionalPreviewRoute,
