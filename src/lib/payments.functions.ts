@@ -44,6 +44,13 @@ export const createProCheckout = createServerFn({ method: "POST" })
   .handler(async ({ data, context }): Promise<{ clientSecret: string } | { error: string }> => {
     try {
       const { data: u } = await context.supabase.auth.getUser();
+      const myEmail = (u.user?.email ?? "").toLowerCase();
+      const { data: ownCo } = await context.supabase.from("companies").select("id").eq("status", "active")
+        .or(`admin_user_id.eq.${context.userId},admin_email.eq.${myEmail}`).limit(1).maybeSingle();
+      const { data: member } = myEmail
+        ? await context.supabase.from("company_members").select("company_id").eq("email", myEmail).limit(1).maybeSingle()
+        : { data: null };
+      if (ownCo || member) return { error: "Du har redan Pro via företagslicens." };
       const stripe = createStripeClient(data.environment);
       const prices = await stripe.prices.list({ lookup_keys: [PRO_PRICE] });
       if (!prices.data.length) return { error: "Priset hittades inte" };
