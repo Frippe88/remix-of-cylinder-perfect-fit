@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { EmbeddedCheckout, EmbeddedCheckoutProvider } from "@stripe/react-stripe-js";
-import { ArrowLeft, Building2, Check, CreditCard, Download, ExternalLink, Printer, Receipt as ReceiptIcon, Star } from "lucide-react";
+import { ArrowLeft, Building2, Check, CreditCard, ExternalLink, Receipt as ReceiptIcon, Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ProLoginBar } from "@/components/pro-login-bar";
 import { PaymentTestModeBanner } from "@/components/payment-test-mode-banner";
@@ -92,10 +92,10 @@ function AccountPage() {
               <h2 className="flex items-center gap-2 text-lg font-bold"><Star className="size-5 text-accent" />Cylinderhjälpen Pro</h2>
               {subLoading ? null : active && sub ? (
                 <div className="mt-2 space-y-3 text-sm">
-                  <p className="flex items-center gap-2 font-bold text-success"><Check className="size-4" />Aktivt abonnemang</p>
+                  <p className="flex items-center gap-2 font-bold text-success"><Check className="size-4" />Pro är aktivt</p>
                   <p>
                     {sub.cancel_at_period_end || sub.status === "canceled"
-                      ? <>Avslutat – Pro gäller till <b>{fmtDate(sub.current_period_end)}</b>.</>
+                      ? <>Uppsagt – förnyas inte. Du har Pro kvar till och med <b>{fmtDate(sub.current_period_end)}</b>.</>
                       : isCompanyPrice(sub.price_id)
                         ? <>Företagslicens · förnyas <b>{fmtDate(sub.current_period_end)}</b></>
                         : <>Förnyas <b>{fmtDate(sub.current_period_end)}</b> · {PRO_MONTHLY_SEK} kr/mån exkl. moms</>}
@@ -146,8 +146,7 @@ function AccountPage() {
                           <span className="block font-semibold">{fmtDate(r.created)} · {fmtKr(r.amount)}</span>
                           <span className="block text-xs text-muted-foreground">{r.number ?? "Kvitto"} · {r.status === "paid" ? "Betald" : r.status === "open" ? "Obetald" : r.status}</span>
                         </span>
-                        {r.pdfUrl && <Button asChild size="sm" variant="outline"><a href={r.pdfUrl} target="_blank" rel="noopener noreferrer"><Download className="size-4" />PDF</a></Button>}
-                        {r.hostedUrl && <Button asChild size="sm" variant="outline"><a href={r.hostedUrl} target="_blank" rel="noopener noreferrer"><Printer className="size-4" />Visa/skriv ut</a></Button>}
+                        {r.hostedUrl && <Button asChild size="sm" variant="outline"><a href={r.hostedUrl} target="_blank" rel="noopener noreferrer"><ReceiptIcon className="size-4" />Visa kvitto</a></Button>}
                       </li>
                     ))}
                   </ul>
