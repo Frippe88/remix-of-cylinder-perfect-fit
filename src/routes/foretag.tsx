@@ -24,7 +24,7 @@ export const Route = createFileRoute("/foretag")({
 
 const PERKS = [
   { icon: Users, title: "Egen adminpanel", text: "Bjud in och ta bort låssmeder med ett klick. Börjar eller slutar någon styr du licensen direkt." },
-  { icon: Receipt, title: "Ett kvitto för alla", text: "Alla licenser på samma betalning och samma kvitto varje månad – som PDF eller utskrift." },
+  { icon: Receipt, title: "Ett kvitto för alla", text: "Alla licenser på samma betalning och samma kvitto vid varje betalning – som PDF eller utskrift." },
   { icon: Zap, title: "Igång direkt", text: "Välj antal, betala och lägg till era låssmeder. Ingen ansökan, ingen väntan." },
 ];
 
@@ -70,7 +70,7 @@ function CompanyPage() {
             ))}
           </ul>
           <p className="mt-3 text-sm">Exempel: 12 tekniker = 12 × {companyPricePerSeat(12)} kr = <b>{companyMonthlyTotal(12).toLocaleString("sv-SE")} kr per månad</b> exkl. moms.</p>
-          <p className="mt-1 text-sm font-semibold">Månadsabonnemang – dras automatiskt varje månad. Ingen bindningstid.</p>
+          <p className="mt-1 text-sm font-semibold">Välj månad (ingen bindningstid) eller helår – betala 10 månader, få 12.</p>
           <p className="mt-1 text-xs text-muted-foreground">Bara du själv? <Link to="/konto" className="font-semibold text-accent underline">Köp Pro direkt med kort</Link> – {PRO_MONTHLY_SEK} kr/mån.</p>
         </section>
         <section className="rounded-xl border border-accent/40 bg-accent/5 p-4 sm:p-5">
