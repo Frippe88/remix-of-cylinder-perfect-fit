@@ -79,3 +79,6 @@ export function isSubscriptionActive(sub: SubscriptionRow | null, now: Date = ne
   if (sub.status === "canceled") return !!end && end > now;
   return false;
 }
+
+/** Köp pausade under betan – sätt till true när försäljningen öppnar. */
+export const SALES_OPEN = false;
