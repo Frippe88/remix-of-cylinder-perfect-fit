@@ -45,8 +45,17 @@ function AccountPage() {
   // Pro via företagslicens (chef eller inbjuden tekniker) – då ska man inte köpa enskild Pro.
   useEffect(() => {
     if (!user) return;
-    void supabase.from("companies").select("name,seats,admin_user_id,admin_email").eq("status", "active").order("created_at", { ascending: false }).limit(1).maybeSingle()
-      .then(({ data }) => setCompany(data ? { name: data.name, seats: data.seats, admin: data.admin_user_id === user.id || data.admin_email.toLowerCase() === (user.email ?? "").toLowerCase() } : null));
+    const email = (user.email ?? "").toLowerCase();
+    void (async () => {
+      const { data: own } = await supabase.from("companies").select("name,seats").eq("status", "active")
+        .or(`admin_user_id.eq.${user.id},admin_email.eq.${email}`).limit(1).maybeSingle();
+      if (own) return setCompany({ ...own, admin: true });
+      const { data: m } = await supabase.from("company_members").select("company_id").eq("email", email).limit(5);
+      const ids = (m ?? []).map((r) => r.company_id);
+      if (!ids.length) return setCompany(null);
+      const { data: c } = await supabase.from("companies").select("name,seats").eq("status", "active").in("id", ids).limit(1).maybeSingle();
+      setCompany(c ? { ...c, admin: false } : null);
+    })();
   }, [user]);
 
   // Efter köp: webhooken kan ta några sekunder – fråga om igen.
