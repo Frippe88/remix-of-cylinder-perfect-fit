@@ -9,7 +9,8 @@ import { useAuth } from "@/hooks/use-auth";
 import { useSubscription } from "@/hooks/use-subscription";
 import { getStripe, getStripeEnvironment, paymentsConfigured } from "@/lib/stripe";
 import { createBillingPortal, createProCheckout, listReceipts, type Receipt } from "@/lib/payments.functions";
-import { PRO_MONTHLY_SEK, withVat } from "@/lib/subscription";
+import { PRO_MONTHLY_SEK, isCompanyPrice, withVat } from "@/lib/subscription";
+import { CompanySection } from "@/components/company-section";
 
 export const Route = createFileRoute("/konto")({
   staticData: { sitemap: false },
@@ -95,7 +96,9 @@ function AccountPage() {
                   <p>
                     {sub.cancel_at_period_end || sub.status === "canceled"
                       ? <>Avslutat – Pro gäller till <b>{fmtDate(sub.current_period_end)}</b>.</>
-                      : <>Förnyas <b>{fmtDate(sub.current_period_end)}</b> · {PRO_MONTHLY_SEK} kr/mån exkl. moms</>}
+                      : isCompanyPrice(sub.price_id)
+                        ? <>Företagslicens · förnyas <b>{fmtDate(sub.current_period_end)}</b></>
+                        : <>Förnyas <b>{fmtDate(sub.current_period_end)}</b> · {PRO_MONTHLY_SEK} kr/mån exkl. moms</>}
                   </p>
                   {sub.status === "past_due" && <p className="font-semibold text-destructive">Senaste betalningen gick inte igenom – uppdatera kortet.</p>}
                   <Button variant="outline" className="min-h-11 font-semibold" onClick={openPortal}><CreditCard className="size-4" />Hantera abonnemang och kort<ExternalLink className="size-3.5" /></Button>
@@ -122,10 +125,12 @@ function AccountPage() {
               )}
             </section>
 
-            <Link to="/foretag" className="flex items-center gap-3 rounded-xl border bg-card p-3 text-sm shadow-card hover:bg-muted/40">
-              <Building2 className="size-5 shrink-0 text-accent" />
-              <span className="flex-1"><b>Är ni flera på företaget?</b> Företagslicens med mängdrabatt och samlad faktura.</span>
-            </Link>
+            {user.email && <CompanySection email={user.email} fallback={
+              <Link to="/foretag" className="flex items-center gap-3 rounded-xl border bg-card p-3 text-sm shadow-card hover:bg-muted/40">
+                <Building2 className="size-5 shrink-0 text-accent" />
+                <span className="flex-1"><b>Är ni flera på företaget?</b> Företagslicens med mängdrabatt – välj antal och betala direkt.</span>
+              </Link>
+            } />}
 
             {sub && (
               <section className="rounded-xl border bg-card p-4 shadow-card sm:p-5">
