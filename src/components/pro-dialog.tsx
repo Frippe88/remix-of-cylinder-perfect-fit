@@ -2,6 +2,8 @@ import { Check, Clock, Download, FileText, Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import pdfAsset from "@/assets/exempel-projekt.pdf.asset.json";
+import { Link } from "@tanstack/react-router";
+import { PRO_MONTHLY_SEK } from "@/lib/subscription";
 
 const FEATURES = [
   "Mät och spara dörr för dörr – samla hela bygget i ett projekt",
@@ -46,8 +48,14 @@ export function ProDialog({ open, onOpenChange }: { open: boolean; onOpenChange:
             {COMING.map((f) => <li key={f} className="flex items-start gap-2"><span className="mt-1.5 size-1.5 shrink-0 rounded-full bg-accent" aria-hidden />{f}</li>)}
           </ul>
         </div>
-        <p className="rounded-lg border border-accent/30 bg-accent/5 p-3 text-sm">Senare blir Pro en prenumeration.</p>
-        <Button className="min-h-11 bg-accent font-bold text-accent-foreground hover:bg-accent/85" onClick={() => onOpenChange(false)}>Börja använda Pro gratis</Button>
+        <div className="rounded-lg border border-accent/30 bg-accent/5 p-3 text-sm">
+          <p><b>{PRO_MONTHLY_SEK} kr/mån</b> exkl. moms · ingen bindningstid · kvitto på mejl.</p>
+          <p className="mt-1 text-muted-foreground">Flera tekniker? <Link to="/foretag" className="font-semibold text-accent underline" onClick={() => onOpenChange(false)}>Företagslicens från 99 kr/tekniker</Link></p>
+        </div>
+        <Button asChild className="min-h-11 bg-accent font-bold text-accent-foreground hover:bg-accent/85">
+          <Link to="/konto" onClick={() => onOpenChange(false)}>Köp Pro – {PRO_MONTHLY_SEK} kr/mån</Link>
+        </Button>
+        <Button variant="outline" className="min-h-10 font-semibold" onClick={() => onOpenChange(false)}>Fortsätt testa gratis (beta)</Button>
       </DialogContent>
     </Dialog>
   );

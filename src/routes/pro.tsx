@@ -1,5 +1,7 @@
 import { useState } from "react";
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { Star } from "lucide-react";
+import { useSubscription } from "@/hooks/use-subscription";
 import { CalculatorPage } from "@/components/calculator-page";
 import { ProLoginBar } from "@/components/pro-login-bar";
 import { ProDialog } from "@/components/pro-dialog";
@@ -26,7 +28,7 @@ function ProRoute() {
   const { user, loading } = useAuth();
   const [proOpen, setProOpen] = useState(true);
   if (loading) return <div className="min-h-screen" />;
-  if (user) return <CalculatorPage variant="pro" />;
+  if (user) return <CalculatorPage variant="pro" loginBar={<ProAccountBar userId={user.id} />} />;
   // Utan inloggning: hela gratis-kalkylatorn först, inloggning som liten remsa
   // och infopopopen med vad Pro innehåller öppen direkt.
   return (
@@ -34,5 +36,17 @@ function ProRoute() {
       <CalculatorPage variant="free" loginBar={<ProLoginBar />} navActive="pro" locked />
       <ProDialog open={proOpen} onOpenChange={setProOpen} />
     </>
+  );
+}
+
+function ProAccountBar({ userId }: { userId: string }) {
+  const { active, loading } = useSubscription(userId);
+  if (loading) return null;
+  return (
+    <Link to="/konto" className="flex items-center gap-2 rounded-xl border border-accent/40 bg-accent/5 px-3 py-2 text-sm shadow-card hover:bg-accent/10">
+      <Star className="size-4 shrink-0 text-accent" aria-hidden />
+      <span className="flex-1">{active ? <><b>Pro aktivt</b> – abonnemang och kvitton</> : <><b>Beta:</b> köp Pro för 149 kr/mån</>}</span>
+      <span className="font-bold text-accent">Mitt konto →</span>
+    </Link>
   );
 }

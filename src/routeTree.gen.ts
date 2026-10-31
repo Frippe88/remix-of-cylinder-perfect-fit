@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as ForetagRouteImport } from './routes/foretag'
+import { Route as KontoRouteImport } from './routes/konto'
 import { Route as ProRouteImport } from './routes/pro'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
@@ -33,6 +34,11 @@ const AdminRoute = AdminRouteImport.update({
 const ForetagRoute = ForetagRouteImport.update({
   id: '/foretag',
   path: '/foretag',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const KontoRoute = KontoRouteImport.update({
+  id: '/konto',
+  path: '/konto',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ProRoute = ProRouteImport.update({
@@ -77,6 +83,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
   '/foretag': typeof ForetagRoute
+  '/konto': typeof KontoRoute
   '/pro': typeof ProRoute
   '/reset-password': typeof ResetPasswordRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
@@ -89,6 +96,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
   '/foretag': typeof ForetagRoute
+  '/konto': typeof KontoRoute
   '/pro': typeof ProRoute
   '/reset-password': typeof ResetPasswordRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
@@ -102,6 +110,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
   '/foretag': typeof ForetagRoute
+  '/konto': typeof KontoRoute
   '/pro': typeof ProRoute
   '/reset-password': typeof ResetPasswordRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
@@ -116,6 +125,7 @@ export interface FileRouteTypes {
     | '/'
     | '/admin'
     | '/foretag'
+    | '/konto'
     | '/pro'
     | '/reset-password'
     | '/sitemap.xml'
@@ -128,6 +138,7 @@ export interface FileRouteTypes {
     | '/'
     | '/admin'
     | '/foretag'
+    | '/konto'
     | '/pro'
     | '/reset-password'
     | '/sitemap.xml'
@@ -140,6 +151,7 @@ export interface FileRouteTypes {
     | '/'
     | '/admin'
     | '/foretag'
+    | '/konto'
     | '/pro'
     | '/reset-password'
     | '/sitemap.xml'
@@ -153,6 +165,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AdminRoute: typeof AdminRoute
   ForetagRoute: typeof ForetagRoute
+  KontoRoute: typeof KontoRoute
   ProRoute: typeof ProRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
@@ -183,6 +196,13 @@ declare module '@tanstack/react-router' {
       path: '/foretag'
       fullPath: '/foretag'
       preLoaderRoute: typeof ForetagRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/konto': {
+      id: '/konto'
+      path: '/konto'
+      fullPath: '/konto'
+      preLoaderRoute: typeof KontoRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/pro': {
@@ -241,6 +261,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AdminRoute: AdminRoute,
   ForetagRoute: ForetagRoute,
+  KontoRoute: KontoRoute,
   ProRoute: ProRoute,
   ResetPasswordRoute: ResetPasswordRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
