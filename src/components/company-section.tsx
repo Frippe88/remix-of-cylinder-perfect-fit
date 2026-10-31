@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { Link } from "@tanstack/react-router";
-import { Building2, ChevronRight, Trash2, UserPlus } from "lucide-react";
+import { Building2, ChevronRight, Copy, Trash2, UserPlus } from "lucide-react";
 import { updateCompanySeats } from "@/lib/payments.functions";
 import { sendCompanyInvite } from "@/lib/company-invite.functions";
 import { getStripeEnvironment } from "@/lib/stripe";
@@ -23,6 +23,7 @@ export function CompanySection({ email, fallback }: { email: string; fallback?: 
   const [seatEdit, setSeatEdit] = useState<string | null>(null);
   const [seatBusy, setSeatBusy] = useState(false);
   const [seatMsg, setSeatMsg] = useState<string | null>(null);
+  const [copied, setCopied] = useState(false);
   const isAdmin = company?.admin_email.toLowerCase() === me;
 
   const load = useCallback(async () => {
@@ -95,6 +96,15 @@ export function CompanySection({ email, fallback }: { email: string; fallback?: 
             <Button type="submit" className="h-10 bg-accent px-3 text-accent-foreground hover:bg-accent/90" aria-label="Lägg till tekniker"><UserPlus className="size-4" /></Button>
           </form>
           {msg && <p className="text-xs font-medium text-destructive">{msg}</p>}
+          <div className="space-y-1 rounded-md border border-accent/40 bg-accent/5 p-2">
+            <p className="text-xs font-bold">Bjud in alla på en gång</p>
+            <p className="text-[11px] text-muted-foreground">Skicka länken i ett mejl till alla tekniker. De loggar in via länken och får Pro direkt, tills licenserna är fyllda.</p>
+            <Button type="button" variant="outline" className="h-9 w-full font-semibold" onClick={async () => {
+              const url = `${window.location.origin}/inbjudan/${company.id}`;
+              try { await navigator.clipboard.writeText(url); } catch { window.prompt("Kopiera länken:", url); }
+              setCopied(true); setTimeout(() => setCopied(false), 2500); void load();
+            }}><Copy className="size-4" aria-hidden />{copied ? "Länken kopierad!" : "Kopiera inbjudningslänk"}</Button>
+          </div>
           <p className="text-[11px] text-muted-foreground">Teknikern får en inbjudan på mejlen och loggar in med samma e-post för att få Pro. Ska du själv använda Pro, lägg till din egen e-post.</p>
           {company.stripe_subscription_id && (seatEdit === null ? (
             <button type="button" onClick={() => setSeatEdit(String(company.seats))} className="text-xs font-semibold text-accent underline">Ändra antal licenser</button>
