@@ -25,3 +25,25 @@ export const sendCompanyInvite = createServerFn({ method: "POST" })
       return { sent: false };
     }
   });
+
+// Welcome email to the admin of a company the platform admin added manually.
+export const sendCompanyWelcome = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d: { companyId: string }) => z.object({ companyId: z.string().uuid() }).parse(d))
+  .handler(async ({ data, context }) => {
+    const { data: isAdmin } = await context.supabase.rpc("has_role", { _user_id: context.userId, _role: "admin" });
+    if (!isAdmin) return { sent: false };
+    const { data: company } = await context.supabase.from("companies").select("id,name,admin_email,seats").eq("id", data.companyId).maybeSingle();
+    if (!company) return { sent: false };
+    try {
+      const { sendTemplateEmail } = await import("@/lib/email-templates/send-email");
+      const r = await sendTemplateEmail("company-welcome", company.admin_email, {
+        templateData: { companyName: company.name, email: company.admin_email, seats: company.seats },
+        idempotencyKey: `company-welcome-${company.id}`,
+      });
+      return { sent: r.sent };
+    } catch (e) {
+      console.error("company welcome failed", e);
+      return { sent: false };
+    }
+  });

@@ -7,6 +7,7 @@ import { useAuth } from "@/hooks/use-auth";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { listProUsers, type ProUser } from "@/lib/admin.functions";
+import { sendCompanyWelcome } from "@/lib/company-invite.functions";
 import type { Database } from "@/integrations/supabase/types";
 
 type Company = Database["public"]["Tables"]["companies"]["Row"];
@@ -38,6 +39,7 @@ function AdminPage() {
   const [pros, setPros] = useState<ProUser[]>([]);
   const [form, setForm] = useState({ name: "", email: "", seats: "5" });
   const fetchPros = useServerFn(listProUsers);
+  const sendWelcome = useServerFn(sendCompanyWelcome);
 
   const load = useCallback(async () => {
     const [c, m] = await Promise.all([
@@ -62,9 +64,12 @@ function AdminPage() {
     const seats = Math.max(1, Math.min(500, parseInt(form.seats) || 1));
     const email = form.email.trim().toLowerCase();
     if (!form.name.trim() || !email.includes("@")) return alert("Fyll i namn och e-post.");
-    const { error } = await supabase.from("companies").insert({ name: form.name.trim(), admin_email: email, seats, plan: "manual" });
-    if (error) return alert("Kunde inte skapa företaget.");
+    const { data: created, error } = await supabase.from("companies").insert({ name: form.name.trim(), admin_email: email, seats, plan: "manual" }).select("id").single();
+    if (error || !created) return alert("Kunde inte skapa företaget.");
     setForm({ name: "", email: "", seats: "5" });
+    sendWelcome({ data: { companyId: created.id } })
+      .then((r) => alert(r.sent ? `Företaget skapat. Välkomstmejl skickat till ${email}.` : "Företaget skapat, men mejlet kunde inte skickas."))
+      .catch(() => alert("Företaget skapat, men mejlet kunde inte skickas."));
     void load();
   }
   async function removeCompany(c: Company) {
