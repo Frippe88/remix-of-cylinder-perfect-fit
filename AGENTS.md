@@ -17,3 +17,4 @@
 - Sitemap is router-derived: src/lib/sitemap.ts + src/routes/sitemap[.]xml.ts; every route declares staticData.sitemap, guide slugs come from GUIDES. Why: new pages/guides appear automatically.
 - Offline support: vite-plugin-pwa generateSW (sw.js in dist/client), registered only via src/lib/register-sw.ts which refuses dev/preview/iframe. Why: preview must never get a stale service worker.
 - Pro (/pro) requires sign-in via Lovable Cloud auth (email+password, Google); the free calculator at / stays account-free. Gate is inline in src/routes/pro.tsx via src/hooks/use-auth.ts. Why: keeps /pro SEO-public and the free tool frictionless.
+- Pro billing: Stripe subscriptions via src/lib/payments.functions.ts, webhook at src/routes/api/public/payments/webhook.ts writes public.subscriptions; pricing rules in src/lib/subscription.ts (tested). Why: one source for prices and access checks.

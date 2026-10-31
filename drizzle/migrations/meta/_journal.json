@@ -29,6 +29,13 @@
       "when": 1793384544704,
       "tag": "0003_grant_frippe_admin",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1793433339423,
+      "tag": "0004_create_subscriptions",
+      "breakpoints": true
     }
   ]
 }

@@ -1,6 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowLeft, Building2, CalendarCheck, Check, Receipt, Star, Users } from "lucide-react";
 import { CompanyApplyForm } from "@/components/company-apply-form";
+import { COMPANY_TIERS, PRO_MONTHLY_SEK, companyMonthlyTotal, companyPricePerSeat } from "@/lib/subscription";
 
 export const Route = createFileRoute("/foretag")({
   staticData: { sitemap: true },
@@ -52,6 +53,22 @@ function CompanyPage() {
             </li>
           ))}
         </ul>
+        <section className="rounded-xl border bg-card p-4 shadow-card sm:p-5">
+          <h2 className="text-lg font-bold">Priser – billigare ju fler ni är</h2>
+          <p className="mt-1 text-sm text-muted-foreground">Pris per tekniker och månad, exkl. moms. Samlad faktura (PDF) med 30 dagars betalning.</p>
+          <ul className="mt-3 grid gap-2 sm:grid-cols-3">
+            {COMPANY_TIERS.map((t) => (
+              <li key={t.min} className="rounded-lg border border-accent/40 bg-accent/5 p-3 text-center">
+                <p className="text-sm font-semibold text-muted-foreground">{t.max ? `${t.min}–${t.max}` : `${t.min}+`} tekniker</p>
+                <p className="text-2xl font-extrabold">{t.price} kr</p>
+                <p className="text-xs text-muted-foreground">per tekniker/mån</p>
+                {t.price < PRO_MONTHLY_SEK && <p className="mt-1 text-xs font-bold text-accent">Spara {Math.round((1 - t.price / PRO_MONTHLY_SEK) * 100)} %</p>}
+              </li>
+            ))}
+          </ul>
+          <p className="mt-3 text-sm">Exempel: 12 tekniker = 12 × {companyPricePerSeat(12)} kr = <b>{companyMonthlyTotal(12).toLocaleString("sv-SE")} kr/mån</b> exkl. moms.</p>
+          <p className="mt-1 text-xs text-muted-foreground">Bara du själv? <Link to="/konto" className="font-semibold text-accent underline">Köp Pro direkt med kort</Link> – {PRO_MONTHLY_SEK} kr/mån.</p>
+        </section>
         <section className="rounded-xl border border-accent/40 bg-accent/5 p-4 sm:p-5">
           <h2 className="flex items-center gap-2 text-lg font-bold"><Star className="size-5 text-accent" />Det här får era låssmeder</h2>
           <ul className="mt-3 space-y-2 text-sm font-medium">
