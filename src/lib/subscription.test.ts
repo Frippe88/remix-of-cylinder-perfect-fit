@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { companyMonthlyTotal, companyPriceId, companyPricePerSeat, companyStatusFromStripe, isSubscriptionActive, isValidSeatCount, PRO_MONTHLY_SEK, withVat } from "./subscription";
+import { companyMonthlyTotal, companyPriceId, companyYearlyTotal, periodFromPriceId, companyPricePerSeat, companyStatusFromStripe, isSubscriptionActive, isValidSeatCount, PRO_MONTHLY_SEK, withVat } from "./subscription";
 
 describe("prissättning", () => {
   it("enskild Pro kostar 179 kr/mån", () => expect(PRO_MONTHLY_SEK).toBe(179));
@@ -54,5 +54,14 @@ describe("företagsköp", () => {
     expect(companyStatusFromStripe("active")).toBe("active");
     expect(companyStatusFromStripe("canceled")).toBe("canceled");
     expect(companyStatusFromStripe("unpaid")).toBe("canceled");
+  });
+});
+
+describe("helår företag", () => {
+  it("helår väljer årspris", () => expect(companyPriceId(12, "year")).toBe("company_seat_10_19_yearly"));
+  it("helår = 10 månader", () => expect(companyYearlyTotal(12)).toBe(15480));
+  it("period läses från pris", () => {
+    expect(periodFromPriceId("company_seat_4_9_yearly")).toBe("year");
+    expect(periodFromPriceId("company_seat_4_9")).toBe("month");
   });
 });
