@@ -2,6 +2,8 @@ import { createServerFn } from "@tanstack/react-start";
 import type Stripe from "stripe";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import { type StripeEnv, createStripeClient, getStripeErrorMessage } from "@/lib/stripe.server";
+import { companyBuySchema } from "@/lib/company";
+import { companyPriceId, isValidSeatCount } from "@/lib/subscription";
 
 const PRO_PRICE = "pro_monthly";
 
@@ -123,6 +125,81 @@ export const listReceipts = createServerFn({ method: "POST" })
       }
       receipts.sort((a, b) => (b.created ?? "").localeCompare(a.created ?? ""));
       return { receipts };
+    } catch (error) {
+      return { error: getStripeErrorMessage(error) };
+    }
+  });
+
+type CompanyCheckoutInput = { environment: StripeEnv; returnUrl: string; company_name: string; org_number?: string; seats: number };
+
+export const createCompanyCheckout = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((data: CompanyCheckoutInput) => {
+    envValidator(data);
+    const p = companyBuySchema.parse(data);
+    return { environment: data.environment, returnUrl: String(data.returnUrl ?? ""), ...p };
+  })
+  .handler(async ({ data, context }): Promise<{ clientSecret: string } | { error: string }> => {
+    try {
+      const { data: u } = await context.supabase.auth.getUser();
+      const email = u.user?.email?.toLowerCase();
+      if (!email) return { error: "Kontot saknar e-post" };
+      const { data: existing } = await context.supabase.from("companies").select("id")
+        .eq("admin_user_id", context.userId).eq("status", "active").limit(1).maybeSingle();
+      if (existing) return { error: "Du har redan ett aktivt företagskonto. Ändra antal tekniker under Mitt konto." };
+      const stripe = createStripeClient(data.environment);
+      const prices = await stripe.prices.list({ lookup_keys: [companyPriceId(data.seats)] });
+      if (!prices.data.length) return { error: "Priset hittades inte" };
+      const customerId = await resolveOrCreateCustomer(stripe, { email, userId: context.userId });
+      const meta = {
+        userId: context.userId, kind: "company", companyName: data.company_name,
+        orgNumber: data.org_number || "", adminEmail: email,
+      };
+      const session = await stripe.checkout.sessions.create({
+        line_items: [{ price: prices.data[0]!.id, quantity: data.seats }],
+        mode: "subscription",
+        ui_mode: "embedded_page",
+        return_url: data.returnUrl,
+        customer: customerId,
+        locale: "sv",
+        managed_payments: { enabled: true },
+        metadata: { ...meta, managed_payments: "true" },
+        subscription_data: { metadata: meta },
+      } as Stripe.Checkout.SessionCreateParams);
+      return { clientSecret: session.client_secret ?? "" };
+    } catch (error) {
+      return { error: getStripeErrorMessage(error) };
+    }
+  });
+
+export const updateCompanySeats = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((data: { environment: StripeEnv; seats: number }) => {
+    envValidator(data);
+    if (!isValidSeatCount(data.seats)) throw new Error("Ogiltigt antal tekniker");
+    return data;
+  })
+  .handler(async ({ data, context }): Promise<{ ok: true } | { error: string }> => {
+    const { data: company } = await context.supabase.from("companies").select("id, stripe_subscription_id")
+      .eq("admin_user_id", context.userId).eq("environment", data.environment).eq("status", "active")
+      .limit(1).maybeSingle();
+    if (!company?.stripe_subscription_id) return { error: "Inget aktivt företagskonto hittades" };
+    const { count } = await context.supabase.from("company_members").select("id", { count: "exact", head: true }).eq("company_id", company.id);
+    if ((count ?? 0) > data.seats) return { error: `Ni har ${count} tekniker inlagda. Ta bort några först.` };
+    try {
+      const stripe = createStripeClient(data.environment);
+      const sub = await stripe.subscriptions.retrieve(company.stripe_subscription_id);
+      const item = sub.items.data[0];
+      if (!item) return { error: "Abonnemanget saknar licenser" };
+      const prices = await stripe.prices.list({ lookup_keys: [companyPriceId(data.seats)] });
+      if (!prices.data.length) return { error: "Priset hittades inte" };
+      await stripe.subscriptions.update(sub.id, {
+        items: [{ id: item.id, price: prices.data[0]!.id, quantity: data.seats }],
+        proration_behavior: "create_prorations",
+      });
+      const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+      await supabaseAdmin.from("companies").update({ seats: data.seats }).eq("id", company.id);
+      return { ok: true };
     } catch (error) {
       return { error: getStripeErrorMessage(error) };
     }

@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { type StripeEnv, verifyWebhook } from "@/lib/stripe.server";
+import { COMPANY_MAX_SEATS, companyStatusFromStripe } from "@/lib/subscription";
 
 async function admin() {
   const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
@@ -40,6 +41,29 @@ async function upsertSubscription(subscription: any, env: StripeEnv) {
     },
     { onConflict: "stripe_subscription_id" },
   );
+  if (subscription.metadata?.kind === "company") await upsertCompany(subscription, env);
+}
+
+async function upsertCompany(subscription: any, env: StripeEnv) {
+  const m = subscription.metadata ?? {};
+  const quantity = Number(subscription.items?.data?.[0]?.quantity ?? 1);
+  const seats = Math.min(COMPANY_MAX_SEATS, Math.max(1, Math.floor(quantity)));
+  const db = await admin();
+  const { error } = await db.from("companies").upsert(
+    {
+      stripe_subscription_id: subscription.id,
+      environment: env,
+      name: String(m.companyName || "Företag").slice(0, 120),
+      org_number: m.orgNumber ? String(m.orgNumber).slice(0, 20) : null,
+      admin_email: String(m.adminEmail || "").toLowerCase(),
+      admin_user_id: m.userId,
+      seats,
+      plan: "stripe",
+      status: companyStatusFromStripe(subscription.status),
+    },
+    { onConflict: "stripe_subscription_id" },
+  );
+  if (error) console.error("Company upsert failed:", error.message);
 }
 
 async function handleWebhook(req: Request, env: StripeEnv) {
@@ -54,6 +78,7 @@ async function handleWebhook(req: Request, env: StripeEnv) {
       const db = await admin();
       await db.from("subscriptions").update({ status: "canceled", updated_at: new Date().toISOString() })
         .eq("stripe_subscription_id", obj.id).eq("environment", env);
+      await db.from("companies").update({ status: "canceled" }).eq("stripe_subscription_id", obj.id);
       break;
     }
     default:
