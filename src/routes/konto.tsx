@@ -13,7 +13,7 @@ import { PRO_MONTHLY_SEK, withVat } from "@/lib/subscription";
 
 export const Route = createFileRoute("/konto")({
   staticData: { sitemap: false },
-  validateSearch: (s: Record<string, unknown>): { klart?: string } => ({ klart: typeof s.klart === "string" ? s.klart : undefined }),
+  validateSearch: (s: Record<string, unknown>): { klart?: string | undefined } => ({ klart: typeof s["klart"] === "string" ? s["klart"] : undefined }),
   head: () => ({
     meta: [
       { title: "Mitt konto – Cylinderhjälpen Pro" },

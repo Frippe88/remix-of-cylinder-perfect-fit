@@ -105,7 +105,7 @@ export async function verifyWebhook(req: Request, env: StripeEnv): Promise<{ typ
 
   const key = await crypto.subtle.importKey(
     "raw",
-    new TextEncoder().encode(secret),
+    new TextEncoder().encode(secret as string),
     { name: "HMAC", hash: "SHA-256" },
     false,
     ["sign"]
