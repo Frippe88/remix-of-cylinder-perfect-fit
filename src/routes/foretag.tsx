@@ -69,8 +69,7 @@ function CompanyPage() {
               </li>
             ))}
           </ul>
-          <p className="mt-3 text-sm">Exempel: 12 tekniker = 12 × {companyPricePerSeat(12)} kr = <b>{companyMonthlyTotal(12).toLocaleString("sv-SE")} kr per månad</b> exkl. moms.</p>
-          <p className="mt-1 text-sm font-semibold">Välj månad (ingen bindningstid) eller helår – betala 10 månader, få 12.</p>
+          <p className="mt-3 text-sm font-semibold">Ingen bindningstid. Välj mellan månad eller helår.</p>
           <p className="mt-1 text-xs text-muted-foreground">Bara du själv? <Link to="/konto" className="font-semibold text-accent underline">Köp Pro direkt med kort</Link> – {PRO_MONTHLY_SEK} kr/mån.</p>
         </section>
         <section className="rounded-xl border border-accent/40 bg-accent/5 p-4 sm:p-5">
