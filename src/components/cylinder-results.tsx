@@ -5,6 +5,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { ROUND_NO_UNDERCUT_RINGS,
   calculate, filterByMode, preferOvalScrewFit, iloqSingleScrewSet, ovalSingleScrewSet, describeDeviation, formatMm, formatSigned,
   TOLERANCE_MIN, TOLERANCE_MAX, type Combination, type ViewMode, type ScrewFn,
+  MAX_DEPTH_MM,
 } from "@/lib/cylinder";
 
 const MODES: { id: ViewMode; label: string }[] = [
