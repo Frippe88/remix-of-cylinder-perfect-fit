@@ -3,7 +3,7 @@ import { ArrowLeft, Building2, Check, Mail, Receipt, Star, Users, Zap } from "lu
 import { CompanyBuy } from "@/components/company-buy";
 import { CONTACT_EMAIL } from "@/components/contact-form";
 import { PaymentTestModeBanner } from "@/components/payment-test-mode-banner";
-import { COMPANY_TIERS, PRO_MONTHLY_SEK, companyMonthlyTotal, companyPricePerSeat } from "@/lib/subscription";
+import { COMPANY_TIERS, PRO_MONTHLY_SEK } from "@/lib/subscription";
 
 export const Route = createFileRoute("/foretag")({
   staticData: { sitemap: true },
