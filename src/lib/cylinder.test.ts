@@ -265,3 +265,11 @@ describe("enkel iLOQ prioriterar 63mm-skruv", () => {
   it("djup 50: Alla ger 36,5mm förlängning där 63mm räcker", () => { expect(pref(l(50), iloqSingleScrewSet)[0]!.totalExtension).toBe(36.5); });
   it("djup 52: ingen lösning med 63mm", () => { expect(hasFit(l(52), iloqSingleScrewSet)).toBe(false); });
 });
+
+describe("max dörrdjup", () => {
+  it("över 250mm räknas inte, 250mm räknas", () => {
+    expect(calculate({ depth: 10000, ...all, relaxed: true })).toEqual([]);
+    expect(calculate({ depth: 251, ...all, relaxed: true })).toEqual([]);
+    expect(calculate({ depth: 250, ...all, relaxed: true }).length).toBeGreaterThan(0);
+  });
+});

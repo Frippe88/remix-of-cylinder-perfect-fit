@@ -5,6 +5,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { ROUND_NO_UNDERCUT_RINGS,
   calculate, filterByMode, preferOvalScrewFit, iloqSingleScrewSet, ovalSingleScrewSet, describeDeviation, formatMm, formatSigned,
   TOLERANCE_MIN, TOLERANCE_MAX, type Combination, type ViewMode, type ScrewFn,
+  MAX_DEPTH_MM,
 } from "@/lib/cylinder";
 
 const MODES: { id: ViewMode; label: string }[] = [
@@ -85,7 +86,9 @@ export function CylinderResults({ title, depth, ext, rings, baseMm, relaxed = fa
         </h2>
         {depth !== null && <span className="shrink-0 text-xs text-muted-foreground">Dörrdjup <strong className="font-mono text-foreground">{formatMm(depth)}</strong></span>}
       </div>
-      {depth === null ? (
+      {depth !== null && depth > MAX_DEPTH_MM ? (
+        <p className="py-2 text-sm font-semibold text-destructive">Max dörrdjup är {MAX_DEPTH_MM}mm.</p>
+      ) : depth === null ? (
         <ol className="grid gap-3 py-2 sm:grid-cols-3">
           {["Välj cylinder", "Ange dörrdjup", "Få kombination och plocklista"].map((s, i) => (
             <li key={s} className="flex items-center gap-3 rounded-xl border bg-card p-3 text-sm font-semibold shadow-card">
