@@ -235,8 +235,7 @@ export function totalsText(p: Project, remainingOnly = false): string {
 
 /** Rubrik per dörr: "Dörr 1 (oval, enkelcylinder)" / "Dörr 2 (oval, dubbelcylinder), 18256 behör". */
 export function doorTitle(d: Door): string {
-  const pair = d.sides.length > 1 && !!d.fitting && PAIR_FITTINGS.includes(d.fitting);
-  return `${d.name} (${KIND_LABEL[d.kind]}, ${d.sides.length > 1 ? "dubbelcylinder" : "enkelcylinder"})${pair ? `, ${FITTING_LABEL[d.fitting!]}` : ""}`;
+  return `${d.name} (${KIND_LABEL[d.kind]}, ${d.sides.length > 1 ? "dubbelcylinder" : "enkelcylinder"})${d.fitting && d.kind !== "rund" ? `, ${FITTING_LABEL[d.fitting]}` : ""}`;
 }
 
 export const SINGLE_SCREW_TEXT = "Beror på montage – kalkylatorn kan inte ange exakt skruvlängd vid enkelcylinder.";
