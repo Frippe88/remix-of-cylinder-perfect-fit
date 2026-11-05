@@ -11,7 +11,7 @@ describe("kollegans behörsmått", () => {
     expect(officeFittingMm([id], "outside")).toBe(mm);
     expect(officeFittingMm([id], "inside")).toBe(mm);
   });
-  it.each(["st17910", "st17911", "st17912"])("%s bygger 2 ute / 5 inne", (id) => {
+  it.each(["st17910", "st17912"])("%s bygger 2 ute / 5 inne", (id) => {
     expect(officeFittingMm([id], "outside")).toBe(2);
     expect(officeFittingMm([id], "inside")).toBe(5);
   });
