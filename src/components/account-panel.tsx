@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { Check, ChevronRight, Cloud, KeyRound, LogOut, ShieldCheck } from "lucide-react";
+import { Link } from "@tanstack/react-router";
+import { Check, ChevronRight, Cloud, KeyRound, LogOut, Receipt, ShieldCheck } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -71,6 +72,9 @@ export function AccountPanel({ email, onSignOut }: { email: string; onSignOut: (
             Se allt som ingår i Pro<ChevronRight className="size-4" aria-hidden />
           </button>
           <ProDialog open={proOpen} onOpenChange={setProOpen} />
+          <Link to="/konto" className="mt-2 flex w-full items-center justify-center gap-1.5 rounded-lg border px-3 py-2 text-sm font-bold hover:bg-muted">
+            <Receipt className="size-4 text-accent" aria-hidden />Abonnemang och kvitton<ChevronRight className="size-4" aria-hidden />
+          </Link>
         </div>
         <CompanySection email={email} />
 
