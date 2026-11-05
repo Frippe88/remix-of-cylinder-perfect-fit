@@ -224,6 +224,7 @@ export function CalculatorPage({ variant, loginBar, navActive, locked = false }:
               <Link key={v} to={to} aria-current={active ? "page" : undefined}
                 className={`flex items-center justify-center gap-1.5 rounded-lg px-3 py-2 text-sm font-bold transition ${active ? "bg-card text-foreground shadow-card ring-1 ring-accent" : "text-muted-foreground hover:text-foreground"}`}>
                 Cylinderkalkyl <span className={`rounded-full px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide ${active ? "bg-accent text-accent-foreground" : "bg-accent/15 text-accent"}`}>{tag}</span>
+                {v === "pro" && <span className="rounded-full border border-accent/50 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-accent">Beta</span>}
               </Link>
             );
           })}
