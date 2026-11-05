@@ -11,7 +11,6 @@ export const OFFICE_FITTINGS: readonly Fitting[] = [
   { id: "st17903", name: "ST17903", outside: 2, inside: 2 },
   { id: "st17904", name: "ST17904", outside: 2, inside: 2 },
   { id: "st17910", name: "ST17910", outside: 2, inside: 5 },
-  { id: "st17911", name: "ST17911", outside: 2, inside: 5 },
   { id: "st17912", name: "ST17912", outside: 2, inside: 5 },
   { id: "st17950", name: "ST17950", outside: 2, inside: 2 },
   { id: "st17951", name: "ST17951", outside: 2, inside: 2 },
