@@ -43,5 +43,5 @@ export const Route = createFileRoute("/")({
     ],
 
   }),
-  component: () => <CalculatorPage variant="free" loginBar={<ProLoginBar teaser />} />,
+  component: () => <CalculatorPage variant="free" loginBar={<ProLoginBar teaser />} locked />,
 });
