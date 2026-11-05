@@ -20,7 +20,7 @@ export function OfficeFittingPicker({ selected, onChange }: { selected: FittingS
       <DialogTrigger asChild>
         <Button variant="outline" className="h-auto min-h-11 w-full justify-between gap-2 px-3 py-2 text-left">
           <span className="flex min-w-0 items-center gap-2"><Plus className="size-4 shrink-0 text-accent" /><span className="text-xs">Extra behör</span></span>
-          <span className="shrink-0 font-mono text-xs">{count ? <><span className="text-side-outside">ute +{formatMm(out)}</span> · <span className="text-side-inside">inne +{formatMm(inn)}</span></> : "Utan"}</span>
+          <span className="min-w-0 truncate text-right text-xs font-semibold">{count ? OFFICE_FITTINGS.filter((f) => selected[f.id]).map((f) => f.name).join(", ") : "Utan"}</span>
         </Button>
       </DialogTrigger>
       <DialogContent className="max-h-[85dvh] overflow-y-auto">
