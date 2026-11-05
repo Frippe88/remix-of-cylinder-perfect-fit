@@ -229,6 +229,16 @@ export function CalculatorPage({ variant, loginBar, navActive, locked = false }:
       </nav>
       {loginBar && <div className="mx-auto max-w-5xl px-4 pt-3">{loginBar}</div>}
 
+      {pro && <div className="mx-auto max-w-5xl px-4 pt-4">
+        <div className="grid grid-cols-2 gap-1 rounded-xl bg-muted p-1" role="tablist" aria-label="Kalkyl">
+          <button type="button" role="tab" aria-selected={!office} onClick={() => setMeasurementMode("site")} className={`min-h-12 rounded-lg px-2 text-sm font-bold transition ${!office ? "bg-card shadow-card ring-1 ring-accent" : "text-muted-foreground"}`}>
+            På plats<span className="block text-xs font-normal text-muted-foreground">Mät dörrdjup vid dörren</span>
+          </button>
+          <button type="button" role="tab" aria-selected={office} onClick={() => setMeasurementMode("office")} className={`min-h-12 rounded-lg px-2 text-sm font-bold transition ${office ? "bg-card shadow-card ring-1 ring-accent" : "text-muted-foreground"}`}>
+            På kontoret<span className="block text-xs font-normal text-muted-foreground">A/B/C från dörrlitra</span>
+          </button>
+        </div>
+      </div>}
       <main className="mx-auto grid max-w-5xl gap-6 px-4 py-6 lg:grid-cols-[340px_1fr]">
         <section className="contents lg:block">
           <div className="rounded-xl border bg-card shadow-card">
@@ -243,7 +253,7 @@ export function CalculatorPage({ variant, loginBar, navActive, locked = false }:
               </ol>
             </InfoSheetRow>
           </div>
-          <Panel title="Mätning">
+          <Panel title={office ? "Dörrlitra · A/B/C" : "Mätning"}>
             <div className="grid grid-cols-3 gap-0.5 rounded-lg bg-muted p-1 sm:gap-1" role="group" aria-label="Cylindertyp">
               {CYLINDER_OPTIONS.map((o) => (
                 <button
@@ -373,10 +383,6 @@ export function CalculatorPage({ variant, loginBar, navActive, locked = false }:
                 </DialogClose>
               </DialogContent>
             </Dialog>
-            {pro && <div className="grid grid-cols-2 gap-1 rounded-lg bg-muted p-1" role="group" aria-label="Måttläge">
-              <Button variant="ghost" aria-pressed={!office} onClick={() => setMeasurementMode("site")} className={`h-auto min-h-11 whitespace-normal px-2 text-xs ${!office ? "bg-card shadow-card ring-1 ring-border" : "text-muted-foreground"}`}>På plats vid dörr</Button>
-              <Button variant="ghost" aria-pressed={office} onClick={() => setMeasurementMode("office")} className={`h-auto min-h-11 whitespace-normal px-2 text-xs ${office ? "bg-card shadow-card ring-1 ring-accent" : "text-muted-foreground"}`}>På kontoret · A/B/C</Button>
-            </div>}
             {office ? <>
               <div className="space-y-2">
                 <DepthInput label="A-mått · dörrtjocklek" value={aMeasure} onChange={setAMeasure} />
