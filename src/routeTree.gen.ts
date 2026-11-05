@@ -16,6 +16,7 @@ import { Route as KontoRouteImport } from './routes/konto'
 import { Route as ProRouteImport } from './routes/pro'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
+import { Route as VillkorRouteImport } from './routes/villkor'
 import { Route as GuiderIndexRouteImport } from './routes/guider.index'
 import { Route as GuiderSlugRouteImport } from './routes/guider.$slug'
 import { Route as InbjudanIdRouteImport } from './routes/inbjudan.$id'
@@ -57,6 +58,11 @@ const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
   path: '/sitemap.xml',
   getParentRoute: () => rootRouteImport,
 } as any)
+const VillkorRoute = VillkorRouteImport.update({
+  id: '/villkor',
+  path: '/villkor',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const GuiderIndexRoute = GuiderIndexRouteImport.update({
   id: '/guider/',
   path: '/guider/',
@@ -93,6 +99,7 @@ export interface FileRoutesByFullPath {
   '/pro': typeof ProRoute
   '/reset-password': typeof ResetPasswordRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/villkor': typeof VillkorRoute
   '/guider/$slug': typeof GuiderSlugRoute
   '/inbjudan/$id': typeof InbjudanIdRoute
   '/guider/': typeof GuiderIndexRoute
@@ -107,6 +114,7 @@ export interface FileRoutesByTo {
   '/pro': typeof ProRoute
   '/reset-password': typeof ResetPasswordRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/villkor': typeof VillkorRoute
   '/guider/$slug': typeof GuiderSlugRoute
   '/inbjudan/$id': typeof InbjudanIdRoute
   '/guider': typeof GuiderIndexRoute
@@ -122,6 +130,7 @@ export interface FileRoutesById {
   '/pro': typeof ProRoute
   '/reset-password': typeof ResetPasswordRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/villkor': typeof VillkorRoute
   '/guider/$slug': typeof GuiderSlugRoute
   '/inbjudan/$id': typeof InbjudanIdRoute
   '/guider/': typeof GuiderIndexRoute
@@ -138,6 +147,7 @@ export interface FileRouteTypes {
     | '/pro'
     | '/reset-password'
     | '/sitemap.xml'
+    | '/villkor'
     | '/guider/$slug'
     | '/inbjudan/$id'
     | '/guider/'
@@ -152,6 +162,7 @@ export interface FileRouteTypes {
     | '/pro'
     | '/reset-password'
     | '/sitemap.xml'
+    | '/villkor'
     | '/guider/$slug'
     | '/inbjudan/$id'
     | '/guider'
@@ -166,6 +177,7 @@ export interface FileRouteTypes {
     | '/pro'
     | '/reset-password'
     | '/sitemap.xml'
+    | '/villkor'
     | '/guider/$slug'
     | '/inbjudan/$id'
     | '/guider/'
@@ -181,6 +193,7 @@ export interface RootRouteChildren {
   ProRoute: typeof ProRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
+  VillkorRoute: typeof VillkorRoute
   GuiderSlugRoute: typeof GuiderSlugRoute
   InbjudanIdRoute: typeof InbjudanIdRoute
   GuiderIndexRoute: typeof GuiderIndexRoute
@@ -239,6 +252,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SitemapDotxmlRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/villkor': {
+      id: '/villkor'
+      path: '/villkor'
+      fullPath: '/villkor'
+      preLoaderRoute: typeof VillkorRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/guider/': {
       id: '/guider/'
       path: '/guider'
@@ -285,6 +305,7 @@ const rootRouteChildren: RootRouteChildren = {
   ProRoute: ProRoute,
   ResetPasswordRoute: ResetPasswordRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
+  VillkorRoute: VillkorRoute,
   GuiderSlugRoute: GuiderSlugRoute,
   InbjudanIdRoute: InbjudanIdRoute,
   GuiderIndexRoute: GuiderIndexRoute,
