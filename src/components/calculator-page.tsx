@@ -115,6 +115,8 @@ export function CalculatorPage({ variant, loginBar, navActive, locked = false }:
   const inExtra = selectionMm(officeFittings, "inside");
   const abc = resolveABC(parse(aMeasure), parse(bMeasure), parse(cMeasure));
   const [lockCase, setLockCase] = useState<LockCase>("standard");
+  const filledAbc = [aMeasure, bMeasure, cMeasure].filter((v) => v.trim() !== "").length;
+  const autoAbc = (typed: string, v: number | null) => (typed.trim() === "" && filledAbc === 2 && v !== null && v >= 0 ? String(v) : typed);
   const bEdge = centerToCaseMm(abc.b, lockCase);
   const cEdge = centerToCaseMm(abc.c, lockCase);
   const officeOutside = officeDepthMm(bEdge, outExtra);
@@ -385,9 +387,9 @@ export function CalculatorPage({ variant, loginBar, navActive, locked = false }:
             </Dialog>
             {office ? <>
               <div className="space-y-2">
-                <DepthInput label="A-mått · dörrtjocklek" value={aMeasure} onChange={setAMeasure} />
-                <DepthInput label="B-mått · utsida till centrum kista" value={bMeasure} onChange={setBMeasure} />
-                <DepthInput label="C-mått · insida till centrum kista" value={cMeasure} onChange={setCMeasure} />
+                <DepthInput label="A-mått · dörrtjocklek" value={autoAbc(aMeasure, abc.a)} onChange={setAMeasure} />
+                <DepthInput label="B-mått · utsida till centrum kista" value={autoAbc(bMeasure, abc.b)} onChange={setBMeasure} />
+                <DepthInput label="C-mått · insida till centrum kista" value={autoAbc(cMeasure, abc.c)} onChange={setCMeasure} />
                 <p className="text-xs text-muted-foreground">Fyll i två mått, det tredje räknas ut (B + C = A).</p>
                 {abc.mismatch && <p className="text-xs font-semibold text-destructive">B + C blir {formatMm(abc.a ?? 0)} – stämmer inte med A-måttet. B och C används.</p>}
                 <div>
