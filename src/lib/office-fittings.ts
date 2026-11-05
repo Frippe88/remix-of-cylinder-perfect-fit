@@ -1,28 +1,30 @@
 // Extra skyltar/behör: mått från Fredriks kollega, inte cylinderringar.
-export const OFFICE_FITTINGS = [
-  { id: "slug17", name: "SLUG 17", mm: 3 },
-  { id: "slug08", name: "SLUG 08", mm: 4 },
-  { id: "assa179", name: "ASSA 179", mm: 5 },
-  { id: "assa179-stainless", name: "ASSA 179 Rostfri", mm: 4 },
-  { id: "assa4291", name: "ASSA 4291 skylt", mm: 5 },
-  { id: "assa-thumb", name: "ASSA Vredskylt", mm: 3 },
-  { id: "habo-thumb", name: "HABO Vredskylt", mm: 3 },
-  { id: "dorma-thumb", name: "Dorma Vredskylt", mm: 3.5 },
-  { id: "hoppe-thumb", name: "Hoppe Vredskylt", mm: 3 },
-  { id: "st17903", name: "ST17903", mm: 2 },
-  { id: "st17904", name: "ST17904", mm: 2 },
-] as const;
+// Varje behör har mått per sida; null = finns inte på den sidan (vredskyltar bara insida).
+type Fitting = { id: string; name: string; outside: number | null; inside: number };
 
-export const OFFICE_PAIR_FITTINGS = [
+export const OFFICE_FITTINGS: readonly Fitting[] = [
+  { id: "slug17", name: "SLUG 17", outside: 3, inside: 3 },
+  { id: "slug08", name: "SLUG 08", outside: 4, inside: 4 },
+  { id: "assa179", name: "ASSA 179", outside: 5, inside: 5 },
+  { id: "assa179-stainless", name: "ASSA 179 Rostfri", outside: 4, inside: 4 },
+  { id: "assa4291", name: "ASSA 4291 skylt", outside: 5, inside: 5 },
+  { id: "st17903", name: "ST17903", outside: 2, inside: 2 },
+  { id: "st17904", name: "ST17904", outside: 2, inside: 2 },
   { id: "st17910", name: "ST17910", outside: 2, inside: 5 },
   { id: "st17911", name: "ST17911", outside: 2, inside: 5 },
   { id: "st17912", name: "ST17912", outside: 2, inside: 5 },
   { id: "st17950", name: "ST17950", outside: 2, inside: 2 },
   { id: "st17951", name: "ST17951", outside: 2, inside: 2 },
-] as const;
+  { id: "assa-thumb", name: "ASSA Vredskylt", outside: null, inside: 3 },
+  { id: "habo-thumb", name: "HABO Vredskylt", outside: null, inside: 3 },
+  { id: "dorma-thumb", name: "Dorma Vredskylt", outside: null, inside: 3.5 },
+  { id: "hoppe-thumb", name: "Hoppe Vredskylt", outside: null, inside: 3 },
+];
 
-export function officeFittingMm(ids: readonly string[], pairId: string, side: "outside" | "inside"): number {
-  const single = OFFICE_FITTINGS.filter((f) => ids.includes(f.id)).reduce((sum, f) => sum + f.mm, 0);
-  const pair = OFFICE_PAIR_FITTINGS.find((f) => f.id === pairId);
-  return single + (pair?.[side] ?? 0);
+export function officeFittingsFor(side: "outside" | "inside") {
+  return OFFICE_FITTINGS.filter((f) => f[side] !== null).map((f) => ({ id: f.id, name: f.name, mm: f[side] as number }));
+}
+
+export function officeFittingMm(ids: readonly string[], side: "outside" | "inside"): number {
+  return ids.reduce((sum, id) => sum + (OFFICE_FITTINGS.find((f) => f.id === id)?.[side] ?? 0), 0);
 }

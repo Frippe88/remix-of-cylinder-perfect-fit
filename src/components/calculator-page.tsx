@@ -5,7 +5,7 @@ import { Dialog, DialogClose, DialogContent, DialogHeader, DialogTitle, DialogTr
 import { useEffect, useState } from "react";
 import { CylinderResults, ModePicker } from "@/components/cylinder-results";
 import { OfficeFittingPicker } from "@/components/office-fitting-picker";
-import { OFFICE_PAIR_FITTINGS, officeFittingMm } from "@/lib/office-fittings";
+import { officeFittingMm } from "@/lib/office-fittings";
 import type { ViewMode } from "@/lib/cylinder";
 import { PickListButton } from "@/components/pick-list-button";
 import { ProjectBar, ProjectPanel, useProject } from "@/components/project-panel";
@@ -107,10 +107,9 @@ export function CalculatorPage({ variant, loginBar, navActive, locked = false }:
   const [bMeasure, setBMeasure] = useState("");
   const [outsideFittings, setOutsideFittings] = useState<string[]>([]);
   const [insideFittings, setInsideFittings] = useState<string[]>([]);
-  const [pairFitting, setPairFitting] = useState("");
   const office = pro && measurementMode === "office";
-  const outExtra = officeFittingMm(outsideFittings, pairFitting, "outside");
-  const inExtra = officeFittingMm(insideFittings, pairFitting, "inside");
+  const outExtra = officeFittingMm(outsideFittings, "outside");
+  const inExtra = officeFittingMm(insideFittings, "inside");
   const officeOutside = officeDepthMm(parse(aMeasure), outExtra);
   const officeInside = officeDepthMm(parse(bMeasure), inExtra);
   const outDepth = office ? (type === "single" && singleSide === "Insida" ? officeInside : officeOutside) : parse(outside);
@@ -372,20 +371,14 @@ export function CalculatorPage({ variant, loginBar, navActive, locked = false }:
               <Button variant="ghost" aria-pressed={office} onClick={() => setMeasurementMode("office")} className={`h-auto min-h-11 whitespace-normal px-2 text-xs ${office ? "bg-card shadow-card ring-1 ring-accent" : "text-muted-foreground"}`}>På kontoret · A/B</Button>
             </div>}
             {office ? <>
-              <label className="block text-xs font-semibold">Parbehör
-                <select aria-label="Parbehör" value={pairFitting} onChange={(e) => setPairFitting(e.target.value)} className="mt-1 block min-h-11 w-full rounded-lg border border-input bg-card px-2 text-sm text-foreground">
-                  <option value="">Utan parbehör</option>
-                  {OFFICE_PAIR_FITTINGS.map((f) => <option key={f.id} value={f.id}>{f.name} · ute +{formatMm(f.outside)} / inne +{formatMm(f.inside)}</option>)}
-                </select>
-              </label>
               {(type === "double" || singleSide === "Utsida") && <div className="space-y-2">
                 <DepthInput label="A-mått · utsida" value={aMeasure} onChange={setAMeasure} />
-                <OfficeFittingPicker side="outside" selected={outsideFittings} pairId={pairFitting} onChange={setOutsideFittings} />
+                <OfficeFittingPicker side="outside" selected={outsideFittings} onChange={setOutsideFittings} />
                 {officeOutside !== null && <p className="text-xs text-muted-foreground"><span className="font-semibold text-side-outside">Utsida:</span> {formatMm(parse(aMeasure) ?? 0)} + {formatMm(outExtra)} = <strong className="font-mono text-foreground">{formatMm(officeOutside)}</strong></p>}
               </div>}
               {(type === "double" || singleSide === "Insida") && <div className="space-y-2">
                 <DepthInput label="B-mått · insida" value={bMeasure} onChange={setBMeasure} />
-                <OfficeFittingPicker side="inside" selected={insideFittings} pairId={pairFitting} onChange={setInsideFittings} />
+                <OfficeFittingPicker side="inside" selected={insideFittings} onChange={setInsideFittings} />
                 {officeInside !== null && <p className="text-xs text-muted-foreground"><span className="font-semibold text-side-inside">Insida:</span> {formatMm(parse(bMeasure) ?? 0)} + {formatMm(inExtra)} = <strong className="font-mono text-foreground">{formatMm(officeInside)}</strong></p>}
               </div>}
             </> : <>
