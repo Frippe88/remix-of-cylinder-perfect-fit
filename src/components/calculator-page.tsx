@@ -5,7 +5,7 @@ import { Dialog, DialogClose, DialogContent, DialogHeader, DialogTitle, DialogTr
 import { useEffect, useState } from "react";
 import { CylinderResults, ModePicker } from "@/components/cylinder-results";
 import { OfficeFittingPicker } from "@/components/office-fitting-picker";
-import { officeFittingMm } from "@/lib/office-fittings";
+import { resolveABC, selectionMm, type FittingSelection } from "@/lib/office-fittings";
 import type { ViewMode } from "@/lib/cylinder";
 import { PickListButton } from "@/components/pick-list-button";
 import { ProjectBar, ProjectPanel, useProject } from "@/components/project-panel";
@@ -105,13 +105,14 @@ export function CalculatorPage({ variant, loginBar, navActive, locked = false }:
   const [measurementMode, setMeasurementMode] = useState<"site" | "office">("site");
   const [aMeasure, setAMeasure] = useState("");
   const [bMeasure, setBMeasure] = useState("");
-  const [outsideFittings, setOutsideFittings] = useState<string[]>([]);
-  const [insideFittings, setInsideFittings] = useState<string[]>([]);
+  const [cMeasure, setCMeasure] = useState("");
+  const [officeFittings, setOfficeFittings] = useState<FittingSelection>({});
   const office = pro && measurementMode === "office";
-  const outExtra = officeFittingMm(outsideFittings, "outside");
-  const inExtra = officeFittingMm(insideFittings, "inside");
-  const officeOutside = officeDepthMm(parse(aMeasure), outExtra);
-  const officeInside = officeDepthMm(parse(bMeasure), inExtra);
+  const outExtra = selectionMm(officeFittings, "outside");
+  const inExtra = selectionMm(officeFittings, "inside");
+  const abc = resolveABC(parse(aMeasure), parse(bMeasure), parse(cMeasure));
+  const officeOutside = officeDepthMm(abc.b, outExtra);
+  const officeInside = officeDepthMm(abc.c, inExtra);
   const outDepth = office ? (type === "single" && singleSide === "Insida" ? officeInside : officeOutside) : parse(outside);
   const inDepth = office ? officeInside : parse(inside);
 
@@ -368,19 +369,19 @@ export function CalculatorPage({ variant, loginBar, navActive, locked = false }:
             </Dialog>
             {pro && <div className="grid grid-cols-2 gap-1 rounded-lg bg-muted p-1" role="group" aria-label="Måttläge">
               <Button variant="ghost" aria-pressed={!office} onClick={() => setMeasurementMode("site")} className={`h-auto min-h-11 whitespace-normal px-2 text-xs ${!office ? "bg-card shadow-card ring-1 ring-border" : "text-muted-foreground"}`}>På plats vid dörr</Button>
-              <Button variant="ghost" aria-pressed={office} onClick={() => setMeasurementMode("office")} className={`h-auto min-h-11 whitespace-normal px-2 text-xs ${office ? "bg-card shadow-card ring-1 ring-accent" : "text-muted-foreground"}`}>På kontoret · A/B</Button>
+              <Button variant="ghost" aria-pressed={office} onClick={() => setMeasurementMode("office")} className={`h-auto min-h-11 whitespace-normal px-2 text-xs ${office ? "bg-card shadow-card ring-1 ring-accent" : "text-muted-foreground"}`}>På kontoret · A/B/C</Button>
             </div>}
             {office ? <>
-              {(type === "double" || singleSide === "Utsida") && <div className="space-y-2">
-                <DepthInput label="A-mått · utsida" value={aMeasure} onChange={setAMeasure} />
-                <OfficeFittingPicker side="outside" selected={outsideFittings} onChange={setOutsideFittings} />
-                {officeOutside !== null && <p className="text-xs text-muted-foreground"><span className="font-semibold text-side-outside">Utsida:</span> {formatMm(parse(aMeasure) ?? 0)} + {formatMm(outExtra)} = <strong className="font-mono text-foreground">{formatMm(officeOutside)}</strong></p>}
-              </div>}
-              {(type === "double" || singleSide === "Insida") && <div className="space-y-2">
-                <DepthInput label="B-mått · insida" value={bMeasure} onChange={setBMeasure} />
-                <OfficeFittingPicker side="inside" selected={insideFittings} onChange={setInsideFittings} />
-                {officeInside !== null && <p className="text-xs text-muted-foreground"><span className="font-semibold text-side-inside">Insida:</span> {formatMm(parse(bMeasure) ?? 0)} + {formatMm(inExtra)} = <strong className="font-mono text-foreground">{formatMm(officeInside)}</strong></p>}
-              </div>}
+              <div className="space-y-2">
+                <DepthInput label="A-mått · dörrtjocklek" value={aMeasure} onChange={setAMeasure} />
+                <DepthInput label="B-mått · utsida till centrum kista" value={bMeasure} onChange={setBMeasure} />
+                <DepthInput label="C-mått · insida till centrum kista" value={cMeasure} onChange={setCMeasure} />
+                <p className="text-xs text-muted-foreground">Fyll i två mått, det tredje räknas ut (B + C = A).</p>
+                {abc.mismatch && <p className="text-xs font-semibold text-destructive">B + C blir {formatMm(abc.a ?? 0)} – stämmer inte med A-måttet. B och C används.</p>}
+                <OfficeFittingPicker selected={officeFittings} onChange={setOfficeFittings} />
+                {officeOutside !== null && <p className="text-xs text-muted-foreground"><span className="font-semibold text-side-outside">Utsida:</span> B {formatMm(abc.b ?? 0)} + {formatMm(outExtra)} = <strong className="font-mono text-foreground">{formatMm(officeOutside)}</strong></p>}
+                {officeInside !== null && <p className="text-xs text-muted-foreground"><span className="font-semibold text-side-inside">Insida:</span> C {formatMm(abc.c ?? 0)} + {formatMm(inExtra)} = <strong className="font-mono text-foreground">{formatMm(officeInside)}</strong></p>}
+              </div>
             </> : <>
               <DepthInput label={type === "single" ? "Dörrdjup" : "Dörrdjup utsida"} value={outside} onChange={setOutside} />
               {type === "double" && <DepthInput label="Dörrdjup insida" value={inside} onChange={setInside} />}
