@@ -49,3 +49,17 @@ describe("kollegans behörsmått", () => {
     for (const n of ["Dorma distansring", "iLOQ distansring", "HABO 3212"]) expect(names).not.toContain(n);
   });
 });
+
+import { resolveABC, selectionMm, placementsFor } from "./office-fittings";
+describe("A/B/C-mått och gemensam behörslista", () => {
+  it("B + C ger A", () => expect(resolveABC(null, 25, 39)).toMatchObject({ a: 64, b: 25, c: 39 }));
+  it("A och B ger C", () => expect(resolveABC(64, 25, null).c).toBe(39));
+  it("A och C ger B", () => expect(resolveABC(64, null, 39).b).toBe(25));
+  it("flaggar när A inte stämmer med B + C", () => expect(resolveABC(60, 25, 39).mismatch).toBe(true));
+  it("Båda lägger på båda sidor", () => {
+    const s = { st17910: "both" as const, "assa-thumb": "inside" as const };
+    expect(selectionMm(s, "outside")).toBe(2);
+    expect(selectionMm(s, "inside")).toBe(8);
+  });
+  it("vredskylt bara inne", () => expect(placementsFor("assa-thumb")).toEqual(["inside"]));
+});
