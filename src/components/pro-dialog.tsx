@@ -7,6 +7,7 @@ import { PRO_MONTHLY_SEK } from "@/lib/subscription";
 
 const FEATURES = [
   "Mät och spara dörr för dörr – samla hela bygget i ett projekt",
+  "Räkna från dörrlitra – A/B/C-mått, avdrag för låshus (standard 18,5mm / ellås 19,5mm) och extra behör som 179",
   "Behörsval (256, 2356, 18256) – visar direkt om det är färdig sats eller lös ring",
   "Automatisk inköpslista för chefen – per cylindertyp med satser, ringpar och förlängare",
   "PDF med ett klick – komplett arbetsorder eller bara inköpslista",

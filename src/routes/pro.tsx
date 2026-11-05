@@ -13,7 +13,7 @@ export const Route = createFileRoute("/pro")({
   head: () => ({
     meta: [
       { title: "Cylinderhjälpen Pro – projekt, behör och plocklista" },
-      { name: "description", content: "Cylinderkalkylator med projekt, flera dörrar, total plocklista och PDF-export för låssmeder." },
+      { name: "description", content: "Cylinderkalkylator för låssmeder: mät vid dörren eller räkna från dörrlitra (A/B/C), spara projekt, total plocklista och PDF." },
       { property: "og:title", content: "Cylinderhjälpen Pro – projekt, behör och plocklista" },
       { property: "og:description", content: "Spara dörrar i projekt, få total plocklista och exportera PDF." },
       { property: "og:url", content: "https://cylinderhjalpen.se/pro" },
