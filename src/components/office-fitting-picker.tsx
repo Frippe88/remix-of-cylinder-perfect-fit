@@ -1,14 +1,12 @@
 import { Package, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogClose, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { OFFICE_FITTINGS, placementsFor, selectionMm, type FittingPlacement, type FittingSelection } from "@/lib/office-fittings";
+import { OFFICE_FITTINGS, placementsFor, type FittingPlacement, type FittingSelection } from "@/lib/office-fittings";
 import { formatMm } from "@/lib/cylinder";
 
 const LABEL: Record<FittingPlacement, string> = { outside: "Ute", inside: "Inne", both: "Båda" };
 
 export function OfficeFittingPicker({ selected, onChange }: { selected: FittingSelection; onChange: (s: FittingSelection) => void }) {
-  const out = selectionMm(selected, "outside");
-  const inn = selectionMm(selected, "inside");
   const count = Object.keys(selected).length;
   const set = (id: string, p: FittingPlacement) => {
     const next = { ...selected };
