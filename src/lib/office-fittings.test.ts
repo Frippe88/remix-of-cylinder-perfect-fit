@@ -63,3 +63,9 @@ describe("A/B/C-mått och gemensam behörslista", () => {
   });
   it("vredskylt bara inne", () => expect(placementsFor("assa-thumb")).toEqual(["inside"]));
 });
+
+import { centerToCaseMm } from "./cylinder";
+describe("B/C till centrum kista", () => {
+  it("standardlås drar av 9 mm", () => expect(centerToCaseMm(25, "standard")).toBe(16));
+  it("ellås drar av 10 mm", () => expect(centerToCaseMm(25, "electric")).toBe(15));
+});

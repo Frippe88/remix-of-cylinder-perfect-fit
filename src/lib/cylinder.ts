@@ -32,6 +32,15 @@ export function officeDepthMm(base: number | null, extraMm: number): number | nu
   if (base === null || !Number.isFinite(base) || base < 0 || !Number.isFinite(extraMm) || extraMm < 0) return null;
   return Math.round((base + extraMm) * 10) / 10;
 }
+/** Kontorsläge: B/C anges till centrum kista. Standardlås 18,5 mm, ellås/motorlås 19,5 mm. */
+export type LockCase = "standard" | "electric";
+export const LOCK_CASE_MM: Record<LockCase, number> = { standard: 18.5, electric: 19.5 };
+/** B/C till centrum kista → djup till kistkant, avrundat till hel mm. */
+export function centerToCaseMm(center: number | null, lock: LockCase): number | null {
+  if (center === null || !Number.isFinite(center)) return null;
+  const d = Math.round(center - LOCK_CASE_MM[lock] / 2);
+  return d > 0 ? d : null;
+}
 export const TOLERANCE_MIN = -2;
 export const TOLERANCE_MAX = 2;
 
