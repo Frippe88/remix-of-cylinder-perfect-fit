@@ -404,8 +404,8 @@ export function CalculatorPage({ variant, loginBar, navActive, locked = false }:
                   </div>
                 </div>
                 <OfficeFittingPicker selected={officeFittings} onChange={setOfficeFittings} />
-                {officeOutside !== null && <p className="text-xs text-muted-foreground"><span className="font-semibold text-side-outside">Utsida:</span> B {formatMm(abc.b ?? 0)} − halva kistan = {formatMm(bEdge ?? 0)}{outExtra ? <> + {formatMm(outExtra)}</> : null} = <strong className="font-mono text-foreground">{formatMm(officeOutside)}</strong></p>}
-                {officeInside !== null && <p className="text-xs text-muted-foreground"><span className="font-semibold text-side-inside">Insida:</span> C {formatMm(abc.c ?? 0)} − halva kistan = {formatMm(cEdge ?? 0)}{inExtra ? <> + {formatMm(inExtra)}</> : null} = <strong className="font-mono text-foreground">{formatMm(officeInside)}</strong></p>}
+                {officeOutside !== null && <p className="text-xs text-muted-foreground"><span className="font-semibold text-side-outside">Utsida:</span> B {formatMm(abc.b ?? 0)} − halva kistan = {outExtra ? <>{formatMm(bEdge ?? 0)} + {formatMm(outExtra)} = </> : null}<strong className="font-mono text-foreground">{formatMm(officeOutside)}</strong></p>}
+                {officeInside !== null && <p className="text-xs text-muted-foreground"><span className="font-semibold text-side-inside">Insida:</span> C {formatMm(abc.c ?? 0)} − halva kistan = {inExtra ? <>{formatMm(cEdge ?? 0)} + {formatMm(inExtra)} = </> : null}<strong className="font-mono text-foreground">{formatMm(officeInside)}</strong></p>}
               </div>
             </> : <>
               <DepthInput label={type === "single" ? "Dörrdjup" : "Dörrdjup utsida"} value={outside} onChange={setOutside} />
