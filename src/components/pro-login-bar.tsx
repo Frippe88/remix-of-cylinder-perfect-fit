@@ -14,7 +14,7 @@ export function ProLoginBar({ teaser = false }: { teaser?: boolean }) {
           <Star className="size-4 text-accent-foreground sm:size-5" aria-hidden />
         </span>
         <p className="min-w-0 flex-1 text-xs leading-snug sm:text-sm">
-          <span className="font-bold">Pro:</span> hela bygget dörr för dörr – ringar, förlängare, behör och skruv i färdig PDF.
+          <span className="font-bold">Pro:</span> mät vid dörren eller räkna från dörrlitra (A/B/C) – ringar, förlängare, behör och skruv i färdig PDF.
         </p>
         <div className={`flex shrink-0 gap-2 ${teaser ? "" : "w-full sm:w-auto"}`}>
           {teaser ? (
