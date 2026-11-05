@@ -21,10 +21,40 @@ export const OFFICE_FITTINGS: readonly Fitting[] = [
   { id: "hoppe-thumb", name: "Hoppe Vredskylt", outside: null, inside: 3 },
 ];
 
+export type FittingPlacement = "outside" | "inside" | "both";
+/** En gemensam behörslista: behör-id → placering. Saknas = inte valt. */
+export type FittingSelection = Record<string, FittingPlacement>;
+
 export function officeFittingsFor(side: "outside" | "inside") {
   return OFFICE_FITTINGS.filter((f) => f[side] !== null).map((f) => ({ id: f.id, name: f.name, mm: f[side] as number }));
 }
 
 export function officeFittingMm(ids: readonly string[], side: "outside" | "inside"): number {
   return ids.reduce((sum, id) => sum + (OFFICE_FITTINGS.find((f) => f.id === id)?.[side] ?? 0), 0);
+}
+
+/** Summerar påbyggnad på en sida från den gemensamma listan. */
+export function selectionMm(sel: FittingSelection, side: "outside" | "inside"): number {
+  const ids = Object.entries(sel).filter(([, p]) => p === side || p === "both").map(([id]) => id);
+  return officeFittingMm(ids, side);
+}
+
+/** Tillåtna placeringar per behör (vredskyltar bara insida). */
+export function placementsFor(id: string): FittingPlacement[] {
+  const f = OFFICE_FITTINGS.find((x) => x.id === id);
+  if (!f) return [];
+  return f.outside === null ? ["inside"] : ["outside", "inside", "both"];
+}
+
+/**
+ * A = dörrtjocklek, B = utsida → centrum kista, C = insida → centrum kista.
+ * B + C = A. Två kända mått räcker; det tredje räknas ut. Kistan sitter sällan i centrum,
+ * så B och C kan aldrig gissas från bara A.
+ */
+export function resolveABC(a: number | null, b: number | null, c: number | null): { a: number | null; b: number | null; c: number | null; mismatch: boolean } {
+  const r = (n: number) => Math.round(n * 10) / 10;
+  if (b !== null && c !== null) return { a: r(b + c), b, c, mismatch: a !== null && Math.abs(a - (b + c)) > 0.05 };
+  if (a !== null && b !== null) return { a, b, c: a - b > 0 ? r(a - b) : null, mismatch: false };
+  if (a !== null && c !== null) return { a, b: a - c > 0 ? r(a - c) : null, c, mismatch: false };
+  return { a, b, c, mismatch: false };
 }
