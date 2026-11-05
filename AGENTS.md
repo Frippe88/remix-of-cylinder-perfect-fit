@@ -10,6 +10,7 @@
 <!-- LOVABLE:END -->
 
 - All cylinder math lives in src/lib/cylinder.ts (pure, tested); UI only calls it. Why: deterministic, extendable, testable.
+- Office measurement offsets are catalogued in src/lib/office-fittings.ts; cylinder.ts converts base measures plus offsets into effective depths shared by results and saved doors. Why: measured mode stays unchanged and all downstream calculations use the same depth.
 - Optional door fittings, eligibility, combined fitting/ring formatting and aggregation live in the project model, separate from cylinder calculations; grouped rings are excluded from standalone ring totals. Why: all exports share the same material accounting without changing fit math or invalidating older saved projects.
 - Results presentation lives in src/components/cylinder-results.tsx, with progressive disclosure per side; keep every computed combination accessible without duplicating the recommendation in the alternatives. Why: double-cylinder results must remain scannable without changing the calculation rules.
 - Manufacturer manual PDFs are proxied via /api/public/manual/$id (fixed per-lock allowlist in src/lib/lock-cases.ts) and rendered in-app with pdfjs-dist on /manual/$id. Why: mobile webviews show blank pages for external PDFs, and the allowlist stops arbitrary URL proxying.

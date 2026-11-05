@@ -4,6 +4,8 @@ import { ArrowRight, BookOpen, Check, ChevronDown, CircleHelp, FolderOpen, KeyRo
 import { Dialog, DialogClose, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { useEffect, useState } from "react";
 import { CylinderResults, ModePicker } from "@/components/cylinder-results";
+import { OfficeFittingPicker } from "@/components/office-fitting-picker";
+import { OFFICE_PAIR_FITTINGS, officeFittingMm } from "@/lib/office-fittings";
 import type { ViewMode } from "@/lib/cylinder";
 import { PickListButton } from "@/components/pick-list-button";
 import { ProjectBar, ProjectPanel, useProject } from "@/components/project-panel";
@@ -22,6 +24,7 @@ import { ShareSection } from "@/components/share-section";
 import { trackEvent } from "@/lib/analytics";
 import {
   formatMm,
+  officeDepthMm,
   calculate,
   preferOvalDoublePair,
   EXTENDER_SIZES,
@@ -99,6 +102,19 @@ export function CalculatorPage({ variant, loginBar, navActive, locked = false }:
     : cyl === "iloq" && type === "double" && fittingChoices.includes("A10.11") ? "A10.11" : null;
   const [singleSide, setSingleSide] = useState<"Utsida" | "Insida">("Utsida");
   const [mode, setMode] = useState<ViewMode>("all");
+  const [measurementMode, setMeasurementMode] = useState<"site" | "office">("site");
+  const [aMeasure, setAMeasure] = useState("");
+  const [bMeasure, setBMeasure] = useState("");
+  const [outsideFittings, setOutsideFittings] = useState<string[]>([]);
+  const [insideFittings, setInsideFittings] = useState<string[]>([]);
+  const [pairFitting, setPairFitting] = useState("");
+  const office = pro && measurementMode === "office";
+  const outExtra = officeFittingMm(outsideFittings, pairFitting, "outside");
+  const inExtra = officeFittingMm(insideFittings, pairFitting, "inside");
+  const officeOutside = officeDepthMm(parse(aMeasure), outExtra);
+  const officeInside = officeDepthMm(parse(bMeasure), inExtra);
+  const outDepth = office ? (type === "single" && singleSide === "Insida" ? officeInside : officeOutside) : parse(outside);
+  const inDepth = office ? officeInside : parse(inside);
 
   const isRound = cyl === "round";
   const baseMm = cylinderBaseMm(cyl, "outside", type === "double", brand);
@@ -117,24 +133,24 @@ export function CalculatorPage({ variant, loginBar, navActive, locked = false }:
   const insideExt = iloqDouble ? [] : ext;
 
   // Valda alternativ för plocklistan; nollställs automatiskt när indata ändras.
-  const selKey = [cyl, brand, type, outside, inside, ext.join(","), activeRings.join(",")].join("|");
+  const selKey = [cyl, brand, type, outDepth, inDepth, singleSide, measurementMode, ext.join(","), activeRings.join(",")].join("|");
   const [sel, setSel] = useState<{ key: string; out: Combination | null; in: Combination | null }>({ key: "", out: null, in: null });
   const selOut = sel.key === selKey ? sel.out : null;
   const selIn = sel.key === selKey ? sel.in : null;
   // Dubbel oval i läget Alla: välj par där 63mm skruv räcker om det finns inom ±2mm.
   const ovalPair = (() => {
     if (cyl !== "standard" || type !== "double" || mode !== "all") return null;
-    const o = parse(outside), i = parse(inside);
+    const o = outDepth, i = inDepth;
     if (o === null || i === null) return null;
     return preferOvalDoublePair(calculate({ depth: o, extenders: ext, rings: activeRings, baseMm, relaxed: false }), calculate({ depth: i, extenders: insideExt, rings: insideRings, baseMm: insideBaseMm, relaxed: false }));
   })();
 
   // GA4: räkna en beräkning när måtten stått still en stund (inte varje knapptryck).
   useEffect(() => {
-    if (!outside && !inside) return;
+    if (outDepth === null && inDepth === null) return;
     const t = setTimeout(() => trackEvent("berakning", { cylinder: cyl, typ: type, fabrikat: isRound ? brand : undefined }), 2500);
     return () => clearTimeout(t);
-  }, [cyl, brand, type, outside, inside, isRound]);
+  }, [cyl, brand, type, outDepth, inDepth, isRound]);
 
   const toggle = (list: number[], set: (v: number[]) => void, v: number) =>
     set(list.includes(v) ? list.filter((x) => x !== v) : [...list, v]);
@@ -293,7 +309,7 @@ export function CalculatorPage({ variant, loginBar, navActive, locked = false }:
                 </button>
               ))}
             </div>
-            {type === "single" && !isRound && (
+            {type === "single" && (!isRound || office) && (
               <div>
                 <p className="text-xs text-muted-foreground">Var sitter cylindern? <span className="font-semibold text-side-outside">Utsida</span> och <span className="font-semibold text-side-inside">insida</span> har olika ring.</p>
                 <div className="mt-1.5 grid grid-cols-2 gap-2">
@@ -351,22 +367,45 @@ export function CalculatorPage({ variant, loginBar, navActive, locked = false }:
                 </DialogClose>
               </DialogContent>
             </Dialog>
-            <DepthInput label={type === "single" ? "Dörrdjup" : "Dörrdjup utsida"} value={outside} onChange={setOutside} />
-            {type === "double" && <DepthInput label="Dörrdjup insida" value={inside} onChange={setInside} />}
+            {pro && <div className="grid grid-cols-2 gap-1 rounded-lg bg-muted p-1" role="group" aria-label="Måttläge">
+              <Button variant="ghost" aria-pressed={!office} onClick={() => setMeasurementMode("site")} className={`h-auto min-h-11 whitespace-normal px-2 text-xs ${!office ? "bg-card shadow-card ring-1 ring-border" : "text-muted-foreground"}`}>På plats vid dörr</Button>
+              <Button variant="ghost" aria-pressed={office} onClick={() => setMeasurementMode("office")} className={`h-auto min-h-11 whitespace-normal px-2 text-xs ${office ? "bg-card shadow-card ring-1 ring-accent" : "text-muted-foreground"}`}>På kontoret · A/B</Button>
+            </div>}
+            {office ? <>
+              <label className="block text-xs font-semibold">Parbehör
+                <select aria-label="Parbehör" value={pairFitting} onChange={(e) => setPairFitting(e.target.value)} className="mt-1 block min-h-11 w-full rounded-lg border border-input bg-card px-2 text-sm text-foreground">
+                  <option value="">Utan parbehör</option>
+                  {OFFICE_PAIR_FITTINGS.map((f) => <option key={f.id} value={f.id}>{f.name} · ute +{formatMm(f.outside)} / inne +{formatMm(f.inside)}</option>)}
+                </select>
+              </label>
+              {(type === "double" || singleSide === "Utsida") && <div className="space-y-2">
+                <DepthInput label="A-mått · utsida" value={aMeasure} onChange={setAMeasure} />
+                <OfficeFittingPicker side="outside" selected={outsideFittings} pairId={pairFitting} onChange={setOutsideFittings} />
+                {officeOutside !== null && <p className="text-xs text-muted-foreground"><span className="font-semibold text-side-outside">Utsida:</span> {formatMm(parse(aMeasure) ?? 0)} + {formatMm(outExtra)} = <strong className="font-mono text-foreground">{formatMm(officeOutside)}</strong></p>}
+              </div>}
+              {(type === "double" || singleSide === "Insida") && <div className="space-y-2">
+                <DepthInput label="B-mått · insida" value={bMeasure} onChange={setBMeasure} />
+                <OfficeFittingPicker side="inside" selected={insideFittings} pairId={pairFitting} onChange={setInsideFittings} />
+                {officeInside !== null && <p className="text-xs text-muted-foreground"><span className="font-semibold text-side-inside">Insida:</span> {formatMm(parse(bMeasure) ?? 0)} + {formatMm(inExtra)} = <strong className="font-mono text-foreground">{formatMm(officeInside)}</strong></p>}
+              </div>}
+            </> : <>
+              <DepthInput label={type === "single" ? "Dörrdjup" : "Dörrdjup utsida"} value={outside} onChange={setOutside} />
+              {type === "double" && <DepthInput label="Dörrdjup insida" value={inside} onChange={setInside} />}
+            </>}
           </Panel>
         </section>
 
         <section className="order-2 min-w-0 space-y-7 lg:order-none">
           <PickListButton
-            sides={type === "single" ? [{ label: isRound ? null : singleSide, depth: parse(outside), selected: selOut }] : [{ label: "Utsida", depth: parse(outside), selected: selOut ?? ovalPair?.[0] ?? null }, { label: "Insida", depth: parse(inside), selected: selIn ?? ovalPair?.[1] ?? null }]}
+            sides={type === "single" ? [{ label: isRound ? null : singleSide, depth: outDepth, selected: selOut }] : [{ label: "Utsida", depth: outDepth, selected: selOut ?? ovalPair?.[0] ?? null }, { label: "Insida", depth: inDepth, selected: selIn ?? ovalPair?.[1] ?? null }]}
             ext={ext} rings={activeRings} insideRings={insideRings} insideExt={insideExt} baseMm={baseMm} insideBaseMm={insideBaseMm} relaxed={isRound} screwBrand={proFeat && isRound ? brand : undefined} ovalSingle={proFeat && cyl === "standard"} iloqSingle={proFeat && cyl === "iloq" && type === "single"} onShowAll={mode === "all" ? undefined : () => { setMode("all"); setSel({ key: "", out: null, in: null }); }}
             fitting={activeFitting} onFittingChange={fittingEnabled ? setFitting : undefined} fittingChoices={fittingChoices} iloqDouble={iloqDouble} locked={locked} onLocked={() => setSignupOpen(true)}
             {...(pro ? { projectName: project.name, projectDoors: project.doors.length, projectCount: projectStore.list.length, onOpenProject: () => { setSwitchProject(true); setProjectOpen(true); } } : {})}
             onSave={!pro ? undefined : (sides) => { trackEvent("sparad_dorr", { cylinder: cyl }); setPendingDoor({ sides, kind: isRound ? "rund" : cyl === "iloq" ? "iloq" : "oval", ...(isRound ? { brand } : {}), ...(activeFitting ? { fitting: activeFitting } : {}) }); }}
           />
           <ModePicker pro={pro} mode={mode} onChange={(m) => { setMode(m); setSel({ key: "", out: null, in: null }); }} />
-          <CylinderResults mode={mode} ovalSingle={cyl === "standard" && type === "single"} iloqSingle={cyl === "iloq" && type === "single"} preferred={ovalPair?.[0]} title={type === "single" ? null : "Utsida"} depth={parse(outside)} ext={ext} rings={activeRings} baseMm={baseMm} relaxed={isRound} selected={selOut} onSelect={(c) => setSel((s) => ({ key: selKey, out: c, in: s.key === selKey ? s.in : null }))} />
-          {type === "double" && <CylinderResults mode={mode} preferred={ovalPair?.[1]} title="Insida" depth={parse(inside)} ext={insideExt} rings={insideRings} baseMm={insideBaseMm} relaxed={isRound} selected={selIn} onSelect={(c) => setSel((s) => ({ key: selKey, out: s.key === selKey ? s.out : null, in: c }))} />}
+          <CylinderResults mode={mode} ovalSingle={cyl === "standard" && type === "single"} iloqSingle={cyl === "iloq" && type === "single"} preferred={ovalPair?.[0]} title={type === "single" ? null : "Utsida"} depth={outDepth} ext={ext} rings={activeRings} baseMm={baseMm} relaxed={isRound} selected={selOut} onSelect={(c) => setSel((s) => ({ key: selKey, out: c, in: s.key === selKey ? s.in : null }))} />
+          {type === "double" && <CylinderResults mode={mode} preferred={ovalPair?.[1]} title="Insida" depth={inDepth} ext={insideExt} rings={insideRings} baseMm={insideBaseMm} relaxed={isRound} selected={selIn} onSelect={(c) => setSel((s) => ({ key: selKey, out: s.key === selKey ? s.out : null, in: c }))} />}
         </section>
       </main>
       <Dialog open={accountOpen} onOpenChange={setAccountOpen}>

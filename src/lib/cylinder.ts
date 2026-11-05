@@ -27,6 +27,11 @@ export const ROUND_EXTENDER_SIZES = [10] as const;
 export const ROUND_RING_HEIGHTS = [8, 13] as const; // endast för runda cylindrar
 // Spärr: större dörrdjup räknas inte (skyddar mot krasch vid orimliga mått).
 export const MAX_DEPTH_MM = 250;
+/** Kontorsläge: grundmåttet till dörrbladet plus extra skyltar på samma sida. */
+export function officeDepthMm(base: number | null, extraMm: number): number | null {
+  if (base === null || !Number.isFinite(base) || base < 0 || !Number.isFinite(extraMm) || extraMm < 0) return null;
+  return Math.round((base + extraMm) * 10) / 10;
+}
 export const TOLERANCE_MIN = -2;
 export const TOLERANCE_MAX = 2;
 
