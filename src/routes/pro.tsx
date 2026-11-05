@@ -42,7 +42,8 @@ function ProRoute() {
 
 function ProAccountBar({ userId }: { userId: string }) {
   const { active, loading } = useSubscription(userId);
-  if (loading) return null;
+  // Med aktivt Pro: ingen remsa – abonnemang och kvitton finns under Konto-knappen.
+  if (loading || active) return null;
   return (
     <Link to="/konto" className="flex items-center gap-2 rounded-xl border border-accent/40 bg-accent/5 px-3 py-2 text-sm shadow-card hover:bg-accent/10">
       <Star className="size-4 shrink-0 text-accent" aria-hidden />
