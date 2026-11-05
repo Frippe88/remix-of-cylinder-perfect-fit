@@ -25,6 +25,9 @@ import { trackEvent } from "@/lib/analytics";
 import {
   formatMm,
   officeDepthMm,
+  centerToCaseMm,
+  LOCK_CASE_MM,
+  type LockCase,
   calculate,
   preferOvalDoublePair,
   EXTENDER_SIZES,
@@ -111,8 +114,11 @@ export function CalculatorPage({ variant, loginBar, navActive, locked = false }:
   const outExtra = selectionMm(officeFittings, "outside");
   const inExtra = selectionMm(officeFittings, "inside");
   const abc = resolveABC(parse(aMeasure), parse(bMeasure), parse(cMeasure));
-  const officeOutside = officeDepthMm(abc.b, outExtra);
-  const officeInside = officeDepthMm(abc.c, inExtra);
+  const [lockCase, setLockCase] = useState<LockCase>("standard");
+  const bEdge = centerToCaseMm(abc.b, lockCase);
+  const cEdge = centerToCaseMm(abc.c, lockCase);
+  const officeOutside = officeDepthMm(bEdge, outExtra);
+  const officeInside = officeDepthMm(cEdge, inExtra);
   const outDepth = office ? (type === "single" && singleSide === "Insida" ? officeInside : officeOutside) : parse(outside);
   const inDepth = office ? officeInside : parse(inside);
 
@@ -378,9 +384,20 @@ export function CalculatorPage({ variant, loginBar, navActive, locked = false }:
                 <DepthInput label="C-mått · insida till centrum kista" value={cMeasure} onChange={setCMeasure} />
                 <p className="text-xs text-muted-foreground">Fyll i två mått, det tredje räknas ut (B + C = A).</p>
                 {abc.mismatch && <p className="text-xs font-semibold text-destructive">B + C blir {formatMm(abc.a ?? 0)} – stämmer inte med A-måttet. B och C används.</p>}
+                <div>
+                  <p className="text-xs text-muted-foreground">Låshus</p>
+                  <div className="mt-1 grid grid-cols-2 gap-2" role="group" aria-label="Låshus">
+                    {(["standard", "electric"] as const).map((l) => (
+                      <button key={l} type="button" onClick={() => setLockCase(l)} aria-pressed={lockCase === l}
+                        className={`min-h-11 rounded-lg border px-2 text-xs font-semibold ${lockCase === l ? "border-accent bg-card ring-1 ring-accent" : "border-border text-muted-foreground"}`}>
+                        {l === "standard" ? "Standardlås" : "Ellås / motorlås"} · {formatMm(LOCK_CASE_MM[l])}
+                      </button>
+                    ))}
+                  </div>
+                </div>
                 <OfficeFittingPicker selected={officeFittings} onChange={setOfficeFittings} />
-                {officeOutside !== null && <p className="text-xs text-muted-foreground"><span className="font-semibold text-side-outside">Utsida:</span> B {formatMm(abc.b ?? 0)} + {formatMm(outExtra)} = <strong className="font-mono text-foreground">{formatMm(officeOutside)}</strong></p>}
-                {officeInside !== null && <p className="text-xs text-muted-foreground"><span className="font-semibold text-side-inside">Insida:</span> C {formatMm(abc.c ?? 0)} + {formatMm(inExtra)} = <strong className="font-mono text-foreground">{formatMm(officeInside)}</strong></p>}
+                {officeOutside !== null && <p className="text-xs text-muted-foreground"><span className="font-semibold text-side-outside">Utsida:</span> B {formatMm(abc.b ?? 0)} − halva kistan = {formatMm(bEdge ?? 0)} + {formatMm(outExtra)} = <strong className="font-mono text-foreground">{formatMm(officeOutside)}</strong></p>}
+                {officeInside !== null && <p className="text-xs text-muted-foreground"><span className="font-semibold text-side-inside">Insida:</span> C {formatMm(abc.c ?? 0)} − halva kistan = {formatMm(cEdge ?? 0)} + {formatMm(inExtra)} = <strong className="font-mono text-foreground">{formatMm(officeInside)}</strong></p>}
               </div>
             </> : <>
               <DepthInput label={type === "single" ? "Dörrdjup" : "Dörrdjup utsida"} value={outside} onChange={setOutside} />
