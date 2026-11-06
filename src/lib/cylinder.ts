@@ -226,8 +226,8 @@ export function iloqSingleScrewSet(extenderMm: number): ScrewSet {
   return { text: `63mm räcker inte, längre klippbar cylinderskruv krävs (minst ${formatMm(need)})`, warning: true };
 }
 
-// Skruv för dubbel oval: genom insidans cylinder (~19,5mm) + kista 18,5mm + minst 10mm gänga = 48mm, plus all förlängning (in + ut).
-export const OVAL_DOUBLE_SCREW_BASE_MM = 48;
+// Skruv för dubbel oval: skruvsätet 10mm in i insidans 31mm cylinder → 21mm gods + kista 18,5mm + minst 10mm gänga = 49,5mm, plus all förlängning (in + ut).
+export const OVAL_DOUBLE_SCREW_BASE_MM = 49.5;
 export const OVAL_DOUBLE_SCREW_NOTE = "Skruven går genom insidans cylinder och kistan, och gängas minst 10mm in i utsidans cylinder.";
 export function ovalDoubleScrewNeedMm(totalExtMm: number): number {
   return OVAL_DOUBLE_SCREW_BASE_MM + totalExtMm;

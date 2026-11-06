@@ -232,11 +232,11 @@ describe("färre förlängare tänker på 63mm-skruven", () => {
 import { ovalDoubleScrewSet } from "./cylinder";
 describe("skruv dubbel oval", () => {
   it("0 förlängning ger 63mm klippbar", () => expect(ovalDoubleScrewSet(0).text).toBe("2 st 63mm klippbar cylinderskruv"));
-  it("15mm totalt räcker med 63mm", () => expect(ovalDoubleScrewSet(15).warning).toBe(false));
-  it("16mm totalt kräver längre skruv, minst 64mm", () => {
-    const s = ovalDoubleScrewSet(16);
+  it("13mm totalt räcker med 63mm", () => expect(ovalDoubleScrewSet(13).warning).toBe(false));
+  it("14mm totalt kräver längre skruv, minst 63,5mm", () => {
+    const s = ovalDoubleScrewSet(14);
     expect(s.warning).toBe(true);
-    expect(s.text).toContain("minst 64mm");
+    expect(s.text).toContain("minst 63,5mm");
   });
 });
 
