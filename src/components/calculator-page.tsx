@@ -232,13 +232,13 @@ export function CalculatorPage({ variant, loginBar, navActive, locked = false }:
       </nav>
       {loginBar && <div className="mx-auto max-w-5xl px-4 pt-3">{loginBar}</div>}
 
-      {pro && <div className="mx-auto max-w-5xl px-4 pt-4">
+      {(pro || (locked && navActive === "pro")) && <div className="mx-auto max-w-5xl px-4 pt-4">
         <div className="grid grid-cols-2 gap-1 rounded-xl bg-muted p-1" role="tablist" aria-label="Kalkyl">
           <button type="button" role="tab" aria-selected={!office} onClick={() => setMeasurementMode("site")} className={`min-h-12 rounded-lg px-2 text-sm font-bold transition ${!office ? "bg-card shadow-card ring-1 ring-accent" : "text-muted-foreground"}`}>
             Dörrmätning<span className="block text-xs font-normal text-muted-foreground">Mät dörrdjup vid dörren</span>
           </button>
-          <button type="button" role="tab" aria-selected={office} onClick={() => setMeasurementMode("office")} className={`min-h-12 rounded-lg px-2 text-sm font-bold transition ${office ? "bg-card shadow-card ring-1 ring-accent" : "text-muted-foreground"}`}>
-            Dörrlitra<span className="block text-xs font-normal text-muted-foreground">A/B/C från dörrlitra</span>
+          <button type="button" role="tab" aria-selected={office} onClick={() => (pro ? setMeasurementMode("office") : setSignupOpen(true))} className={`min-h-12 rounded-lg px-2 text-sm font-bold transition ${office ? "bg-card shadow-card ring-1 ring-accent" : "text-muted-foreground"}`}>
+            Dörrlitra{!pro && <span aria-label="Kräver Pro"> 🔒</span>}<span className="block text-xs font-normal text-muted-foreground">A/B/C från dörrlitra</span>
           </button>
         </div>
       </div>}
