@@ -245,13 +245,17 @@ export function preferOvalDoublePair(outList: Combination[], inList: Combination
   if (!a || !b) return null;
   if (!ovalDoubleScrewSet(a.totalExtension + b.totalExtension).warning) return [a, b];
   const inTol = (c: Combination) => c.deviation >= TOLERANCE_MIN && c.deviation <= TOLERANCE_MAX;
+  // 63mm räcker: minst avvikelse. Annars: kortast möjliga skruv (minst förlängning), sedan minst avvikelse.
   let best: [Combination, Combination] | null = null, score = Infinity;
+  let short: [Combination, Combination] | null = null, ext = Infinity, dev = Infinity;
   for (const o of outList.filter(inTol)) for (const i of inList.filter(inTol)) {
-    if (ovalDoubleScrewSet(o.totalExtension + i.totalExtension).warning) continue;
+    const t = o.totalExtension + i.totalExtension;
     const s = Math.abs(o.deviation) + Math.abs(i.deviation);
-    if (s < score) { score = s; best = [o, i]; }
+    if (!ovalDoubleScrewSet(t).warning) {
+      if (s < score) { score = s; best = [o, i]; }
+    } else if (t < ext || (t === ext && s < dev)) { ext = t; dev = s; short = [o, i]; }
   }
-  return best ?? [a, b];
+  return best ?? short ?? [a, b];
 }
 
 /** Finns någon kombination inom toleransen där 24/63mm skruv räcker? */
@@ -262,5 +266,10 @@ export function hasOvalScrewFit(list: Combination[], fn: ScrewFn = ovalSingleScr
 /** Enkel oval: lägg kombinationer där 24/63mm skruv räcker först (inom toleransen), annars oförändrad ordning. */
 export function preferOvalScrewFit(list: Combination[], fn: ScrewFn = ovalSingleScrewSet): Combination[] {
   const ok = (c: Combination) => c.deviation >= TOLERANCE_MIN && c.deviation <= TOLERANCE_MAX && !fn(c.totalExtension).warning;
-  return [...list.filter(ok), ...list.filter((c) => !ok(c))];
+  const fits = list.filter(ok);
+  if (fits.length) return [...fits, ...list.filter((c) => !ok(c))];
+  // Ingen kombination klarar 63mm: kortast skruv (minst förlängning) inom toleransen först.
+  const inTol = (c: Combination) => c.deviation >= TOLERANCE_MIN && c.deviation <= TOLERANCE_MAX;
+  const tol = list.filter(inTol).sort((x, y) => x.totalExtension - y.totalExtension || Math.abs(x.deviation) - Math.abs(y.deviation));
+  return [...tol, ...list.filter((c) => !inTol(c))];
 }
