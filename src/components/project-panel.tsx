@@ -369,7 +369,7 @@ export function ProjectPanel({ project, setProject, store, open, onOpenChange, c
               </p>
               <p className="mt-4 text-xs font-bold uppercase tracking-wide text-muted-foreground">Idag</p>
               <ul className="mt-2 space-y-2 text-sm font-medium">
-                {["Flera projekt med dörrar för hela bygget – utan kostnad", "Molnsynk mellan telefon och dator", "Behörsval (256, 2356, 18256) – färdig sats eller lös ring", "Automatisk inköpslista per cylindertyp med ringar och förlängare", "Bocka av plocklistan – synkas mellan enheter", "Sök bland dörrarna", "Automatisk skruvlängd med varning när 63mm inte räcker", "PDF – komplett arbetsorder eller bara inköpslista", "Kopiera till mejl eller SMS med ett klick"].map((t) => (
+                {["Flera projekt med dörrar för hela bygget – utan kostnad", "Molnsynk mellan telefon och dator", "Behörsval (256, 2356, 18256) – färdig sats eller lös ring", "Automatisk inköpslista per cylindertyp med ringar och förlängare", "Sök bland dörrarna", "Automatisk skruvlängd med varning när 63mm inte räcker", "PDF – komplett arbetsorder eller bara inköpslista", "Kopiera till mejl eller SMS med ett klick"].map((t) => (
                   <li key={t} className="flex items-start gap-2"><Check className="mt-0.5 size-4 shrink-0 text-success" aria-hidden /><span>{t}</span></li>
                 ))}
               </ul>
