@@ -30,7 +30,7 @@ export const sendContactMessage = createServerFn({ method: "POST" })
       // kontakt@ was blocked by an old bounce (before mail routing existed); fall back to the inbox it forwards to.
       if (!res.sent) res = await sendTemplateEmail("contact-message", "cylinderkalkyl@gmail.com", opts("gmail"));
       console.log("contact send result", res);
-      if (!res.sent) return { ok: false as const, error: "Meddelandet kunde inte levereras. Mejla oss direkt." };
+      if (!res.sent) return { ok: false as const, error: "Meddelandet kunde inte levereras (v2). Mejla oss direkt." };
     } catch (e) {
       console.error("contact send failed", e);
       return { ok: false as const, error: "Det gick inte att skicka just nu. Mejla oss direkt." };
