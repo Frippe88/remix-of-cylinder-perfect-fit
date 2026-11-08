@@ -66,6 +66,27 @@ async function upsertCompany(subscription: any, env: StripeEnv) {
   if (error) console.error("Company upsert failed:", error.message);
 }
 
+// Welcome email to the buyer once the company subscription first becomes active.
+async function sendCompanyWelcomeOnPurchase(subscription: any, previous: any) {
+  if (subscription.metadata?.kind !== "company") return;
+  const active = ["active", "trialing"].includes(subscription.status);
+  const justActivated = previous === null || (previous?.status && !["active", "trialing"].includes(previous.status));
+  if (!active || !justActivated) return;
+  const m = subscription.metadata ?? {};
+  const to = String(m.adminEmail || "").toLowerCase();
+  if (!to.includes("@")) return;
+  const seats = Math.min(COMPANY_MAX_SEATS, Math.max(1, Math.floor(Number(subscription.items?.data?.[0]?.quantity ?? 1))));
+  try {
+    const { sendTemplateEmail } = await import("@/lib/email-templates/send-email");
+    await sendTemplateEmail("company-welcome", to, {
+      templateData: { companyName: String(m.companyName || "Ert företag"), email: to, seats },
+      idempotencyKey: `company-welcome-sub-${subscription.id}`,
+    });
+  } catch (e) {
+    console.error("company welcome on purchase failed", e);
+  }
+}
+
 async function handleWebhook(req: Request, env: StripeEnv) {
   const event = await verifyWebhook(req, env);
   const obj = event.data.object;
@@ -73,6 +94,7 @@ async function handleWebhook(req: Request, env: StripeEnv) {
     case "customer.subscription.created":
     case "customer.subscription.updated":
       await upsertSubscription(obj, env);
+      await sendCompanyWelcomeOnPurchase(obj, event.type === "customer.subscription.created" ? null : (event.data as any).previous_attributes ?? {});
       break;
     case "customer.subscription.deleted": {
       const db = await admin();
