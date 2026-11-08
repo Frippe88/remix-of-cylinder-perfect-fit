@@ -20,10 +20,16 @@ export const sendContactMessage = createServerFn({ method: "POST" })
     recent.set(key, [...hits, now]);
 
     const { sendTemplateEmail } = await import("@/lib/email-templates/send-email");
-    await sendTemplateEmail("contact-message", "kontakt@cylinderhjalpen.se", {
-      templateData: { name: data.name, email: data.email, message: data.message },
-      replyTo: data.email,
-      idempotencyKey: `contact-message-${crypto.randomUUID()}`,
-    });
+    try {
+      const res = await sendTemplateEmail("contact-message", "kontakt@cylinderhjalpen.se", {
+        templateData: { name: data.name, email: data.email, message: data.message },
+        replyTo: data.email,
+        idempotencyKey: `contact-message-${crypto.randomUUID()}`,
+      });
+      if (!res.sent) return { ok: false as const, error: "Meddelandet kunde inte levereras. Mejla oss direkt." };
+    } catch (e) {
+      console.error("contact send failed", e);
+      return { ok: false as const, error: "Det gick inte att skicka just nu. Mejla oss direkt." };
+    }
     return { ok: true as const };
   });
