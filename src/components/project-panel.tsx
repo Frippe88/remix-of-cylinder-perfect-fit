@@ -9,7 +9,6 @@ import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from "@/components/ui/sheet";
 import { clearDoors, doorsText, doorsToPick, FITTING_LABEL, fittingForSide, fittingRingText, isIloqInner, ringName, KIND_LABEL, PAIR_FITTINGS, projectText, projectTotals, purchaseList, RING_HAS_SIDE, setDoorSide, totalsText, type Door, type Project } from "@/lib/project";
 import { sideChip } from "@/components/pick-list-button";
-import { CONTACT_EMAIL } from "@/components/contact-form";
 import { formatMm } from "@/lib/cylinder";
 import { FileDown } from "lucide-react";
 import { deliverFile, FITTING_NOTE, pdfFileName, projectPdf } from "@/lib/project-pdf";
@@ -383,13 +382,10 @@ export function ProjectPanel({ project, setProject, store, open, onOpenChange, c
               </div>
               <p className="mt-3 text-sm text-muted-foreground">Senare blir projekt en prenumeration som håller funktionen igång.</p>
               <Button asChild variant="outline" className="mt-5 h-11 w-full border-accent/40 font-semibold">
-                <a href={`mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent("Feedback om Projekt (beta)")}&body=${encodeURIComponent("Hej!\n\nMin feedback om projektfunktionen:\n\n")}`}>
+                <Link to="/kontakt">
                   <Mail className="size-4 text-accent" aria-hidden /> Skicka feedback
-                </a>
+                </Link>
               </Button>
-              <p className="mt-2 text-center text-xs text-muted-foreground">
-                Mejl: <a className="font-semibold text-link underline underline-offset-2" href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>
-              </p>
             </InfoSheetRow>
           </div>
           {(project.doors.length > 0 || store.list.length > 1) && (

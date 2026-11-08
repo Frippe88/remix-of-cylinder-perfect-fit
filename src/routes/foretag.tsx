@@ -1,7 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowLeft, Building2, Check, Mail, Receipt, Star, Users, Zap } from "lucide-react";
 import { CompanyBuy } from "@/components/company-buy";
-import { CONTACT_EMAIL } from "@/components/contact-form";
 import { PaymentTestModeBanner } from "@/components/payment-test-mode-banner";
 import { COMPANY_TIERS, PRO_MONTHLY_SEK } from "@/lib/subscription";
 
@@ -85,7 +84,7 @@ function CompanyPage() {
         </section>
         <section className="flex items-start gap-3 rounded-xl border bg-card p-4 text-sm">
           <Mail className="mt-0.5 size-5 shrink-0 text-accent" aria-hidden />
-          <p>Vill ni hellre ha faktura (30 dagar) eller har andra frågor? Mejla oss på <a href={`mailto:${CONTACT_EMAIL}`} className="font-semibold text-accent underline">{CONTACT_EMAIL}</a> så ordnar vi det.</p>
+          <p>Vill ni hellre ha faktura (30 dagar) eller har andra frågor? <Link to="/kontakt" className="font-semibold text-accent underline">Skicka ett meddelande</Link> så ordnar vi det.</p>
         </section>
       </main>
     </div>

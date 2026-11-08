@@ -1,5 +1,4 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { CONTACT_EMAIL } from "@/components/contact-form";
 
 export const Route = createFileRoute("/villkor")({
   staticData: { sitemap: true },
@@ -45,7 +44,7 @@ function Villkor() {
           </section>
         ))}
       </div>
-      <p className="mt-8 text-sm text-muted-foreground">Frågor? Mejla till <a href={`mailto:${CONTACT_EMAIL}`} className="font-semibold text-link underline underline-offset-2">{CONTACT_EMAIL}</a></p>
+      <p className="mt-8 text-sm text-muted-foreground">Frågor? <Link to="/kontakt" className="font-semibold text-link underline underline-offset-2">Skicka ett meddelande</Link></p>
     </main>
   );
 }
