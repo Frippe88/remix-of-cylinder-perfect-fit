@@ -2,7 +2,7 @@ import { Link } from "@tanstack/react-router";
 import { GUIDES } from "@/lib/guides";
 import { ArrowRight, BookOpen, Check, ChevronDown, CircleHelp, FolderOpen, KeyRound, Minus, Moon, Package, Plus, ShieldCheck, Sun, UserRound, X } from "lucide-react";
 import { Dialog, DialogClose, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { useEffect, useState } from "react";
+import { useEffect, useState, type KeyboardEvent } from "react";
 import { CylinderResults, ModePicker } from "@/components/cylinder-results";
 import { OfficeFittingPicker } from "@/components/office-fitting-picker";
 import { resolveABC, selectionMm, type FittingSelection } from "@/lib/office-fittings";
@@ -517,7 +517,7 @@ function ThemeToggle() {
 }
 
 function DepthInput({ label, value, onChange, clearable = true }: { label: string; value: string; onChange: (v: string) => void; clearable?: boolean }) {
-  const onKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+  const onKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
     if (e.key !== "Enter") return;
     e.preventDefault();
     const all = Array.from(document.querySelectorAll<HTMLInputElement>("input[data-depth-input]"));
