@@ -25,7 +25,11 @@ const sections: { h: string; p: string }[] = [
   { h: "4. Ansvar", p: "Beräkningarna bygger på tillverkarnas mått och branschpraxis. Kontrollera alltid mått och montage på plats. Cylinderhjälpen ansvarar inte för felaktiga beställningar, montage eller följdskador." },
   { h: "5. Varumärken", p: "ASSA ABLOY, iLOQ, dormakaba, EVVA och andra fabrikat är varumärken som tillhör respektive ägare. Cylinderhjälpen är inte knuten till dessa företag." },
   { h: "6. Abonnemang", p: "Pro betalas per månad eller år, utan bindningstid. Uppsägning gäller från nästa betalperiod." },
-  { h: "7. Ändringar", p: "Villkoren kan uppdateras. Den senaste versionen finns alltid på denna sida." },
+  { h: "7. Personuppgifter", p: "Gratiskalkylatorn kräver inget konto. Skapar du ett Pro-konto sparar vi din e-postadress för inloggning, lösenordsåterställning och kvitton, samt de projekt och dörrar du själv sparar. Uppgifterna säljs aldrig och delas inte med andra än de tjänster som behövs för att driva sajten." },
+  { h: "8. Betalning", p: "Betalningar hanteras krypterat av Stripe. Vi ser eller sparar aldrig ditt kortnummer – vi får bara besked om att abonnemanget är betalt." },
+  { h: "9. Cookies och statistik", p: "Vi använder cookies och lokal lagring för att hålla dig inloggad och komma ihåg dina inställningar, samt Google Analytics för anonym besöksstatistik så vi kan förbättra sajten." },
+  { h: "10. Dina rättigheter", p: "Du har rätt att få veta vilka uppgifter vi har om dig, få dem rättade eller raderade. Mejla oss så tar vi bort ditt konto och dina projekt." },
+  { h: "11. Ändringar", p: "Villkoren kan uppdateras. Den senaste versionen finns alltid på denna sida." },
 ];
 
 function Villkor() {
