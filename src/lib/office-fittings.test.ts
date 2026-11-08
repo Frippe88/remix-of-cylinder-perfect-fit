@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { OFFICE_FITTINGS, officeFittingMm, officeFittingsFor } from "./office-fittings";
+import { OFFICE_FITTINGS, officeFittingMm, officeFittingsFor, placementsFor, selectionMm } from "./office-fittings";
 import { calculate, officeDepthMm } from "./cylinder";
 
 describe("kollegans behörsmått", () => {
@@ -70,7 +70,6 @@ describe("B/C till centrum kista", () => {
   it("ellås drar av 10 mm", () => expect(centerToCaseMm(25, "electric")).toBe(15));
 });
 
-import { placementsFor, selectionMm } from "./office-fittings";
 describe("placering per behör", () => {
   it("bara SLUG 17, SLUG 08 och ASSA 4291 kan väljas per sida", () => {
     for (const id of ["slug17", "slug08", "assa4291"]) expect(placementsFor(id)).toEqual(["outside", "inside", "both"]);
