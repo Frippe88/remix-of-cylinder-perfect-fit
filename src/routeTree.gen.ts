@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as ForetagRouteImport } from './routes/foretag'
+import { Route as KontaktRouteImport } from './routes/kontakt'
 import { Route as KontoRouteImport } from './routes/konto'
 import { Route as ProRouteImport } from './routes/pro'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
@@ -36,6 +37,11 @@ const AdminRoute = AdminRouteImport.update({
 const ForetagRoute = ForetagRouteImport.update({
   id: '/foretag',
   path: '/foretag',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const KontaktRoute = KontaktRouteImport.update({
+  id: '/kontakt',
+  path: '/kontakt',
   getParentRoute: () => rootRouteImport,
 } as any)
 const KontoRoute = KontoRouteImport.update({
@@ -95,6 +101,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
   '/foretag': typeof ForetagRoute
+  '/kontakt': typeof KontaktRoute
   '/konto': typeof KontoRoute
   '/pro': typeof ProRoute
   '/reset-password': typeof ResetPasswordRoute
@@ -110,6 +117,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
   '/foretag': typeof ForetagRoute
+  '/kontakt': typeof KontaktRoute
   '/konto': typeof KontoRoute
   '/pro': typeof ProRoute
   '/reset-password': typeof ResetPasswordRoute
@@ -126,6 +134,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
   '/foretag': typeof ForetagRoute
+  '/kontakt': typeof KontaktRoute
   '/konto': typeof KontoRoute
   '/pro': typeof ProRoute
   '/reset-password': typeof ResetPasswordRoute
@@ -143,6 +152,7 @@ export interface FileRouteTypes {
     | '/'
     | '/admin'
     | '/foretag'
+    | '/kontakt'
     | '/konto'
     | '/pro'
     | '/reset-password'
@@ -158,6 +168,7 @@ export interface FileRouteTypes {
     | '/'
     | '/admin'
     | '/foretag'
+    | '/kontakt'
     | '/konto'
     | '/pro'
     | '/reset-password'
@@ -173,6 +184,7 @@ export interface FileRouteTypes {
     | '/'
     | '/admin'
     | '/foretag'
+    | '/kontakt'
     | '/konto'
     | '/pro'
     | '/reset-password'
@@ -189,6 +201,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AdminRoute: typeof AdminRoute
   ForetagRoute: typeof ForetagRoute
+  KontaktRoute: typeof KontaktRoute
   KontoRoute: typeof KontoRoute
   ProRoute: typeof ProRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
@@ -222,6 +235,13 @@ declare module '@tanstack/react-router' {
       path: '/foretag'
       fullPath: '/foretag'
       preLoaderRoute: typeof ForetagRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/kontakt': {
+      id: '/kontakt'
+      path: '/kontakt'
+      fullPath: '/kontakt'
+      preLoaderRoute: typeof KontaktRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/konto': {
@@ -301,6 +321,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AdminRoute: AdminRoute,
   ForetagRoute: ForetagRoute,
+  KontaktRoute: KontaktRoute,
   KontoRoute: KontoRoute,
   ProRoute: ProRoute,
   ResetPasswordRoute: ResetPasswordRoute,

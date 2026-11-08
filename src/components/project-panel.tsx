@@ -1,3 +1,4 @@
+import { Link } from "@tanstack/react-router";
 import { doorScrew } from "@/lib/project";
 import { trackEvent } from "@/lib/analytics";
 import { supabase } from "@/integrations/supabase/client";
