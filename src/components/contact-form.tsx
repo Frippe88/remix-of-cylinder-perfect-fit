@@ -1,6 +1,6 @@
 import { Mail } from "lucide-react";
 
-export const CONTACT_EMAIL = "cylinderkalkyl@gmail.com";
+export const CONTACT_EMAIL = "kontakt@cylinderhjalpen.se";
 
 export function ContactContent() {
   const href = `mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent("Fråga om Cylinderhjälpen")}`;
