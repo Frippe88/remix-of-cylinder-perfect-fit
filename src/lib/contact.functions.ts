@@ -20,7 +20,7 @@ export const sendContactMessage = createServerFn({ method: "POST" })
     recent.set(key, [...hits, now]);
 
     const { sendTemplateEmail } = await import("@/lib/email-templates/send-email");
-    await sendTemplateEmail("contact-message", "cylinderkalkyl@gmail.com", {
+    await sendTemplateEmail("contact-message", "kontakt@cylinderhjalpen.se", {
       templateData: { name: data.name, email: data.email, message: data.message },
       replyTo: data.email,
       idempotencyKey: `contact-message-${crypto.randomUUID()}`,
