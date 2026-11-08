@@ -23,7 +23,7 @@ export function CookieNotice() {
         <button
           type="button"
           onClick={ok}
-          className="shrink-0 rounded-md bg-primary px-4 py-1.5 font-semibold text-primary-foreground hover:opacity-90"
+          className="shrink-0 rounded-md bg-accent px-4 py-1.5 font-bold text-accent-foreground hover:bg-accent/85"
         >
           Okej
         </button>
