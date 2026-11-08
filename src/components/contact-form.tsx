@@ -67,7 +67,7 @@ export function ContactContent() {
           {status === "sending" ? <Loader2 className="size-4 animate-spin" aria-hidden /> : <Send className="size-4" aria-hidden />}
           {status === "sending" ? "Skickar…" : "Skicka meddelande"}
         </button>
-        <a href={`mailto:${CONTACT_EMAIL}`} className="inline-flex items-center gap-1.5 text-sm text-muted-foreground underline underline-offset-2"><Mail className="size-4" aria-hidden />{CONTACT_EMAIL}</a>
+        <a href={`mailto:${CONTACT_EMAIL}`} className="inline-flex items-center gap-1.5 text-sm font-medium text-accent underline underline-offset-2"><Mail className="size-4" aria-hidden />{CONTACT_EMAIL}</a>
       </div>
     </form>
   );
