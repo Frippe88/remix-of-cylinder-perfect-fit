@@ -1,8 +1,8 @@
 import { Link } from "@tanstack/react-router";
 import { GUIDES } from "@/lib/guides";
-import { ArrowRight, BookOpen, Check, ChevronDown, CircleHelp, FolderOpen, KeyRound, Minus, Moon, Package, Plus, ShieldCheck, Sun, UserRound } from "lucide-react";
+import { ArrowRight, BookOpen, Check, ChevronDown, CircleHelp, FolderOpen, KeyRound, Minus, Moon, Package, Plus, ShieldCheck, Sun, UserRound, X } from "lucide-react";
 import { Dialog, DialogClose, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { useEffect, useState } from "react";
+import { useEffect, useState, type KeyboardEvent } from "react";
 import { CylinderResults, ModePicker } from "@/components/cylinder-results";
 import { OfficeFittingPicker } from "@/components/office-fitting-picker";
 import { resolveABC, selectionMm, type FittingSelection } from "@/lib/office-fittings";
@@ -516,7 +516,14 @@ function ThemeToggle() {
   );
 }
 
-function DepthInput({ label, value, onChange }: { label: string; value: string; onChange: (v: string) => void }) {
+function DepthInput({ label, value, onChange, clearable = true }: { label: string; value: string; onChange: (v: string) => void; clearable?: boolean }) {
+  const onKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
+    if (e.key !== "Enter") return;
+    e.preventDefault();
+    const all = Array.from(document.querySelectorAll<HTMLInputElement>("input[data-depth-input]"));
+    const next = all[all.indexOf(e.currentTarget) + 1];
+    if (next) { next.focus(); next.select(); } else e.currentTarget.blur();
+  };
   const step = (d: number) => {
     const n = parse(value) ?? 0;
     onChange(String(Math.max(0, Math.round((n + d) * 10) / 10)).replace(".", ","));
@@ -535,8 +542,17 @@ function DepthInput({ label, value, onChange }: { label: string; value: string; 
           value={value}
           onChange={(e) => onChange(e.target.value.replace(/[^0-9.,]/g, "").slice(0, 6))}
           placeholder="t.ex. 36"
+          data-depth-input=""
+          enterKeyHint="next"
+          onKeyDown={onKeyDown}
           className="w-full min-w-0 bg-transparent px-3 py-3 text-center font-mono text-xl font-bold outline-none"
         />
+        {clearable && value !== "" && (
+          <button type="button" onClick={(e) => { onChange(""); (e.currentTarget.parentElement?.querySelector("input") as HTMLInputElement | null)?.focus(); }}
+            aria-label={`Rensa ${label.toLowerCase()}`} className="mr-1 flex size-8 shrink-0 items-center justify-center rounded-full text-muted-foreground transition hover:bg-muted hover:text-foreground">
+            <X className="size-4" aria-hidden />
+          </button>
+        )}
         <span className="pr-2 text-sm text-muted-foreground">mm</span>
         <button type="button" onClick={() => step(1)} aria-label={`Öka ${label.toLowerCase()} 1 mm`} className={`${btn} border-l border-input`}>
           <Plus className="size-5" aria-hidden />
