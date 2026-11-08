@@ -16,6 +16,7 @@ import { reportLovableError } from "../lib/lovable-error-reporting";
 import { registerServiceWorker } from "../lib/register-sw";
 import { initAnalytics, trackPageView } from "../lib/analytics";
 import { SingleSessionGuard } from "../components/single-session-guard";
+import { CookieNotice } from "../components/cookie-notice";
 
 function NotFoundComponent() {
   return (
@@ -149,6 +150,7 @@ function RootComponent() {
     <QueryClientProvider client={queryClient}>
       {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
       <Outlet />
+      <CookieNotice />
       <SingleSessionGuard />
       <footer className="border-t bg-card/60">
         <div className="mx-auto flex max-w-5xl flex-col gap-1 px-4 pb-24 pt-6 text-xs text-muted-foreground sm:flex-row sm:items-center sm:justify-between">
