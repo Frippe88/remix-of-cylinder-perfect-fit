@@ -5,9 +5,9 @@ type Fitting = { id: string; name: string; outside: number | null; inside: numbe
 export const OFFICE_FITTINGS: readonly Fitting[] = [
   { id: "slug17", name: "SLUG 17", outside: 3, inside: 3 },
   { id: "slug08", name: "SLUG 08", outside: 4, inside: 4 },
+  { id: "assa4291", name: "ASSA 4291 skylt", outside: 5, inside: 5 },
   { id: "assa179", name: "ASSA 179", outside: 5, inside: 5 },
   { id: "assa179-stainless", name: "ASSA 179 Rostfri", outside: 4, inside: 4 },
-  { id: "assa4291", name: "ASSA 4291 skylt", outside: 5, inside: 5 },
   { id: "st17903", name: "ST17903", outside: 2, inside: 2 },
   { id: "st17904", name: "ST17904", outside: 2, inside: 2 },
   { id: "st17910", name: "ST17910", outside: 2, inside: 5 },
