@@ -547,13 +547,13 @@ function DepthInput({ label, value, onChange, clearable = true }: { label: strin
           onKeyDown={onKeyDown}
           className="w-full min-w-0 bg-transparent px-3 py-3 text-center font-mono text-xl font-bold outline-none"
         />
+        <span className="pr-2 text-sm text-muted-foreground">mm</span>
         {clearable && value !== "" && (
           <button type="button" onClick={(e) => { onChange(""); (e.currentTarget.parentElement?.querySelector("input") as HTMLInputElement | null)?.focus(); }}
-            aria-label={`Rensa ${label.toLowerCase()}`} className="mr-1 flex size-8 shrink-0 items-center justify-center rounded-full text-muted-foreground transition hover:bg-muted hover:text-foreground">
-            <X className="size-4" aria-hidden />
+            aria-label={`Rensa ${label.toLowerCase()}`} className="mr-2 inline-flex h-7 shrink-0 items-center gap-1 rounded-full border border-input bg-muted px-2 text-xs font-semibold text-muted-foreground transition hover:border-destructive/40 hover:text-destructive">
+            <X className="size-3.5" aria-hidden />Rensa
           </button>
         )}
-        <span className="pr-2 text-sm text-muted-foreground">mm</span>
         <button type="button" onClick={() => step(1)} aria-label={`Öka ${label.toLowerCase()} 1 mm`} className={`${btn} border-l border-input`}>
           <Plus className="size-5" aria-hidden />
         </button>
