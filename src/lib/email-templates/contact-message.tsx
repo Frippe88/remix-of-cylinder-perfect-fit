@@ -33,7 +33,6 @@ export const template = {
   component: ContactMessage,
   subject: (d: Record<string, any>) => `Kontakt från ${d['name'] || 'besökare'} – Cylinderhjälpen`,
   displayName: 'Kontaktformulär',
-  to: 'kontakt@cylinderhjalpen.se',
   previewData: { name: 'Anna Andersson', email: 'anna@example.com', message: 'Hej! Jag har en fråga om runda cylindrar.' },
 } satisfies TemplateEntry
 
