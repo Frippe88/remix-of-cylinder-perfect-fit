@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { OFFICE_FITTINGS, officeFittingMm, officeFittingsFor, placementsFor, selectionMm } from "./office-fittings";
+import { OFFICE_FITTINGS, officeFittingMm, officeFittingsFor } from "./office-fittings";
 import { calculate, officeDepthMm } from "./cylinder";
 
 describe("kollegans behörsmått", () => {
