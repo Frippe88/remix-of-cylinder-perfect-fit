@@ -20,6 +20,9 @@ export const OFFICE_FITTINGS: readonly Fitting[] = [
   { id: "hoppe-thumb", name: "Hoppe Vredskylt", outside: null, inside: 3 },
 ];
 
+/** Behör som kan väljas per sida (Ute/Inne/Båda). */
+export const SIDE_CHOICE_IDS: readonly string[] = ["slug17", "slug08", "assa4291"];
+
 export type FittingPlacement = "outside" | "inside" | "both";
 /** En gemensam behörslista: behör-id → placering. Saknas = inte valt. */
 export type FittingSelection = Record<string, FittingPlacement>;
@@ -42,7 +45,9 @@ export function selectionMm(sel: FittingSelection, side: "outside" | "inside"): 
 export function placementsFor(id: string): FittingPlacement[] {
   const f = OFFICE_FITTINGS.find((x) => x.id === id);
   if (!f) return [];
-  return f.outside === null ? ["inside"] : ["outside", "inside", "both"];
+  if (f.outside === null) return ["inside"];
+  // Bara lösa skyltar kan sitta på en sida; 179-beslag är genomgående och bygger alltid båda.
+  return SIDE_CHOICE_IDS.includes(f.id) ? ["outside", "inside", "both"] : ["both"];
 }
 
 /**

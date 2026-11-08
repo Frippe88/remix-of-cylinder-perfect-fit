@@ -5,6 +5,7 @@ import { OFFICE_FITTINGS, placementsFor, type FittingPlacement, type FittingSele
 import { formatMm } from "@/lib/cylinder";
 
 const LABEL: Record<FittingPlacement, string> = { outside: "Ute", inside: "Inne", both: "Båda" };
+const label = (p: FittingPlacement, n: number) => (n === 1 ? "Välj" : LABEL[p]);
 
 export function OfficeFittingPicker({ selected, onChange }: { selected: FittingSelection; onChange: (s: FittingSelection) => void }) {
   const count = Object.keys(selected).length;
@@ -35,10 +36,10 @@ export function OfficeFittingPicker({ selected, onChange }: { selected: FittingS
                 </span>
               </span>
               <div className="flex gap-1">
-                {placementsFor(f.id).map((p) => (
+                {placementsFor(f.id).map((p, _i, all) => (
                   <button key={p} type="button" aria-pressed={selected[f.id] === p} onClick={() => set(f.id, p)}
                     className={`min-h-9 min-w-11 rounded-md border px-2 text-xs font-semibold ${selected[f.id] === p ? "border-accent bg-accent text-accent-foreground" : "border-border bg-card text-muted-foreground"}`}>
-                    {LABEL[p]}
+                    {label(p, all.length)}
                   </button>
                 ))}
               </div>
