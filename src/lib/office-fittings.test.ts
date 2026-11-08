@@ -69,3 +69,18 @@ describe("B/C till centrum kista", () => {
   it("standardlås drar av 9 mm", () => expect(centerToCaseMm(25, "standard")).toBe(16));
   it("ellås drar av 10 mm", () => expect(centerToCaseMm(25, "electric")).toBe(15));
 });
+
+import { placementsFor, selectionMm } from "./office-fittings";
+describe("placering per behör", () => {
+  it("bara SLUG 17, SLUG 08 och ASSA 4291 kan väljas per sida", () => {
+    for (const id of ["slug17", "slug08", "assa4291"]) expect(placementsFor(id)).toEqual(["outside", "inside", "both"]);
+  });
+  it("alla 179-beslag bygger alltid båda sidor", () => {
+    for (const id of ["assa179", "assa179-stainless", "st17903", "st17904", "st17910", "st17912", "st17950", "st17951"]) expect(placementsFor(id)).toEqual(["both"]);
+    expect(selectionMm({ st17910: "both" }, "outside")).toBe(2);
+    expect(selectionMm({ st17910: "both" }, "inside")).toBe(5);
+  });
+  it("vredskyltar bara insida", () => {
+    expect(placementsFor("assa-thumb")).toEqual(["inside"]);
+  });
+});
