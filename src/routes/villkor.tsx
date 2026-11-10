@@ -44,7 +44,7 @@ function Villkor() {
             const [num, ...rest] = s.h.split(" ");
             return (
               <section key={s.h} className="flex gap-4 p-5">
-                <span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-accent/15 text-sm font-bold tabular-nums text-accent">{num.replace(".", "")}</span>
+                <span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-accent/15 text-sm font-bold tabular-nums text-accent">{(num ?? "").replace(".", "")}</span>
                 <div>
                   <h2 className="font-bold">{rest.join(" ")}</h2>
                   <p className="mt-1 text-sm leading-relaxed text-muted-foreground">{s.p}</p>
