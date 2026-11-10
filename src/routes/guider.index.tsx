@@ -1,5 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { ArrowRight, BookOpen } from "lucide-react";
 import { GUIDES } from "@/lib/guides";
+import { cardLift, PageHero, SitePageHeader } from "@/components/site-page";
 
 const URL = "https://cylinderhjalpen.se/guider";
 
@@ -22,20 +24,23 @@ export const Route = createFileRoute("/guider/")({
 
 function GuideIndex() {
   return (
-    <main className="mx-auto max-w-2xl px-4 py-8">
-      <Link to="/" className="text-sm text-muted-foreground hover:underline">← Till kalkylatorn</Link>
-      <h1 className="mt-4 text-3xl font-bold">Guider om cylindermontage</h1>
-      <p className="mt-2 text-muted-foreground">Korta svar på vanliga frågor ute på jobbet.</p>
-      <ul className="mt-6 space-y-3">
-        {GUIDES.map((g) => (
-          <li key={g.slug}>
-            <Link to="/guider/$slug" params={{ slug: g.slug }} className="block rounded-lg border bg-card p-4 hover:border-primary">
-              <span className="font-semibold">{g.title}</span>
-              <span className="mt-1 block text-sm text-muted-foreground">{g.description}</span>
-            </Link>
-          </li>
-        ))}
-      </ul>
-    </main>
+    <>
+      <SitePageHeader />
+      <main className="mx-auto max-w-3xl px-4 py-8 sm:py-12">
+        <PageHero eyebrow="Guider" icon={<BookOpen className="size-3.5" />} title="Guider om cylindermontage">Korta svar på vanliga frågor ute på jobbet.</PageHero>
+        <ul className="mt-8 grid gap-3 sm:grid-cols-2">
+          {GUIDES.map((g, i) => (
+            <li key={g.slug}>
+              <Link to="/guider/$slug" params={{ slug: g.slug }} className={`group flex h-full flex-col p-5 ${cardLift}`}>
+                <span className="text-xs font-bold tabular-nums text-accent">{String(i + 1).padStart(2, "0")}</span>
+                <span className="mt-1 font-bold leading-snug">{g.title}</span>
+                <span className="mt-1.5 flex-1 text-sm text-muted-foreground">{g.description}</span>
+                <span className="mt-3 inline-flex items-center gap-1 text-sm font-semibold text-accent">Läs guiden<ArrowRight className="size-4 transition-transform group-hover:translate-x-0.5" /></span>
+              </Link>
+            </li>
+          ))}
+        </ul>
+      </main>
+    </>
   );
 }
