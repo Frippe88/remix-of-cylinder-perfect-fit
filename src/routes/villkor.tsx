@@ -1,4 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { ShieldCheck } from "lucide-react";
+import { PageHero, SitePageHeader } from "@/components/site-page";
 
 export const Route = createFileRoute("/villkor")({
   staticData: { sitemap: true },
@@ -33,18 +35,26 @@ const sections: { h: string; p: string }[] = [
 
 function Villkor() {
   return (
-    <main className="mx-auto max-w-2xl px-4 py-8">
-      <Link to="/" className="text-sm text-accent">← Till kalkylatorn</Link>
-      <h1 className="mt-4 text-2xl font-bold">Användarvillkor</h1>
-      <div className="mt-6 space-y-5">
-        {sections.map((s) => (
-          <section key={s.h}>
-            <h2 className="font-semibold">{s.h}</h2>
-            <p className="mt-1 text-sm text-muted-foreground">{s.p}</p>
-          </section>
-        ))}
-      </div>
-      <p className="mt-8 text-sm text-muted-foreground">Frågor? <Link to="/kontakt" className="font-semibold text-link underline underline-offset-2">Skicka ett meddelande</Link></p>
-    </main>
+    <>
+      <SitePageHeader />
+      <main className="mx-auto max-w-3xl px-4 py-8 sm:py-12">
+        <PageHero eyebrow="Villkor & integritet" icon={<ShieldCheck className="size-3.5" />} title="Användarvillkor och integritet">Så får tjänsten användas och så hanterar vi dina uppgifter.</PageHero>
+        <div className="mt-8 divide-y rounded-2xl border bg-card shadow-card">
+          {sections.map((s) => {
+            const [num, ...rest] = s.h.split(" ");
+            return (
+              <section key={s.h} className="flex gap-4 p-5">
+                <span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-accent/15 text-sm font-bold tabular-nums text-accent">{num.replace(".", "")}</span>
+                <div>
+                  <h2 className="font-bold">{rest.join(" ")}</h2>
+                  <p className="mt-1 text-sm leading-relaxed text-muted-foreground">{s.p}</p>
+                </div>
+              </section>
+            );
+          })}
+        </div>
+        <p className="mt-8 text-sm text-muted-foreground">Frågor? <Link to="/kontakt" className="font-semibold text-accent underline underline-offset-2">Skicka ett meddelande</Link></p>
+      </main>
+    </>
   );
 }

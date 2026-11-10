@@ -1,7 +1,8 @@
 import { useCallback, useEffect, useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { EmbeddedCheckout, EmbeddedCheckoutProvider } from "@stripe/react-stripe-js";
-import { ArrowLeft, Building2, Check, CreditCard, ExternalLink, Receipt as ReceiptIcon, Star } from "lucide-react";
+import { SitePageHeader } from "@/components/site-page";
+import { Building2, Check, CreditCard, ExternalLink, Receipt as ReceiptIcon, Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ProLoginBar } from "@/components/pro-login-bar";
 import { PaymentTestModeBanner } from "@/components/payment-test-mode-banner";
@@ -91,9 +92,9 @@ function AccountPage() {
   return (
     <div className="min-h-screen bg-background">
       <PaymentTestModeBanner />
-      <main className="mx-auto max-w-2xl space-y-5 px-4 py-6">
-        <Link to="/pro" className="inline-flex items-center gap-1 text-sm font-semibold text-muted-foreground hover:text-foreground"><ArrowLeft className="size-4" />Till Pro-kalkylen</Link>
-        <h1 className="text-2xl font-extrabold">Mitt konto</h1>
+      <SitePageHeader backTo="/pro" backLabel="Pro-kalkylen" />
+      <main className="mx-auto max-w-2xl space-y-5 px-4 py-8">
+        <h1 className="text-3xl font-extrabold tracking-tight">Mitt konto</h1>
 
         {loading ? null : !user ? (
           <>

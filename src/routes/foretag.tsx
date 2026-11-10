@@ -1,5 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowLeft, Building2, Check, Mail, Receipt, Star, Users, Zap } from "lucide-react";
+import { Building2, Check, Mail, Receipt, Star, Users, Zap } from "lucide-react";
+import { PageHero, SitePageHeader } from "@/components/site-page";
 import { CompanyBuy } from "@/components/company-buy";
 import { PaymentTestModeBanner } from "@/components/payment-test-mode-banner";
 import { COMPANY_TIERS, PRO_MONTHLY_SEK } from "@/lib/subscription";
@@ -41,27 +42,23 @@ function CompanyPage() {
   return (
     <div className="min-h-screen bg-background">
       <PaymentTestModeBanner />
-      <main className="mx-auto max-w-2xl space-y-6 px-4 py-6">
-        <Link to="/pro" className="inline-flex items-center gap-1 text-sm font-semibold text-muted-foreground hover:text-foreground"><ArrowLeft className="size-4" />Tillbaka</Link>
-        <header className="space-y-2">
-          <span className="inline-flex items-center gap-1.5 rounded-full bg-accent/15 px-2.5 py-1 text-xs font-bold text-accent"><Building2 className="size-3.5" />Företagslicens · Beta</span>
-          <h1 className="text-2xl font-extrabold sm:text-3xl">Cylinderhjälpen Pro för hela företaget</h1>
-          <p className="text-muted-foreground">Välj hur många ni är, betala direkt och lägg sedan till era låssmeder.</p>
-        </header>
+      <SitePageHeader backTo="/pro" backLabel="Pro" />
+      <main className="mx-auto max-w-3xl space-y-8 px-4 py-8 sm:py-12">
+        <PageHero eyebrow="Företagslicens · Beta" icon={<Building2 className="size-3.5" />} title="Cylinderhjälpen Pro för hela företaget">Välj hur många ni är, betala direkt och lägg sedan till era låssmeder.</PageHero>
         <ul className="grid gap-2 sm:grid-cols-3">
           {PERKS.map(({ icon: Icon, title, text }) => (
-            <li key={title} className="rounded-lg border bg-card p-3">
-              <p className="flex items-center gap-2 text-sm font-bold"><Icon className="size-4 shrink-0 text-accent" />{title}</p>
+            <li key={title} className="rounded-2xl border bg-card p-4 shadow-card">
+              <p className="flex items-center gap-2 text-sm font-bold"><span className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-accent/15"><Icon className="size-4 text-accent" /></span>{title}</p>
               <p className="mt-1 text-sm text-muted-foreground">{text}</p>
             </li>
           ))}
         </ul>
-        <section className="rounded-xl border bg-card p-4 shadow-card sm:p-5">
+        <section className="rounded-2xl border bg-card p-5 shadow-card sm:p-6">
           <h2 className="text-lg font-bold">Priser – billigare ju fler ni är</h2>
           <p className="mt-1 text-sm text-muted-foreground">Pris per tekniker och månad, exkl. moms. Priset gäller alla licenser – är ni 12 betalar alla 129 kr.</p>
-          <ul className="mt-3 grid gap-2 sm:grid-cols-3">
+          <ul className="mt-4 grid grid-cols-2 gap-2 sm:grid-cols-4">
             {COMPANY_TIERS.map((t) => (
-              <li key={t.min} className="rounded-lg border border-accent/40 bg-accent/5 p-3 text-center">
+              <li key={t.min} className="rounded-xl border border-accent/30 bg-gradient-to-b from-accent/10 to-transparent p-3 text-center">
                 <p className="text-sm font-semibold text-muted-foreground">{t.max ? `${t.min}–${t.max}` : `${t.min}+`} tekniker</p>
                 <p className="text-2xl font-extrabold">{t.price} kr</p>
                 <p className="text-xs text-muted-foreground">per tekniker/mån</p>
@@ -78,7 +75,7 @@ function CompanyPage() {
             {PRO.map((p) => <li key={p} className="flex items-start gap-2"><Check className="mt-0.5 size-4 shrink-0 text-accent" />{p}</li>)}
           </ul>
         </section>
-        <section className="rounded-xl border bg-card p-4 shadow-card sm:p-5">
+        <section className="rounded-2xl border bg-card p-5 shadow-card sm:p-6">
           <h2 className="mb-3 text-lg font-bold">Köp företagslicens</h2>
           <CompanyBuy />
         </section>
