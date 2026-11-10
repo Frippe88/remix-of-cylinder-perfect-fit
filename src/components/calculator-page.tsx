@@ -172,18 +172,17 @@ export function CalculatorPage({ variant, loginBar, navActive, locked = false }:
 
   return (
     <div className="min-h-screen">
-      <header className="relative overflow-hidden bg-primary bg-header text-primary-foreground">
-        <div aria-hidden className="blueprint pointer-events-none absolute inset-0 [mask-image:linear-gradient(to_bottom,black,transparent)]" />
-        <div aria-hidden className="absolute inset-x-0 bottom-0 h-1 bg-accent" />
-        <div className="relative mx-auto flex max-w-5xl items-center gap-2.5 px-4 py-3 sm:gap-3 sm:py-6">
-          <span className="flex size-9 shrink-0 items-center justify-center rounded-xl bg-accent shadow-elevated sm:size-12">
+      <header className="sticky top-0 z-30 border-b border-border/70 bg-background/80 text-foreground backdrop-blur-xl backdrop-saturate-150">
+        <div aria-hidden className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-accent/70 to-transparent" />
+        <div className="relative mx-auto flex max-w-5xl items-center gap-2.5 px-4 py-2.5 sm:gap-3 sm:py-4">
+          <span className="flex size-9 shrink-0 items-center justify-center rounded-xl bg-accent shadow-card ring-1 ring-accent/40 sm:size-11">
             <KeyRound className="size-5 text-accent-foreground sm:size-6" aria-hidden />
           </span>
           <div className="min-w-0 flex-1">
-            <h1 className="text-base font-extrabold leading-tight tracking-tight sm:text-2xl">
+            <h1 className="text-base font-extrabold leading-tight tracking-[-0.02em] sm:text-xl">
               Cylinderhjälpen
             </h1>
-            <p className="text-[11px] leading-tight opacity-80 sm:text-sm sm:opacity-90">
+            <p className="text-[11px] leading-tight text-muted-foreground sm:text-sm">
               Rätt ring, förlängare och skruv på 3 sekunder
             </p>
           </div>
@@ -192,32 +191,32 @@ export function CalculatorPage({ variant, loginBar, navActive, locked = false }:
             <button type="button" onClick={() => setAccountOpen(true)} aria-label={user ? "Konto" : "Logga in"} title={user ? "Konto" : "Logga in"}
               className={user
                 ? "relative inline-flex h-9 items-center gap-1.5 rounded-full bg-accent pl-1 pr-3 text-xs font-bold text-accent-foreground shadow-card hover:bg-accent/85 sm:h-10 sm:text-sm"
-                : "inline-flex h-9 items-center gap-1.5 rounded-full bg-primary-foreground/10 pl-1 pr-3 text-xs font-bold ring-1 ring-primary-foreground/30 hover:bg-primary-foreground/20 sm:h-10 sm:text-sm"}>
+                : "inline-flex h-9 items-center gap-1.5 rounded-full bg-foreground/10 pl-1 pr-3 text-xs font-bold ring-1 ring-foreground/30 hover:bg-foreground/20 sm:h-10 sm:text-sm"}>
               <span className={`flex size-7 items-center justify-center rounded-full sm:size-8 ${user ? "bg-accent-foreground/15" : "bg-accent text-accent-foreground"}`}>
                 <UserRound className="size-4" aria-hidden />
               </span>
               {user ? "Konto" : "Logga in"}
-              {user && <span aria-hidden className="absolute right-0 top-0 size-2.5 rounded-full bg-success ring-2 ring-primary" />}
+              {user && <span aria-hidden className="absolute right-0 top-0 size-2.5 rounded-full bg-success ring-2 ring-background" />}
             </button>
             {pro && <button type="button" onClick={() => { setSwitchProject(false); setProjectOpen(true); }} aria-label="Öppna projekt"
-              className="inline-flex h-9 items-center gap-1 rounded-lg bg-primary-foreground/10 px-2 text-sm font-semibold ring-1 ring-primary-foreground/25 hover:bg-primary-foreground/20 sm:h-10 sm:gap-1.5 sm:px-3">
+              className="inline-flex h-9 items-center gap-1 rounded-lg bg-foreground/10 px-2 text-sm font-semibold ring-1 ring-foreground/25 hover:bg-foreground/20 sm:h-10 sm:gap-1.5 sm:px-3">
               <FolderOpen className="size-4 text-accent" aria-hidden /><span className="hidden sm:inline">Projekt</span>
               <span className="hidden rounded-full border border-accent/50 bg-accent/15 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-accent sm:inline">Beta</span>
               <span className="rounded-full bg-accent px-1.5 text-xs font-bold text-accent-foreground">{projectStore.list.length}</span>
             </button>}
           </div>
         </div>
-        <div className="relative mx-auto flex max-w-5xl flex-wrap gap-1.5 px-4 pb-3 sm:pb-6" aria-label="Regler">
-          <span className="inline-flex items-center gap-1.5 rounded-full bg-accent/15 px-2 py-1 text-[11px] font-semibold text-accent ring-1 ring-accent/40 sm:px-2.5 sm:text-xs">
+        <div className="relative mx-auto hidden max-w-5xl flex-wrap gap-1.5 px-4 pb-3 sm:flex" aria-label="Regler">
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-accent/15 px-2 py-1 text-[11px] font-semibold text-foreground ring-1 ring-accent/40 sm:px-2.5 sm:text-xs">
             <ShieldCheck className="size-3.5" aria-hidden />Oval & iLOQ: −2 till +2mm
           </span>
-          <span className="inline-flex items-center gap-1.5 rounded-full bg-primary-foreground/10 px-2 py-1 text-[11px] font-semibold ring-1 ring-primary-foreground/25 sm:px-2.5 sm:text-xs">
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-foreground/10 px-2 py-1 text-[11px] font-semibold ring-1 ring-foreground/25 sm:px-2.5 sm:text-xs">
             <Check className="size-3.5" aria-hidden />Rund: närmaste möjliga
           </span>
         </div>
       </header>
       <nav aria-label="Version" className="mx-auto max-w-5xl px-4 pt-4">
-        <div className="grid grid-cols-2 gap-1 rounded-xl bg-muted p-1">
+        <div className="grid grid-cols-2 gap-1 rounded-xl bg-muted p-1 shadow-[inset_0_1px_2px_oklch(0_0_0/0.08)]">
           {([["free", "/", "Gratis"], ["pro", "/pro", "Pro"]] as const).map(([v, to, tag]) => {
             const active = (navActive ?? variant) === v;
             return (
@@ -233,7 +232,7 @@ export function CalculatorPage({ variant, loginBar, navActive, locked = false }:
       {loginBar && <div className="mx-auto max-w-5xl px-4 pt-3">{loginBar}</div>}
 
       {(pro || (locked && navActive === "pro")) && <div className="mx-auto max-w-5xl px-4 pt-4">
-        <div className="grid grid-cols-2 gap-1 rounded-xl bg-muted p-1" role="tablist" aria-label="Kalkyl">
+        <div className="grid grid-cols-2 gap-1 rounded-xl bg-muted p-1 shadow-[inset_0_1px_2px_oklch(0_0_0/0.08)]" role="tablist" aria-label="Kalkyl">
           <button type="button" role="tab" aria-selected={!office} onClick={() => setMeasurementMode("site")} className={`min-h-12 rounded-lg px-2 text-sm font-bold transition ${!office ? "bg-card shadow-card ring-1 ring-accent" : "text-muted-foreground"}`}>
             Dörrmätning<span className="block text-xs font-normal text-muted-foreground">Mät dörrdjup vid dörren</span>
           </button>
@@ -268,13 +267,13 @@ export function CalculatorPage({ variant, loginBar, navActive, locked = false }:
             </InfoSheetRow>
           </div>
           <Panel title={office ? "Dörrlitra · A/B/C" : "Mätning"}>
-            <div className="grid grid-cols-3 gap-0.5 rounded-lg bg-muted p-1 sm:gap-1" role="group" aria-label="Cylindertyp">
+            <div className="grid grid-cols-3 gap-0.5 rounded-xl bg-muted p-1 shadow-[inset_0_1px_2px_oklch(0_0_0/0.08)] sm:gap-1" role="group" aria-label="Cylindertyp">
               {CYLINDER_OPTIONS.map((o) => (
                 <button
                   key={o.id}
                   onClick={() => switchCyl(o.id)}
                   aria-pressed={cyl === o.id}
-                  className={`rounded-md px-0.5 py-2.5 text-center text-[11px] font-bold leading-tight whitespace-nowrap transition sm:px-1 sm:text-[13px] ${cyl === o.id ? "bg-accent text-accent-foreground shadow-elevated ring-1 ring-accent" : "text-foreground/70 hover:bg-card hover:text-foreground"}`}
+                  className={`rounded-lg px-0.5 py-2.5 text-center text-[11px] font-bold leading-tight whitespace-nowrap transition sm:px-1 sm:text-[13px] ${cyl === o.id ? "bg-accent text-accent-foreground shadow-elevated ring-1 ring-accent" : "text-foreground/70 hover:bg-card hover:text-foreground"}`}
                 >
                   {o.name}
                   <span className="mt-0.5 block font-mono text-[13px] font-bold">{o.id === "round" ? cylinderBaseMm("round", "outside", false, brand) : o.mm}mm</span>
