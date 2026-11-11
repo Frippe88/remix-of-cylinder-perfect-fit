@@ -5,12 +5,12 @@ export const Route = createFileRoute("/")({
   staticData: { sitemap: true },
   head: () => ({
     meta: [
-      { title: "Cylinderhjälpen – cylinderkalkylator för låssmeder" },
-      { name: "description", content: "Gratis cylinderkalkylator för låssmeder. Räkna fram rätt cylinderförlängare och cylinderringar för oval, rund och iLOQ – enkel- och dubbelcylinder." },
+      { title: "Cylinderhjälpen – Kalkylator för låscylindrar, ringar & förlängare" },
+      { name: "description", content: "Sveriges cylinderkalkylator för lås och låssmeder. Räkna direkt ut rätt cylinderförlängare, cylinderring och skruv för oval, rund och iLOQ låscylinder." },
       { name: "application-name", content: "Cylinderhjälpen" },
       { property: "og:site_name", content: "Cylinderhjälpen" },
-      { property: "og:title", content: "Cylinderhjälpen – cylinderkalkylator för låssmeder" },
-      { property: "og:description", content: "Exakt beräkning av cylinderförlängare och ringar för låssmeder." },
+      { property: "og:title", content: "Cylinderhjälpen – Kalkylator för låscylindrar, ringar & förlängare" },
+      { property: "og:description", content: "Sveriges cylinderkalkylator för lås och låssmeder. Räkna direkt ut rätt cylinderförlängare, cylinderring och skruv för oval, rund och iLOQ låscylinder." },
       { property: "og:url", content: "https://cylinderhjalpen.se/" },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
