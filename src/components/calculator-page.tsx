@@ -11,6 +11,8 @@ import { PickListButton } from "@/components/pick-list-button";
 import { ProjectBar, ProjectPanel, useProject } from "@/components/project-panel";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/use-auth";
+import { useSubscription } from "@/hooks/use-subscription";
+import { SALES_OPEN } from "@/lib/subscription";
 import { InfoSheetRow } from "@/components/info-sheet-row";
 import { InfoPopupRow } from "@/components/info-popup-row";
 import { AuthForm } from "@/components/auth-form";
@@ -96,6 +98,9 @@ export function CalculatorPage({ variant, loginBar, navActive, locked = false }:
   const [roundExt, setRoundExt] = useState<number[]>([...ROUND_EXTENDER_SIZES]);
   const [roundRings, setRoundRings] = useState<number[]>([...ROUND_RING_HEIGHTS]);
   const pro = variant === "pro";
+  const { active: subActive } = useSubscription(user?.id);
+  // Pro-funktioner i gratiskalkylen: bara för inloggade med Pro (under betan räknas alla inloggade som Pro).
+  const hasPro = pro || (!!user && (subActive || !SALES_OPEN));
   const proFeat = pro || locked;
   const [project, setProject, projectStore] = useProject();
   const [proOpen, setProOpen] = useState(false);
@@ -143,7 +148,7 @@ export function CalculatorPage({ variant, loginBar, navActive, locked = false }:
   const activeRings = isAssaS ? [...ASSA_S_RING_HEIGHTS] : isRound ? roundRings : rings;
   const setActiveRings = isRound ? setRoundRings : setRings;
   // Dubbel iLOQ: insidan kräver iLOQ:s egna innerringar (27/30/33 mm) med skruvhål.
-  const readerOn = (pro || !!user) && reader && !isRound;
+  const readerOn = hasPro && reader && !isRound;
   const outRings = readerOn && (type === "double" || singleSide === "Utsida") ? [...READER_RINGS] : activeRings;
   const insideRings = readerOn && type === "single" && singleSide === "Insida" ? [...READER_RINGS] : iloqDouble ? activeRings.filter((r) => (ILOQ_RING_HEIGHTS as readonly number[]).includes(r)) : activeRings;
   const insideExt = iloqDouble ? [] : ext;
@@ -361,10 +366,10 @@ export function CalculatorPage({ variant, loginBar, navActive, locked = false }:
               </div>
             )}
             {!isRound && (
-              (pro || user) ? <label className="flex cursor-pointer items-start gap-2.5 rounded-xl border border-border/60 bg-muted/50 p-2.5 text-sm">
+              hasPro ? <label className="flex cursor-pointer items-start gap-2.5 rounded-xl border border-border/60 bg-muted/50 p-2.5 text-sm">
                 <input type="checkbox" checked={reader} onChange={(e) => setReader(e.target.checked)} className="mt-0.5 size-4 accent-[var(--color-accent)]" />
                 <span><span className="font-semibold">Monteras i läsare</span><span className="block text-xs text-muted-foreground">Ingen ring – mät från kistan till läsarens framkant{type === "double" ? " (utsidan)" : ""}, så räknas förlängare för att gå jämnt.</span></span>
-              </label> : <button type="button" onClick={() => (locked ? setSignupOpen(true) : navigate({ to: "/pro" }))} className="flex w-full items-start gap-2.5 rounded-xl border border-border/60 bg-muted/50 p-2.5 text-left text-sm active:scale-[0.99]">
+              </label> : <button type="button" onClick={() => (user ? setProOpen(true) : setSignupOpen(true))} className="flex w-full items-start gap-2.5 rounded-xl border border-border/60 bg-muted/50 p-2.5 text-left text-sm active:scale-[0.99]">
                 <span aria-hidden className="mt-0.5 size-4 rounded border border-border" />
                 <span><span className="font-semibold">Monteras i läsare <span className="rounded-full border border-accent/50 px-1.5 py-0.5 text-[10px] font-bold uppercase text-accent">Pro</span></span><span className="block text-xs text-muted-foreground">Cylindern jämnt med läsaren (Aperio, Salto m.fl.) – förlängare utan ring. Finns i Pro.</span></span>
               </button>
@@ -447,7 +452,7 @@ export function CalculatorPage({ variant, loginBar, navActive, locked = false }:
           <PickListButton
             sides={type === "single" ? [{ label: isRound ? null : singleSide, depth: outDepth, selected: selOut }] : [{ label: "Utsida", depth: outDepth, selected: selOut ?? ovalPair?.[0] ?? null }, { label: "Insida", depth: inDepth, selected: selIn ?? ovalPair?.[1] ?? null }]}
             ext={ext} rings={type === "single" && singleSide === "Insida" ? insideRings : outRings} insideRings={insideRings} insideExt={insideExt} baseMm={baseMm} insideBaseMm={insideBaseMm} relaxed={isRound} screwBrand={proFeat && isRound ? brand : undefined} ovalSingle={proFeat && cyl === "standard"} iloqSingle={proFeat && cyl === "iloq" && type === "single"} onShowAll={mode === "all" ? undefined : () => { setMode("all"); setSel({ key: "", out: null, in: null }); }}
-            fitting={activeFitting} onFittingChange={fittingEnabled ? setFitting : undefined} fittingChoices={fittingChoices} iloqDouble={iloqDouble} locked={locked && !user} onLocked={() => setSignupOpen(true)}
+            fitting={activeFitting} onFittingChange={fittingEnabled ? setFitting : undefined} fittingChoices={fittingChoices} iloqDouble={iloqDouble} locked={locked && !hasPro} onLocked={() => setSignupOpen(true)}
             {...(pro ? { projectName: project.name, projectDoors: project.doors.length, projectCount: projectStore.list.length, onOpenProject: () => { setSwitchProject(true); setProjectOpen(true); } } : {})}
             onSave={!pro ? undefined : (sides) => { trackEvent("sparad_dorr", { cylinder: cyl }); setPendingDoor({ sides, kind: isRound ? "rund" : cyl === "iloq" ? "iloq" : "oval", ...(isRound ? { brand } : {}), ...(activeFitting ? { fitting: activeFitting } : {}) }); }}
           />
