@@ -243,3 +243,13 @@ describe("skruv i projekt", () => {
     expect(purchaseList([d]).flatMap((s) => s.groups).some((g) => g.title === "Skruv")).toBe(false);
   });
 });
+
+import { purchaseList as _pl, projectTotals as _pt } from "./project";
+describe("läsarmontage", () => {
+  it("räknar ingen 0 mm ring i inköpslistan", () => {
+    const doors = [{ id: "1", name: "D", kind: "oval", sides: [{ label: "Utsida", depth: 51, ring: 0, extenders: [10, 10] }] }] as never;
+    const text = JSON.stringify(_pl(doors));
+    expect(text).not.toContain("0mm ring");
+    expect(_pt(doors).rings.length).toBe(0);
+  });
+});

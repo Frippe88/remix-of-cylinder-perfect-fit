@@ -131,6 +131,7 @@ export function projectTotals(doors: Door[]): Totals {
       cur.count++; target.set(key, cur);
       continue;
     }
+    if (s.ring === 0) continue; // läsare: ingen ring
     const key = `${d.kind}:${side}:${inner}:${s.ring}`;
     const cur = rings.get(key) ?? { size: s.ring, kind: d.kind, side, inner, count: 0 };
     cur.count++; rings.set(key, cur);
@@ -196,14 +197,15 @@ export function purchaseList(doors: Door[]): PurchaseSection[] {
         const i = d.sides.find((s) => s !== o)!;
         if (kind === "iloq") {
           add(kits, FITTING_LABEL["A10.11"]);
-          add(double, `${ring(o.ring)} utsida + ${formatMm(i.ring)} iLOQ innerring insida`);
+          add(double, o.ring === 0 ? `${formatMm(i.ring)} iLOQ innerring insida (utsida i läsare)` : `${ring(o.ring)} utsida + ${formatMm(i.ring)} iLOQ innerring insida`);
         } else if (fitting && PAIR_FITTINGS.includes(fitting)) {
           add(double, `${FITTING_LABEL[fitting]} (${formatMm(o.ring)} ring utsida + ${formatMm(i.ring)} ring insida)`);
         } else {
-          add(double, `${ring(o.ring)} utsida + ${ring(i.ring)} insida`);
+          add(double, o.ring === 0 ? `${ring(i.ring)} insida (utsida i läsare)` : `${ring(o.ring)} utsida + ${ring(i.ring)} insida`);
         }
       } else {
         for (const s of d.sides) {
+          if (s.ring === 0) continue; // monteras i läsare: ingen ring att köpa
           const fit = fitting && !KIT_FITTINGS.includes(fitting) && !PAIR_FITTINGS.includes(fitting) ? fitting : null;
           add(single, fit ? fittingRingText(fit, s.ring) : ring(s.ring));
         }

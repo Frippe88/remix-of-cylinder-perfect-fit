@@ -176,7 +176,7 @@ function DoorCard({ d, onToggle, onRemove, onSetSide }: { d: Door; onToggle: () 
             <div className="mt-2 flex flex-wrap items-center gap-1.5">
             {s.extenders.length === 0 ? <span className="text-xs text-muted-foreground">inga förl.</span> :
               s.extenders.map((e, j) => <Chip key={j} side={s.label}>{formatMm(e)}</Chip>)}
-            <Chip accent side={s.label}>{(() => { const f = d.sides.length > 1 && d.fitting && PAIR_FITTINGS.includes(d.fitting) ? null : fittingForSide(d.fitting, s.label); const inner = isIloqInner(d.kind, s.label, d.sides.length > 1); return f ? fittingRingText(f, s.ring, inner) : inner ? ringName(s.ring, true) : `ring ${formatMm(s.ring)}`; })()}</Chip>
+            <Chip accent side={s.label}>{(() => { const f = d.sides.length > 1 && d.fitting && PAIR_FITTINGS.includes(d.fitting) ? null : fittingForSide(d.fitting, s.label); const inner = isIloqInner(d.kind, s.label, d.sides.length > 1); if (s.ring === 0) return "I läsare – ingen ring"; return f ? fittingRingText(f, s.ring, inner) : inner ? ringName(s.ring, true) : `ring ${formatMm(s.ring)}`; })()}</Chip>
             </div>
           </li>
         ))}
