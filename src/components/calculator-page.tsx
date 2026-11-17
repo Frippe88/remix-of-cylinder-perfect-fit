@@ -45,6 +45,7 @@ import {
   ASSA_S_RING_HEIGHTS,
   roundRingHeights,
   type Combination,
+  READER_RINGS,
 } from "@/lib/cylinder";
 
 const parse = (v: string) => {
@@ -103,6 +104,7 @@ export function CalculatorPage({ variant, loginBar, navActive, locked = false }:
   // Dubbel iLOQ kräver alltid A10.11-kitet: förvalt automatiskt.
   const activeFitting = fitting && fittingChoices.includes(fitting) ? fitting
     : cyl === "iloq" && type === "double" && fittingChoices.includes("A10.11") ? "A10.11" : null;
+  const [reader, setReader] = useState(false);
   const [singleSide, setSingleSide] = useState<"Utsida" | "Insida">("Utsida");
   const [mode, setMode] = useState<ViewMode>("all");
   const [measurementMode, setMeasurementMode] = useState<"site" | "office">("site");
@@ -137,11 +139,13 @@ export function CalculatorPage({ variant, loginBar, navActive, locked = false }:
   const activeRings = isAssaS ? [...ASSA_S_RING_HEIGHTS] : isRound ? roundRings : rings;
   const setActiveRings = isRound ? setRoundRings : setRings;
   // Dubbel iLOQ: insidan kräver iLOQ:s egna innerringar (27/30/33 mm) med skruvhål.
-  const insideRings = iloqDouble ? activeRings.filter((r) => (ILOQ_RING_HEIGHTS as readonly number[]).includes(r)) : activeRings;
+  const readerOn = reader && !isRound;
+  const outRings = readerOn && (type === "double" || singleSide === "Utsida") ? [...READER_RINGS] : activeRings;
+  const insideRings = readerOn && type === "single" && singleSide === "Insida" ? [...READER_RINGS] : iloqDouble ? activeRings.filter((r) => (ILOQ_RING_HEIGHTS as readonly number[]).includes(r)) : activeRings;
   const insideExt = iloqDouble ? [] : ext;
 
   // Valda alternativ för plocklistan; nollställs automatiskt när indata ändras.
-  const selKey = [cyl, brand, type, outDepth, inDepth, singleSide, measurementMode, ext.join(","), activeRings.join(",")].join("|");
+  const selKey = [cyl, brand, type, outDepth, inDepth, singleSide, measurementMode, ext.join(","), activeRings.join(","), readerOn].join("|");
   const [sel, setSel] = useState<{ key: string; out: Combination | null; in: Combination | null }>({ key: "", out: null, in: null });
   const selOut = sel.key === selKey ? sel.out : null;
   const selIn = sel.key === selKey ? sel.in : null;
@@ -150,7 +154,7 @@ export function CalculatorPage({ variant, loginBar, navActive, locked = false }:
     if (cyl !== "standard" || type !== "double" || mode !== "all") return null;
     const o = outDepth, i = inDepth;
     if (o === null || i === null) return null;
-    return preferOvalDoublePair(calculate({ depth: o, extenders: ext, rings: activeRings, baseMm, relaxed: false }), calculate({ depth: i, extenders: insideExt, rings: insideRings, baseMm: insideBaseMm, relaxed: false }));
+    return preferOvalDoublePair(calculate({ depth: o, extenders: ext, rings: outRings, baseMm, relaxed: false }), calculate({ depth: i, extenders: insideExt, rings: insideRings, baseMm: insideBaseMm, relaxed: false }));
   })();
 
   // GA4: räkna en beräkning när måtten stått still en stund (inte varje knapptryck).
@@ -352,6 +356,12 @@ export function CalculatorPage({ variant, loginBar, navActive, locked = false }:
                 </div>
               </div>
             )}
+            {!isRound && (
+              <label className="flex cursor-pointer items-start gap-2.5 rounded-xl border border-border/60 bg-muted/50 p-2.5 text-sm">
+                <input type="checkbox" checked={reader} onChange={(e) => setReader(e.target.checked)} className="mt-0.5 size-4 accent-[var(--color-accent)]" />
+                <span><span className="font-semibold">Monteras i läsare</span><span className="block text-xs text-muted-foreground">Ingen ring – mät från kistan till läsarens framkant{type === "double" ? " (utsidan)" : ""}, så räknas förlängare för att gå jämnt.</span></span>
+              </label>
+            )}
             {iloqDouble && (
               <InfoPopupRow
                 label={<>iLOQ dubbelcylinder: +{ILOQ_DOUBLE_INSIDE_EXTRA_MM}mm på insidan</>}
@@ -429,13 +439,13 @@ export function CalculatorPage({ variant, loginBar, navActive, locked = false }:
         <section className="order-2 min-w-0 space-y-7 lg:order-none">
           <PickListButton
             sides={type === "single" ? [{ label: isRound ? null : singleSide, depth: outDepth, selected: selOut }] : [{ label: "Utsida", depth: outDepth, selected: selOut ?? ovalPair?.[0] ?? null }, { label: "Insida", depth: inDepth, selected: selIn ?? ovalPair?.[1] ?? null }]}
-            ext={ext} rings={activeRings} insideRings={insideRings} insideExt={insideExt} baseMm={baseMm} insideBaseMm={insideBaseMm} relaxed={isRound} screwBrand={proFeat && isRound ? brand : undefined} ovalSingle={proFeat && cyl === "standard"} iloqSingle={proFeat && cyl === "iloq" && type === "single"} onShowAll={mode === "all" ? undefined : () => { setMode("all"); setSel({ key: "", out: null, in: null }); }}
+            ext={ext} rings={type === "single" && singleSide === "Insida" ? insideRings : outRings} insideRings={insideRings} insideExt={insideExt} baseMm={baseMm} insideBaseMm={insideBaseMm} relaxed={isRound} screwBrand={proFeat && isRound ? brand : undefined} ovalSingle={proFeat && cyl === "standard"} iloqSingle={proFeat && cyl === "iloq" && type === "single"} onShowAll={mode === "all" ? undefined : () => { setMode("all"); setSel({ key: "", out: null, in: null }); }}
             fitting={activeFitting} onFittingChange={fittingEnabled ? setFitting : undefined} fittingChoices={fittingChoices} iloqDouble={iloqDouble} locked={locked} onLocked={() => setSignupOpen(true)}
             {...(pro ? { projectName: project.name, projectDoors: project.doors.length, projectCount: projectStore.list.length, onOpenProject: () => { setSwitchProject(true); setProjectOpen(true); } } : {})}
             onSave={!pro ? undefined : (sides) => { trackEvent("sparad_dorr", { cylinder: cyl }); setPendingDoor({ sides, kind: isRound ? "rund" : cyl === "iloq" ? "iloq" : "oval", ...(isRound ? { brand } : {}), ...(activeFitting ? { fitting: activeFitting } : {}) }); }}
           />
           <ModePicker pro={pro} mode={mode} onChange={(m) => { setMode(m); setSel({ key: "", out: null, in: null }); }} />
-          <CylinderResults mode={mode} ovalSingle={cyl === "standard" && type === "single"} iloqSingle={cyl === "iloq" && type === "single"} preferred={ovalPair?.[0]} title={type === "single" ? null : "Utsida"} depth={outDepth} ext={ext} rings={activeRings} baseMm={baseMm} relaxed={isRound} selected={selOut} onSelect={(c) => setSel((s) => ({ key: selKey, out: c, in: s.key === selKey ? s.in : null }))} />
+          <CylinderResults mode={mode} ovalSingle={cyl === "standard" && type === "single"} iloqSingle={cyl === "iloq" && type === "single"} preferred={ovalPair?.[0]} title={type === "single" ? null : "Utsida"} depth={outDepth} ext={ext} rings={type === "single" && singleSide === "Insida" ? insideRings : outRings} baseMm={baseMm} relaxed={isRound} selected={selOut} onSelect={(c) => setSel((s) => ({ key: selKey, out: c, in: s.key === selKey ? s.in : null }))} />
           {type === "double" && <CylinderResults mode={mode} preferred={ovalPair?.[1]} title="Insida" depth={inDepth} ext={insideExt} rings={insideRings} baseMm={insideBaseMm} relaxed={isRound} selected={selIn} onSelect={(c) => setSel((s) => ({ key: selKey, out: s.key === selKey ? s.out : null, in: c }))} />}
         </section>
       </main>

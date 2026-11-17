@@ -41,6 +41,8 @@ export function centerToCaseMm(center: number | null, lock: LockCase): number | 
   const d = Math.round(center - LOCK_CASE_MM[lock] / 2);
   return d > 0 ? d : null;
 }
+/** Läsare: cylindern ska gå jämnt med läsarens framkant – ingen ring, bara förlängare. */
+export const READER_RINGS = [0] as const;
 export const TOLERANCE_MIN = -2;
 export const TOLERANCE_MAX = 2;
 
@@ -88,7 +90,7 @@ export function calculate(input: CalcInput): Combination[] {
   const noUnder = new Set(noUndercutRings.map(toT));
   if (!Number.isFinite(depth) || depth < 0 || depth > MAX_DEPTH_MM) return [];
   const sizes = [...new Set(extenders.map(toT))].filter((s) => s > 0).sort((a, b) => b - a);
-  const ringT = [...new Set(rings.map(toT))].filter((r) => r > 0);
+  const ringT = [...new Set(rings.map(toT))].filter((r) => r >= 0); // 0 = ingen ring (jämnt med läsare)
   if (ringT.length === 0) return [];
   const base = toT(baseMm) - toT(depth);
 

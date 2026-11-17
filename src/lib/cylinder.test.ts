@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { calculate, deviationOf, filterByMode, EXTENDER_SIZES, RING_HEIGHTS, ILOQ_RING_HEIGHTS, ILOQ_CYLINDER_MM, ROUND_CYLINDER_MM, ASSA_ROUND_CYLINDER_MM, ASSA_ROUND_BRAND, ASSA_S_BRAND, roundScrewSet } from "./cylinder";
+import { calculate, deviationOf, filterByMode, EXTENDER_SIZES, RING_HEIGHTS, ILOQ_RING_HEIGHTS, ILOQ_CYLINDER_MM, ROUND_CYLINDER_MM, ASSA_ROUND_CYLINDER_MM, ASSA_ROUND_BRAND, ASSA_S_BRAND, roundScrewSet, READER_RINGS } from "./cylinder";
 
 const all = { extenders: [...EXTENDER_SIZES], rings: [...RING_HEIGHTS] };
 
@@ -271,5 +271,14 @@ describe("max dörrdjup", () => {
     expect(calculate({ depth: 10000, ...all, relaxed: true })).toEqual([]);
     expect(calculate({ depth: 251, ...all, relaxed: true })).toEqual([]);
     expect(calculate({ depth: 250, ...all, relaxed: true }).length).toBeGreaterThan(0);
+  });
+});
+
+describe("läsare (ingen ring)", () => {
+  it("51mm till läsarens framkant med oval 31mm ger 20mm förlängning och ingen ring", () => {
+    const best = calculate({ depth: 51, extenders: [8, 10, 12.5], rings: [...READER_RINGS] })[0]!;
+    expect(best.ring).toBe(0);
+    expect(best.totalExtension).toBe(20);
+    expect(best.deviation).toBe(0);
   });
 });

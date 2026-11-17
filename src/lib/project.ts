@@ -14,6 +14,7 @@ export function isIloqInner(kind: RingKind | undefined, label: string | null | u
   return double && kind === "iloq" && label === "Insida";
 }
 export function ringName(ring: number, inner = false): string {
+  if (ring === 0) return "Ingen ring (jämnt med läsare)";
   return `${formatMm(ring)} ${inner ? "iLOQ innerring" : "ring"}`;
 }
 /** Gäller behöret just den här sidan? A10.11 hör till insidan; övriga behör till alla sidor. */

@@ -208,7 +208,7 @@ const Locked = ({ children, label }: { children: ReactNode; label: string }) => 
             </Row>
             <Row caption="Ring" icon={<Disc3 className="size-3.5" />}>
               <span className={`inline-flex items-center rounded-md border px-2.5 py-1 font-mono text-sm font-bold ${sideChip(p.label) ?? "border-accent/50 bg-accent/10 text-foreground"}`}>
-                {formatMm(p.c.ring)}
+                {p.c.ring === 0 ? "Ingen ring" : formatMm(p.c.ring)}
               </span>
               {isInner(p.label) && <span className="text-xs font-semibold text-foreground">iLOQ innerring (med skruvhål)</span>}
             </Row>

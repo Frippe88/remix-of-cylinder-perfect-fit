@@ -154,7 +154,7 @@ function ResultCard({ c, best = false, side = null, relaxed = false, chosen, onS
         <span className={`rounded-full px-2.5 py-1 font-mono text-sm font-bold ring-1 ring-inset ring-current/20 backdrop-blur-sm ${outsideTolerance ? "bg-warning-soft text-warning" : exact ? "bg-success-soft text-success" : "bg-muted text-foreground"}`}>{formatSigned(c.deviation)}</span>
       </div>
       <dl className="grid grid-cols-[minmax(70px,0.65fr)_minmax(0,1.6fr)] gap-4">
-        <div><dt className="text-xs text-muted-foreground">Ringhöjd</dt><dd className="mt-1 font-mono text-3xl font-extrabold tracking-tight">{formatMm(c.ring)}</dd></div>
+        <div><dt className="text-xs text-muted-foreground">Ringhöjd</dt><dd className="mt-1 font-mono text-3xl font-extrabold tracking-tight">{c.ring === 0 ? <span className="text-lg">Ingen ring</span> : formatMm(c.ring)}</dd></div>
         <div><dt className="text-xs text-muted-foreground">Förlängare · {c.extenderCount} st</dt><dd className="mt-1 flex min-h-9 flex-wrap items-center gap-1.5">{c.extenders.length === 0 ? <span className="text-base font-semibold">Inga förlängare</span> : c.extenders.map((e, i) => <span key={i} className="rounded-lg border border-border bg-secondary px-2.5 py-1 font-mono text-base font-extrabold shadow-card">{formatMm(e)}</span>)}</dd><dd className="mt-1 text-xs text-muted-foreground">Totalt <span className="font-mono text-foreground">{formatMm(c.totalExtension)}</span></dd></div>
       </dl>
       <p className={`mt-3 flex items-start gap-1.5 border-t pt-2 text-xs font-medium ${outsideTolerance ? "text-warning" : exact ? "text-success" : "text-muted-foreground"}`}>
