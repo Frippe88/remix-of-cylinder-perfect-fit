@@ -447,7 +447,7 @@ export function CalculatorPage({ variant, loginBar, navActive, locked = false }:
           <PickListButton
             sides={type === "single" ? [{ label: isRound ? null : singleSide, depth: outDepth, selected: selOut }] : [{ label: "Utsida", depth: outDepth, selected: selOut ?? ovalPair?.[0] ?? null }, { label: "Insida", depth: inDepth, selected: selIn ?? ovalPair?.[1] ?? null }]}
             ext={ext} rings={type === "single" && singleSide === "Insida" ? insideRings : outRings} insideRings={insideRings} insideExt={insideExt} baseMm={baseMm} insideBaseMm={insideBaseMm} relaxed={isRound} screwBrand={proFeat && isRound ? brand : undefined} ovalSingle={proFeat && cyl === "standard"} iloqSingle={proFeat && cyl === "iloq" && type === "single"} onShowAll={mode === "all" ? undefined : () => { setMode("all"); setSel({ key: "", out: null, in: null }); }}
-            fitting={activeFitting} onFittingChange={fittingEnabled ? setFitting : undefined} fittingChoices={fittingChoices} iloqDouble={iloqDouble} locked={locked} onLocked={() => setSignupOpen(true)}
+            fitting={activeFitting} onFittingChange={fittingEnabled ? setFitting : undefined} fittingChoices={fittingChoices} iloqDouble={iloqDouble} locked={locked && !user} onLocked={() => setSignupOpen(true)}
             {...(pro ? { projectName: project.name, projectDoors: project.doors.length, projectCount: projectStore.list.length, onOpenProject: () => { setSwitchProject(true); setProjectOpen(true); } } : {})}
             onSave={!pro ? undefined : (sides) => { trackEvent("sparad_dorr", { cylinder: cyl }); setPendingDoor({ sides, kind: isRound ? "rund" : cyl === "iloq" ? "iloq" : "oval", ...(isRound ? { brand } : {}), ...(activeFitting ? { fitting: activeFitting } : {}) }); }}
           />
