@@ -267,13 +267,13 @@ export function CalculatorPage({ variant, loginBar, navActive, locked = false }:
             </InfoSheetRow>
           </div>
           <Panel title={office ? "Dörrlitra · A/B/C" : "Mätning"}>
-            <div className="grid grid-cols-3 gap-0.5 rounded-xl bg-muted p-1 shadow-[inset_0_1px_2px_oklch(0_0_0/0.08)] sm:gap-1" role="group" aria-label="Cylindertyp">
+            <div className="grid grid-cols-3 gap-0.5 rounded-2xl border border-border/60 bg-muted/70 p-1 shadow-[inset_0_1px_3px_oklch(0_0_0/0.10)] sm:gap-1" role="group" aria-label="Cylindertyp">
               {CYLINDER_OPTIONS.map((o) => (
                 <button
                   key={o.id}
                   onClick={() => switchCyl(o.id)}
                   aria-pressed={cyl === o.id}
-                  className={`rounded-lg px-0.5 py-2.5 text-center text-[11px] font-bold leading-tight whitespace-nowrap transition sm:px-1 sm:text-[13px] ${cyl === o.id ? "bg-accent text-accent-foreground shadow-elevated ring-1 ring-accent" : "text-foreground/70 hover:bg-card hover:text-foreground"}`}
+                  className={`rounded-xl px-0.5 py-2.5 text-center text-[11px] font-bold leading-tight whitespace-nowrap transition-all duration-200 ease-out active:scale-[0.97] sm:px-1 sm:text-[13px] ${cyl === o.id ? "bg-accent text-accent-foreground shadow-[0_4px_14px_-4px_var(--color-accent)] ring-1 ring-accent" : "text-foreground/65 hover:bg-card/80 hover:text-foreground"}`}
                 >
                   {o.name}
                   <span className="mt-0.5 block font-mono text-[13px] font-bold">{o.id === "round" ? cylinderBaseMm("round", "outside", false, brand) : o.mm}mm</span>
@@ -527,11 +527,11 @@ function DepthInput({ label, value, onChange, clearable = true }: { label: strin
     const n = parse(value) ?? 0;
     onChange(String(Math.max(0, Math.round((n + d) * 10) / 10)).replace(".", ","));
   };
-  const btn = "flex size-12 shrink-0 items-center justify-center text-foreground transition hover:bg-muted active:bg-muted";
+  const btn = "flex size-12 shrink-0 items-center justify-center text-foreground/80 transition hover:bg-muted hover:text-foreground active:scale-90 active:bg-muted";
   return (
     <div>
       <label className="text-sm font-semibold" htmlFor={label}>{label}</label>
-      <div className="mt-1 flex items-center overflow-hidden rounded-lg border border-input bg-card focus-within:ring-2 focus-within:ring-ring">
+      <div className="mt-1 flex items-center overflow-hidden rounded-xl border border-input bg-card shadow-[inset_0_1px_3px_oklch(0_0_0/0.08)] transition-shadow duration-200 focus-within:border-accent focus-within:shadow-[0_0_0_3px_color-mix(in_oklab,var(--color-accent)_25%,transparent),0_0_20px_-6px_var(--color-accent)]">
         <button type="button" onClick={() => step(-1)} aria-label={`Minska ${label.toLowerCase()} 1 mm`} className={`${btn} border-r border-input`}>
           <Minus className="size-5" aria-hidden />
         </button>
@@ -544,7 +544,7 @@ function DepthInput({ label, value, onChange, clearable = true }: { label: strin
           data-depth-input=""
           enterKeyHint="next"
           onKeyDown={onKeyDown}
-          className="w-full min-w-0 bg-transparent px-3 py-3 text-center font-mono text-xl font-bold outline-none"
+          className="w-full min-w-0 bg-transparent px-3 py-3 text-center font-mono text-2xl font-extrabold tracking-tight outline-none placeholder:text-base placeholder:font-medium placeholder:text-muted-foreground/60"
         />
         <span className="pr-2 text-sm text-muted-foreground">mm</span>
         {clearable && value !== "" && (
