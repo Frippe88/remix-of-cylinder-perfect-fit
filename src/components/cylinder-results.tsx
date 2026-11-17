@@ -148,7 +148,7 @@ function ResultCard({ c, best = false, side = null, relaxed = false, chosen, onS
   const outsideTolerance = !relaxed && (c.deviation < TOLERANCE_MIN || c.deviation > TOLERANCE_MAX);
   const isChosen = same(c, chosen);
   return (
-    <article aria-label={best ? "Bästa rekommendation" : "Alternativ"} className={`rounded-lg border bg-card p-4 animate-in fade-in slide-in-from-bottom-1 duration-200 transition-shadow ${isChosen && onSelect ? "border-success ring-2 ring-success/30" : best ? "border-accent/50 shadow-card ring-1 ring-accent/25 shadow-[0_0_24px_-6px_var(--color-accent)]" : "border-border"}`}>
+    <article aria-label={best ? "Bästa rekommendation" : "Alternativ"} className={`rounded-lg border bg-card p-4 animate-in fade-in slide-in-from-bottom-1 duration-200 transition-shadow ${best ? "shadow-[0_0_28px_-6px_var(--color-accent)]" : ""} ${isChosen && onSelect ? "border-success ring-2 ring-success/30" : best ? "border-accent/50 shadow-card ring-1 ring-accent/25" : "border-border"}`}>
       <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
         <p className="flex flex-wrap items-center gap-1.5 text-xs font-semibold text-muted-foreground">{side ? <SideBadge side={side} /> : !best && <span>Alternativ</span>}{best && <><Check className="size-3.5 text-success" aria-hidden />Bästa passform</>}</p>
         <span className={`rounded-md px-2 py-1 font-mono text-sm font-bold ${outsideTolerance ? "bg-warning-soft text-warning" : exact ? "bg-success-soft text-success" : "bg-muted text-foreground"}`}>{formatSigned(c.deviation)}</span>
