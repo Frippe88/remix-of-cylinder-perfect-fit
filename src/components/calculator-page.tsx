@@ -79,10 +79,13 @@ type Cyl = "standard" | "round" | "iloq";
 const ROUND_BRANDS = [ASSA_ROUND_BRAND, ASSA_S_BRAND, "dormakaba / DORMA", "EVVA", "Annat fabrikat"] as const;
 
 export function CalculatorPage({ variant, loginBar, navActive, locked = false }: { variant: "free" | "pro"; loginBar?: React.ReactNode; navActive?: "free" | "pro"; locked?: boolean }) {
-  const [signupOpen, setSignupOpen] = useState(false);
+  const [signupOpenRaw, setSignupOpenRaw] = useState(false);
+  const signupOpen = signupOpenRaw;
   const navigate = useNavigate();
   const [accountOpen, setAccountOpen] = useState(false);
   const { user, signOut } = useAuth();
+  const navigateTo = useNavigate();
+  const setSignupOpen = (v: boolean) => { if (v && user) { navigateTo({ to: "/pro" }); return; } setSignupOpenRaw(v); };
   const [type, setType] = useState<"single" | "double">("single");
   const [cyl, setCyl] = useState<Cyl>("standard");
   const [brand, setBrand] = useState<string>(ROUND_BRANDS[0]);
@@ -242,7 +245,7 @@ export function CalculatorPage({ variant, loginBar, navActive, locked = false }:
             Dörrmätning<span className="block text-xs font-normal text-muted-foreground">Mät dörrdjup vid dörren</span>
           </button>
           <button type="button" role="tab" aria-selected={office} onClick={() => (pro ? setMeasurementMode("office") : setSignupOpen(true))} className={`min-h-12 rounded-lg px-2 text-sm font-bold transition ${office ? "bg-card shadow-card ring-1 ring-accent" : "text-muted-foreground"}`}>
-            Dörrlitra{!pro && <span aria-label="Kräver Pro"> 🔒</span>}<span className="block text-xs font-normal text-muted-foreground">A/B/C från dörrlitra</span>
+            Dörrlitra{!pro && <span className="ml-1 rounded-full border border-accent/50 px-1.5 py-0.5 text-[10px] font-bold uppercase text-accent">Pro</span>}<span className="block text-xs font-normal text-muted-foreground">A/B/C från dörrlitra</span>
           </button>
         </div>
       </div>}
@@ -363,7 +366,7 @@ export function CalculatorPage({ variant, loginBar, navActive, locked = false }:
                 <span><span className="font-semibold">Monteras i läsare</span><span className="block text-xs text-muted-foreground">Ingen ring – mät från kistan till läsarens framkant{type === "double" ? " (utsidan)" : ""}, så räknas förlängare för att gå jämnt.</span></span>
               </label> : <button type="button" onClick={() => (locked ? setSignupOpen(true) : navigate({ to: "/pro" }))} className="flex w-full items-start gap-2.5 rounded-xl border border-border/60 bg-muted/50 p-2.5 text-left text-sm active:scale-[0.99]">
                 <span aria-hidden className="mt-0.5 size-4 rounded border border-border" />
-                <span><span className="font-semibold">Monteras i läsare <span aria-label="Kräver Pro">🔒</span> <span className="rounded-full border border-accent/50 px-1.5 py-0.5 text-[10px] font-bold uppercase text-accent">Pro</span></span><span className="block text-xs text-muted-foreground">Cylindern jämnt med läsaren (Aperio, Salto m.fl.) – förlängare utan ring. Finns i Pro.</span></span>
+                <span><span className="font-semibold">Monteras i läsare <span className="rounded-full border border-accent/50 px-1.5 py-0.5 text-[10px] font-bold uppercase text-accent">Pro</span></span><span className="block text-xs text-muted-foreground">Cylindern jämnt med läsaren (Aperio, Salto m.fl.) – förlängare utan ring. Finns i Pro.</span></span>
               </button>
             )}
             {iloqDouble && (
