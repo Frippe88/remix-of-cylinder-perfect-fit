@@ -31,6 +31,7 @@ const PERKS = [
 const PRO = [
   "Automatisk skruvlängd – oval, rund och iLOQ, med varning när 63mm inte räcker",
   "Räkna från dörrlitra på kontoret – A/B/C-mått, avdrag för låshus och extra behör som 179",
+  "Monteras i läsare – cylindern jämnt med läsaren (Aperio, Salto m.fl.), förlängare utan ring",
   "Färdig inköpslista per oval, rund och iLOQ – ringar, förlängare och satser",
   "PDF med ett klick – komplett dörrlista eller bara inköpslista",
   "Behör direkt i kalkylen – färdig sats 256, 2356, 18256 eller lös ring",

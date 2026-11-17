@@ -1,4 +1,4 @@
-import { Link } from "@tanstack/react-router";
+import { Link, useNavigate } from "@tanstack/react-router";
 import { GUIDES } from "@/lib/guides";
 import { ArrowRight, BookOpen, Check, ChevronDown, CircleHelp, FolderOpen, KeyRound, Minus, Moon, Package, Plus, ShieldCheck, Sun, UserRound, X } from "lucide-react";
 import { Dialog, DialogClose, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
@@ -80,6 +80,7 @@ const ROUND_BRANDS = [ASSA_ROUND_BRAND, ASSA_S_BRAND, "dormakaba / DORMA", "EVVA
 
 export function CalculatorPage({ variant, loginBar, navActive, locked = false }: { variant: "free" | "pro"; loginBar?: React.ReactNode; navActive?: "free" | "pro"; locked?: boolean }) {
   const [signupOpen, setSignupOpen] = useState(false);
+  const navigate = useNavigate();
   const [accountOpen, setAccountOpen] = useState(false);
   const { user, signOut } = useAuth();
   const [type, setType] = useState<"single" | "double">("single");
@@ -139,7 +140,7 @@ export function CalculatorPage({ variant, loginBar, navActive, locked = false }:
   const activeRings = isAssaS ? [...ASSA_S_RING_HEIGHTS] : isRound ? roundRings : rings;
   const setActiveRings = isRound ? setRoundRings : setRings;
   // Dubbel iLOQ: insidan kräver iLOQ:s egna innerringar (27/30/33 mm) med skruvhål.
-  const readerOn = reader && !isRound;
+  const readerOn = pro && reader && !isRound;
   const outRings = readerOn && (type === "double" || singleSide === "Utsida") ? [...READER_RINGS] : activeRings;
   const insideRings = readerOn && type === "single" && singleSide === "Insida" ? [...READER_RINGS] : iloqDouble ? activeRings.filter((r) => (ILOQ_RING_HEIGHTS as readonly number[]).includes(r)) : activeRings;
   const insideExt = iloqDouble ? [] : ext;
@@ -357,10 +358,13 @@ export function CalculatorPage({ variant, loginBar, navActive, locked = false }:
               </div>
             )}
             {!isRound && (
-              <label className="flex cursor-pointer items-start gap-2.5 rounded-xl border border-border/60 bg-muted/50 p-2.5 text-sm">
+              pro ? <label className="flex cursor-pointer items-start gap-2.5 rounded-xl border border-border/60 bg-muted/50 p-2.5 text-sm">
                 <input type="checkbox" checked={reader} onChange={(e) => setReader(e.target.checked)} className="mt-0.5 size-4 accent-[var(--color-accent)]" />
                 <span><span className="font-semibold">Monteras i läsare</span><span className="block text-xs text-muted-foreground">Ingen ring – mät från kistan till läsarens framkant{type === "double" ? " (utsidan)" : ""}, så räknas förlängare för att gå jämnt.</span></span>
-              </label>
+              </label> : <button type="button" onClick={() => (locked ? setSignupOpen(true) : navigate({ to: "/pro" }))} className="flex w-full items-start gap-2.5 rounded-xl border border-border/60 bg-muted/50 p-2.5 text-left text-sm active:scale-[0.99]">
+                <span aria-hidden className="mt-0.5 size-4 rounded border border-border" />
+                <span><span className="font-semibold">Monteras i läsare <span aria-label="Kräver Pro">🔒</span> <span className="rounded-full border border-accent/50 px-1.5 py-0.5 text-[10px] font-bold uppercase text-accent">Pro</span></span><span className="block text-xs text-muted-foreground">Cylindern jämnt med läsaren (Aperio, Salto m.fl.) – förlängare utan ring. Finns i Pro.</span></span>
+              </button>
             )}
             {iloqDouble && (
               <InfoPopupRow
