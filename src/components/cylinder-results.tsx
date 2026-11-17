@@ -89,24 +89,14 @@ export function CylinderResults({ title, depth, ext, rings, baseMm, relaxed = fa
       {depth !== null && depth > MAX_DEPTH_MM ? (
         <p className="py-2 text-sm font-semibold text-destructive">Max dörrdjup är {MAX_DEPTH_MM}mm.</p>
       ) : depth === null ? (
-        title === "Insida" ? null : (
-        <div className="animate-in fade-in relative overflow-hidden rounded-2xl border border-dashed border-border bg-card/60 p-5 shadow-card">
-          <div className="flex items-center gap-5">
-            <svg viewBox="0 0 120 80" className="h-20 w-28 shrink-0 text-muted-foreground/50" aria-hidden>
-              <rect x="44" y="6" width="32" height="68" rx="3" className="fill-muted stroke-current" strokeWidth="1.5" />
-              <rect x="14" y="30" width="92" height="20" rx="6" className="fill-card stroke-current" strokeWidth="1.5" strokeDasharray="4 3" />
-              <circle cx="22" cy="40" r="4" className="fill-accent/70" />
-              <line x1="14" y1="62" x2="44" y2="62" className="stroke-accent" strokeWidth="1.5" />
-              <line x1="14" y1="58" x2="14" y2="66" className="stroke-accent" strokeWidth="1.5" />
-              <line x1="44" y1="58" x2="44" y2="66" className="stroke-accent" strokeWidth="1.5" />
-            </svg>
-            <div className="min-w-0 space-y-1.5">
-              <p className="flex items-center gap-2 text-base font-bold"><span className="size-2 animate-pulse rounded-full bg-accent" aria-hidden />Väntar på mått</p>
-              <p className="text-sm text-muted-foreground">Skriv in dörrdjupet så räknas ring, förlängare och skruv ut direkt.</p>
-            </div>
-          </div>
-        </div>
-        )
+        <ol className="grid gap-3 py-2 sm:grid-cols-3">
+          {["Välj cylinder", "Ange dörrdjup", "Få kombination och plocklista"].map((s, i) => (
+            <li key={s} className="flex items-center gap-3 rounded-xl border bg-card p-3 text-sm font-semibold shadow-card">
+              <span className="flex size-7 shrink-0 items-center justify-center rounded-md bg-accent font-mono text-xs font-bold text-accent-foreground">{i + 1}</span>
+              {s}
+            </li>
+          ))}
+        </ol>
       ) : !best ? (
         <div className="border-l-2 border-destructive bg-card p-4">
           <p className="font-semibold text-destructive">Ingen lösning {title ? `för ${title.toLowerCase()} ` : ""}med valda lagerstorlekar.</p>
