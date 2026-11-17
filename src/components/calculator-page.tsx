@@ -327,12 +327,13 @@ export function CalculatorPage({ variant, loginBar, navActive, locked = false }:
                 </InfoPopupRow>
               </label>
             )}
-            <div className="grid grid-cols-2 gap-1 rounded-lg bg-muted p-1">
+            <div className="grid grid-cols-2 gap-1 rounded-2xl border border-border/60 bg-muted/70 p-1 shadow-[inset_0_1px_3px_oklch(0_0_0/0.10)]">
               {(["single", "double"] as const).map((t) => (
                 <button
                   key={t}
+                  aria-pressed={type === t}
                   onClick={() => { setType(t); setFitting(null); }}
-                  className={`rounded-md py-2 text-sm font-semibold transition ${type === t ? "bg-card shadow-card ring-1 ring-border" : "text-muted-foreground"}`}
+                  className={`rounded-xl py-2 text-sm font-semibold transition-all duration-200 ease-out active:scale-[0.97] ${type === t ? "bg-card text-foreground shadow-card ring-1 ring-border" : "text-muted-foreground hover:text-foreground"}`}
                 >
                   {t === "single" ? "Enkelcylinder" : "Dubbelcylinder"}
                 </button>
@@ -344,7 +345,7 @@ export function CalculatorPage({ variant, loginBar, navActive, locked = false }:
                 <div className="mt-1.5 grid grid-cols-2 gap-2">
                   {(["Utsida", "Insida"] as const).map((s) => (
                     <button key={s} type="button" onClick={() => setSingleSide(s)} aria-pressed={singleSide === s}
-                      className={`min-h-10 rounded-lg border text-sm font-semibold transition ${singleSide === s ? (s === "Utsida" ? "border-side-outside/45 bg-side-outside-soft text-side-outside" : "border-side-inside/45 bg-side-inside-soft text-side-inside") : "border-input text-muted-foreground"}`}>
+                      className={`min-h-10 rounded-xl border text-sm font-semibold transition-all duration-200 active:scale-[0.97] ${singleSide === s ? (s === "Utsida" ? "border-side-outside/45 bg-side-outside-soft text-side-outside" : "border-side-inside/45 bg-side-inside-soft text-side-inside") : "border-input text-muted-foreground"}`}>
                       {s}
                     </button>
                   ))}
