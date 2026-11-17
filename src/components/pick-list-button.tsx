@@ -91,6 +91,7 @@ export function PickListButton({ sides, ext, rings, insideRings = rings, insideE
   const savedTo = (projectName ?? "").trim();
   const projectLabel = savedTo || "Projekt";
   const [copied, setCopied] = useState(false);
+  const [justSaved, setJustSaved] = useState(false);
   const [failed, setFailed] = useState(false);
   const picks = sides
     .filter((s) => s.depth !== null)
@@ -322,9 +323,9 @@ const Locked = ({ children, label }: { children: ReactNode; label: string }) => 
           </Button>
         )}
         {!locked && onSave && (
-          <Button variant="outline" className="min-h-11 w-full justify-start gap-2 font-semibold" onClick={() => onSave(picks.map((p) => ({ label: p.label, depth: p.depth, ring: p.c.ring, extenders: [...p.c.extenders] })))}>
-            <FolderPlus aria-hidden className="shrink-0" />
-            <span className="truncate">Spara i {savedTo ? `”${savedTo}”` : "projekt"}</span>
+          <Button variant="outline" className={`min-h-11 w-full justify-start gap-2 font-semibold transition-all duration-200 active:scale-[0.98] ${justSaved ? "border-success bg-success-soft text-success" : ""}`} onClick={() => { onSave(picks.map((p) => ({ label: p.label, depth: p.depth, ring: p.c.ring, extenders: [...p.c.extenders] }))); setJustSaved(true); setTimeout(() => setJustSaved(false), 1400); }}>
+            {justSaved ? <Check aria-hidden className="shrink-0 animate-in zoom-in-50 duration-300" /> : <FolderPlus aria-hidden className="shrink-0" />}
+            <span className="truncate">{justSaved ? "Sparad!" : <>Spara i {savedTo ? `”${savedTo}”` : "projekt"}</>}</span>
           </Button>
         )}
         <Button onClick={copy} variant={copied ? "outline" : "default"} className={`min-h-11 w-full font-semibold ${copied ? "border-success text-success" : ""}`}>
