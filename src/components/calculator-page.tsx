@@ -143,7 +143,7 @@ export function CalculatorPage({ variant, loginBar, navActive, locked = false }:
   const activeRings = isAssaS ? [...ASSA_S_RING_HEIGHTS] : isRound ? roundRings : rings;
   const setActiveRings = isRound ? setRoundRings : setRings;
   // Dubbel iLOQ: insidan kräver iLOQ:s egna innerringar (27/30/33 mm) med skruvhål.
-  const readerOn = pro && reader && !isRound;
+  const readerOn = (pro || !!user) && reader && !isRound;
   const outRings = readerOn && (type === "double" || singleSide === "Utsida") ? [...READER_RINGS] : activeRings;
   const insideRings = readerOn && type === "single" && singleSide === "Insida" ? [...READER_RINGS] : iloqDouble ? activeRings.filter((r) => (ILOQ_RING_HEIGHTS as readonly number[]).includes(r)) : activeRings;
   const insideExt = iloqDouble ? [] : ext;
@@ -361,7 +361,7 @@ export function CalculatorPage({ variant, loginBar, navActive, locked = false }:
               </div>
             )}
             {!isRound && (
-              pro ? <label className="flex cursor-pointer items-start gap-2.5 rounded-xl border border-border/60 bg-muted/50 p-2.5 text-sm">
+              (pro || user) ? <label className="flex cursor-pointer items-start gap-2.5 rounded-xl border border-border/60 bg-muted/50 p-2.5 text-sm">
                 <input type="checkbox" checked={reader} onChange={(e) => setReader(e.target.checked)} className="mt-0.5 size-4 accent-[var(--color-accent)]" />
                 <span><span className="font-semibold">Monteras i läsare</span><span className="block text-xs text-muted-foreground">Ingen ring – mät från kistan till läsarens framkant{type === "double" ? " (utsidan)" : ""}, så räknas förlängare för att gå jämnt.</span></span>
               </label> : <button type="button" onClick={() => (locked ? setSignupOpen(true) : navigate({ to: "/pro" }))} className="flex w-full items-start gap-2.5 rounded-xl border border-border/60 bg-muted/50 p-2.5 text-left text-sm active:scale-[0.99]">
