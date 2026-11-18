@@ -86,6 +86,18 @@ export function CalculatorPage({ variant, loginBar, navActive, locked = false }:
   const navigate = useNavigate();
   const [accountOpen, setAccountOpen] = useState(false);
   const { user, signOut } = useAuth();
+  // Stäng inloggningsrutorna och bekräfta när någon just loggat in.
+  const [prevUserId, setPrevUserId] = useState<string | null | undefined>(undefined);
+  useEffect(() => {
+    const id = user?.id ?? null;
+    if (prevUserId === null && id) {
+      setAccountOpen(false);
+      setSignupOpenRaw(false);
+      toast.success(`Inloggad som ${user?.email ?? "ditt konto"}`, { id: "signed-in" });
+    }
+    setPrevUserId(id);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user?.id]);
   const navigateTo = useNavigate();
   const setSignupOpen = (v: boolean) => { if (v && user) { navigateTo({ to: "/pro" }); return; } setSignupOpenRaw(v); };
   const [type, setType] = useState<"single" | "double">("single");

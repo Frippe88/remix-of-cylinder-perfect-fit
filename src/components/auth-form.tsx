@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { KeyRound } from "lucide-react";
+import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { lovable } from "@/integrations/lovable/index";
 import { Button } from "@/components/ui/button";
@@ -23,6 +24,7 @@ export function AuthForm({ initialMode }: { initialMode?: Mode }) {
       if (mode === "in") {
         const { error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) throw error;
+        toast.success(`Inloggad som ${email}`, { id: "signed-in" });
       } else if (mode === "up") {
         const { data, error } = await supabase.auth.signUp({
           email,
