@@ -1,6 +1,6 @@
 import { Link, useNavigate } from "@tanstack/react-router";
 import { GUIDES } from "@/lib/guides";
-import { ArrowRight, BookOpen, Check, ChevronDown, CircleHelp, FolderOpen, KeyRound, Minus, Moon, Package, Plus, ShieldCheck, Sun, UserRound, X } from "lucide-react";
+import { ArrowRight, BookOpen, Check, ChevronDown, CircleHelp, FolderOpen, KeyRound, Minus, Moon, Package, Plus, Sun, UserRound, X } from "lucide-react";
 import { Dialog, DialogClose, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { useEffect, useState, type KeyboardEvent } from "react";
 import { CylinderResults, ModePicker } from "@/components/cylinder-results";
@@ -226,18 +226,9 @@ export function CalculatorPage({ variant, loginBar, navActive, locked = false }:
             {pro && <button type="button" onClick={() => { setSwitchProject(false); setProjectOpen(true); }} aria-label="Öppna projekt"
               className="inline-flex h-9 items-center gap-1 rounded-lg bg-foreground/10 px-2 text-sm font-semibold ring-1 ring-foreground/25 hover:bg-foreground/20 sm:h-10 sm:gap-1.5 sm:px-3">
               <FolderOpen className="size-4 text-accent" aria-hidden /><span className="hidden sm:inline">Projekt</span>
-              <span className="hidden rounded-full border border-accent/50 bg-accent/15 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-accent sm:inline">Beta</span>
-              <span className="rounded-full bg-accent px-1.5 text-xs font-bold text-accent-foreground">{projectStore.list.length}</span>
+                            <span className="rounded-full bg-accent px-1.5 text-xs font-bold text-accent-foreground">{projectStore.list.length}</span>
             </button>}
           </div>
-        </div>
-        <div className="relative mx-auto hidden max-w-5xl flex-wrap gap-1.5 px-4 pb-3 sm:flex" aria-label="Regler">
-          <span className="inline-flex items-center gap-1.5 rounded-full bg-accent/15 px-2 py-1 text-[11px] font-semibold text-foreground ring-1 ring-accent/40 sm:px-2.5 sm:text-xs">
-            <ShieldCheck className="size-3.5" aria-hidden />Oval & iLOQ: −2 till +2mm
-          </span>
-          <span className="inline-flex items-center gap-1.5 rounded-full bg-foreground/10 px-2 py-1 text-[11px] font-semibold ring-1 ring-foreground/25 sm:px-2.5 sm:text-xs">
-            <Check className="size-3.5" aria-hidden />Rund: närmaste möjliga
-          </span>
         </div>
       </header>
       <nav aria-label="Version" className="mx-auto max-w-5xl px-4 pt-4">
@@ -248,7 +239,6 @@ export function CalculatorPage({ variant, loginBar, navActive, locked = false }:
               <Link key={v} to={to} aria-current={active ? "page" : undefined}
                 className={`flex items-center justify-center gap-1 whitespace-nowrap rounded-lg px-1.5 py-2 text-xs font-bold sm:gap-1.5 sm:px-3 sm:text-sm transition ${active ? "bg-card text-foreground shadow-card ring-1 ring-accent" : "text-muted-foreground hover:text-foreground"}`}>
                 Cylinderkalkyl <span className={`rounded-full px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide ${active ? "bg-accent text-accent-foreground" : "bg-accent/15 text-accent"}`}>{tag}</span>
-                {v === "pro" && <span className="rounded-full border border-accent/50 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-accent">Beta</span>}
               </Link>
             );
           })}
