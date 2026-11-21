@@ -6,11 +6,11 @@ export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
       { title: "Cylinderhjälpen – Kalkylator för låscylindrar, ringar & förlängare" },
-      { name: "description", content: "Sveriges cylinderkalkylator för lås och låssmeder. Räkna direkt ut rätt cylinderförlängare, cylinderring och skruv för oval, rund och iLOQ låscylinder." },
+      { name: "description", content: "Montera cylinder på ytterdörr? Räkna direkt ut rätt cylinderförlängare, cylinderring och skruv för oval, rund och iLOQ låscylinder. Gratis för låssmeder." },
       { name: "application-name", content: "Cylinderhjälpen" },
       { property: "og:site_name", content: "Cylinderhjälpen" },
       { property: "og:title", content: "Cylinderhjälpen – Kalkylator för låscylindrar, ringar & förlängare" },
-      { property: "og:description", content: "Sveriges cylinderkalkylator för lås och låssmeder. Räkna direkt ut rätt cylinderförlängare, cylinderring och skruv för oval, rund och iLOQ låscylinder." },
+      { property: "og:description", content: "Montera cylinder på ytterdörr? Räkna direkt ut rätt cylinderförlängare, cylinderring och skruv för oval, rund och iLOQ låscylinder. Gratis för låssmeder." },
       { property: "og:url", content: "https://cylinderhjalpen.se/" },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
