@@ -26,6 +26,18 @@ const list = (a: readonly number[]) => a.map((n) => `${String(n).replace(".", ",
 
 export const GUIDES: Guide[] = [
   {
+    slug: "montera-cylinder-ytterdorr",
+    title: "Montera cylinder på ytterdörr",
+    description: "Så monterar du låscylinder på ytterdörr: mät dörrdjupet, välj rätt cylinderförlängare, cylinderring och skruvlängd för oval, rund och iLOQ.",
+    answer: `Mät dörrdjupet från låshusets cylinderfäste ut till dörrens yta, med skylt eller förstärkningsbehör på. En standard oval cylinder är ${STANDARD_CYLINDER_MM}mm – förlängarna bygger upp det stora måttet och ringen finjusterar resten så att utsticket hamnar inom ${TOLERANCE_MIN} till +${TOLERANCE_MAX}mm.`,
+    sections: [
+      { heading: "Så monterar du steg för steg", body: ["1. Mät dörrdjupet på utsidan (och insidan vid dubbelcylinder).", "2. Välj cylindertyp: oval, rund eller iLOQ.", "3. Skriv in måttet i kalkylatorn och få förlängare, ring och skruvlängd.", "4. Montera cylindern med förlängarna, lägg ringen utanpå och dra fast med rätt skruv."] },
+      { heading: "Hur mycket får cylindern sticka ut?", body: [`För oval cylinder och iLOQ är godkänd avvikelse ${TOLERANCE_MIN} till +${TOLERANCE_MAX}mm enligt regelboken. För rund cylinder finns ingen fast regel, men målet är så nära dörrens yta som möjligt.`] },
+      { heading: "Vilka cylindrar fungerar", body: ["Oval cylinder, rund cylinder (ASSA ABLOY, dormakaba, EVVA) och iLOQ – både enkel- och dubbelcylinder."] },
+    ],
+    mistakes: ["Att mäta hela dörrens tjocklek i stället för dörrdjupet.", "Att glömma skylt eller förstärkningsbehör som bygger på dörrbladet.", "Att räkna in- och utsida som samma mått vid dubbelcylinder."],
+  },
+  {
     slug: "rakna-cylinderlangd",
     title: "Räkna cylinderlängd",
     description: "Så mäter du dörrdjupet från låshusets cylinderfäste ut till dörrens yta och räknar fram rätt cylinderlängd, förlängare och ringar steg för steg.",

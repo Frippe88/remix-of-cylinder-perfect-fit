@@ -1,4 +1,3 @@
-import { HomeSeoSection } from "@/components/home-seo-section";
 import { Link, useNavigate } from "@tanstack/react-router";
 import { GUIDES } from "@/lib/guides";
 import { ArrowRight, BookOpen, Check, ChevronDown, CircleHelp, FolderOpen, KeyRound, Minus, Moon, Package, Plus, Sun, UserRound, X } from "lucide-react";
@@ -493,7 +492,6 @@ export function CalculatorPage({ variant, loginBar, navActive, locked = false }:
       <ProjectPanel project={project} setProject={setProject} store={projectStore} open={projectOpen} onOpenChange={(v) => { setProjectOpen(v); if (!v) setSwitchProject(false); }} closeOnSelect={switchProject} />
       </>}
       <Toaster position="top-center" />
-      <HomeSeoSection />
       <section className="mx-auto mt-10 w-full max-w-5xl px-4">
         <h2 className="mt-1 text-2xl font-extrabold tracking-tight">Guider om cylindermontage</h2>
         <ul className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
