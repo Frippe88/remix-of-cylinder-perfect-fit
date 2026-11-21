@@ -40,6 +40,20 @@ export const Route = createFileRoute("/")({
           },
         }),
       },
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "WebApplication",
+          name: "Cylinderhjälpen",
+          url: "https://cylinderhjalpen.se/",
+          applicationCategory: "UtilitiesApplication",
+          operatingSystem: "Alla (webbläsare)",
+          inLanguage: "sv",
+          description: "Kalkylator för låscylindrar: räknar ut cylinderring, förlängare och skruv för oval, rund och iLOQ-cylinder.",
+          offers: { "@type": "Offer", price: "0", priceCurrency: "SEK" },
+        }),
+      },
     ],
 
   }),

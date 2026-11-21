@@ -26,7 +26,7 @@ export const Route = createFileRoute("/guider/$slug")({
         { name: "twitter:card", content: "summary" },
       ],
       links: [{ rel: "canonical", href: url }],
-      scripts: [{ type: "application/ld+json", children: JSON.stringify({ "@context": "https://schema.org", "@type": "Article", headline: loaderData.title, description: loaderData.description, inLanguage: "sv" }) }],
+      scripts: [{ type: "application/ld+json", children: JSON.stringify({ "@context": "https://schema.org", "@type": "Article", headline: loaderData.title, description: loaderData.description, inLanguage: "sv", url, author: { "@type": "Organization", name: "Cylinderhjälpen", url: "https://cylinderhjalpen.se/" }, publisher: { "@type": "Organization", name: "Cylinderhjälpen", url: "https://cylinderhjalpen.se/" } }) }],
     };
   },
   notFoundComponent: () => (

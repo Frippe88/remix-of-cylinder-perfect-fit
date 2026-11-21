@@ -87,7 +87,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { name: "google-site-verification", content: "ecOhR_A9VBu8h-DXBQjU64itQhTKRtBGJ5R-QERM_HY" },
       { title: "Cylinderhjälpen" },
       { name: "description", content: "Beräkna cylinderförlängare och ringar" },
-      { name: "author", content: "Lovable" },
+      { name: "author", content: "Cylinderhjälpen" },
       { property: "og:title", content: "Cylinderkalkylator" },
       { property: "og:description", content: "Beräkna cylinderförlängare och ringar" },
       { property: "og:type", content: "website" },

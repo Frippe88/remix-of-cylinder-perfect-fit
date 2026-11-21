@@ -204,7 +204,7 @@ export function CalculatorPage({ variant, loginBar, navActive, locked = false }:
           </span>
           <div className="min-w-0 flex-1">
             <h1 className="text-base font-extrabold leading-tight tracking-[-0.02em] sm:text-xl">
-              Cylinderhjälpen
+              Cylinderhjälpen<span className="sr-only"> – cylinderkalkylator för ring, förlängare och skruv</span>
             </h1>
             <p className="text-[11px] leading-tight text-muted-foreground sm:text-sm">
               Rätt ring, förlängare och skruv på 3 sekunder
