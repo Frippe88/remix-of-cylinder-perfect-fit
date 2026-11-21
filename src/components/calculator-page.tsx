@@ -93,7 +93,6 @@ export function CalculatorPage({ variant, loginBar, navActive, locked = false }:
     if (prevUserId === null && id) {
       setAccountOpen(false);
       setSignupOpenRaw(false);
-      toast.success(`Inloggad som ${user?.email ?? "ditt konto"}`, { id: "signed-in" });
     }
     setPrevUserId(id);
     // eslint-disable-next-line react-hooks/exhaustive-deps
