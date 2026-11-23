@@ -137,7 +137,7 @@ export function CalculatorPage({ variant, loginBar, navActive, locked = false }:
   const outExtra = selectionMm(officeFittings, "outside");
   const inExtra = selectionMm(officeFittings, "inside");
   const [lockCase, setLockCase] = useState<LockCase>("standard");
-  const [abcRef, setAbcRef] = useState<AbcReference>("center");
+  const abcRef = "edge" as AbcReference; // Dörrlitra: B/C alltid till kistans kant.
   const abc = resolveABC(parse(aMeasure), parse(bMeasure), parse(cMeasure), abcRef === "edge" ? LOCK_CASE_MM[lockCase] : 0);
   const filledAbc = [aMeasure, bMeasure, cMeasure].filter((v) => v.trim() !== "").length;
   const autoAbc = (typed: string, v: number | null) => (typed.trim() === "" && filledAbc === 2 && v !== null && v >= 0 ? String(v) : typed);
@@ -264,8 +264,8 @@ export function CalculatorPage({ variant, loginBar, navActive, locked = false }:
               {office ? (
               <ol className="space-y-3 text-sm leading-snug">
                 <li><span className="font-bold">1. Välj cylindertyp och enkel/dubbel.</span> Oval, rund eller iLOQ – samma som vid dörren.</li>
-                <li><span className="font-bold">2. Skriv in måtten från dörrlitran.</span> A = dörrens tjocklek, B = utsida till centrum låshus, C = insida till centrum låshus. Fyller du i två räknas det tredje ut själv.</li>
-                <li><span className="font-bold">3. Välj låshus.</span> Standardlås 18,5mm eller ellås/motorlås 19,5mm. Kalkylatorn drar av halva kistan (9 resp. 10mm).</li>
+                <li><span className="font-bold">2. Skriv in måtten från dörrlitran.</span> A = dörrens tjocklek, B = utsida till kistans kant, C = insida till kistans kant. Fyller du i två räknas det tredje ut själv.</li>
+                <li><span className="font-bold">3. Välj låshus.</span> Standardlås 18,5mm eller ellås/motorlås 19,5mm. B och C mäts till kistans kant; kistan räknas in i dörrtjockleken (A = B + kista + C).</li>
                 <li><span className="font-bold">4. Välj extra behör.</span> T.ex. 179-beslag eller skylt som bygger på utsida, insida eller båda. Millimetern läggs på automatiskt.</li>
                 <li><span className="font-bold">5. Kolla uträkningen.</span> Under fälten ser du hur dörrdjupet räknats fram för varje sida.</li>
                 <li><span className="font-bold">6. Tryck på förslaget och spara dörren.</span> Ringar, förlängare, behör och skruv hamnar i projektet, inköpslistan och PDF:en.</li>
@@ -425,14 +425,6 @@ export function CalculatorPage({ variant, loginBar, navActive, locked = false }:
             {office ? <>
               <div className="space-y-2">
                 <DepthInput label="A-mått · dörrtjocklek" value={autoAbc(aMeasure, abc.a)} onChange={setAMeasure} />
-                <div className="grid grid-cols-2 gap-2" role="group" aria-label="B och C mäts till">
-                  {(["center", "edge"] as const).map((r) => (
-                    <button key={r} type="button" onClick={() => setAbcRef(r)} aria-pressed={abcRef === r}
-                      className={`min-h-11 rounded-lg border px-2 text-xs font-semibold ${abcRef === r ? "border-accent bg-card ring-1 ring-accent" : "border-border text-muted-foreground"}`}>
-                      {r === "center" ? "B/C till centrum kista" : "B/C till kistans kant"}
-                    </button>
-                  ))}
-                </div>
                 <DepthInput label={`B-mått · utsida till ${abcRef === "center" ? "centrum kista" : "kistans kant"}`} value={autoAbc(bMeasure, abc.b)} onChange={setBMeasure} />
                 <DepthInput label={`C-mått · insida till ${abcRef === "center" ? "centrum kista" : "kistans kant"}`} value={autoAbc(cMeasure, abc.c)} onChange={setCMeasure} />
                 <p className="text-xs text-muted-foreground">Fyll i två mått, det tredje räknas ut ({abcRef === "center" ? "B + C = A" : `B + kista ${formatMm(LOCK_CASE_MM[lockCase])} + C = A`}).</p>
