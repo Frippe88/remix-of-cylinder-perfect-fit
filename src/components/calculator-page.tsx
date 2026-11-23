@@ -27,7 +27,8 @@ import { trackEvent } from "@/lib/analytics";
 import {
   formatMm,
   officeDepthMm,
-  centerToCaseMm,
+  abcToDepthMm,
+  type AbcReference,
   LOCK_CASE_MM,
   type LockCase,
   calculate,
@@ -135,12 +136,13 @@ export function CalculatorPage({ variant, loginBar, navActive, locked = false }:
   const office = pro && measurementMode === "office";
   const outExtra = selectionMm(officeFittings, "outside");
   const inExtra = selectionMm(officeFittings, "inside");
-  const abc = resolveABC(parse(aMeasure), parse(bMeasure), parse(cMeasure));
   const [lockCase, setLockCase] = useState<LockCase>("standard");
+  const [abcRef, setAbcRef] = useState<AbcReference>("center");
+  const abc = resolveABC(parse(aMeasure), parse(bMeasure), parse(cMeasure), abcRef === "edge" ? LOCK_CASE_MM[lockCase] : 0);
   const filledAbc = [aMeasure, bMeasure, cMeasure].filter((v) => v.trim() !== "").length;
   const autoAbc = (typed: string, v: number | null) => (typed.trim() === "" && filledAbc === 2 && v !== null && v >= 0 ? String(v) : typed);
-  const bEdge = centerToCaseMm(abc.b, lockCase);
-  const cEdge = centerToCaseMm(abc.c, lockCase);
+  const bEdge = abcToDepthMm(abc.b, lockCase, abcRef);
+  const cEdge = abcToDepthMm(abc.c, lockCase, abcRef);
   const officeOutside = officeDepthMm(bEdge, outExtra);
   const officeInside = officeDepthMm(cEdge, inExtra);
   const outDepth = office ? (type === "single" && singleSide === "Insida" ? officeInside : officeOutside) : parse(outside);
@@ -423,10 +425,18 @@ export function CalculatorPage({ variant, loginBar, navActive, locked = false }:
             {office ? <>
               <div className="space-y-2">
                 <DepthInput label="A-mått · dörrtjocklek" value={autoAbc(aMeasure, abc.a)} onChange={setAMeasure} />
-                <DepthInput label="B-mått · utsida till centrum kista" value={autoAbc(bMeasure, abc.b)} onChange={setBMeasure} />
-                <DepthInput label="C-mått · insida till centrum kista" value={autoAbc(cMeasure, abc.c)} onChange={setCMeasure} />
-                <p className="text-xs text-muted-foreground">Fyll i två mått, det tredje räknas ut (B + C = A).</p>
-                {abc.mismatch && <p className="text-xs font-semibold text-destructive">B + C blir {formatMm(abc.a ?? 0)} – stämmer inte med A-måttet. B och C används.</p>}
+                <div className="grid grid-cols-2 gap-2" role="group" aria-label="B och C mäts till">
+                  {(["center", "edge"] as const).map((r) => (
+                    <button key={r} type="button" onClick={() => setAbcRef(r)} aria-pressed={abcRef === r}
+                      className={`min-h-11 rounded-lg border px-2 text-xs font-semibold ${abcRef === r ? "border-accent bg-card ring-1 ring-accent" : "border-border text-muted-foreground"}`}>
+                      {r === "center" ? "B/C till centrum kista" : "B/C till kistans kant"}
+                    </button>
+                  ))}
+                </div>
+                <DepthInput label={`B-mått · utsida till ${abcRef === "center" ? "centrum kista" : "kistans kant"}`} value={autoAbc(bMeasure, abc.b)} onChange={setBMeasure} />
+                <DepthInput label={`C-mått · insida till ${abcRef === "center" ? "centrum kista" : "kistans kant"}`} value={autoAbc(cMeasure, abc.c)} onChange={setCMeasure} />
+                <p className="text-xs text-muted-foreground">Fyll i två mått, det tredje räknas ut ({abcRef === "center" ? "B + C = A" : `B + kista ${formatMm(LOCK_CASE_MM[lockCase])} + C = A`}).</p>
+                {abc.mismatch && <p className="text-xs font-semibold text-destructive">{abcRef === "center" ? "B + C" : "B + kista + C"} blir {formatMm(abc.a ?? 0)} – stämmer inte med A-måttet. B och C används.</p>}
                 <div>
                   <p className="text-xs text-muted-foreground">Låshus</p>
                   <div className="mt-1 grid grid-cols-2 gap-2" role="group" aria-label="Låshus">
@@ -439,8 +449,8 @@ export function CalculatorPage({ variant, loginBar, navActive, locked = false }:
                   </div>
                 </div>
                 <OfficeFittingPicker selected={officeFittings} onChange={setOfficeFittings} />
-                {officeOutside !== null && <p className="text-xs text-muted-foreground"><span className="font-semibold text-side-outside">Utsida:</span> B {formatMm(abc.b ?? 0)} − halva kistan = {outExtra ? <>{formatMm(bEdge ?? 0)} + {formatMm(outExtra)} = </> : null}<strong className="font-mono text-foreground">{formatMm(officeOutside)}</strong></p>}
-                {officeInside !== null && <p className="text-xs text-muted-foreground"><span className="font-semibold text-side-inside">Insida:</span> C {formatMm(abc.c ?? 0)} − halva kistan = {inExtra ? <>{formatMm(cEdge ?? 0)} + {formatMm(inExtra)} = </> : null}<strong className="font-mono text-foreground">{formatMm(officeInside)}</strong></p>}
+                {officeOutside !== null && <p className="text-xs text-muted-foreground"><span className="font-semibold text-side-outside">Utsida:</span> B {formatMm(abc.b ?? 0)}{abcRef === "center" ? " − halva kistan" : ""} = {outExtra ? <>{formatMm(bEdge ?? 0)} + {formatMm(outExtra)} = </> : null}<strong className="font-mono text-foreground">{formatMm(officeOutside)}</strong></p>}
+                {officeInside !== null && <p className="text-xs text-muted-foreground"><span className="font-semibold text-side-inside">Insida:</span> C {formatMm(abc.c ?? 0)}{abcRef === "center" ? " − halva kistan" : ""} = {inExtra ? <>{formatMm(cEdge ?? 0)} + {formatMm(inExtra)} = </> : null}<strong className="font-mono text-foreground">{formatMm(officeInside)}</strong></p>}
               </div>
             </> : <>
               <DepthInput label={type === "single" ? "Dörrdjup" : "Dörrdjup utsida"} value={outside} onChange={setOutside} />

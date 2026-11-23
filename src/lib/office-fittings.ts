@@ -55,10 +55,11 @@ export function placementsFor(id: string): FittingPlacement[] {
  * B + C = A. Två kända mått räcker; det tredje räknas ut. Kistan sitter sällan i centrum,
  * så B och C kan aldrig gissas från bara A.
  */
-export function resolveABC(a: number | null, b: number | null, c: number | null): { a: number | null; b: number | null; c: number | null; mismatch: boolean } {
+export function resolveABC(a: number | null, b: number | null, c: number | null, caseMm = 0): { a: number | null; b: number | null; c: number | null; mismatch: boolean } {
+  // caseMm = 0: B/C till centrum kista (B + C = A). caseMm > 0: B/C till kistans kant (B + kista + C = A).
   const r = (n: number) => Math.round(n * 10) / 10;
-  if (b !== null && c !== null) return { a: r(b + c), b, c, mismatch: a !== null && Math.abs(a - (b + c)) > 0.05 };
-  if (a !== null && b !== null) return { a, b, c: a - b > 0 ? r(a - b) : null, mismatch: false };
-  if (a !== null && c !== null) return { a, b: a - c > 0 ? r(a - c) : null, c, mismatch: false };
+  if (b !== null && c !== null) { const sum = r(b + c + caseMm); return { a: sum, b, c, mismatch: a !== null && Math.abs(a - sum) > 0.05 }; }
+  if (a !== null && b !== null) return { a, b, c: a - b - caseMm > 0 ? r(a - b - caseMm) : null, mismatch: false };
+  if (a !== null && c !== null) return { a, b: a - c - caseMm > 0 ? r(a - c - caseMm) : null, c, mismatch: false };
   return { a, b, c, mismatch: false };
 }

@@ -41,6 +41,14 @@ export function centerToCaseMm(center: number | null, lock: LockCase): number | 
   const d = Math.round(center - LOCK_CASE_MM[lock] / 2);
   return d > 0 ? d : null;
 }
+/** Dörrlitra anger B/C antingen till centrum kista eller till kistans kant. */
+export type AbcReference = "center" | "edge";
+export function abcToDepthMm(v: number | null, lock: LockCase, ref: AbcReference): number | null {
+  if (ref === "center") return centerToCaseMm(v, lock);
+  if (v === null || !Number.isFinite(v)) return null;
+  const d = Math.round(v);
+  return d > 0 ? d : null;
+}
 /** Läsare: cylindern ska gå jämnt med läsarens framkant – ingen ring, bara förlängare. */
 export const READER_RINGS = [0] as const;
 export const TOLERANCE_MIN = -2;

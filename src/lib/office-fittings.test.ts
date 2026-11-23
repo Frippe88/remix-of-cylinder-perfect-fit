@@ -83,3 +83,11 @@ describe("placering per behör", () => {
     expect(placementsFor("assa-thumb")).toEqual(["inside"]);
   });
 });
+
+import { abcToDepthMm } from "./cylinder";
+describe("B/C till kistans kant", () => {
+  it("B 11 + kista 18,5 + C 32 = A 61,5", () => expect(resolveABC(null, 11, 32, 18.5).a).toBe(61.5));
+  it("A 61,5 och B 11 ger C 32", () => expect(resolveABC(61.5, 11, null, 18.5).c).toBe(32));
+  it("kantmått används direkt som djup", () => expect(abcToDepthMm(11, "standard", "edge")).toBe(11));
+  it("centrum drar fortfarande av halva kistan", () => expect(abcToDepthMm(25, "standard", "center")).toBe(16));
+});
