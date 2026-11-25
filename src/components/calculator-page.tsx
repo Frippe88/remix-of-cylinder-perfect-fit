@@ -137,7 +137,7 @@ export function CalculatorPage({ variant, loginBar, navActive, locked = false }:
   const outExtra = selectionMm(officeFittings, "outside");
   const inExtra = selectionMm(officeFittings, "inside");
   const [lockCase, setLockCase] = useState<LockCase>("standard");
-  const abcRef = "edge" as AbcReference; // Dörrlitra: B/C alltid till kistans kant.
+  const abcRef = "center" as AbcReference; // Dörrlitra: B/C till centrum kista (B + C = A).
   const abc = resolveABC(parse(aMeasure), parse(bMeasure), parse(cMeasure), abcRef === "edge" ? LOCK_CASE_MM[lockCase] : 0);
   const filledAbc = [aMeasure, bMeasure, cMeasure].filter((v) => v.trim() !== "").length;
   const autoAbc = (typed: string, v: number | null) => (typed.trim() === "" && filledAbc === 2 && v !== null && v >= 0 ? String(v) : typed);
@@ -264,8 +264,8 @@ export function CalculatorPage({ variant, loginBar, navActive, locked = false }:
               {office ? (
               <ol className="space-y-3 text-sm leading-snug">
                 <li><span className="font-bold">1. Välj cylindertyp och enkel/dubbel.</span> Oval, rund eller iLOQ – samma som vid dörren.</li>
-                <li><span className="font-bold">2. Skriv in måtten från dörrlitran.</span> A = dörrens tjocklek, B = utsida till kistans kant, C = insida till kistans kant. Fyller du i två räknas det tredje ut själv.</li>
-                <li><span className="font-bold">3. Välj låshus.</span> Standardlås 18,5mm eller ellås/motorlås 19,5mm. B och C mäts till kistans kant; kistan räknas in i dörrtjockleken (A = B + kista + C).</li>
+                <li><span className="font-bold">2. Skriv in måtten från dörrlitran.</span> A = dörrens tjocklek, B = utsida till centrum kista, C = insida till centrum kista. Fyller du i två räknas det tredje ut själv.</li>
+                <li><span className="font-bold">3. Välj låshus.</span> Standardlås 18,5mm eller ellås/motorlås 19,5mm. B och C mäts till centrum kista (A = B + C). Halva kistan dras av automatiskt till montagedjupet.</li>
                 <li><span className="font-bold">4. Välj extra behör.</span> T.ex. 179-beslag eller skylt som bygger på utsida, insida eller båda. Millimetern läggs på automatiskt.</li>
                 <li><span className="font-bold">5. Kolla uträkningen.</span> Under fälten ser du hur dörrdjupet räknats fram för varje sida.</li>
                 <li><span className="font-bold">6. Tryck på förslaget och spara dörren.</span> Ringar, förlängare, behör och skruv hamnar i projektet, inköpslistan och PDF:en.</li>
